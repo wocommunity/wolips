@@ -52,58 +52,92 @@ import org.eclipse.jface.text.rules.Token;
  * @author mike
  */
 public class SingleWordRule implements IPredicateRule {
-	private IToken myToken;
+	private IToken _token;
 
-	private char[] myAcceptableCharacters;
+	private char[] _acceptableCharacters;
 
-	private char myStopCharacter;
+	private char _unacceptablePrefixCharacter;
+	
+	private char _stopCharacter;
 
-	public SingleWordRule(IToken _token, char[] _acceptableCharacters, char _stopCharacter) {
-		myToken = _token;
-		myAcceptableCharacters = _acceptableCharacters;
-		myStopCharacter = _stopCharacter;
+  public SingleWordRule(IToken token, char[] acceptableCharacters, char stopCharacter) {
+    this(token, (char)0, acceptableCharacters, stopCharacter);
+  }
+  
+	public SingleWordRule(IToken token, char unacceptablePrefixCharacter, char[] acceptableCharacters, char stopCharacter) {
+		_token = token;
+		_unacceptablePrefixCharacter = unacceptablePrefixCharacter;
+		_acceptableCharacters = acceptableCharacters;
+		_stopCharacter = stopCharacter;
 	}
 
 	public IToken getSuccessToken() {
-		return myToken;
+		return _token;
 	}
 
-	public IToken evaluate(ICharacterScanner _scanner) {
-		return evaluate(_scanner, false);
+	public IToken evaluate(ICharacterScanner scanner) {
+		return evaluate(scanner, false);
 	}
 
-	public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
+	public IToken evaluate(ICharacterScanner scanner, boolean resume) {
 		IToken token = Token.UNDEFINED;
+		boolean acceptable = true;
+		
 		int whitespaceCount = 0;
 		int unreadCount = 0;
 		int wordCount = 0;
+		
 		int ch;
-		while ((ch = _scanner.read()) != ICharacterScanner.EOF) {
-			unreadCount++;
-			if (ch == myStopCharacter) {
-				token = myToken;
-				_scanner.unread();
-				break;
-			} else if (isAcceptableCharacter((char) ch, unreadCount - whitespaceCount)) {
-				if ((wordCount == 0 || whitespaceCount > 0) && (++wordCount >= 2)) {
-					break;
-				}
-				whitespaceCount = 0;
-			} else if (Character.isWhitespace((char) ch)) {
-				whitespaceCount++;
-			} else {
-				break;
-			}
+		if (_unacceptablePrefixCharacter != 0 && scanner.getColumn() > 0) {
+		  ch = 0;
+		  int readCount = 0;
+		  while (scanner.getColumn() > 0 && ch != -1) {
+		    scanner.unread();
+	      ch = scanner.read();
+	      if (Character.isWhitespace(ch)) {
+	        scanner.unread();
+	        readCount ++;
+	      }
+	      else {
+	        break;
+	      }
+		  }
+		  for (int i = 0; i < readCount; i ++) {
+		    scanner.read();
+		  }
+      if (ch == _unacceptablePrefixCharacter) {
+        acceptable = false;
+      }
 		}
 
-		if (token == myToken) {
-			unreadCount = whitespaceCount;
-		}
-		if (ch == ICharacterScanner.EOF) {
-			unreadCount++;
-		}
-		for (int i = 0; i < unreadCount; i++) {
-			_scanner.unread();
+		if (acceptable) {
+  		while ((ch = scanner.read()) != ICharacterScanner.EOF) {
+  			unreadCount++;
+  			if (ch == _stopCharacter) {
+  				token = _token;
+  				scanner.unread();
+  				break;
+  			} else if (isAcceptableCharacter((char) ch, unreadCount - whitespaceCount)) {
+  				if ((wordCount == 0 || whitespaceCount > 0) && (++wordCount >= 2)) {
+  					break;
+  				}
+  				whitespaceCount = 0;
+  			} else if (Character.isWhitespace((char) ch)) {
+  				whitespaceCount++;
+  			} else {
+  				break;
+  			}
+  		}
+  
+  		if (token == _token) {
+  			unreadCount = whitespaceCount;
+  		}
+  		if (ch == ICharacterScanner.EOF) {
+  			unreadCount++;
+  		}
+  		for (int i = 0; i < unreadCount; i++) {
+  			scanner.unread();
+  		}
 		}
 
 		return token;
@@ -111,8 +145,8 @@ public class SingleWordRule implements IPredicateRule {
 
 	protected boolean isAcceptableCharacter(char _ch, int index) {
 		boolean acceptableCharacter = Character.isJavaIdentifierPart(_ch);
-		for (int i = 0; !acceptableCharacter && i < myAcceptableCharacters.length; i++) {
-			acceptableCharacter = (myAcceptableCharacters[i] == _ch);
+		for (int i = 0; !acceptableCharacter && i < _acceptableCharacters.length; i++) {
+			acceptableCharacter = (_acceptableCharacters[i] == _ch);
 		}
 		return acceptableCharacter;
 	}

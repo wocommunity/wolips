@@ -204,11 +204,13 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 					// int hintChar = -1;
 					// for (int startOffset = tokenOffset - 1; tokenType == null
 					// && startOffset > 0; startOffset--) {
+					boolean tentativeElementType = false;
 					for (; tokenType == null && startOffset > 0; startOffset--) {
 						int ch = document.getChar(startOffset);
 						if (ch == ':') {
-							tokenType = PreferenceConstants.ELEMENT_TYPE;
-							guessed = true;
+							tentativeElementType = true;
+							//tokenType = PreferenceConstants.ELEMENT_TYPE;
+							//guessed = true;
 						} else if (ch == '{' || ch == ';') {
 							tokenType = PreferenceConstants.BINDING_NAME;
 							guessed = true;
@@ -216,9 +218,13 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 							tokenType = PreferenceConstants.BINDING_VALUE;
 							guessed = true;
 						} else if (ch == '}') {
+							// just being explicit
 							tokenType = PreferenceConstants.ELEMENT_NAME;
 							guessed = true;
 						}
+					}
+					if (guessed && tentativeElementType && tokenType == PreferenceConstants.BINDING_VALUE) {
+						tokenType = PreferenceConstants.BINDING_VALUE_NAMESPACE;
 					}
 				}
 

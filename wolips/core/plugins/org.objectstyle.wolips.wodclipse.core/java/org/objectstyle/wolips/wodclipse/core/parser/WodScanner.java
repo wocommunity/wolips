@@ -68,7 +68,7 @@ import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
  * @author mike
  */
 public class WodScanner extends AbstractJavaScanner {
-	private static String[] WOD_TOKENS = { PreferenceConstants.ELEMENT_NAME, PreferenceConstants.ELEMENT_TYPE, PreferenceConstants.BINDING_NAME, PreferenceConstants.BINDING_NAMESPACE, PreferenceConstants.BINDING_VALUE, PreferenceConstants.OGNL_BINDING_VALUE, PreferenceConstants.CONSTANT_BINDING_VALUE, PreferenceConstants.OPERATOR, PreferenceConstants.COMMENT, PreferenceConstants.UNKNOWN };
+	private static String[] WOD_TOKENS = { PreferenceConstants.ELEMENT_NAME, PreferenceConstants.ELEMENT_TYPE, PreferenceConstants.BINDING_NAME, PreferenceConstants.BINDING_NAMESPACE, PreferenceConstants.BINDING_VALUE, PreferenceConstants.BINDING_VALUE_NAMESPACE, PreferenceConstants.OGNL_BINDING_VALUE, PreferenceConstants.CONSTANT_BINDING_VALUE, PreferenceConstants.OPERATOR, PreferenceConstants.COMMENT, PreferenceConstants.UNKNOWN };
 
 	public static WodScanner newWODScanner() {
 		IColorManager colorManager = JavaPlugin.getDefault().getJavaTextTools().getColorManager();
@@ -108,6 +108,7 @@ public class WodScanner extends AbstractJavaScanner {
 		rules.add(new ElementNameRule(getToken(PreferenceConstants.ELEMENT_NAME)));
 		rules.add(new ElementTypeRule(getToken(PreferenceConstants.ELEMENT_TYPE)));
 		rules.add(new BindingNameRule(getToken(PreferenceConstants.BINDING_NAME)));
+    rules.add(new BindingValueNamespaceRule(getToken(PreferenceConstants.BINDING_VALUE_NAMESPACE)));
 		String allowedBindingCharacters = org.objectstyle.wolips.bindings.Activator.getDefault().getPreferenceStore().getString(org.objectstyle.wolips.bindings.preferences.PreferenceConstants.ALLOWED_BINDING_CHARACTERS);
 		rules.add(new BindingValueRule(getToken(PreferenceConstants.BINDING_VALUE), allowedBindingCharacters));
 		rules.add(new WordPredicateRule(new UnknownWordDetector(), getToken(PreferenceConstants.UNKNOWN)));

@@ -59,6 +59,7 @@ import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.parser.AssignmentOperatorWordDetector;
 import org.objectstyle.wolips.wodclipse.core.parser.BindingNameRule;
+import org.objectstyle.wolips.wodclipse.core.parser.BindingValueNamespaceRule;
 import org.objectstyle.wolips.wodclipse.core.parser.BindingValueRule;
 import org.objectstyle.wolips.wodclipse.core.parser.CloseDefinitionWordDetector;
 import org.objectstyle.wolips.wodclipse.core.parser.ElementNameRule;
@@ -116,6 +117,7 @@ public class DocumentWodModel extends AbstractWodModel {
     DocumentWodElement element = null;
     RulePosition savedRulePosition = null;
     RulePosition savedRulePosition2 = null;
+    RulePosition savedRulePosition3 = null;
     RulePosition lastRulePosition = null;
     // boolean stringLiteralIsABindingName = false;
     RulePosition rulePosition;
@@ -156,8 +158,8 @@ public class DocumentWodModel extends AbstractWodModel {
         }
       }
       else if (RulePosition.isOperatorOfType(rulePosition, ElementTypeOperatorWordDetector.class)) {
-        if (!RulePosition.isRulePositionOfType(lastRulePosition, ElementNameRule.class)) {
-          addParseProblem(element, "A ':' can only appear after an element name", rulePosition, false);
+        if (!RulePosition.isRulePositionOfType(lastRulePosition, ElementNameRule.class) && !RulePosition.isRulePositionOfType(lastRulePosition, BindingValueNamespaceRule.class)) {
+          addParseProblem(element, "A ':' can only appear after an element name or a binding value namespace.", rulePosition, false);
         }
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, ElementTypeRule.class)) {
@@ -189,6 +191,7 @@ public class DocumentWodModel extends AbstractWodModel {
           lastBinding = addBinding(element, savedRulePosition2, savedRulePosition, null, rulePosition, scanner);
           savedRulePosition = null;
           savedRulePosition2 = null;
+          savedRulePosition3 = null;
         }
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, StringLiteralRule.class)) {
@@ -205,6 +208,7 @@ public class DocumentWodModel extends AbstractWodModel {
           lastBinding = addBinding(element, savedRulePosition2, savedRulePosition, null, rulePosition, scanner);
           savedRulePosition = null;
           savedRulePosition2 = null;
+          savedRulePosition3 = null;
         }
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, BindingNameRule.class)) {
@@ -219,15 +223,24 @@ public class DocumentWodModel extends AbstractWodModel {
           addParseProblem(element, "An '=' can only appear after a binding name", rulePosition, false);
         }
       }
-      else if (RulePosition.isRulePositionOfType(rulePosition, BindingValueRule.class)) {
+      else if (RulePosition.isRulePositionOfType(rulePosition, BindingValueNamespaceRule.class)) {
         if (!RulePosition.isOperatorOfType(lastRulePosition, AssignmentOperatorWordDetector.class)) {
-          addParseProblem(element, "The binding value '" + rulePosition._getTextWithoutException() + "' can only appear after an '='", rulePosition, false);
+          addParseProblem(element, "The binding value namespace '" + rulePosition._getTextWithoutException() + "' can only appear after an '='", rulePosition, false);
         }
         else {
-          lastBinding = addBinding(element, savedRulePosition2, savedRulePosition, null, rulePosition, scanner);
+          savedRulePosition3 = rulePosition;
+        }
+      }
+      else if (RulePosition.isRulePositionOfType(rulePosition, BindingValueRule.class)) {
+        if (!RulePosition.isOperatorOfType(lastRulePosition, AssignmentOperatorWordDetector.class) && !(RulePosition.isOperatorOfType(lastRulePosition, ElementTypeOperatorWordDetector.class) && RulePosition.isRulePositionOfType(savedRulePosition3, BindingValueNamespaceRule.class))) {
+          addParseProblem(element, "The binding value '" + rulePosition._getTextWithoutException() + "' can only appear after an '=' or a 'xxx:'", rulePosition, false);
+        }
+        else {
+          lastBinding = addBinding(element, savedRulePosition2, savedRulePosition, savedRulePosition3, rulePosition, scanner);
         }
         savedRulePosition = null;
         savedRulePosition2 = null;
+        savedRulePosition3 = null;
       }
       else if (RulePosition.isOperatorOfType(rulePosition, EndAssignmentWordDetector.class)) {
         if (!RulePosition.isRulePositionOfType(lastRulePosition, BindingValueRule.class) && !RulePosition.isRulePositionOfType(lastRulePosition, StringLiteralRule.class) && !RulePosition.isRulePositionOfType(lastRulePosition, WOOGNLRule.class)) {

@@ -140,7 +140,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     prefs.setDefault(PreferenceConstants.WO54_KEY, false);
     prefs.setDefault(PreferenceConstants.USE_INLINE_BINDINGS_KEY, false);
 
-    prefs.setDefault(PreferenceConstants.ALLOWED_BINDING_CHARACTERS, ".^-@,|()");
+    prefs.setDefault(PreferenceConstants.ALLOWED_BINDING_CHARACTERS, ".^-@,|():");
     prefs.setDefault(PreferenceConstants.VALIDATE_TEMPLATES_KEY, true);
     prefs.setDefault(PreferenceConstants.VALIDATE_BINDING_VALUES, true);
     prefs.setDefault(PreferenceConstants.VALIDATE_OGNL_KEY, true);
