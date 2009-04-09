@@ -244,6 +244,9 @@ public abstract class AbstractWodBinding implements IWodBinding {
               }
               checkKeyPath = false;
             }
+            else {
+              checkKeyPath = false;
+            }
           }
           
           if (checkKeyPath) {

@@ -65,6 +65,7 @@ public class WodEditorPreferencePage extends FieldEditorPreferencePage implement
     addField(new ColorFieldEditor(PreferenceConstants.ELEMENT_TYPE, "Element Type Color", getFieldEditorParent()));
     addField(new ColorFieldEditor(PreferenceConstants.BINDING_NAMESPACE, "Binding Namespace Color", getFieldEditorParent()));
     addField(new ColorFieldEditor(PreferenceConstants.BINDING_NAME, "Binding Name Color", getFieldEditorParent()));
+    addField(new ColorFieldEditor(PreferenceConstants.BINDING_VALUE_NAMESPACE, "Binding Value Namespace Color", getFieldEditorParent()));
     addField(new ColorFieldEditor(PreferenceConstants.BINDING_VALUE, "Binding Value Color", getFieldEditorParent()));
     addField(new ColorFieldEditor(PreferenceConstants.CONSTANT_BINDING_VALUE, "Constant Binding Value Color", getFieldEditorParent()));
     addField(new ColorFieldEditor(PreferenceConstants.OGNL_BINDING_VALUE, "OGNL Binding Value Color", getFieldEditorParent()));
