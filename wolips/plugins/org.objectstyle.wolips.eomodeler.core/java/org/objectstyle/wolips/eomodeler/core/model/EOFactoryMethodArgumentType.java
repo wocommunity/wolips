@@ -57,7 +57,7 @@ public class EOFactoryMethodArgumentType {
 
 	public static final EOFactoryMethodArgumentType BYTES = new EOFactoryMethodArgumentType("EOFactoryMethodArgumentIsBytes", Messages.getString("EOFactoryMethodArgumentType.bytes"));
 
-	public static final EOFactoryMethodArgumentType DATA = new EOFactoryMethodArgumentType(null, Messages.getString("EOFactoryMethodArgumentType.data"));
+	public static final EOFactoryMethodArgumentType DATA = new EOFactoryMethodArgumentType("EOFactoryMethodArgumentIsData", Messages.getString("EOFactoryMethodArgumentType.data"));
 
 	public static final EOFactoryMethodArgumentType[] ARGUMENT_TYPES = new EOFactoryMethodArgumentType[] { EOFactoryMethodArgumentType.STRING, EOFactoryMethodArgumentType.DATA, EOFactoryMethodArgumentType.BYTES };
 
