@@ -22,6 +22,7 @@
 #elseif ($attribute.javaClassName == "NSTimestamp")${migrationTableName}.newTimestampColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "NSData")${migrationTableName}.newBlobColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.adaptorValueConversionMethodName)#if ($attribute.factoryMethodArgumentType.ID == "EOFactoryMethodArgumentIsNSString")${migrationTableName}.newStringColumn("${attribute.columnName}", ${attribute.width}, ${attribute.sqlGenerationAllowsNull});
+#elseif ($attribute.adaptorValueConversionMethodName)#if ($attribute.factoryMethodArgumentType.ID == "EOFactoryMethodArgumentIsData")${migrationTableName}.newBlobColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
 #else FIX // Unable to create a migration for ${attribute.name} (Java Class Name: ${attribute.javaClassName}) with the factoryMethodArgumentType $attribute.factoryMethodArgumentType.ID
 #end
 #else FIX // Unable to create a migration for ${attribute.name} (Java Class Name: ${attribute.javaClassName})
