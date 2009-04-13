@@ -192,6 +192,10 @@ public class WOVariables {
   public void createDefaultProperties() {
     _wolipsProperties = new Properties();
     String nextRoot = System.getenv("NEXT_ROOT");
+    String userHome = System.getProperty("user.home");
+    if (userHome == null) {
+      userHome = ".";
+    }
     if (isWindows()) {
       _wolipsProperties.setProperty(WOVariables.API_ROOT_KEY, "/Developer/ADC%20Reference%20Library/documentation/WebObjects/Reference/API/");
       _wolipsProperties.setProperty(WOVariables.APPS_ROOT, nextRoot + "\\Applications");
@@ -202,8 +206,8 @@ public class WOVariables {
       _wolipsProperties.setProperty(WOVariables.SYSTEM_FRAMEWORKS, nextRoot + "\\Library\\Frameworks");
       _wolipsProperties.setProperty(WOVariables.NETWORK_ROOT, nextRoot + "\\Network");
       _wolipsProperties.setProperty(WOVariables.NETWORK_FRAMEWORKS, nextRoot + "\\Network\\Library\\Frameworks");
-      _wolipsProperties.setProperty(WOVariables.USER_ROOT, System.getProperty("user.home"));
-      _wolipsProperties.setProperty(WOVariables.USER_FRAMEWORKS, System.getProperty("user.home") + "\\Library\\Frameworks");
+      _wolipsProperties.setProperty(WOVariables.USER_ROOT, userHome);
+      _wolipsProperties.setProperty(WOVariables.USER_FRAMEWORKS, userHome + "\\Library\\Frameworks");
       _wolipsProperties.setProperty(WOVariables.WEBOBJECTS_EXTENSIONS, nextRoot + "\\Extensions");
     }
     else {
@@ -216,8 +220,8 @@ public class WOVariables {
       _wolipsProperties.setProperty(WOVariables.SYSTEM_FRAMEWORKS, "/System/Library/Frameworks");
       _wolipsProperties.setProperty(WOVariables.NETWORK_ROOT, "/Network");
       _wolipsProperties.setProperty(WOVariables.NETWORK_FRAMEWORKS, "/Network/Library/Frameworks");
-      _wolipsProperties.setProperty(WOVariables.USER_ROOT, System.getProperty("user.home"));
-      _wolipsProperties.setProperty(WOVariables.USER_FRAMEWORKS, System.getProperty("user.home") + "/Library/Frameworks");
+      _wolipsProperties.setProperty(WOVariables.USER_ROOT, userHome);
+      _wolipsProperties.setProperty(WOVariables.USER_FRAMEWORKS, userHome + "/Library/Frameworks");
       _wolipsProperties.setProperty(WOVariables.WEBOBJECTS_EXTENSIONS, "/Library/WebObjects/Extensions");
     }
 
