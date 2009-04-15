@@ -89,10 +89,10 @@ public class ExternalFrameworkModel extends FrameworkModel<IFramework> {
 
   public ExternalFolderRoot getRootForFolder(File frameworksFolder) throws IOException {
     File canonicalFolder = frameworksFolder.getCanonicalFile();
-    for (Root root : getRoots()) {
+    for (Root<?> root : getRoots()) {
       if (root instanceof ExternalFolderRoot) {
-        File baseFolder = ((ExternalFolderRoot) root).getFrameworksFolder().getCanonicalFile();
-        if (baseFolder.equals(canonicalFolder)) {
+        File baseFolder = ((ExternalFolderRoot) root).getFrameworksFolder();
+        if (baseFolder != null && baseFolder.getCanonicalFile().equals(canonicalFolder)) {
           return (ExternalFolderRoot) root;
         }
       }
