@@ -77,10 +77,11 @@
 	<target name="build.woapp" depends="compile">
 		<taskdef name="woapplication" classname="org.objectstyle.woproject.ant.WOApplication"/>
 
-		<woapplication name="${build.app.name}" frameworksBaseURL="/WebObjects/${project.name}.woa/Frameworks" destDir="${dest.dir}" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" webXML="${webXML}" webXML_CustomContent="${webXML_CustomContent}" servletAdaptor="com.webobjects.jspservlet.WOServletAdaptor">
+		<woapplication name="${build.app.name}" frameworksBaseURL="/WebObjects/${build.app.name}.woa/Frameworks" destDir="${dest.dir}" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" webXML="${webXML}" webXML_CustomContent="${webXML_CustomContent}" servletAdaptor="com.webobjects.jspservlet.WOServletAdaptor">
 			<classes dir="${classes.dir}">
 				<includesfile name="woproject/classes.include.patternset" />
 				<excludesfile name="woproject/classes.exclude.patternset" />
+				<exclude if="javaClient" name="**/client/**/*.*"/>
 			</classes>
 
 			<wsresources dir=".">
@@ -91,6 +92,7 @@
 			<resources dir=".">
 				<includesfile name="woproject/resources.include.patternset" />
 				<excludesfile name="woproject/resources.exclude.patternset" />
+				<exclude if="javaClient" name="**/client/**/*.*"/>
 			</resources>
 
 			<frameworks root="ProjectLocal" embed="${embed.ProjectLocal}" eclipse="true" />
@@ -108,11 +110,8 @@
 	
 	<target name="javaclient" if="javaClient" depends="build.woapp">
 		<mkdir dir="${dest.dir}/${build.app.name}.woa/Contents/WebServerResources/Java" />
-		<jar basedir="${classes.dir}" includes="**/client/**/*.class,**/common/**/*.class" jarfile="${dest.dir}/${build.app.name}.woa/Contents/WebServerResources/Java/${build.app.name}.jar"/>
-
-		<!-- project user.d2wmodel file (D2JC only) -->
-		<copy file="user.d2wmodel" tofile="${dest.dir}/${build.app.name}.woa/Contents/Resources/user.d2wmodel"/>
-	</target>
+		<jar basedir="${classes.dir}" excludes="**/server/**/*.*, **/server/**/" jarfile="${dest.dir}/${build.app.name}.woa/Contents/WebServerResources/Java/${build.app.name}.jar"/>
+    </target>
 
 	<target name="war" if="servletDeployment" depends="ssdd">
 		<war destfile="${dest.dir}/${build.app.name}.war" webxml="${dest.dir}/${build.app.name}/WEB-INF/web.xml">
