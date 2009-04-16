@@ -363,6 +363,7 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 				((IDataTypePanel) dataTypePanel).setArgument(_argument);
 			}
 			_dataTypeStackLayout.topControl = dataTypePanel;
+			_classNameText.setEnabled(dataTypePanel != _dataTypeToDataTypePanel.get(EODataType.CUSTOM));
 			_dataTypePanel.layout();
 		}
 	}
