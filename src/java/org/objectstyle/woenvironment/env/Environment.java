@@ -108,6 +108,12 @@ public class Environment {
 		try {
 			while ((line = br.readLine()) != null) {
 				int idx = line.indexOf('=');
+				
+				if( idx < 0)
+				{
+					continue;
+				}
+				
 				String key = line.substring(0, idx);
 				String value = line.substring(idx + 1);
 				envVars.setProperty(key, value);
@@ -125,7 +131,7 @@ public class Environment {
 	 * @return Process
 	 * @throws Exception
 	 */
-	private static Process osProcess() throws InvocationTargetException {
+	 static Process osProcess() throws InvocationTargetException {
 		Process p = null;
 		Runtime r = null;
 		String OS = null;

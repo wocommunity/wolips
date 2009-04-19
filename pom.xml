@@ -1,14 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>org.objectstyle.woproject</groupId>
 		<artifactId>woproject-all-parent</artifactId>
-		<version>2.0.15</version>
+		<version>2.0.17-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<groupId>org.objectstyle.woproject.ant</groupId>
+	<groupId>org.objectstyle.woproject.ant
+	</groupId>
 	<artifactId>woenvironment</artifactId>
 	<version>2.0.15.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
@@ -33,24 +35,62 @@
 			<artifactId>vpp</artifactId>
 			<version>2.2.1</version>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit-dep</artifactId>
+			<version>4.5</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>1.6</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock.modules</groupId>
+			<artifactId>powermock-module-junit4
+			</artifactId>
+			<version>1.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock.api</groupId>
+			<artifactId>powermock-api-mockito</artifactId>
+			<version>1.2</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.mockito</groupId>
+					<artifactId>mockito-all</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
 
 	<repositories>
-		<!-- Avoid this repository declaration in settings.xml only because of one dependency -->
+		<!--
+			Avoid this repository declaration in settings.xml
+		-->
 		<repository>
 			<id>Objectstyle Maven Repository</id>
-			<url>http://objectstyle.org/maven2/</url>
+			<url>http://objectstyle.org/maven2/
+			</url>
+		</repository>
+		<repository>
+			<id>powermock-repo</id>
+			<url>http://powermock.googlecode.com/svn/repo/</url>
 		</repository>
 	</repositories>
+	
+	<scm>
+		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/branches/woenvironment-2.0.15.x</connection>
+		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/branches/woenvironment-2.0.15.x</developerConnection>
+		<url>http://svn.objectstyle.org/repos/woproject/branches/woenvironment-2.0.15.x</url>
+	</scm>
 
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
+		<testSourceDirectory>test/java</testSourceDirectory>
 	</build>
 
-
-  <scm>
-    <connection>scm:svn:http://svn.objectstyle.org/repos/woproject/branches/woenvironment-2.0.15.x</connection>
-    <developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/branches/woenvironment-2.0.15.x</developerConnection>
-    <url>http://svn.objectstyle.org/repos/woproject/branches/woenvironment-2.0.15.x</url>
-  </scm>
 </project>
