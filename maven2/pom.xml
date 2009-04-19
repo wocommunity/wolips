@@ -8,6 +8,7 @@
 	</parent>
 	<groupId>org.objectstyle.woproject.maven2</groupId>
 	<artifactId>maven2</artifactId>
+	<version>2.0.17-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Maven2 All</name>
 	<description> Contains WOProject Maven2 plugins collection. </description>
