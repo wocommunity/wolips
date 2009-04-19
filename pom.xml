@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.objectstyle.woproject</groupId>
 	<artifactId>woproject-all-parent</artifactId>
-	<version>2.0.17-SNAPSHOT</version>
+	<version>2.0.17</version>
 	<packaging>pom</packaging>
 	<name>WOProject All</name>
 	<description>Contains all WOProject projects.</description>
@@ -104,9 +104,9 @@
 	</distributionManagement>
 
 	<scm>
-		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/trunk/woproject</connection>
-		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject</developerConnection>
-		<url>http://svn.objectstyle.org/repos/woproject/trunk/woproject</url>
+		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/tags/woproject-all-parent-2.0.17-non-recursive</connection>
+		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/tags/woproject-all-parent-2.0.17-non-recursive</developerConnection>
+		<url>http://svn.objectstyle.org/repos/woproject/tags/woproject-all-parent-2.0.17-non-recursive</url>
 	</scm>
 
 	<build>
