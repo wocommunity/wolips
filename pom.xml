@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -11,7 +10,7 @@
 	<groupId>org.objectstyle.woproject.ant
 	</groupId>
 	<artifactId>woenvironment</artifactId>
-	<version>2.0.15.1-SNAPSHOT</version>
+	<version>2.0.15.1</version>
 	<packaging>jar</packaging>
 	<name>WOEnvironment</name>
 
@@ -83,9 +82,9 @@
 	</repositories>
 
 	<scm>
-		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/branches/woenvironment-2.0.15.x</connection>
-		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/branches/woenvironment-2.0.15.x</developerConnection>
-		<url>http://svn.objectstyle.org/repos/woproject/branches/woenvironment-2.0.15.x</url>
+		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/tags/woenvironment-2.0.15.1</connection>
+		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/tags/woenvironment-2.0.15.1</developerConnection>
+		<url>http://svn.objectstyle.org/repos/woproject/tags/woenvironment-2.0.15.1</url>
 	</scm>
 
 	<build>
