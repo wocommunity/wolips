@@ -8,7 +8,7 @@
 	</parent>
 	<groupId>org.objectstyle.woproject.maven2</groupId>
 	<artifactId>maven2</artifactId>
-	<version>2.0.17</version>
+	<version>2.0.18-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Maven2 All</name>
 	<description> Contains WOProject Maven2 plugins collection. </description>
@@ -146,8 +146,8 @@
 	</dependencyManagement>
 	
 	<scm>
-		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/tags/maven2-plugins-2.0.17</connection>
-		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/tags/maven2-plugins-2.0.17</developerConnection>
-		<url>http://svn.objectstyle.org/repos/woproject/tags/maven2-plugins-2.0.17</url>
+		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2</connection>
+		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2</developerConnection>
+		<url>http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2</url>
 	</scm>
 </project>
