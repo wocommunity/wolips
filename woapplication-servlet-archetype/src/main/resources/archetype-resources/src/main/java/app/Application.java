@@ -9,7 +9,7 @@ import ${package}.components.Main;
 
 public class Application extends WOApplication {
 	public static void main(String[] argv) {
-		${applicationClass}.main(argv, Application.class);
+		WOApplication.main(argv, Application.class);
 	}
 
 	public Application() {
