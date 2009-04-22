@@ -5,15 +5,10 @@ import ${package}.components.Main;
 
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WORequest;
-#if($WonderSupport == "no")
 import com.webobjects.appserver.WODirectAction;
-#set( $directActionClass = "WODirectAction" )
-#else
 import er.extensions.appserver.ERXDirectAction;
-#set( $directActionClass = "ERXDirectAction" )
-#end
 
-public class DirectAction extends $directActionClass {
+public class DirectAction extends ERXDirectAction {
 	public DirectAction( WORequest request ) {
 		super( request );
 	}
