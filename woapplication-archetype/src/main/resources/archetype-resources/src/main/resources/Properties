@@ -23,15 +23,21 @@ WOAutoOpenInBrowser=true
 #WOSessionTimeOut=3600
 #WOAllowsConcurrentRequestHandling=false
 
-#if( !($WonderSupport == "no") )
+#if(($WonderSupport == 'true') || ($WonderSupport == 'yes'))
+#========================================================================
 # OGNL
+#========================================================================
 ognl.helperFunctions=true
 ognl.inlineBindings=true
 
+#========================================================================
 # Misc
+#========================================================================
 er.extensions.stackTrace.cleanup=true
 
+#========================================================================
 # EOF
+#========================================================================
 er.extensions.ERXEC.safeLocking=true
 er.extensions.ERXEC.useSharedEditingContext=false
 er.extensions.ERXEnterpriseObject.applyRestrictingQualifierOnInsert=true
@@ -40,12 +46,16 @@ er.extensions.ERXEnterpriseObject.updateInverseRelationships=true
 #dbConnectUserGLOBAL=
 #dbConnectPasswordGLOBAL=
 
+#========================================================================
 # Migrations
+#========================================================================
 #er.migration.migrateAtStartup=true
 #er.migration.createTablesIfNecessary=true
 #er.migration.modelNames=YourModel
 
+#========================================================================
 # Misc Components
+#========================================================================
 #er.extensions.ERXWOForm.multipleSubmitDefault=true
 #er.extensions.ERXWORepetition.checkHashCodes=true
 #er.extensions.ERXWORepetition.raiseOnUnmatchedObject=true
@@ -53,21 +63,31 @@ er.extensions.ERXEnterpriseObject.updateInverseRelationships=true
 #er.component.clickToOpen=true
 #wolips.password=wo
 
+#========================================================================
 # ERJavaMail
+#========================================================================
 er.javamail.centralize=true
 er.javamail.adminEmail=admin@yourhost.com
 er.javamail.debugEnabled=false
 er.javamail.smtpHost=your.smtpserver.com
 er.javamail.smtpAuth=false
-er.javamail.smtpUser=
-er.javamail.smtpPassword=
+#er.javamail.smtpUser=
+#er.javamail.smtpPassword=
 
+#========================================================================
 # Log4j Configuration
+#========================================================================
 log4j.loggerFactory=er.extensions.logging.ERXLogger${dollar}Factory
 log4j.rootCategory=INFO,A1
 log4j.appender.A1=er.extensions.logging.ERXConsoleAppender
 log4j.appender.A1.layout=er.extensions.logging.ERXPatternLayout
 log4j.appender.A1.layout.ConversionPattern=%d{MMM dd HH:mm:ss} %$[%#] %-5p %c %x - %m%n
+
+# Note that (%F:%L) is fairly slow and shouldn't be used in performance intensive logging
+# The below pattern will produce logs that look like:
+# Jun 18 17:46:18 MyAppName[4002] (MyClassFile.java:40) INFO er.foo.MyCategory  - Some log
+#
+#log4j.appender.A1.layout.ConversionPattern=%d{MMM dd HH:mm:ss} %$[%#] (%F:%L) %-5p %c %x - %m%n
 
 # Log4j Categories
 # Here are a few log4j sub-categories that are interesting.
