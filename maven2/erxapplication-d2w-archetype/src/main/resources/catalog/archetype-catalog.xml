@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-catalog>
+	<archetypes>
+		<archetype>
+			<groupId>org.objectstyle.woproject.maven2</groupId>
+			<artifactId>woapplication-archetype</artifactId>
+			<version>${project.version}</version>
+			<description>WebObjects Application Archetype</description>
+		</archetype>
+		<archetype>
+			<groupId>org.objectstyle.woproject.maven2</groupId>
+			<artifactId>woframework-archetype</artifactId>
+			<version>${project.version}</version>
+			<description>WebObjects Framework Archetype</description>
+		</archetype>
+	</archetypes>
+</archetype-catalog>
