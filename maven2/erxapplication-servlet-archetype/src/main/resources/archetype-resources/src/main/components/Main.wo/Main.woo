@@ -1,4 +1,4 @@
 {
-	"WebObjects Release" = "WebObjects 5.0"; 
+	"WebObjects Release" = "WebObjects ${WebObjectsVersion}"; 
 	encoding = "UTF-8"; 
 }

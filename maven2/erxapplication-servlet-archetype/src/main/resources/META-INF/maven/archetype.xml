@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archetype>
-	<id>woapplication-archetype</id>
+	<id>erxapplication-servlet-archetype</id>
 	<sources>
 		<source>src/main/java/app/Application.java</source>
 		<source>src/main/java/app/DirectAction.java</source>
@@ -17,7 +17,7 @@
 		<resource>src/main/webapp/index.jsp</resource>
 		<resource>src/main/webapp/WEB-INF/LICENSE</resource>
 		<resource>src/main/webapp/WEB-INF/web.xml</resource>
-		<resource>src/main/webserver-resources/</resource>
+		<resource>src/main/webserver-resources/readme.txt</resource>
 		<resource>.project</resource>
 		<resource>.classpath</resource>
 		<resource>build.properties</resource>
