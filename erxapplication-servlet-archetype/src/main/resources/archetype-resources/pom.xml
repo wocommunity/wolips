@@ -25,7 +25,6 @@
 	#else
 	<wonder.classifier>unknown</wonder.classifier>
 	#end
-#end
 </properties>
 
 	<build>
