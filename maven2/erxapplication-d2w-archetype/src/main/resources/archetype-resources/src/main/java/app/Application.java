@@ -9,7 +9,7 @@ import ${package}.components.Main;
 
 public class Application extends ERXApplication {
 	public static void main(String[] argv) {
-		${applicationClass}.main(argv, Application.class);
+		ERXApplication.main(argv, Application.class);
 	}
 
 	public Application() {
