@@ -14,10 +14,7 @@
 		<resource>src/main/components/Main.wo/Main.woo</resource>
 		<resource>src/main/resources/Properties</resource>
 		<resource>src/main/resources/Info.plist</resource>
-		<resource>src/main/webapp/index.jsp</resource>
-		<resource>src/main/webapp/WEB-INF/LICENSE</resource>
-		<resource>src/main/webapp/WEB-INF/web.xml</resource>
-		<resource>src/main/webserver-resources/</resource>
+		<resource>src/main/webserver-resources/readme.txt</resource>
 		<resource>.project</resource>
 		<resource>.classpath</resource>
 		<resource>build.properties</resource>

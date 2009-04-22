@@ -13,11 +13,15 @@
 	<name>Maven2 All</name>
 	<description> Contains WOProject Maven2 plugins collection. </description>
 	<modules>
+		<module>erxapplication-archetype</module>
+		<module>erxapplication-d2w-archetype</module>
+		<module>erxapplication-servlet-archetype</module>
 		<module>maven-wobootstrap-plugin</module>
 		<module>maven-japplication-plugin</module>
 		<module>maven-archetype-woapplication</module>
 		<module>maven-wolifecycle-plugin</module>
 		<module>woapplication-archetype</module>
+		<module>woapplication-servlet-archetype</module>
 		<module>woframework-archetype</module>
 	</modules>
 	<build>
