@@ -5,9 +5,9 @@
 		<version>2.0.18-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>woapplication-archetype</artifactId>
+	<artifactId>woapplication-servlet-archetype</artifactId>
 	<packaging>maven-archetype</packaging>
-	<name>WebObjects Application Archetype</name>
+	<name>WebObjects Servlet Application Archetype</name>
 	<build>
 		<resources>
 			<resource>
