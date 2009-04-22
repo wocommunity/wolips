@@ -23,7 +23,6 @@ WOAutoOpenInBrowser=true
 #WOSessionTimeOut=3600
 #WOAllowsConcurrentRequestHandling=false
 
-#if(($WonderSupport == 'true') || ($WonderSupport == 'yes'))
 #========================================================================
 # OGNL
 #========================================================================
@@ -114,4 +113,3 @@ log4j.logger.er.extensions.ERXDatabaseContextDelegate=WARN
 log4j.logger.er.extensions.ERXConfigurationManager=INFO
 #log4j.logger.er.extensions.ERXApplication.RequestHandling=DEBUG
 
-#end
