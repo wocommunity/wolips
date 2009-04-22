@@ -4,11 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>${groupId}</groupId>
 	<artifactId>${artifactId}</artifactId>
-#if( !($TrueWarSupport == "no") )
 	<packaging>war</packaging>
-#else
-	<packaging>woapplication</packaging>
-#end
 	<version>${version}</version>
 	<name>${artifactId} WebObjects Application</name>
 	<url>http://maven.apache.org</url>
@@ -19,27 +15,16 @@
 		<mainclass>${package}.app.Application</mainclass>
 		<webobjects.groupId>com.webobjects</webobjects.groupId>
 		<webobjects.version>${WebObjectsVersion}</webobjects.version>
-#if( !($WonderSupport == "no") )
-		<wonder.core.groupId>wonder.core</wonder.core.groupId>
-		<wonder.version>${WonderVersion}</wonder.version>
-	#if( $WebObjectsVersion.contains( "5.3" ) )
-	<wonder.classifier>wo53</wonder.classifier>
-	#else
-	<wonder.classifier>wo54</wonder.classifier>
-	#end
-#end
 </properties>
 
 	<build>
 		<finalName>${dollar}{project.artifactId}</finalName>
-#if( !($TrueWarSupport == "no") )
 		<resources>
 			<resource>
 				<targetPath>Resources</targetPath>
 				<directory>${dollar}{basedir}/src/main/resources</directory>
 			</resource>
 		</resources>
-#end
 		<plugins>
 			<plugin>
 				<groupId>org.objectstyle.woproject.maven2</groupId>
@@ -47,7 +32,6 @@
 				<version>2.0.17</version>
 				<extensions>true</extensions>
 			</plugin>
-#if( !($TrueWarSupport == "no") )
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
@@ -55,7 +39,6 @@
 					<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
 				</configuration>
 			</plugin>
-#end
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -68,25 +51,6 @@
 	</build>
 
 	<dependencies>
-#if( !($WonderSupport == "no") )
-		<dependency>
-			<groupId>${dollar}{wonder.core.groupId}</groupId>
-			<artifactId>ERExtensions</artifactId>
-			<version>${dollar}{wonder.version}</version>
-			<classifier>${dollar}{wonder.classifier}</classifier>
-		</dependency>
-		<dependency>
-			<groupId>${dollar}{wonder.core.groupId}</groupId>
-			<artifactId>WOOgnl</artifactId>
-			<version>${dollar}{wonder.version}</version>
-			<classifier>${dollar}{wonder.classifier}</classifier>
-		</dependency>
-		<dependency>
-			<groupId>${dollar}{wonder.core.groupId}</groupId>
-			<artifactId>ERPrototypes</artifactId>
-			<version>${dollar}{wonder.version}</version>
-		</dependency>
-#end
 		<dependency>
 			<groupId>${dollar}{webobjects.groupId}</groupId>
 			<artifactId>JavaWebObjects</artifactId>
@@ -97,13 +61,11 @@
 			<artifactId>JavaEOAccess</artifactId>
 			<version>${dollar}{webobjects.version}</version>
 		</dependency>
-#if( !($TrueWarSupport == "no") )
 		<dependency>
 			<groupId>${dollar}{webobjects.groupId}</groupId>
 			<artifactId>JavaWOJSPServlet</artifactId>
 			<version>${dollar}{webobjects.version}</version>
 		</dependency>
-#end
 		<dependency>
 			<groupId>${dollar}{webobjects.groupId}</groupId>
 			<artifactId>JavaFoundation</artifactId>
