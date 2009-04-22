@@ -4,14 +4,8 @@
 		<requiredProperty key="WebObjectsVersion">
 			<defaultValue>5.4.3</defaultValue>
 		</requiredProperty>
-		<requiredProperty key="WonderSupport">
-			<defaultValue>no</defaultValue>
-		</requiredProperty>
 		<requiredProperty key="WonderVersion">
 			<defaultValue>5.0.0-SNAPSHOT</defaultValue>
-		</requiredProperty>
-		<requiredProperty key="TrueWarSupport">
-			<defaultValue>no</defaultValue>
 		</requiredProperty>
 	</requiredProperties>
 	<fileSets>
@@ -22,22 +16,9 @@
 			</includes>
 		</fileSet>
 		<fileSet filtered="true" encoding="UTF-8">
-			<directory>src/main/webapp</directory>
-			<includes>
-				<include>**/*.jsp</include>
-				<include>**/*.xml</include>
-				<include>**/LICENSE</include>
-			</includes>
-		</fileSet>
-		<fileSet filtered="true" encoding="UTF-8">
 			<directory>src/main/components</directory>
 			<includes>
 				<include>**/*.html</include>
-			</includes>
-		</fileSet>
-		<fileSet encoding="UTF-8">
-			<directory>src/main/components</directory>
-			<includes>
 				<include>**/*.woo</include>
 				<include>**/*.wod</include>
 				<include>**/*.api</include>
