@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype>
+	<id>woapplication-archetype</id>
+	<sources>
+		<source>src/main/java/app/Application.java</source>
+		<source>src/main/java/app/DirectAction.java</source>
+		<source>src/main/java/app/Session.java</source>
+		<source>src/main/java/components/Main.java</source>
+	</sources>
+	<resources>
+		<resource>src/main/components/Main.api</resource>
+		<resource>src/main/components/Main.wo/Main.html</resource>
+		<resource>src/main/components/Main.wo/Main.wod</resource>
+		<resource>src/main/components/Main.wo/Main.woo</resource>
+		<resource>src/main/resources/Properties</resource>
+		<resource>src/main/resources/Info.plist</resource>
+		<resource>src/main/webserver-resources/readme.txt</resource>
+		<resource>.project</resource>
+		<resource>.classpath</resource>
+		<resource>build.properties</resource>
+		<resource>woproject/classes.exclude.patternset</resource>
+		<resource>woproject/classes.include.patternset</resource>
+		<resource>woproject/resources.exclude.patternset</resource>
+		<resource>woproject/resources.include.patternset</resource>
+		<resource>woproject/wsresources.exclude.patternset</resource>
+		<resource>woproject/wsresources.include.patternset</resource>
+	</resources>
+</archetype>

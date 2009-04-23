@@ -1,0 +1,24 @@
+#set($dollar = '$')
+# Overrides the JavaWebObjects.framework Properties
+
+#Configure if using derby example set
+#derby.system.home=/Users/[username]/Library/Databases/derby-10.2.2.0/data/
+
+#NSDebugLevel=NSLog.DebugLevelDetailed
+#NSDebugGroup= NSLog.DebugGroupRequestHandling
+#NSDebugGroup= NSLog.DebugGroupResources
+#NSDebugGroup= NSLog.DebugGroupComponents
+#NSDebugGroup= NSLog.DebugGroupKeyValueCoding
+#NSDebugGroup= NSLog.DebugGroupModel
+#NSDebugGroup= NSLog.DebugGroupDeployment
+#NSDebugGroup= NSLog.DebugGroupWebObjects
+
+
+WOAutoOpenInBrowser=true
+#WOAutoOpenClientApplication=true
+#WOPort=55555
+#WODebuggingEnabled=true
+#WODirectConnectEnabled=true
+#WOAllowRapidTurnaround=true
+#WOSessionTimeOut=3600
+#WOAllowsConcurrentRequestHandling=false
