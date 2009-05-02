@@ -6,7 +6,7 @@
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>woapplication-archetype</artifactId>
+	<artifactId>woapplication-d2jc-webstart-archetype</artifactId>
 	<packaging>maven-archetype</packaging>
-	<name>WebObjects Application Archetype</name>
+	<name>WebObjects DirectToJavaClient Application Archetype</name>
 </project>
