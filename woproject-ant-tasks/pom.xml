@@ -1,10 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>woproject-all-parent</artifactId>
 		<groupId>org.objectstyle.woproject</groupId>
 		<version>2.0.18-SNAPSHOT</version>
 	</parent>
+	
 	<groupId>org.objectstyle.woproject.ant</groupId>
 	<artifactId>woproject-ant-tasks</artifactId>
 	<packaging>jar</packaging>
@@ -12,6 +14,7 @@
 	<description>Contains WOProject ant stuff.</description>
 	<url>http://objectstyle.org/woproject/</url>
 	<inceptionYear>2001</inceptionYear>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.objectstyle.woproject.ant</groupId>
@@ -51,6 +54,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
 	<build>
 		<sourceDirectory>src/java</sourceDirectory>
 		<resources>
@@ -59,4 +63,10 @@
 			</resource>
 		</resources>
 	</build>
+
+	<scm>
+		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/woproject-ant-tasks</connection>
+		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/woproject-ant-tasks</developerConnection>
+		<url>http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/woproject-ant-tasks</url>
+	</scm>
 </project>

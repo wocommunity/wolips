@@ -1,19 +1,24 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.objectstyle.woproject</groupId>
 	<artifactId>woproject-all-parent</artifactId>
 	<version>2.0.18-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>WOProject All</name>
-	<description>Contains all WOProject projects.</description>
+	<description>Parent POM for all WOProject modules</description>
 	<url>http://objectstyle.org/woproject/</url>
 
-	<modules>
-		<module>woenvironment</module>
-		<module>woproject-ant-tasks</module>
-		<module>maven2</module>
-		<module>wolips</module>
-	</modules>
+	<profiles>
+		<profile>
+			<id>build-all</id>
+			<modules>
+				<module>woenvironment</module>
+				<module>woproject-ant-tasks</module>
+				<module>maven2</module>
+			</modules>
+		</profile>
+	</profiles>
 
 	<issueManagement>
 		<system>jira</system>
@@ -135,12 +140,5 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh</artifactId>
-				<version>1.0-beta-2</version>
-			</extension>
-		</extensions>
 	</build>
 </project>

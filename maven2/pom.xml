@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>woproject-all-parent</artifactId>
@@ -11,39 +12,21 @@
 	<version>2.0.18-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Maven2 All</name>
-	<description> Contains WOProject Maven2 plugins collection. </description>
+	<description>Contains WOProject Maven2 plugins collection. </description>
+
 	<modules>
-		<module>erxapplication-archetype</module>
-		<module>erxapplication-d2w-archetype</module>
-		<module>erxapplication-servlet-archetype</module>
+		<module>archetypes</module>
 		<module>maven-wobootstrap-plugin</module>
 		<module>maven-japplication-plugin</module>
-		<module>maven-archetype-woapplication</module>
 		<module>maven-wolifecycle-plugin</module>
-		<module>woapplication-archetype</module>
-		<module>woapplication-servlet-archetype</module>
-		<module>woframework-archetype</module>
 	</modules>
+
 	<build>
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<groupId>org.apache.maven.archetype</groupId>
-					<artifactId>archetype-packaging</artifactId>
-					<version>2.0-alpha-4</version>
-				</plugin>
-				<plugin>
-					<artifactId>maven-archetype-plugin</artifactId>
-					<version>2.0-alpha-4</version>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>build-helper-maven-plugin</artifactId>
-					<version>1.2</version>
-				</plugin>
-				<plugin>
-				<artifactId>maven-plugin-plugin</artifactId>
-				<version>2.4.3</version>
+					<artifactId>maven-plugin-plugin</artifactId>
+					<version>2.4.3</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -148,7 +131,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<scm>
 		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2</connection>
 		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2</developerConnection>
