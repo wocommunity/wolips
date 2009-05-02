@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype>
+	<id>woframework-archetype</id>
+	<resources>
+		<resource>src/main/resources/Properties</resource>
+		<resource>src/main/components/</resource>
+		<resource>src/main/java/</resource>
+		<resource>src/main/webserver-resources/</resource>
+		<resource>src/test/java/</resource>
+		<resource>src/test/resources/</resource>
+		<resource>.project</resource>
+		<resource>.classpath</resource>
+		<resource>build.properties</resource>
+		<resource>woproject/classes.exclude.patternset</resource>
+		<resource>woproject/classes.include.patternset</resource>
+		<resource>woproject/resources.exclude.patternset</resource>
+		<resource>woproject/resources.include.patternset</resource>
+		<resource>woproject/wsresources.exclude.patternset</resource>
+		<resource>woproject/wsresources.include.patternset</resource>
+	</resources>
+</archetype>

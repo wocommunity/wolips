@@ -1,0 +1,4 @@
+**/*.eomodeld~/
+**/*.woa/**
+**/*.framework/**
+**/Info.plist

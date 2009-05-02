@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+	"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+   <head>
+        <meta name="generator" content="WOLips maven2 Plug-in">
+		<title>Direct to Web</title>
+   </head>
+   <body bgcolor="ffffff">
+      <h1 align="center">Welcome to Direct to Web!</h1>
+      <webobject name="LoginForm">
+         <center>
+            <table border="2" cellpadding="4" cellspacing="2" bgcolor="#B0B0B0">
+               <tr>
+                  <td>
+                     <table border="0" cellpadding="2" cellspacing="0" bgcolor="#B0B0B0">
+                        <tr>
+                           <th align="right"> Username: </th>
+                           <td>
+                              <webobject name="UsernameField"></webobject>
+                           </td>
+                        </tr>
+                        <tr>
+                           <th align="right"> Password: </th>
+                           <td>
+                              <webobject name="PasswordField"></webobject>
+                           </td>
+                        </tr>
+                        <webobject name="AssistantConditional">
+                        <tr>
+                           <th align="center" colspan="2"> Enable Assistant:
+                              <webobject name="LACheckbox"></webobject>
+                           </th>
+                        </tr>
+                        </webobject>
+                        <tr>
+                           <td colspan="2" align="center"><webobject name="LoginButton"></webobject>
+                           </td>
+                        </tr>
+                     </table>
+                  </td>
+               </tr>
+            </table>
+            <p></p>
+            <webobject name="DirectToWebPlaque"></webobject>
+         </center>
+      </webobject>
+   </body>
+</html>

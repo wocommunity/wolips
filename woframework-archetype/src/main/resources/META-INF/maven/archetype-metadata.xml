@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor name="woframework-archetype">
+	<requiredProperties>
+		<requiredProperty key="WebObjectsVersion">
+			<defaultValue>5.4.3</defaultValue>
+		</requiredProperty>
+		<requiredProperty key="WonderSupport">
+			<defaultValue>no</defaultValue>
+		</requiredProperty>
+		<requiredProperty key="WonderVersion">
+			<defaultValue>5.0.0-SNAPSHOT</defaultValue>
+		</requiredProperty>
+	</requiredProperties>
+	<fileSets>
+		<fileSet filtered="true" packaged="true" encoding="UTF-8">
+			<directory>src/main/java</directory>
+			<includes>
+				<include>**/*.java</include>
+			</includes>
+		</fileSet>
+		<fileSet filtered="true" encoding="UTF-8">
+			<directory>src/main/components</directory>
+			<includes>
+				<include>**/*.html</include>
+			</includes>
+		</fileSet>
+		<fileSet encoding="UTF-8">
+			<directory>src/main/components</directory>
+			<includes>
+				<include>**/*.woo</include>
+				<include>**/*.wod</include>
+				<include>**/*.api</include>
+			</includes>
+		</fileSet>
+		<fileSet filtered="true" encoding="UTF-8">
+			<directory>src/main/resources</directory>
+			<includes>
+				<include>**/Properties</include>
+			</includes>
+		</fileSet>
+		<fileSet encoding="UTF-8">
+			<directory>woproject</directory>
+			<includes>
+				<include>**/*.patternset</include>
+				<include>**/*.wosystemroot</include>
+				<include>**/*.wolocalroot</include>
+				<include>**/*.home</include>
+			</includes>
+		</fileSet>
+		<fileSet encoding="UTF-8">
+			<directory>src/main/webserver-resources</directory>
+			<includes>
+				<include>**/*</include>
+			</includes>
+		</fileSet>
+		<fileSet encoding="UTF-8">
+			<directory>src/test/java</directory>
+			<includes>
+				<include>**/*</include>
+			</includes>
+		</fileSet>
+		<fileSet encoding="UTF-8">
+			<directory>src/test/resources</directory>
+			<includes>
+				<include>**/*</include>
+			</includes>
+		</fileSet>
+		<fileSet filtered="true" encoding="UTF-8">
+			<directory></directory>
+			<includes>
+				<include>.classpath</include>
+				<include>.project</include>
+				<include>build.properties</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+</archetype-descriptor>
