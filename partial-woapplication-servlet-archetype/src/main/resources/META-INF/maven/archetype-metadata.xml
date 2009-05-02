@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor name="partial-woapplication-servlet-archetype" partial="true">
+	<requiredProperties>
+		<requiredProperty key="WonderSupport">
+			<defaultValue>false</defaultValue>
+		</requiredProperty>
+	</requiredProperties>
+	<fileSets>
+		<fileSet filtered="true" encoding="UTF-8">
+			<directory>src/main/webapp</directory>
+			<includes>
+				<include>**/*.jsp</include>
+				<include>**/*.xml</include>
+				<include>**/LICENSE</include>
+			</includes>
+		</fileSet>
+		<fileSet filtered="true" encoding="UTF-8">
+			<directory>src/main/resources</directory>
+			<includes>
+				<include>**/*.plist</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+</archetype-descriptor>

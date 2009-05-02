@@ -17,6 +17,7 @@
 		<module>erxapplication-archetype</module>
 		<module>erxapplication-d2w-archetype</module>
 		<module>erxapplication-servlet-archetype</module>
+		<module>partial-woapplication-servlet-archetype</module>
 		<module>woapplication-archetype</module>
 		<module>woapplication-d2jc-webstart-archetype</module>
 		<module>woapplication-servlet-archetype</module>

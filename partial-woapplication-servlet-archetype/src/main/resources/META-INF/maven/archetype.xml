@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype>
+	<id>partial-woapplication-servlet-archetype</id>
+	<resources>
+		<resource>src/main/resources/Info.plist</resource>
+		<resource>src/main/webapp/index.jsp</resource>
+		<resource>src/main/webapp/WEB-INF/LICENSE</resource>
+		<resource>src/main/webapp/WEB-INF/web.xml</resource>
+	</resources>
+</archetype>
