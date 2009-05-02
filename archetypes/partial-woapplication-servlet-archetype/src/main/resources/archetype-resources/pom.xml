@@ -1,0 +1,37 @@
+#set($dollar = '$')
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>${groupId}</groupId>
+	<artifactId>${artifactId}</artifactId>
+	<packaging>war</packaging>
+	<version>${version}</version>
+	<name>${artifactId} WebObjects Application</name>
+
+	<build>
+		<finalName>${dollar}{project.artifactId}</finalName>
+		<resources>
+			<resource>
+				<targetPath>Resources</targetPath>
+				<directory>${dollar}{basedir}/src/main/resources</directory>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<archiveClasses>true</archiveClasses>
+					<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>${dollar}{webobjects.groupId}</groupId>
+			<artifactId>JavaWOJSPServlet</artifactId>
+			<version>${dollar}{webobjects.version}</version>
+		</dependency>
+	</dependencies>
+</project>

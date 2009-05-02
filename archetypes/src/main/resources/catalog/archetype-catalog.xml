@@ -21,6 +21,12 @@
 		</archetype>
 		<archetype>
 			<groupId>org.objectstyle.woproject.maven2</groupId>
+			<artifactId>partial-woapplication-servlet-archetype</artifactId>
+			<version>${project.version}</version>
+			<description>Partial WebObjects Servlet Application Archetype</description>
+		</archetype>
+		<archetype>
+			<groupId>org.objectstyle.woproject.maven2</groupId>
 			<artifactId>woapplication-archetype</artifactId>
 			<version>${project.version}</version>
 			<description>WebObjects Application Archetype</description>
