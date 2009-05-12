@@ -1,5 +1,6 @@
 package org.objectstyle.wolips.eomodeler.core.sql;
 
+import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,7 +32,14 @@ public class EOFSQLUtils {
 				if (key != null && value != null) {
 					key = toWOCollections(key);
 					value = toWOCollections(value);
-					nsDict.setObjectForKey(value, key);
+					// nsDict.setObjectForKey(value, key);
+					try {
+						Method setObjectForKeyMethod = nsDict.getClass().getMethod("setObjectForKey", Object.class, Object.class);
+						setObjectForKeyMethod.invoke(nsDict, value, key);
+					}
+					catch (Exception e) {
+						throw new RuntimeException("Failed to call setObjectForKey.", e);
+					}
 				}
 			}
 			result = nsDict;
