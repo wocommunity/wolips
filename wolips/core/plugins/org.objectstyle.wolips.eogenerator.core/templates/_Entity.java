@@ -288,7 +288,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   public static NSArray#if ($fetchSpecification.fetchEnterpriseObjects)<${entity.className}>#else<NSDictionary>#end fetch${fetchSpecification.capitalizedName}(EOEditingContext editingContext, NSDictionary<String, Object> bindings) {
     EOFetchSpecification fetchSpec = EOFetchSpecification.fetchSpecificationNamed("${fetchSpecification.name}", "${entity.name}");
     fetchSpec = fetchSpec.fetchSpecificationWithQualifierBindings(bindings);
-    return editingContext.objectsWithFetchSpecification(fetchSpec);
+    return (NSArray#if ($fetchSpecification.fetchEnterpriseObjects)<${entity.className}>#else<NSDictionary>#end)editingContext.objectsWithFetchSpecification(fetchSpec);
   }
   
 #end
@@ -303,7 +303,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #end
 	fetchSpec = fetchSpec.fetchSpecificationWithQualifierBindings(bindings);
 #end
-    return editingContext.objectsWithFetchSpecification(fetchSpec);
+    return (NSArray#if ($fetchSpecification.fetchEnterpriseObjects)<${entity.className}>#else<NSDictionary>#end)editingContext.objectsWithFetchSpecification(fetchSpec);
   }
   
 #end
