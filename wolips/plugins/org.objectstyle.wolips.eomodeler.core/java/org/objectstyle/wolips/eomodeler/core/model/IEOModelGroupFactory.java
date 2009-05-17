@@ -32,10 +32,11 @@ public interface IEOModelGroupFactory {
 	 *            the set of failures during load
 	 * @param skipOnDuplicates
 	 *            whether or not to skip duplicate models
+	 * @return true if this model group factory believes it has found everything
 	 * @throws EOModelException
 	 *             if there is a problem loading models
 	 */
-	public void loadModelGroup(Object modelGroupResource, EOModelGroup modelGroup, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException;
+	public boolean loadModelGroup(Object modelGroupResource, EOModelGroup modelGroup, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException;
 
 	public class Utility {
 		public static EOModelGroup loadModelGroup(Object modelGroupResource, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException {
@@ -54,7 +55,12 @@ public interface IEOModelGroupFactory {
 			modelGroup.setEditingModelURL(editingModelURL);
 			List<IEOModelGroupFactory> modelGroupFactories = IEOModelGroupFactory.Utility.modelGroupFactories();
 			for (IEOModelGroupFactory modelGroupFactory : modelGroupFactories) {
-				modelGroupFactory.loadModelGroup(modelGroupResource, modelGroup, failures, skipOnDuplicates, progressMonitor);
+				boolean modelsLoaded = modelGroupFactory.loadModelGroup(modelGroupResource, modelGroup, failures, skipOnDuplicates, progressMonitor);
+				// MS: This COOOouuullldd cause a problem, but only if you're loading models in MULTIPLE ways, which seems unlikely to me ... This
+				// saves a lot of time if you have IDEA and Eclipse project files. We can just load models using the first one we find.
+				if (modelsLoaded) {
+					break;
+				}
 			}
 			progressMonitor.setTaskName("Resolving model dependencies ...");
 			modelGroup.resolve(failures);

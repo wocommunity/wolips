@@ -85,7 +85,9 @@ import org.objectstyle.wolips.eomodeler.core.model.IEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.utils.EclipseFileUtils;
 
 public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
-	public void loadModelGroup(Object modelGroupResource, EOModelGroup modelGroup, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException {
+	public boolean loadModelGroup(Object modelGroupResource, EOModelGroup modelGroup, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException {
+		int previousModelCount = modelGroup.getModels().size();
+		
 		try {
 			IResource modelGroupEclipseResource = getEclipseResourceForModelResource(modelGroupResource);
 			if (modelGroupEclipseResource != null) {
@@ -128,6 +130,9 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 		} catch (Throwable t) {
 			throw new EOModelException("Failed to load model group.", t);
 		}
+		
+		boolean allModelsLoaded = modelGroup.getModels().size() - previousModelCount > 1;
+		return allModelsLoaded;
 	}
 
 	protected IResource getEclipseResourceForModelResource(Object modelResource) {
