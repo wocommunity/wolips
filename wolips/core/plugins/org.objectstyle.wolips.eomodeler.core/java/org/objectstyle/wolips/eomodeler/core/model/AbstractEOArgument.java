@@ -96,8 +96,12 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 	private String myValueType;
 
 	private String _className;
-	
+
+	protected boolean _inferredClassName;
+
 	private String myValueClassName;
+	
+	protected boolean _inferredValueClassName;
 
 	private String myValueFactoryMethodName;
 
@@ -410,6 +414,7 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 	public void setClassName(String className) {
 		String oldClassName = getClassName();
 		_className = className;
+		_inferredClassName = false;
 		myDataType = null;
 		firePropertyChange(AbstractEOArgument.CLASS_NAME, oldClassName, getClassName());
 //		if (_updateDataType) {
@@ -429,6 +434,7 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		EODataType oldDataType = getDataType();
 		String oldValueClassName = getValueClassName();
 		myValueClassName = _valueClassName;
+		_inferredValueClassName = false;
 		myDataType = null;
 		firePropertyChange(AbstractEOArgument.VALUE_CLASS_NAME, oldValueClassName, getValueClassName());
 		setClassName(getJavaClassName(false));
@@ -518,9 +524,11 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		_className = _argumentMap.getString("className", true);
 		if (myValueClassName == null) {
 			myValueClassName = _convertJavaClassNameToValueClassName(_className);
+			_inferredValueClassName = true;
 		}
 		if (_className == null) {
 			_className = getJavaClassName(false);
+			_inferredClassName = true;
 		}
 		myValueFactoryMethodName = _argumentMap.getString("valueFactoryMethodName", true);
 		myFactoryMethodArgumentType = EOFactoryMethodArgumentType.getFactoryMethodArgumentTypeByID(_argumentMap.getString("factoryMethodArgumentType", true));

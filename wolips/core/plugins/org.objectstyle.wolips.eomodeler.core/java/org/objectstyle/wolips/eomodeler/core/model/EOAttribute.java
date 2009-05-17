@@ -989,19 +989,25 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		// you've ever managed to get old crufty overridden className and valueClassNames on prototyped 
 		// attributes, which can lead to disaster if you ever change your prototype
 		if (super.getClassName() != null && getPrototype() != null && _nullIfPrototyped(AbstractEOArgument.CLASS_NAME, super.getClassName()) == null) {
-			_failures.add(new EOModelVerificationFailure(getEntity().getModel(), this, "Removed redundant 'className' attribute.", true));
+			if (!_inferredClassName) {
+				_failures.add(new EOModelVerificationFailure(getEntity().getModel(), this, "Removed redundant 'className' attribute that was defined in the prototype '" + getPrototype().getName() + "'.", true));
+			}
 			setClassName(getClassName());
 			setValueClassName(getPrototype().getValueClassName(), false);
 			getEntity()._attributeChanged(this, AbstractEOArgument.CLASS_NAME, null, null);
 		}
 		if (super.getValueClassName() != null && getPrototype() != null && _nullIfPrototyped(AbstractEOArgument.VALUE_CLASS_NAME, super.getValueClassName()) == null) {
-			_failures.add(new EOModelVerificationFailure(getEntity().getModel(), this, "Removed redundant 'valueClassName' attribute.", true));
+			if (!_inferredValueClassName) {
+				_failures.add(new EOModelVerificationFailure(getEntity().getModel(), this, "Removed redundant 'valueClassName' attribute that was defined in the prototype '" + getPrototype().getName() + "'.", true));
+			}
 			setValueClassName(getPrototype().getValueClassName(), false);
 			getEntity()._attributeChanged(this, AbstractEOArgument.VALUE_CLASS_NAME, null, null);
 		}
 		// MS: Yes.  I know.  It's a total hack fix for now ... I need to have some better support for type name aliases, but this is just a really common one
 		else if (("NSTimestamp".equals(super.getValueClassName()) || "com.webobjects.foundation.NSTimestamp".equals(super.getValueClassName())) && getPrototype() != null && _nullIfPrototyped(AbstractEOArgument.VALUE_CLASS_NAME, "NSCalendarDate") == null) {
-			_failures.add(new EOModelVerificationFailure(getEntity().getModel(), this, "Removed redundant 'valueClassName' attribute.", true));
+			if (!_inferredValueClassName) {
+				_failures.add(new EOModelVerificationFailure(getEntity().getModel(), this, "Removed redundant 'valueClassName' attribute that was defined in the prototype '" + getPrototype().getName() + "'.", true));
+			}
 			setValueClassName(getPrototype().getValueClassName(), false);
 			getEntity()._attributeChanged(this, AbstractEOArgument.VALUE_CLASS_NAME, null, null);
 		}
