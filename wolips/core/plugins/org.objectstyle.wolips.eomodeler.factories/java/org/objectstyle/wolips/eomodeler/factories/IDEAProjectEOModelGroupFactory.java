@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +32,8 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 	@Override
 	public List<ManifestSearchFolder> getSearchFolders(File selectedModelFolder) throws IOException {
 		//System.out.println("IDEAProjectEOModelGroupFactory.getSearchFolders: Looking for IDEA projects ...");
-		List<ManifestSearchFolder> searchFolders = null;
-		List<File> ideaProjectFiles = new LinkedList<File>();
+		Set<ManifestSearchFolder> searchFolders = null;
+		Set<File> ideaProjectFiles = new LinkedHashSet<File>();
 		try {
 			IDEAProjectEOModelGroupFactory.findIdeaProjectFilesInFolder(selectedModelFolder, ideaProjectFiles);
 		} catch (PropertyListParserException e) {
@@ -40,7 +41,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 			throw new IOException("Failed to parse '.EntityModeler.plist'. " + StringUtils.getErrorMessage(e));
 		}
 		if (!ideaProjectFiles.isEmpty()) {
-			searchFolders = new LinkedList<ManifestSearchFolder>();
+			searchFolders = new LinkedHashSet<ManifestSearchFolder>();
 			for (File ideaProjectFile : ideaProjectFiles) {
 				//System.out.println("IDEAProjectEOModelGroupFactory.getSearchFolders: Project = " + ideaProjectFile);
 				Map<String, File> ideaLibraries = new HashMap<String, File>();
@@ -85,10 +86,10 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 			}
 		}
 		//System.out.println("IDEAProjectEOModelGroupFactory.getSearchFolders: Search folders = " + searchFolders);
-		return searchFolders;
+		return new LinkedList<ManifestSearchFolder>(searchFolders);
 	}
 
-	protected void processIdeaModuleFile(File ideaModuleFile, List<ManifestSearchFolder> searchFolders, Map<String, File> ideaLibraries, Set<File> visitedModulePaths) throws IOException, XPathExpressionException, SAXException, ParserConfigurationException {
+	protected void processIdeaModuleFile(File ideaModuleFile, Set<ManifestSearchFolder> searchFolders, Map<String, File> ideaLibraries, Set<File> visitedModulePaths) throws IOException, XPathExpressionException, SAXException, ParserConfigurationException {
 		if (!ideaModuleFile.exists()) {
 			return;
 		} else if (visitedModulePaths.contains(ideaModuleFile)) {
@@ -107,8 +108,15 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 			contentPath = contentPath.replaceAll("^file://", "");
 			contentPath = contentPath.replaceAll("\\$MODULE_DIR\\$", ideaProjectPath);
 			File contentFolder = new File(contentPath).getCanonicalFile();
-			//System.out.println("IDEAProjectEOModelGroupFactory.processIdeaModuleFile:   content folder = " + contentFolder);
-			searchFolders.add(new ManifestSearchFolder(contentFolder));
+			// System.out.println("IDEAProjectEOModelGroupFactory.processIdeaModuleFile:   content folder = " + contentFolder);
+			File resourcesFolder = new File(contentFolder, "Resources");
+			if (resourcesFolder.exists()) {
+				searchFolders.add(new ManifestSearchFolder(resourcesFolder));
+			}
+			else {
+				// ... just only support project/Resources
+				// searchFolders.add(new ManifestSearchFolder(contentFolder));
+			}
 		}
 
 		XPathExpression ideaModulesExpression = XPathFactory.newInstance().newXPath().compile("//module/component/orderEntry");
@@ -124,7 +132,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 				String ideaLibraryName = ideaModuleElement.getAttribute("name");
 				File ideaLibraryFolder = ideaLibraries.get(ideaLibraryName);
 				if (ideaLibraryFolder != null) {
-					//System.out.println("IDEAProjectEOModelGroupFactory.processIdeaModuleFile:   library folder = " + ideaLibraryFolder);
+					// System.out.println("IDEAProjectEOModelGroupFactory.processIdeaModuleFile:   library folder = " + ideaLibraryFolder);
 					searchFolders.add(new ManifestSearchFolder(ideaLibraryFolder));
 				}
 			}
@@ -132,7 +140,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 	}
 
 	@SuppressWarnings("unchecked")
-	public static void findIdeaProjectFilesInFolder(File folder, List<File> ideaProjectFiles) throws IOException, PropertyListParserException {
+	public static void findIdeaProjectFilesInFolder(File folder, Set<File> ideaProjectFiles) throws IOException, PropertyListParserException {
 		if (folder != null) {
 			boolean foundProjectFiles = false;
 			if (folder.isDirectory()) {

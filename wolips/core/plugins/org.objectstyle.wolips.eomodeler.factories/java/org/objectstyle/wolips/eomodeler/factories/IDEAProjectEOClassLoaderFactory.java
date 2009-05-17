@@ -3,8 +3,7 @@ package org.objectstyle.wolips.eomodeler.factories;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -29,7 +28,7 @@ public class IDEAProjectEOClassLoaderFactory extends AbstractEOClassLoader {
 
 	@Override
 	protected void fillInModelClasspath(EOModel model, Set<URL> classpathUrls) throws Exception {
-		List<File> ideaProjectFiles = new LinkedList<File>();
+		Set<File> ideaProjectFiles = new LinkedHashSet<File>();
 		try {
 			File modelFolder = URLUtils.cheatAndTurnIntoFile(model.getModelURL()).getParentFile();
 			IDEAProjectEOModelGroupFactory.findIdeaProjectFilesInFolder(modelFolder, ideaProjectFiles);
