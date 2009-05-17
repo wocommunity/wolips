@@ -56,8 +56,10 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.core.resources.IFile;
@@ -620,8 +622,27 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			if (input != null && myModel != null) {
 				Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 
+				List<EOModel> dirtyModels = new LinkedList<EOModel>();
 				for (EOModel model : myModel.getModelGroup().getModels()) {
 					if (model.isDirty()) {
+						dirtyModels.add(model);
+					}
+				}
+				
+				boolean saveAllModels = true;
+				if (dirtyModels.size() > 1 || !dirtyModels.contains(myModel)) {
+					Set<String> modelNames = new TreeSet<String>();
+					for (EOModel model : dirtyModels) {
+						if (model != myModel) {
+							modelNames.add(model.getName());
+						}
+					}
+					saveAllModels = MessageDialog.openQuestion(getSite().getShell(), "Additional Models Modified", "You modified the following additional models in this model group: " + modelNames + ". Would you like to save them, also?");
+				}
+				
+
+				for (EOModel model : dirtyModels) {
+					if (model == myModel || saveAllModels) {
 						monitor.beginTask("Checking " + model.getName() + " ...", IProgressMonitor.UNKNOWN);
 						try {
 							model.verify(failures);
@@ -635,9 +656,9 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				}
 
 				handleModelErrors(failures, false);
-
-				for (EOModel model : myModel.getModelGroup().getModels()) {
-					if (model.isDirty() && model.canSave()) {
+				
+				for (EOModel model : dirtyModels) {
+					if (model.canSave() && (model == myModel || saveAllModels)) {
 						monitor.beginTask("Saving " + model.getName() + " ...", IProgressMonitor.UNKNOWN);
 						try {
 							model.save();
