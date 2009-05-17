@@ -12,7 +12,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 
 public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGroupFactory {
-	public void loadModelGroup(Object modelGroupResource, EOModelGroup modelGroup, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException {
+	public boolean loadModelGroup(Object modelGroupResource, EOModelGroup modelGroup, Set<EOModelVerificationFailure> failures, boolean skipOnDuplicates, IProgressMonitor progressMonitor) throws EOModelException {
+		int previousModelCount = modelGroup.getModels().size();
+		
 		try {
 			File modelGroupFile = null;
 			if (modelGroupResource == null) {
@@ -44,6 +46,9 @@ public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGro
 		} catch (IOException e) {
 			throw new EOModelException("Failed to load model groups.", e);
 		}
+		
+		boolean allModelsLoaded = modelGroup.getModels().size() - previousModelCount > 1;
+		return allModelsLoaded;
 	}
 
 	public abstract List<ManifestSearchFolder> getSearchFolders(File selectedModelFolder) throws IOException;
