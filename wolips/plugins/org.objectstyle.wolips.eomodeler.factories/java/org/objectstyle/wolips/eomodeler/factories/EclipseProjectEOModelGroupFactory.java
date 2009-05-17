@@ -161,41 +161,43 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 
 		File workspaceFolder = null;
 		File eclipseClasspathFile = new File(eclipseProjectFolder, ".classpath");
-		XPathExpression eclipseClasspathEntryExpression = XPathFactory.newInstance().newXPath().compile("//classpath/classpathentry");
-		Document eclipseClasspathDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(eclipseClasspathFile);
-		NodeList eclipseClasspathEntryNodes = (NodeList) eclipseClasspathEntryExpression.evaluate(eclipseClasspathDocument, XPathConstants.NODESET);
-		for (int eclipseClasspathEntryNum = 0; eclipseClasspathEntryNum < eclipseClasspathEntryNodes.getLength(); eclipseClasspathEntryNum++) {
-			Element eclipseClasspathEntryElement = (Element) eclipseClasspathEntryNodes.item(eclipseClasspathEntryNum);
-			String kind = eclipseClasspathEntryElement.getAttribute("kind");
-			String path = eclipseClasspathEntryElement.getAttribute("path");
-			if ("src".equals(kind) && path != null && path.startsWith("/")) {
-				if (workspaceFolder == null) {
-					workspaceFolder = getWorkspaceFolder(eclipseProjectFolder);
-				}
-				File referencedProjectFolder = getProjectFolder(workspaceFolder, path).getCanonicalFile();
-					//new File(eclipseProjectFolder.getParentFile(), path).getCanonicalFile();
-				processEclipseProject(referencedProjectFolder, searchFolders, visitedProjects, env);
-			} else if ("con".equals(kind) && path != null && path.startsWith("org.objectstyle.wolips.ContainerInitializer/")) {
-				String[] strs = path.split("/");
-				List<String> frameworkNames = new LinkedList<String>();
-				for (int i = 3; i < strs.length; i += 11) {
-					frameworkNames.add(strs[i]);
-				}
-				loadFrameworks(frameworkNames.toArray(new String[frameworkNames.size()]), searchFolders, visitedProjects, env);
-			} else if ("con".equals(kind) && path != null && path.startsWith("org.objectstyle.wolips.WO_CLASSPATH/")) {
-				String[] frameworkNames = path.split("/");
-				loadFrameworks(frameworkNames, searchFolders, visitedProjects, env);
-			} else if ("con".equals(kind) && path != null && path.startsWith("WOFramework/")) {
-				String frameworkName = path.substring(path.indexOf("/") + 1);
-				if (workspaceFolder == null) {
-					workspaceFolder = getWorkspaceFolder(eclipseProjectFolder);
-				}
-				File referencedProjectFolder = getProjectFolder(workspaceFolder, frameworkName).getCanonicalFile();
-				if (referencedProjectFolder.exists()) {
+		if (eclipseClasspathFile.exists()) {
+			XPathExpression eclipseClasspathEntryExpression = XPathFactory.newInstance().newXPath().compile("//classpath/classpathentry");
+			Document eclipseClasspathDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(eclipseClasspathFile);
+			NodeList eclipseClasspathEntryNodes = (NodeList) eclipseClasspathEntryExpression.evaluate(eclipseClasspathDocument, XPathConstants.NODESET);
+			for (int eclipseClasspathEntryNum = 0; eclipseClasspathEntryNum < eclipseClasspathEntryNodes.getLength(); eclipseClasspathEntryNum++) {
+				Element eclipseClasspathEntryElement = (Element) eclipseClasspathEntryNodes.item(eclipseClasspathEntryNum);
+				String kind = eclipseClasspathEntryElement.getAttribute("kind");
+				String path = eclipseClasspathEntryElement.getAttribute("path");
+				if ("src".equals(kind) && path != null && path.startsWith("/")) {
+					if (workspaceFolder == null) {
+						workspaceFolder = getWorkspaceFolder(eclipseProjectFolder);
+					}
+					File referencedProjectFolder = getProjectFolder(workspaceFolder, path).getCanonicalFile();
+						//new File(eclipseProjectFolder.getParentFile(), path).getCanonicalFile();
 					processEclipseProject(referencedProjectFolder, searchFolders, visitedProjects, env);
-				}
-				else {
-					loadFrameworks(new String[] { frameworkName }, searchFolders, visitedProjects, env);
+				} else if ("con".equals(kind) && path != null && path.startsWith("org.objectstyle.wolips.ContainerInitializer/")) {
+					String[] strs = path.split("/");
+					List<String> frameworkNames = new LinkedList<String>();
+					for (int i = 3; i < strs.length; i += 11) {
+						frameworkNames.add(strs[i]);
+					}
+					loadFrameworks(frameworkNames.toArray(new String[frameworkNames.size()]), searchFolders, visitedProjects, env);
+				} else if ("con".equals(kind) && path != null && path.startsWith("org.objectstyle.wolips.WO_CLASSPATH/")) {
+					String[] frameworkNames = path.split("/");
+					loadFrameworks(frameworkNames, searchFolders, visitedProjects, env);
+				} else if ("con".equals(kind) && path != null && path.startsWith("WOFramework/")) {
+					String frameworkName = path.substring(path.indexOf("/") + 1);
+					if (workspaceFolder == null) {
+						workspaceFolder = getWorkspaceFolder(eclipseProjectFolder);
+					}
+					File referencedProjectFolder = getProjectFolder(workspaceFolder, frameworkName).getCanonicalFile();
+					if (referencedProjectFolder.exists()) {
+						processEclipseProject(referencedProjectFolder, searchFolders, visitedProjects, env);
+					}
+					else {
+						loadFrameworks(new String[] { frameworkName }, searchFolders, visitedProjects, env);
+					}
 				}
 			}
 		}
@@ -226,7 +228,10 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 				// System.out.println(
 				// "EclipseProjectEOModelGroupFactory.processEclipseProject: framework = "
 				// + matchingFrameworkFolder);
-				searchFolders.add(new ManifestSearchFolder(new File(matchingFrameworkFolder, "Resources")));
+				ManifestSearchFolder searchFolder = new ManifestSearchFolder(new File(matchingFrameworkFolder, "Resources"));
+				if (!searchFolders.contains(searchFolder)) {
+					searchFolders.add(searchFolder);
+				}	
 				visitedProjects.add(matchingFrameworkFolder);
 			}
 		}
