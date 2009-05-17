@@ -454,7 +454,17 @@ public class EOModelGroup extends EOModelObject<Object> {
 		} else if (maxDepth != 0) {
 			for (URL childURL : URLUtils.getChildrenFolders(url)) {
 				if (URLUtils.isFolder(childURL)) {
-					loadModelsFromURL(childURL, maxDepth - 1, failures, skipOnDuplicates, progressMonitor);
+					boolean processFolder = true;
+					
+					// Skip over Resources/*.wo and Resources/Java ... just a performance optimization
+					String childPath = childURL.getPath();
+					if (childPath.endsWith("/Java/") || childPath.endsWith(".wo/")) {
+						processFolder = false;
+					}
+					
+					if (processFolder) {
+						loadModelsFromURL(childURL, maxDepth - 1, failures, skipOnDuplicates, progressMonitor);
+					}
 				}
 			}
 		}
