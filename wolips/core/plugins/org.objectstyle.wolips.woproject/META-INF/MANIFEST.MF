@@ -13,4 +13,5 @@ Export-Package: org.objectstyle.woenvironment.env,
  org.objectstyle.woenvironment.pbx,
  org.objectstyle.woenvironment.plist,
  org.objectstyle.woenvironment.util
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.4.0",
+ system.bundle
