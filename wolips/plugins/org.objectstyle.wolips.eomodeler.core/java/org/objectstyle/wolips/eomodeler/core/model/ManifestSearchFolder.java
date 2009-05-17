@@ -16,6 +16,14 @@ public class ManifestSearchFolder {
 		_depth = depth;
 	}
 
+	public int hashCode() {
+		return _folder.hashCode();
+	}
+
+	public boolean equals(Object obj) {
+		return obj instanceof ManifestSearchFolder && ((ManifestSearchFolder) obj)._folder.equals(_folder);
+	}
+
 	public File getFolder() {
 		return _folder;
 	}
@@ -27,7 +35,7 @@ public class ManifestSearchFolder {
 	public boolean isInfiniteDepth() {
 		return _depth == -1;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "[ManifestSearchFolder: " + _folder + "]";
