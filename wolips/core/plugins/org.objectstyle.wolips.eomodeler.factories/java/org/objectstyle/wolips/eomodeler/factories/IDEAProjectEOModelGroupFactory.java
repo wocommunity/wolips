@@ -86,7 +86,7 @@ public class IDEAProjectEOModelGroupFactory extends AbstractManifestEOModelGroup
 			}
 		}
 		//System.out.println("IDEAProjectEOModelGroupFactory.getSearchFolders: Search folders = " + searchFolders);
-		return new LinkedList<ManifestSearchFolder>(searchFolders);
+		return searchFolders == null ? null : new LinkedList<ManifestSearchFolder>(searchFolders);
 	}
 
 	protected void processIdeaModuleFile(File ideaModuleFile, Set<ManifestSearchFolder> searchFolders, Map<String, File> ideaLibraries, Set<File> visitedModulePaths) throws IOException, XPathExpressionException, SAXException, ParserConfigurationException {
