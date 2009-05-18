@@ -13,7 +13,7 @@ Require-Bundle: org.objectstyle.wolips,
  org.objectstyle.wolips.workbenchutilities,
  org.objectstyle.wolips.eomodeler.core,
  org.eclipse.ui.editors,
- org.objectstyle.wolips.bindings,
+ org.objectstyle.wolips.bindings;bundle-version="1.0.6",
  org.eclipse.ltk.core.refactoring,
  org.objectstyle.wolips.thirdparty.commonscollections;bundle-version="1.0.6",
  org.objectstyle.wolips.woproject;bundle-version="1.0.6"
@@ -63,3 +63,4 @@ Export-Package: com.steadystate.css,
  org.w3c.dom.css,
  org.w3c.dom.stylesheets,
  org.w3c.dom.views
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
