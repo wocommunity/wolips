@@ -525,12 +525,22 @@
       <page
             name="WOLips Deployment"
             class="org.objectstyle.wolips.ui.propertypages.WOLipsDeploymentPropertyPage"
-            id="org.objectstyle.wolips.ui.propertypages.WOLipsDeploymentPropertyPage"> 
+            id="org.objectstyle.wolips.ui.propertypages.WOLipsDeploymentPropertyPage">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.jdt.core.IJavaProject">
+            </instanceof>
+         </enabledWhen> 
       </page>
       <page
             name="WOLips Development"
             class="org.objectstyle.wolips.ui.propertypages.WOLipsDevelopmentPropertyPage"
-            id="org.objectstyle.wolips.ui.propertypages.WOLipsDevelopmentPropertyPage"> 
+            id="org.objectstyle.wolips.ui.propertypages.WOLipsDevelopmentPropertyPage">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.jdt.core.IJavaProject">
+            </instanceof>
+         </enabledWhen> 
       </page>
    </extension>
 
