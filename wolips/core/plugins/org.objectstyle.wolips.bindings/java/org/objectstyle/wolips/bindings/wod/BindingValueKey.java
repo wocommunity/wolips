@@ -1,7 +1,6 @@
 package org.objectstyle.wolips.bindings.wod;
 
 import org.eclipse.jdt.core.IField;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
@@ -16,13 +15,14 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
 
   private IType _bindingDeclaringType;
 
-  private IJavaProject _javaProject;
-
   private IType _nextType;
 
-
   private TypeCache _cache;
+  
+  private BindingValueKey _parent;
 
+  protected IJavaProject _javaProject;
+  
   public BindingValueKey(String bindingName, IType bindingDeclaringType, IMember bindingMember, IJavaProject javaProject, TypeCache cache) {
     _bindingName = bindingName;
     _bindingMember = bindingMember;
@@ -121,48 +121,94 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
       return null;
     }
     String typeSignatureName = Signature.getSignatureSimpleName(Signature.getElementType(nextTypeName));
-    String typeSignature = null;
-    
-    boolean isField = false;
-    if (_bindingMember.getElementType() == IJavaElement.FIELD) {
-      isField = true;
-    }
-    
+
     if (parentBinding != null) {
-      if (isField) {
-        typeSignature = getMemberTypeName(parentBinding._bindingMember);
-      } else {
-        typeSignature = parentBinding._bindingDeclaringType.getSuperclassTypeSignature();
-      }
-    } else if (_bindingDeclaringType != null) {
-      typeSignature = _bindingDeclaringType.getSuperclassTypeSignature();
+      _parent = parentBinding;
+    } else {
+      _parent = this;
     }
+      
+    // Q: This is probably one of the most convoluted pieces of code I have written in wolips
+    //    Nothing to see here.. it appears to work, move along.
+    
+    // Resolve type name for binding
+    BindingValueKey binding = this;
     IType declaringType = getDeclaringType();
-    typeSignature = typeSignature == null ? "QObject;" : typeSignature;
-    
-    String[] typeParameters = declaringType.getTypeParameterSignatures();
-    String[] typeArguments = Signature.getTypeArguments(typeSignature);
-    
-    /* Resolve next type using generic type arguments */
-    for (int i = 0; i < typeParameters.length; i++) {
-      String param = typeParameters[i];
-      String currentParameterType = Signature.getTypeVariable(param);
-      if (typeSignatureName.equals(currentParameterType) &&
-          i < typeArguments.length) {
-        if (parentBinding != null) {
-          declaringType = parentBinding._bindingDeclaringType;
-        } else {
-          declaringType = _bindingDeclaringType;
+    while(isGenericType(nextTypeName, declaringType)) {
+      String lastTypeName = nextTypeName;
+      typeSignatureName = Signature.getSignatureSimpleName(Signature.getElementType(nextTypeName));
+
+      String[] declaringTypeParameters = declaringType.getTypeParameterSignatures();
+      String[] declaringTypeArgs = binding._parent._bindingDeclaringType.getTypeParameterSignatures();
+      String[] memberTypeArgs = Signature.getTypeArguments(getMemberTypeName(binding._parent._bindingMember));
+      String[] superTypeArgs = Signature.getTypeArguments(binding._parent._bindingDeclaringType.getSuperclassTypeSignature());
+
+      /* Resolve next type using generic type arguments
+       * 
+       * This iterates over the declaring type's parameter list to find the index of the type value,
+       * it then checks the declaring type for a matching argument, if none is found it defers to the 
+       * binding member (corresponding method or field) for type args, lastly it will check the 
+       * superclass type signature for a match. If no match is found it will fall through and fail to
+       * resolve the type.
+       */
+      
+      for (int i = 0; i < declaringTypeParameters.length; i++) {
+        String param = declaringTypeParameters[i];
+        String currentParameterType = Signature.getTypeVariable(param);
+        // If the typeSignature name is he same as the declaring type parameter we know what parameter index to look for
+        if (typeSignatureName.equals(currentParameterType)) {
+          // Try declared type arguments first
+          if (i < declaringTypeArgs.length) {
+            nextTypeName = Signature.createTypeSignature(Signature.getTypeVariable(declaringTypeArgs[i]), false);            
+            binding = binding._parent;
+            declaringType = binding._bindingDeclaringType;
+            break;
+          }
+          // Try binding type parameter on method or field next
+          if (i < memberTypeArgs.length) {
+            nextTypeName = memberTypeArgs[i];
+            declaringType = binding._parent.getDeclaringType();
+            break;
+          }
+          // Last chance is to check the type parameters of the superclass for a match
+          if (i < superTypeArgs.length) {
+            IType superType = _cache.getTypeForNameInType(binding._parent._bindingDeclaringType.getSuperclassTypeSignature(), declaringType); 
+            String[] superTypeParameters = superType.getTypeParameterSignatures();
+            if (typeSignatureName.equals(Signature.getTypeVariable(superTypeParameters[i]))) {
+              nextTypeName = superTypeArgs[i];
+              binding = binding._parent;
+              declaringType = binding._bindingDeclaringType;
+              break;
+            }
+          }
         }
-        nextTypeName = Signature.getElementType(typeArguments[i]);
+      }
+      if (nextTypeName == lastTypeName) {
+        // No match was found
+        //XXX: Should we replace with QObject; to encourage a validation failure ??
+
         break;
       }
     }
+            
     String nextTypeNameErasure = Signature.getTypeErasure(nextTypeName);
     //System.out.println("BindingValueKey.resolveNextType: " + nextTypeNameErasure + " / " + _bindingDeclaringType);
     return _cache.getTypeForNameInType(nextTypeNameErasure, declaringType);
   }
 
+  private static boolean isGenericType(String typeName, IType declaringType) throws JavaModelException {    
+    String[] typeParameters = declaringType.getTypeParameterSignatures();
+    String typeVariable = Signature.getSignatureSimpleName(typeName);
+    
+    for (int i = 0; i < typeParameters.length; i++) {
+      String currentParameterType = Signature.getTypeVariable(typeParameters[i]);
+      if (typeVariable.equals(currentParameterType))
+        return true;
+    }
+    
+    return false;
+  }
+  
   @Override
   public String toString() {
     return "[BindingKey: bindingName = " + _bindingName + "; bindingMember = " + _bindingMember + "]";
