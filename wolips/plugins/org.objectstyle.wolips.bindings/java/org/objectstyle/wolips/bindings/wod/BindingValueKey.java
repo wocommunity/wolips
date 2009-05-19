@@ -134,8 +134,9 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
     // Resolve type name for binding
     BindingValueKey binding = this;
     IType declaringType = getDeclaringType();
-    while(isGenericType(nextTypeName, declaringType)) {
-      String lastTypeName = nextTypeName;
+    String lastTypeName = null;
+    while(isGenericType(nextTypeName, declaringType) && lastTypeName != nextTypeName) {
+      lastTypeName = nextTypeName;
       typeSignatureName = Signature.getSignatureSimpleName(Signature.getElementType(nextTypeName));
 
       String[] declaringTypeParameters = declaringType.getTypeParameterSignatures();
@@ -182,12 +183,6 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
             }
           }
         }
-      }
-      if (nextTypeName == lastTypeName) {
-        // No match was found
-        //XXX: Should we replace with QObject; to encourage a validation failure ??
-
-        break;
       }
     }
             
