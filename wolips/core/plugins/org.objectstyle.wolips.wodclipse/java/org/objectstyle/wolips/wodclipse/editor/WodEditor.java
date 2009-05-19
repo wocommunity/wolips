@@ -150,20 +150,6 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 		super.createPartControl(parent);
 
 		getSourceViewer().getTextWidget().getParent().setBackground(parent.getBackground());
-		
-		// MS: Total hack, but it looks nicer with a gray hairline between the sash and the text editor
-	    getSourceViewer().getTextWidget().addPaintListener(new PaintListener() {
-	        public void paintControl(PaintEvent e) {
-	          GC gc = e.gc;
-	          
-	          Color separatorColor = new Color(gc.getDevice(), 205, 205, 205);
-	          gc.setForeground(separatorColor);
-	          gc.drawLine(0, 0, getSourceViewer().getTextWidget().getBounds().width, 0);
-	          separatorColor.dispose();
-	        }
-	      });
-
-
 	}
 
 	@Override
