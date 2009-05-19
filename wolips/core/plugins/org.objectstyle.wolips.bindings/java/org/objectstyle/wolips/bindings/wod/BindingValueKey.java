@@ -135,7 +135,8 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
     BindingValueKey binding = this;
     IType declaringType = getDeclaringType();
     String lastTypeName = null;
-    while(isGenericType(nextTypeName, declaringType) && lastTypeName != nextTypeName) {
+    while(isGenericType(nextTypeName, declaringType) && !nextTypeName.equals(lastTypeName)) {
+      //System.out.println("BindingValueKey.resolveNextType.while_isGenericType: " + nextTypeName + " / " + lastTypeName + " " + toString());
       lastTypeName = nextTypeName;
       typeSignatureName = Signature.getSignatureSimpleName(Signature.getElementType(nextTypeName));
 
