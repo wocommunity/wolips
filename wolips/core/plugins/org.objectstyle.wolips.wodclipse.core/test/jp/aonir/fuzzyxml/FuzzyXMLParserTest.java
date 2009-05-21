@@ -9,6 +9,11 @@ public class FuzzyXMLParserTest extends TestCase {
     assertEquals(childCount, children.length);
   }
 
+  public void assertChildElement(FuzzyXMLElement parentNode, int index, String childName) {
+    FuzzyXMLElement child = parentNode.getChildElement(index);
+    assertEquals(childName, child.getName());
+  }
+
   public void assertChildrenElements(FuzzyXMLElement parentNode, int childCount, String... childrenNames) {
     assertChildCount(parentNode, childCount);
     FuzzyXMLNode[] children = parentNode.getChildren();
@@ -206,6 +211,52 @@ public class FuzzyXMLParserTest extends TestCase {
     RenderContext renderContext = new RenderContext(true);
     String xml = docElement.toXMLString(renderContext);
     assertEquals("<document><div id=\"<webobject name=SomeWO/>\" class=\"<webobject name=AnotherWO/>\">this is a div</div></document>", xml);
+  }
+  
+  public void testNonHTMLTextOnly() {
+    FuzzyXMLParser parser = new FuzzyXMLParser(false, true);
+    FuzzyXMLDocument doc = parser.parse("This is a test");
+    FuzzyXMLElement docElement = doc.getDocumentElement();
+    assertChildCount(docElement, 1);
+    assertText(docElement, 0, "This is a test");
+  }
+  
+  public void testLeadingNonHTMLText() {
+    FuzzyXMLParser parser = new FuzzyXMLParser(false, true);
+    FuzzyXMLDocument doc = parser.parse("This is a test<br/>");
+    FuzzyXMLElement docElement = doc.getDocumentElement();
+    assertChildCount(docElement, 2);
+    assertText(docElement, 0, "This is a test");
+    assertChildElement(docElement, 1, "br");
+  }
+  
+  public void testComment() {
+    FuzzyXMLParser parser = new FuzzyXMLParser(false, true);
+    FuzzyXMLDocument doc = parser.parse("<html><!-- This is a comment. --></html>");
+    FuzzyXMLElement docElement = doc.getDocumentElement();
+    assertChildCount(docElement, 1);
+    {
+      FuzzyXMLElement divElement = docElement.getChildElement(0);
+      assertChildCount(divElement, 1);
+      FuzzyXMLComment comment = (FuzzyXMLComment) divElement.getChild(0);
+      assertEquals(" This is a comment. ", comment.getValue());
+    }
+  }
+  
+  public void testPreTag() {
+    FuzzyXMLParser parser = new FuzzyXMLParser(false, true);
+    FuzzyXMLDocument doc = parser.parse("<pre>This is inside\nof a pre-tag.<br/>Another.</pre>");
+    FuzzyXMLElement docElement = doc.getDocumentElement();
+    assertChildrenElements(docElement, 1, "pre");
+    {
+      FuzzyXMLElement preElement = docElement.getChildElement(0);
+      assertChildCount(preElement, 2);
+      assertText(preElement, 0, "This is inside\nof a pre-tag.");
+      assertText(preElement, 1, "Another.");
+    }
+    RenderContext renderContext = new RenderContext(true);
+    String xml = docElement.toXMLString(renderContext);
+    assertEquals("<document><pre>This is inside\nof a pre-tag.<br/>Another.</pre></document>", xml); // MS: How the heck is this possible?  Where did the <br/> go??! 
   }
 
   /*
