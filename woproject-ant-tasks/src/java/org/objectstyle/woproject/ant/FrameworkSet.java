@@ -302,7 +302,7 @@ public class FrameworkSet extends FileSet {
     }
 
     for (IFramework framework : frameworks) {
-      if (framework.getRoot().equals(getFrameworkRoot())) {
+      if (framework.getRoot() == null || framework.getRoot().equals(getFrameworkRoot())) {
         for (FrameworkLibrary frameworkLibrary : framework.getFrameworkLibraries()) {
           File jarFile = frameworkLibrary.getLibraryFile();
           File deployedJarFile = getDeployedFile(jarFile);
