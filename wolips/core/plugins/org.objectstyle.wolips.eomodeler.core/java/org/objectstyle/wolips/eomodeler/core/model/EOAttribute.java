@@ -400,7 +400,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 			}
 		}
 		super.setName((String) _nullIfPrototyped(AbstractEOArgument.NAME, newName), _fireEvents);
-		if (myEntity != null) {
+		if (myEntity != null && myEntity.getModel() != null) {
 			for (EOEntity childrenEntity : myEntity.getChildrenEntities()) {
 				EOAttribute childAttribute = childrenEntity.getAttributeNamed(oldName);
 				if (childAttribute != null) {

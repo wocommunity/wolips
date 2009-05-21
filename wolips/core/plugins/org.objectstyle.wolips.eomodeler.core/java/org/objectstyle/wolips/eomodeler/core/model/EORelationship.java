@@ -484,7 +484,7 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 			myEntity._checkForDuplicateRelationshipName(this, _name, null);
 		}
 		myName = _name;
-		if (myEntity != null) {
+		if (myEntity != null && myEntity.getModel() != null) {
 			EOModelGroup modelGroup = myEntity.getModel().getModelGroup();
 			for (EOEntity entity : modelGroup.getEntities()) {
 				for (EOAttribute attribute : entity.getAttributes()) {
