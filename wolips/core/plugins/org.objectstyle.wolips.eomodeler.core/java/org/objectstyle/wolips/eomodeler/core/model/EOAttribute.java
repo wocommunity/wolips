@@ -922,6 +922,10 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		} else {
 			_generateSource = generateSource.booleanValue();
 		}
+		Boolean commonClassProperty = entityModelerMap.getBoolean(EOAttribute.COMMON_CLASS_PROPERTY);
+		if (commonClassProperty != null) {
+			_commonClassProperty = commonClassProperty.booleanValue();
+		}
 	}
 
 	@Override
@@ -942,6 +946,12 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 			entityModelerMap.remove(EOAttribute.GENERATE_SOURCE);
 		} else {
 			entityModelerMap.setBoolean(EOAttribute.GENERATE_SOURCE, Boolean.FALSE, EOModelMap.YESNO);
+		}
+		if (_commonClassProperty != null && _commonClassProperty.booleanValue()) {
+			entityModelerMap.setBoolean(EOAttribute.COMMON_CLASS_PROPERTY, Boolean.TRUE, EOModelMap.YESNO);
+		}
+		else {
+			entityModelerMap.remove(EOAttribute.COMMON_CLASS_PROPERTY);
 		}
 
 		EOModelMap attributeMap = super.toMap();
