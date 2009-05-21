@@ -178,7 +178,7 @@ public class FuzzyXMLParser {
     while (matcher.find()) {
       int start = matcher.start() + initialOffset;
       int end = matcher.end() + initialOffset;
-      if (lastIndex == -1 && lastIndex < start && (start - end) > 0) {
+      if (lastIndex == -1 && start > 0) {
         handleText(0, start, true);
       }
       else if (lastIndex != (initialOffset - 1) && lastIndex < start) {
