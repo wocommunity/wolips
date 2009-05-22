@@ -57,6 +57,9 @@ public class FuzzyXMLProcessingInstructionImpl extends AbstractFuzzyXMLNode impl
 
   public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
     xmlBuffer.append("<?" + _name + " " + _data + "?>");
+    if (renderContext.isShowNewlines()) {
+      xmlBuffer.append("\n");
+    }
   }
 
 }

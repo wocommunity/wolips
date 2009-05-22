@@ -694,8 +694,8 @@ public class FuzzyXMLParser {
     }
     FuzzyXMLAttributeImpl attr = new FuzzyXMLAttributeImpl(element, namespace, name, attrInfo.value, attrInfo.rawValue, attrInfo.offset + offset, attrInfo.end - attrInfo.offset + 1, attrInfo.valueOffset);
     attr.setQuoteCharacter(attrInfo.quote);
-    if (attrInfo.value.indexOf('"') >= 0 || attrInfo.value.indexOf('\'') >= 0 || attrInfo.value.indexOf('<') >= 0
-        || attrInfo.value.indexOf('>') >= 0 || attrInfo.value.indexOf('&') >= 0) {
+    if (!_wo54 && (attrInfo.value.indexOf('"') >= 0 || attrInfo.value.indexOf('\'') >= 0 || attrInfo.value.indexOf('<') >= 0
+        || attrInfo.value.indexOf('>') >= 0 || attrInfo.value.indexOf('&') >= 0)) {
       attr.setEscape(false);
     }
     return attr;
