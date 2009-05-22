@@ -6,6 +6,8 @@ import jp.aonir.fuzzyxml.FuzzyXMLDocType;
 import jp.aonir.fuzzyxml.FuzzyXMLDocument;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
 import jp.aonir.fuzzyxml.FuzzyXMLNode;
+import jp.aonir.fuzzyxml.FuzzyXMLProcessingInstruction;
+import jp.aonir.fuzzyxml.internal.FuzzyXMLFormatComposite;
 import jp.aonir.fuzzyxml.internal.RenderContext;
 import jp.aonir.fuzzyxml.internal.WOHTMLRenderDelegate;
 
@@ -48,12 +50,14 @@ public class FormatRefactoring implements IRunnableWithProgress {
 
       StringBuffer htmlBuffer = new StringBuffer();
       FuzzyXMLDocType docType = htmlModel.getDocumentType();
-      if (docType != null) {
-        docType.toXMLString(renderContext, htmlBuffer);
-      }
       for (FuzzyXMLNode node : documentElement.getChildren()) {
+        if (docType != null) {
+          if (!(node instanceof FuzzyXMLProcessingInstruction || FuzzyXMLFormatComposite.isHidden(node))) {
+            docType.toXMLString(renderContext, htmlBuffer);
+            docType = null;
+          }
+        }
         node.toXMLString(renderContext, htmlBuffer);
-        //htmlBuffer.append("\n");
       }
       htmlDocument.set(htmlBuffer.toString().trim());
     }
