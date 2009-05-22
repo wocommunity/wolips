@@ -5,8 +5,8 @@ Bundle-SymbolicName: org.objectstyle.wolips.thirdparty.log4j;singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.thirdparty.log4j.Activator
 Bundle-Vendor: objectstyle.org
-Require-Bundle: org.eclipse.ui;bundle-version="3.4.2",
- org.eclipse.core.runtime;bundle-version="3.4.0"
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.thirdparty.log4j,
  org.apache.log4j.xml,
