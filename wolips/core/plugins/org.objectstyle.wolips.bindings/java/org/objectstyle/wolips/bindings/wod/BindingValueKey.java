@@ -149,9 +149,9 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
        * 
        * This iterates over the declaring type's parameter list to find the index of the type value,
        * it then checks the declaring type for a matching argument, if none is found it defers to the 
-       * binding member (corresponding method or field) for type args, lastly it will check the 
-       * superclass type signature for a match. If no match is found it will fall through and fail to
-       * resolve the type.
+       * superclass type signature for a match, lastly it will check the the binding member 
+       * (corresponding method or field) for type args.
+       * If no match is found it will fall through and fail to resolve the type.
        */
       
       for (int i = 0; i < declaringTypeParameters.length; i++) {
@@ -166,23 +166,31 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
             declaringType = binding._bindingDeclaringType;
             break;
           }
-          // Try binding type parameter on method or field next
+          // Next check the type parameters of the superclass for a match
+          if (superTypeArgs.length > 0) {
+            String superTypeName = Signature.getTypeErasure(binding._parent._bindingDeclaringType.getSuperclassName());
+            IType superType = _cache.getTypeForNameInType(Signature.createTypeSignature(superTypeName, false), binding._parent._bindingDeclaringType); 
+            String[] superTypeParameters = superType.getTypeParameterSignatures();
+            boolean found = false;
+            for (int j = 0; j < superTypeParameters.length; j++) {
+              if (typeSignatureName.equals(Signature.getTypeVariable(superTypeParameters[j]))) {
+                nextTypeName = superTypeArgs[j];
+                binding = binding._parent;
+                declaringType = binding._bindingDeclaringType;
+                found = true;
+                break;
+              }
+            }
+            if (found)
+              break;
+          }
+          // Last chance binding type parameter on method or field next
           if (i < memberTypeArgs.length) {
             nextTypeName = memberTypeArgs[i];
             declaringType = binding._parent.getDeclaringType();
             break;
           }
-          // Last chance is to check the type parameters of the superclass for a match
-          if (i < superTypeArgs.length) {
-            IType superType = _cache.getTypeForNameInType(binding._parent._bindingDeclaringType.getSuperclassTypeSignature(), declaringType); 
-            String[] superTypeParameters = superType.getTypeParameterSignatures();
-            if (typeSignatureName.equals(Signature.getTypeVariable(superTypeParameters[i]))) {
-              nextTypeName = superTypeArgs[i];
-              binding = binding._parent;
-              declaringType = binding._bindingDeclaringType;
-              break;
-            }
-          }
+
         }
       }
     }
@@ -207,6 +215,6 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
   
   @Override
   public String toString() {
-    return "[BindingKey: bindingName = " + _bindingName + "; bindingMember = " + _bindingMember + "]";
+    return "[BindingKey: bindingName = " + _bindingName + "; bindingMember = " + _bindingMember + "; parent = " + ((_parent != null && _parent != this) ? _parent.toString() : "null") + "]";
   }
 }
