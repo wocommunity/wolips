@@ -57,6 +57,7 @@
 package org.objectstyle.wolips.goodies.ui.mac.actions;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
@@ -126,6 +127,9 @@ public class CdInTerminalAction implements IObjectActionDelegate {
 		}
 		if (obj != null && obj instanceof IPackageFragment) {
 			this.actionResource = (IContainer) ((IPackageFragment) obj).getResource();
+		}
+		if (obj != null && obj instanceof IFile) {
+			this.actionResource = ((IFile) obj).getParent();
 		}
 	}
 
