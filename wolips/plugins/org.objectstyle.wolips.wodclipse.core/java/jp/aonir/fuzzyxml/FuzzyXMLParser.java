@@ -184,7 +184,8 @@ public class FuzzyXMLParser {
       else if (lastIndex != (initialOffset - 1) && lastIndex < start) {
         handleText(lastIndex, start, true);
       }
-      String text = matcher.group(1).trim();
+      String originalText = matcher.group(1);
+      String text = originalText.trim();
       // •Â‚¶ƒ^ƒO
       if (!woOnly && text.startsWith("%")) {
         // ignore
@@ -207,6 +208,9 @@ public class FuzzyXMLParser {
         handleCloseTag(start, end, text);
       }
       else if (text.endsWith("/") && (!woOnly || WodHtmlUtils.isWOTag(text))) {
+        if (originalText.endsWith(" ")) {
+          fireErrorEvent(start, end - start, "You can not have a space between the / and the > in your webobject tags.", null);
+        }
         handleEmptyTag(start, end);
       }
       else if (!woOnly && text.startsWith("!--")) {
