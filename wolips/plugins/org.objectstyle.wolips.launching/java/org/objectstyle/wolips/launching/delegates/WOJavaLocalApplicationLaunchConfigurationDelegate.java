@@ -221,17 +221,23 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends JavaLaunc
 					if ("-WOApplicationClassName".equals(parameter))
 						argument = mainTypeName;
 					if ("-DWORoot=".equals(parameter)) {
-						argument = VariablesPlugin.getDefault().getProjectVariables(theProject).getSystemRoot().toOSString();
-						if (javaProject.isOnMacOSX()) {
+						IPath systemRoot = VariablesPlugin.getDefault().getProjectVariables(theProject).getSystemRoot();
+						if (javaProject.isOnMacOSX() || systemRoot == null) {
 							parameter = "";
 							argument = "";
 						}
+						else {
+							argument = systemRoot.toOSString();
+						}
 					}
 					if ("-DWORootDirectory=".equals(parameter)) {
-						argument = VariablesPlugin.getDefault().getProjectVariables(theProject).getSystemRoot().toOSString();
-						if (javaProject.isOnMacOSX()) {
+						IPath systemRoot = VariablesPlugin.getDefault().getProjectVariables(theProject).getSystemRoot();
+						if (javaProject.isOnMacOSX() || systemRoot == null) {
 							parameter = "";
 							argument = "";
+						}
+						else {
+							argument = systemRoot.toOSString();
 						}
 					}
 					if ("-DWOUserDirectory=".equals(parameter)) {
