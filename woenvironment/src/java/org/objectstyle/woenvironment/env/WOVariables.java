@@ -198,17 +198,19 @@ public class WOVariables {
     }
     if (isWindows()) {
       _wolipsProperties.setProperty(WOVariables.API_ROOT_KEY, "/Developer/ADC%20Reference%20Library/documentation/WebObjects/Reference/API/");
-      _wolipsProperties.setProperty(WOVariables.APPS_ROOT, nextRoot + "\\Applications");
-      _wolipsProperties.setProperty(WOVariables.BOOTSTRAP_JAR_KEY, nextRoot + "\\Library\\Application\\wotaskd.woa\\WOBootstrap.jar");
-      _wolipsProperties.setProperty(WOVariables.LOCAL_ROOT, nextRoot + "\\Local");
-      _wolipsProperties.setProperty(WOVariables.LOCAL_FRAMEWORKS, nextRoot + "\\Local\\Library\\Frameworks");
-      _wolipsProperties.setProperty(WOVariables.SYSTEM_ROOT, nextRoot);
-      _wolipsProperties.setProperty(WOVariables.SYSTEM_FRAMEWORKS, nextRoot + "\\Library\\Frameworks");
-      _wolipsProperties.setProperty(WOVariables.NETWORK_ROOT, nextRoot + "\\Network");
-      _wolipsProperties.setProperty(WOVariables.NETWORK_FRAMEWORKS, nextRoot + "\\Network\\Library\\Frameworks");
+      if (nextRoot != null) {
+        _wolipsProperties.setProperty(WOVariables.APPS_ROOT, nextRoot + "\\Applications");
+        _wolipsProperties.setProperty(WOVariables.BOOTSTRAP_JAR_KEY, nextRoot + "\\Library\\Application\\wotaskd.woa\\WOBootstrap.jar");
+        _wolipsProperties.setProperty(WOVariables.LOCAL_ROOT, nextRoot + "\\Local");
+        _wolipsProperties.setProperty(WOVariables.LOCAL_FRAMEWORKS, nextRoot + "\\Local\\Library\\Frameworks");
+        _wolipsProperties.setProperty(WOVariables.SYSTEM_ROOT, nextRoot);
+        _wolipsProperties.setProperty(WOVariables.SYSTEM_FRAMEWORKS, nextRoot + "\\Library\\Frameworks");
+        _wolipsProperties.setProperty(WOVariables.NETWORK_ROOT, nextRoot + "\\Network");
+        _wolipsProperties.setProperty(WOVariables.NETWORK_FRAMEWORKS, nextRoot + "\\Network\\Library\\Frameworks");
+        _wolipsProperties.setProperty(WOVariables.WEBOBJECTS_EXTENSIONS, nextRoot + "\\Extensions");
+      }
       _wolipsProperties.setProperty(WOVariables.USER_ROOT, userHome);
       _wolipsProperties.setProperty(WOVariables.USER_FRAMEWORKS, userHome + "\\Library\\Frameworks");
-      _wolipsProperties.setProperty(WOVariables.WEBOBJECTS_EXTENSIONS, nextRoot + "\\Extensions");
     }
     else {
       _wolipsProperties.setProperty(WOVariables.API_ROOT_KEY, "/Developer/Documentation/DocSets/com.apple.ADC_Reference_Library.WebObjectsReference.docset/Contents/Resources/Documents/documentation/InternetWeb/Reference/WO542Reference");
