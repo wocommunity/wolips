@@ -115,6 +115,7 @@ public class DocumentWodModel extends AbstractWodModel {
     WodScanner scanner = WodScanner.wodScannerForDocument(_document);
     DocumentWodBinding lastBinding = null;
     DocumentWodElement element = null;
+    RulePosition tentativeElementName = null;
     RulePosition savedRulePosition = null;
     RulePosition savedRulePosition2 = null;
     RulePosition savedRulePosition3 = null;
@@ -147,6 +148,9 @@ public class DocumentWodModel extends AbstractWodModel {
       else if (RulePosition.isRulePositionOfType(rulePosition, ElementNameRule.class)) {
         if (RulePosition.isOperatorOfType(lastRulePosition, OpenDefinitionWordDetector.class) || RulePosition.isOperatorOfType(lastRulePosition, EndAssignmentWordDetector.class)) {
           savedRulePosition2 = rulePosition;
+          if (lastRulePosition != null && !RulePosition.isOperatorOfType(lastRulePosition, CloseDefinitionWordDetector.class)) {
+            tentativeElementName = rulePosition;
+          }
           // leave old savedRulePosition
         }
         else {
@@ -163,7 +167,12 @@ public class DocumentWodModel extends AbstractWodModel {
         }
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, ElementTypeRule.class)) {
-        if (!RulePosition.isOperatorOfType(lastRulePosition, ElementTypeOperatorWordDetector.class)) {
+        if (tentativeElementName != null) {
+          addParseProblem(element, "The element name '" + tentativeElementName._getTextWithoutException() + "' can only appear at the beginning of the document or after a '}'", tentativeElementName, false);
+          tentativeElementName = null;
+          savedRulePosition = null;
+        }
+        else if (!RulePosition.isOperatorOfType(lastRulePosition, ElementTypeOperatorWordDetector.class)) {
           addParseProblem(element, "The element type '" + rulePosition._getTextWithoutException() + "' can only appear after a ':'", rulePosition, false);
         }
         else {
@@ -210,6 +219,7 @@ public class DocumentWodModel extends AbstractWodModel {
           savedRulePosition2 = null;
           savedRulePosition3 = null;
         }
+        tentativeElementName = null;
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, BindingNameRule.class)) {
         if (!RulePosition.isOperatorOfType(lastRulePosition, OpenDefinitionWordDetector.class) && !RulePosition.isOperatorOfType(lastRulePosition, EndAssignmentWordDetector.class) && !RulePosition.isOperatorOfType(lastRulePosition, ElementTypeOperatorWordDetector.class)) {
