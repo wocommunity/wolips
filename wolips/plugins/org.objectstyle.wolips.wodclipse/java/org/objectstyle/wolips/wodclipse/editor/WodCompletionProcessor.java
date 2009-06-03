@@ -226,7 +226,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 						tokenType = PreferenceConstants.BINDING_VALUE_NAMESPACE;
 						guessed = true;
 					}
-					else if (tentativeElementType && tokenType == null) {
+					else if (tentativeElementType) {
 						tokenType = PreferenceConstants.ELEMENT_TYPE;
 						guessed = true;
 					}
