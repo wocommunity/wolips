@@ -152,8 +152,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 				int tokenLength = scanner.getTokenLength();
 				IRule rule = (rulePosition == null) ? null : rulePosition.getRule();
 				// If you make a completion request in the middle of whitespace,
-				// we
-				// don't want to select the whitespace, so zero out the
+				// we don't want to select the whitespace, so zero out the
 				// whitespace token offsets.
 				if (rule instanceof WhitespaceRule) {
 					int partialOffset = (offset - tokenOffset);
@@ -223,8 +222,13 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 							guessed = true;
 						}
 					}
-					if (guessed && tentativeElementType && tokenType == PreferenceConstants.BINDING_VALUE) {
+					if (tentativeElementType && tokenType == PreferenceConstants.BINDING_VALUE) {
 						tokenType = PreferenceConstants.BINDING_VALUE_NAMESPACE;
+						guessed = true;
+					}
+					else if (tentativeElementType && tokenType == null) {
+						tokenType = PreferenceConstants.ELEMENT_TYPE;
+						guessed = true;
 					}
 				}
 
