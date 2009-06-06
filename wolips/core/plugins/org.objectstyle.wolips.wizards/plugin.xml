@@ -27,6 +27,20 @@
          </selection>
       </wizard>
       <wizard
+            name="WOComponent Controller/View"
+            icon="icons/action/new-component-controller.png"
+            category="org.objectstyle.wolips.wizards"
+            id="org.objectstyle.wolips.wizards.new.wo.5.2.wocomponentview">
+            <class class="org.objectstyle.wolips.wizards.NewComponentCreationWizard">
+              <parameter name="javatype" value="true"/>
+            </class>
+         <description>
+         </description>
+         <selection
+               class="org.eclipse.core.resources.IResource">
+         </selection>
+      </wizard>
+      <wizard
             category="org.objectstyle.wolips.wizards"
             helpHref="http://developer.apple.com/documentation/WebObjects/Web_Applications/index.html"
             icon="icons/woproject/woapplication_wiz.gif"
