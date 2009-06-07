@@ -168,7 +168,7 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 					throw new InvocationTargetException(e);
 				}
 				catch (CoreException e) {
-					System.err.println("Creating file failed..." + e.getLocalizedMessage());
+					System.err.println(getClass().getName() + ".run(IProgressMonitor) Creating file failed..." + e.getLocalizedMessage());
 					e.printStackTrace(System.err);
 					// TODO (ldeck) provide relevant logging
 					IDEWorkbenchPlugin.log(getClass(), "run(IProgressMonitor)", e.getCause());
@@ -671,7 +671,7 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 						// no problems. Just a standard components folder.
 						
 					} catch (CoreException e) {
-						System.err.println("componentContainerChanged..threw an exception.");
+						System.err.println(getClass().getName() + ".componentContainerChanged threw an exception.");
 						e.printStackTrace(System.err);
 						status.setWarning(NewWizardMessages.NewContainerWizardPage_warning_NotAJavaProject);
 					}
@@ -961,9 +961,7 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 					}
 				}
 			} catch (JavaModelException e) {
-				System.err.println("Hmm");
-				
-				// TODO Auto-generated catch block
+				System.err.println(getClass().getName() + ".createPackageControls java model exception");
 				e.printStackTrace(System.err);
 			}
 		}
@@ -1196,7 +1194,6 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 		if (jelem != null) {
 			project = jelem.getJavaProject().getProject();
 			if (jelem instanceof IPackageFragmentRoot) {
-				System.err.println("Got package fragment");
 				try {
 					resource = jelem.getCorrespondingResource();
 				} catch (JavaModelException e) {
@@ -1208,7 +1205,6 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 		else if (selection != null && !selection.isEmpty()) {
 			Object el = selection.getFirstElement();
 			if (el instanceof IResource) {
-				System.err.println("got IResource...");
 				resource = (IResource) el;
 				project = resource.getProject();
 			}
@@ -1248,7 +1244,6 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 				componentFolder = getComponentContainer();
 			}
 			else if (selection != null) {
-				System.err.println("got resource...");
 				for (String container : componentContainers) {
 					IResource el = project.findMember(container);
 					if (el instanceof IFolder) {
