@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.IParent;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.Signature;
@@ -47,6 +49,7 @@ import org.eclipse.jdt.internal.ui.JavaPluginImages;
 import org.eclipse.jdt.internal.ui.dialogs.StatusInfo;
 import org.eclipse.jdt.internal.ui.viewsupport.BasicElementLabels;
 import org.eclipse.jdt.internal.ui.wizards.NewWizardMessages;
+import org.eclipse.jdt.internal.ui.wizards.SuperInterfaceSelectionDialog;
 import org.eclipse.jdt.internal.ui.wizards.TypedElementSelectionValidator;
 import org.eclipse.jdt.internal.ui.wizards.TypedViewerFilter;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.DialogField;
@@ -94,12 +97,57 @@ import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.views.navigator.ResourceComparator;
+import org.objectstyle.wolips.baseforplugins.util.CharSetUtils;
 
 /**
  * Page for creating a new WebObjects WOComponent type. i.e., component view with component controller.
  * @author ldeck
  */
 public class NewComponentCreationPage extends NewTypeWizardPage {
+	
+	/**
+	 * Represents an abstract project layout
+	 * @author ldeck
+	 */
+	// TODO amalgamate with some other util
+	private abstract static class AbstractLayout {
+		
+		public final boolean isReservedJavaSourcesPath(IPath path) {
+			return isReservedPath(path, reservedPathPrefixes(), reservedJavaSourcePaths());
+		}
+		
+		private boolean isReservedPath(IPath path, List<String> prefixes, List<String> reservedPaths) {
+			if (path != null) {
+				IPath relPath = path.makeAbsolute().makeRelative().removeFirstSegments(1);
+				String relPathString = relPath.toString().toLowerCase();
+				for (String reject : reservedPathRejects()) {
+					if (relPathString.startsWith(reject.toLowerCase())) {
+						return true;
+					}
+				}
+				for (String prefix : prefixes) {
+					for (String reservedPath : reservedPaths) {
+						if (relPathString.startsWith((prefix + reservedPath).toLowerCase())) {
+							return true;
+						}
+					}
+				}
+			}
+			return false;
+		}
+		
+		public final boolean isReservedResourcesPath(IPath path) {
+			return isReservedPath(path, reservedPathPrefixes(), reservedResourceSourcePaths());
+		}
+		
+		protected abstract List<String> reservedJavaSourcePaths();
+		
+		protected abstract List<String> reservedPathPrefixes();
+		
+		protected abstract List<String> reservedPathRejects();
+		
+		protected abstract List<String> reservedResourceSourcePaths();
+	}
 	
 	/**
 	 * Listener for registered button events.
@@ -115,7 +163,7 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 			handleSelectionEvent(event);
 		}
 	}
-
+	
 	/**
 	 * Component container field adaptor.
 	 * @author ldeck
@@ -148,6 +196,10 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 			this.fileExtension = extension;
 			this.fileContents = initialContents == null ? "" : initialContents;
 		}
+		
+		private IFile createFileHandle(IPath filePath) {
+			return IDEWorkbenchPlugin.getPluginWorkspace().getRoot().getFile(filePath);
+	    }
 
 		/**
 		 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
@@ -179,6 +231,42 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 				progressMonitor.worked(1);
 			}
 		}
+	}
+
+	/**
+	 * Represents the wolips fluffy woproject layout
+	 * @author ldeck
+	 */
+	private static class FluffyLayout extends AbstractLayout {
+		
+		private static final List<String> RESERVED_FLUFFY_PREFIX_PATHS = Arrays.asList("");
+		
+		private static final List<String> RESERVED_FLUFFY_RESOURCE_PATHS = Arrays.asList("components");
+		
+		private static final List<String> RESERVED_FLUFFY_SOURCE_PATHS = Arrays.asList("Sources", "Tests", "src");
+
+		private static final List<String> RESERVED_ROOT_PATHS = Arrays.asList("bin", "build", "resources", "lib", "libraries", "webserverresources", "woproject");
+
+		@Override
+		protected List<String> reservedJavaSourcePaths() {
+			return RESERVED_FLUFFY_SOURCE_PATHS;
+		}
+
+		@Override
+		protected List<String> reservedPathPrefixes() {
+			return RESERVED_FLUFFY_PREFIX_PATHS;
+		}
+
+		@Override
+		protected List<String> reservedPathRejects() {
+			return RESERVED_ROOT_PATHS;
+		}
+
+		@Override
+		protected List<String> reservedResourceSourcePaths() {
+			return RESERVED_FLUFFY_RESOURCE_PATHS;
+		}
+		
 	}
 	
 	/**
@@ -236,105 +324,43 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 				
 				String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 				String userName = System.getProperty("user.name", "WOLips");
+				boolean isXML = true;
 				
 				if (HTML_UNSPECIFIED.equals(this)) {
-					buff.append("<html>").append(lineSeparator);
-					buff.append("<head>").append(lineSeparator);
-					buff.append("	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">").append(lineSeparator);
-					buff.append("	<title>untitled</title>").append(lineSeparator);
-					buff.append("	<meta name=\"generator\" content=\"WOLips http://wiki.objectstyle.org/confluence/display/WOL/Home\"/>").append(lineSeparator);
-					buff.append("	<meta name=\"author\" content=\"").append(userName).append("\"/>").append(lineSeparator);
-					buff.append("	<!-- Date: ").append(dateString).append(" -->").append(lineSeparator);
-					buff.append("</head>").append(lineSeparator);
-					buff.append("<body>").append(lineSeparator);
-					buff.append(lineSeparator);
-					buff.append("</body>").append(lineSeparator);
-					buff.append("</html>").append(lineSeparator);
+					isXML = false;
+					buff.append("<html>");
 				}
 				else if (HTML401_STRICT.equals(this)) {
+					isXML = false;
 					buff.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\"").append(lineSeparator);
 					buff.append("   \"http://www.w3.org/TR/html4/strict.dtd\">").append(lineSeparator);
 					buff.append(lineSeparator);
 					buff.append("<html lang=\"en\">").append(lineSeparator);
-					buff.append("<head>").append(lineSeparator);
-					buff.append("	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">").append(lineSeparator);
-					buff.append("	<title>untitled</title>").append(lineSeparator);
-					buff.append("	<meta name=\"generator\" content=\"WOLips http://wiki.objectstyle.org/confluence/display/WOL/Home\">").append(lineSeparator);
-					buff.append("	<meta name=\"author\" content=\"").append(userName).append("\">").append(lineSeparator);
-					buff.append("	<!-- Date: ").append(dateString).append(" -->").append(lineSeparator);
-					buff.append("</head>").append(lineSeparator);
-					buff.append("<body>").append(lineSeparator);
-					buff.append(lineSeparator);
-					buff.append("</body>").append(lineSeparator);
-					buff.append("</html>").append(lineSeparator);
 				}
 				else if (HTML401_TRANSITIONAL.equals(this)) {
+					isXML = false;
 					buff.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"").append(lineSeparator);
 					buff.append("   \"http://www.w3.org/TR/html4/loose.dtd\">").append(lineSeparator);
 					buff.append(lineSeparator);
 					buff.append("<html lang=\"en\">").append(lineSeparator);
-					buff.append("<head>").append(lineSeparator);
-					buff.append("	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">").append(lineSeparator);
-					buff.append("	<title>untitled</title>").append(lineSeparator);
-					buff.append("	<meta name=\"generator\" content=\"WOLips http://wiki.objectstyle.org/confluence/display/WOL/Home\">").append(lineSeparator);
-					buff.append("	<meta name=\"author\" content=\"").append(userName).append("\">").append(lineSeparator);
-					buff.append("	<!-- Date: ").append(dateString).append(" -->").append(lineSeparator);
-					buff.append("</head>").append(lineSeparator);
-					buff.append("<body>").append(lineSeparator);
-					buff.append(lineSeparator);
-					buff.append("</body>").append(lineSeparator);
-					buff.append("</html>").append(lineSeparator);
 				}
 				else if (XHTML10_FRAMESET.equals(this)) {
 					buff.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\"").append(lineSeparator);
 					buff.append("	\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">").append(lineSeparator);
 					buff.append(lineSeparator);
 					buff.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">").append(lineSeparator);
-					buff.append("<head>").append(lineSeparator);
-					buff.append("	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>").append(lineSeparator);
-					buff.append("	<title>untitled</title>").append(lineSeparator);
-					buff.append("	<meta name=\"generator\" content=\"WOLips http://wiki.objectstyle.org/confluence/display/WOL/Home\"/>").append(lineSeparator);
-					buff.append("	<meta name=\"author\" content=\"").append(userName).append("\"/>").append(lineSeparator);
-					buff.append("	<!-- Date: ").append(dateString).append(" -->").append(lineSeparator);
-					buff.append("</head>").append(lineSeparator);
-					buff.append("<frameset>").append(lineSeparator);
-					buff.append(lineSeparator);
-					buff.append("</frameset>").append(lineSeparator);
-					buff.append("</html>").append(lineSeparator);
 				}
 				else if (XHTML10_STRICT.equals(this)) {
 					buff.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"").append(lineSeparator);
 					buff.append("	\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">").append(lineSeparator);
 					buff.append(lineSeparator);
 					buff.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">").append(lineSeparator);
-					buff.append("<head>").append(lineSeparator);
-					buff.append("	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>").append(lineSeparator);
-					buff.append("	<title>untitled</title>").append(lineSeparator);
-					buff.append("	<meta name=\"generator\" content=\"WOLips http://wiki.objectstyle.org/confluence/display/WOL/Home\"/>").append(lineSeparator);
-					buff.append("	<meta name=\"author\" content=\"").append(userName).append("\">").append(lineSeparator);
-					buff.append("	<!-- Date: 2009-04-25 -->").append(lineSeparator);
-					buff.append("</head>").append(lineSeparator);
-					buff.append("<body>").append(lineSeparator);
-					buff.append(lineSeparator);
-					buff.append("</body>").append(lineSeparator);
-					buff.append("</html>").append(lineSeparator);
 				}
 				else if (XHTML10_TRANSITIONAL.equals(this)) {
 					buff.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"").append(lineSeparator);
 					buff.append("	\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">").append(lineSeparator);
 					buff.append(lineSeparator);
 					buff.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">").append(lineSeparator);
-					buff.append("<head>").append(lineSeparator);
-					buff.append("	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>").append(lineSeparator);
-					buff.append("	<title>untitled</title>").append(lineSeparator);
-					buff.append("	<meta name=\"generator\" content=\"WOLips http://wiki.objectstyle.org/confluence/display/WOL/Home\"/>").append(lineSeparator);
-					buff.append("	<meta name=\"author\" content=\"").append(userName).append("\"/>").append(lineSeparator);
-					buff.append("	<!-- Date: ").append(dateString).append(" -->").append(lineSeparator);
-					buff.append("</head>").append(lineSeparator);
-					buff.append("<body>").append(lineSeparator);
-					buff.append(lineSeparator);
-					buff.append("</body>").append(lineSeparator);
-					buff.append("</html>").append(lineSeparator);
 				}
 				else if (XHTML11.equals(this)) {
 					buff.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(lineSeparator);
@@ -342,18 +368,22 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 					buff.append("	\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">").append(lineSeparator);
 					buff.append(lineSeparator);
 					buff.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">").append(lineSeparator);
-					buff.append("<head>").append(lineSeparator);
-					buff.append("	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"/>").append(lineSeparator);
-					buff.append("	<title>untitled</title>").append(lineSeparator);
-					buff.append("	<meta name=\"generator\" content=\"WOLips http://wiki.objectstyle.org/confluence/display/WOL/Home\"/>").append(lineSeparator);
-					buff.append("	<meta name=\"author\" content=\"").append(userName).append("\"/>").append(lineSeparator);
-					buff.append("	<!-- Date: ").append(dateString).append(" -->").append(lineSeparator);
-					buff.append("</head>").append(lineSeparator);
-					buff.append("<body>").append(lineSeparator);
-					buff.append(lineSeparator);
-					buff.append("</body>").append(lineSeparator);
-					buff.append("</html>").append(lineSeparator);
 				}
+				
+				String closingTag = isXML ? "/>" : ">";
+				
+				buff.append(lineSeparator).append("<head>").append(lineSeparator);
+				buff.append(lineSeparator).append("	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"").append(closingTag);
+				buff.append(lineSeparator).append("	<title>untitled</title>");
+				buff.append(lineSeparator).append("	<meta name=\"generator\" content=\"WOLips http://wiki.objectstyle.org/confluence/display/WOL/Home\"").append(closingTag);
+				buff.append(lineSeparator).append("	<meta name=\"author\" content=\"").append(userName).append('"').append(closingTag);
+				buff.append(lineSeparator).append("	<!-- Date: ").append(dateString).append(" -->");
+				buff.append(lineSeparator).append("</head>");
+				buff.append(lineSeparator).append("<body>");
+				buff.append(lineSeparator).append(lineSeparator);
+				buff.append(lineSeparator).append("</body>");
+				buff.append(lineSeparator).append("</html>");
+				
 				this._html = buff.toString();
 			}
 			return _html;
@@ -364,6 +394,42 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 		}
 	}
 	
+	/**
+	 * Represents the maven2 woproject layout
+	 * @author ldeck
+	 */
+	private static class MavenLayout extends AbstractLayout {
+		
+		private static final List<String> RESERVED_MAVEN2_PREFIX_PATHS = Arrays.asList("src/main/", "src/test/", "src/itest/");
+		
+		private static final List<String> RESERVED_MAVEN2_RESOURCE_PATHS = Arrays.asList("components", "resources", "webserver-resources");
+
+		private static final List<String> RESERVED_MAVEN2_SOURCE_PATHS = Arrays.asList("java");
+		
+		private static final List<String> RESERVED_ROOT_PATHS = Arrays.asList("target");
+
+		@Override
+		protected List<String> reservedJavaSourcePaths() {
+			return RESERVED_MAVEN2_SOURCE_PATHS;
+		}
+
+		@Override
+		protected List<String> reservedPathPrefixes() {
+			return RESERVED_MAVEN2_PREFIX_PATHS;
+		}
+
+		@Override
+		protected List<String> reservedPathRejects() {
+			return RESERVED_ROOT_PATHS;
+		}
+
+		@Override
+		protected List<String> reservedResourceSourcePaths() {
+			return RESERVED_MAVEN2_RESOURCE_PATHS;
+		}
+		
+	}
+	
 	private static final String API_CHECKBOX_KEY = "NewComponentCreationPage.apiCheckbox";
 	
 	private static final String BODY_CHECKBOX_KEY = "NewComponentCreationPage.bodyCheckbox";
@@ -372,14 +438,20 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 	
 	protected static final String COMPONENT_CONTAINER = "NewComponentCreationPage.componentContainer";
 	
+	private static final String DEFAULT_SUPERCLASS_NAME = "com.webobjects.appserver.WOComponent";
+	
 	private static final String HTML_DOCTYPE_KEY = "NewComponentCreationPage.htmlDocType";
-
+	
 	private static final int LABEL_IMG_SIZE = 12;
 	
 	private static final String PAGE_NAME = "NewComponentCreationPage";
 	
+	private static final List<String> PREFERRED_COMPONENT_CONTAINER_PATHS = Arrays.asList("Components", "src/main/components");
+	
+	private static final List<String> PREFERRED_SOURCE_CONTAINER_PATHS = Arrays.asList("Sources", "src/main/java");
+	
 	private static final String SETTINGS_CREATECONSTR = "create_constructor";
-
+	
 	private static final String SETTINGS_CREATEUNIMPLEMENTED = "create_unimplemented";
 	
 	private static final String SUPERCLASS_KEY = "NewComponentCreationPage.superclass";
@@ -387,6 +459,38 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 	private static final String WOD_CHECKBOX_KEY = "NewComponentCreationPage.wodCheckbox";
 	
 	private static final String WOO_CHECKBOX_KEY = "NewComponentCreationPage.wooCheckbox";
+	
+	private static IJavaElement findClassWithName(IJavaElement el, String name) {
+		if (el != null && el.getElementName().equals(name + ".java")) {
+			return el;
+		}
+		else if (el instanceof IPackageFragment || el instanceof IPackageFragmentRoot) {
+			try {
+				for (IJavaElement child : ((IParent)el).getChildren()) {
+					IJavaElement result = findClassWithName(child, name);
+					if (result != null) {
+						return result;
+					}
+				}
+			} catch (JavaModelException e) {
+				System.err.println(NewComponentCreationPage.class.getName() + ".findClassWithName(IJavaElement,String)");
+				e.printStackTrace(System.err);
+			}
+		}
+		return null;
+	}
+	
+	private static IJavaElement findMainClass(IJavaElement el) {
+		return findClassWithName(el, "Main");
+	}
+	
+	private static boolean isReservedResourcesPath(IPath path) {
+		return new FluffyLayout().isReservedResourcesPath(path) || new MavenLayout().isReservedResourcesPath(path);
+	}
+
+	private static boolean isReservedSourcesPath(IPath path) {
+		return new FluffyLayout().isReservedJavaSourcesPath(path) || new MavenLayout().isReservedJavaSourcesPath(path);
+	}
 
 	/**
 	 * Convenience function for creating a new grid layout.
@@ -401,7 +505,7 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 		layout.verticalSpacing = verticalSpacing;
 		return layout;
 	}
-
+	
 	private static Font scaledFont(Font font, int height) {
 		FontData[] labellingFontData = font.getFontData();
 		for (FontData fd : labellingFontData) {
@@ -409,7 +513,7 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 		}
 		return new Font(font.getDevice(), labellingFontData);
 	}
-
+	
 	private static Image scaledImage(Display display, ImageDescriptor imageDescriptor, int width, int height) {
 		ImageData imageData =  imageDescriptor.getImageData().scaledTo(width, height);
 		return new Image(display, imageData);
@@ -430,31 +534,31 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 	}
 	
 	private ImageDescriptor componentImageDescriptor;
-	
+
 	private Group componentViewTitle;
 	
 	private Label componentViewTitleLabel;
-
+	
 	private Button fComponentAPICheckbox;
-	
+
 	private IStatus fComponentAPIStatus;
-	
+
 	private StringButtonDialogField fComponentContainerDialogField;
 
 	private IStatus fComponentContainerStatus;
-
+	
 	private Button fComponentHTMLBodyCheckbox;
 
 	private Combo fComponentHTMLCombo;
 	
 	private IStatus fComponentHTMLStatus;
-
-	private Button fComponentWODCheckbox;
 	
+	private Button fComponentWODCheckbox;
+
 	private IStatus fComponentWODStatus;
 	
 	private Button fComponentWOOCheckbox;
-
+	
 	private Combo fComponentWOOEncodingCombo;
 	
 	private IStatus fComponentWOOStatus;
@@ -468,12 +572,14 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 	private boolean vComponentHTMLBodyEnabled;
 	
 	private String vComponentHTMLKey;
-	
+
 	private boolean vComponentWODEnabled;
 
 	private boolean vComponentWOOEnabled;
-
+	
 	private String vComponentWOOEncodingKey;
+	
+	private IType wocomponentType;
 	
 	public NewComponentCreationPage() {
 		this(true, PAGE_NAME);
@@ -529,12 +635,9 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 				if (super.isSelectedValid(elem)) {
 					if (elem instanceof IPackageFragmentRoot) {
 						IPackageFragmentRoot fr = (IPackageFragmentRoot) elem;
-						if ("java".equals(fr.getElementName())) {
+						if (isReservedSourcesPath(fr.getPath())) {
 							return false;
 						}
-					}
-					else if (elem instanceof IFolder) {
-						return true;
 					}
 					return true;
 				}
@@ -634,6 +737,11 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 			status.setError(NewWizardMessages.NewContainerWizardPage_error_EnterContainerName);
 			return status;
 		}
+		else if (str.endsWith(".wo")) {
+			status.setError("A component cannot be created within another component");
+			return status;
+		}
+		
 		IPath path = new Path(str);
 		IResource res = getWorkspaceRoot().findMember(path);
 		if (res != null) {
@@ -860,7 +968,7 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 		
 		//label = new Label(componentWOOComposite, SWT.LEFT);
 	}
-	
+
 	/**
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
@@ -899,7 +1007,7 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 		Dialog.applyDialogFont(composite);
 		PlatformUI.getWorkbench().getHelpSystem().setHelp(composite, "org.eclipse.jdt.ui.new_class_wizard_page_context");
 	}
-	
+
 	private void createControllerHeader(Composite parent, int nColumns) {
 		// view label composite
 		Font labellingFont = scaledFont(parent.getFont(), 9);
@@ -927,10 +1035,6 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 		}
 	}
 	
-	protected IFile createFileHandle(IPath filePath) {
-		return IDEWorkbenchPlugin.getPluginWorkspace().getRoot().getFile(filePath);
-    }
-
 	private void createMethodStubSelectionControls(Composite composite, int nColumns) {
 		org.eclipse.swt.widgets.Control labelControl = fMethodStubsButtons.getLabelControl(composite);
 		LayoutUtil.setHorizontalSpan(labelControl, nColumns);
@@ -943,28 +1047,6 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 	@Override
 	protected void createPackageControls(Composite composite, int nColumns) {
 		super.createPackageControls(composite, nColumns);
-		// auto-populate for application projects
-		IJavaProject jproject = getJavaProject();
-		IPackageFragmentRoot froot = getPackageFragmentRoot();
-		if (jproject != null && froot != null) {
-			try {
-				IJavaElement compilationUnit = findMainClass(froot);
-				if (compilationUnit != null) {
-					IFile javaFile = (IFile) compilationUnit.getCorrespondingResource();
-					
-					IFolder folder = (IFolder) javaFile.getParent();
-					IFile mainClass = (IFile) folder.findMember("Main.java");
-					if (mainClass != null) {
-						IFolder componentFolder = (IFolder) mainClass.getParent();
-						IPackageFragment pfrag = (IPackageFragment) JavaCore.create(componentFolder);
-						setPackageFragment(pfrag, true);
-					}
-				}
-			} catch (JavaModelException e) {
-				System.err.println(getClass().getName() + ".createPackageControls java model exception");
-				e.printStackTrace(System.err);
-			}
-		}
 	}
 	
 	/**
@@ -973,7 +1055,6 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 	@Override
 	protected void createSuperClassControls(Composite composite, int columns) {
 		super.createSuperClassControls(composite, columns);
-		setSuperClass("com.webobjects.appserver.WOComponent", true);
 	}
 
 	/**
@@ -1068,7 +1149,7 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 		if (monitor != null)
 			monitor.done();
 	}
-
+	
 	private void doStatusUpdate() {
 		IStatus statuses[] = { 
 				fComponentContainerStatus,
@@ -1087,26 +1168,6 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 //			System.out.println("status:" + status.getCode() + " " + status.getMessage() + " " + status.getSeverity());
 //		}	
 		updateStatus(statuses);
-	}
-	
-	private IJavaElement findMainClass(IJavaElement el) {
-		if (el != null && el.getElementName().equals("Main.java")) {
-			return el;
-		}
-		else if (el instanceof IPackageFragment || el instanceof IPackageFragmentRoot) {
-			try {
-				for (IJavaElement child : ((IParent)el).getChildren()) {
-					IJavaElement result = findMainClass(child);
-					if (result != null) {
-						return result;
-					}
-				}
-			} catch (JavaModelException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return null;
 	}
 	
 	private IFolder getComponentContainer() {
@@ -1129,6 +1190,18 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 		return this.vComponentWOOEncodingKey;
 	}
 
+	private IType getDefaultWOComponentType() {
+		if (this.wocomponentType == null && getJavaProject() != null) {
+			try {
+				this.wocomponentType = getJavaProject().findType(DEFAULT_SUPERCLASS_NAME);
+			} catch (JavaModelException e) {
+				System.err.println(getClass().getName() + ".getWOComponentType()");
+				e.printStackTrace(System.err);
+			}
+		}
+		return this.wocomponentType;
+	}
+	
 	private HTML getSelectedHTML() {
 		return HTML.getValueForKey(getComponentHTMLKey());
 	}
@@ -1163,7 +1236,7 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 			refreshButtonSettings((Button) w);
 		}
 	}
-	
+
 	public void init(IStructuredSelection selection) {
 		IJavaElement jelem = getInitialJavaElement(selection);
 		initComponentContainerPage(selection, jelem);
@@ -1184,67 +1257,54 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 		}
 		setMethodStubSelection(createMain, createConstructors, createUnimplemented, true);
 	}
-
+	
 	protected void initComponentContainerPage(IStructuredSelection selection, IJavaElement jelem) {
 		
-		List<String> componentContainers = Arrays.asList( "Components", "src/main/components" );
 		IProject project = null;
 		IResource resource = null;
 		
 		if (jelem != null) {
 			project = jelem.getJavaProject().getProject();
-			if (jelem instanceof IPackageFragmentRoot) {
-				try {
-					resource = jelem.getCorrespondingResource();
-				} catch (JavaModelException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			if (jelem.getElementType() != IJavaElement.JAVA_PROJECT) {
+				if (isFragmentRootAndResourcesCompatible(jelem)) {
+					try {
+						resource = jelem.getCorrespondingResource();
+					} catch (JavaModelException e) {
+						System.err.println(getClass().getName() + ".initComponentContainerPage(IStructuredSelection,IJavaElement)");
+						e.printStackTrace(System.err);
+					}
 				}
 			}
-		}
-		else if (selection != null && !selection.isEmpty()) {
-			Object el = selection.getFirstElement();
-			if (el instanceof IResource) {
-				resource = (IResource) el;
-				project = resource.getProject();
+			else if (selection != null && !selection.isEmpty()) {
+				Object el = selection.getFirstElement();
+				if (el instanceof IResource) {
+					resource = (IResource) el;
+					project = resource.getProject();
+					if (resource instanceof IFile) {
+						resource = ((IFile)resource).getParent();
+					}
+					else if (resource.getType() != IResource.FOLDER) {
+						resource = null;
+					}
+				}
 			}
 		}
 		
 		IFolder componentFolder = null;
 		if (resource instanceof IFolder) {
-			if (componentContainers.contains(resource.getName())) {
-				IPath relativePath = resource.getProjectRelativePath();
-				IJavaElement jelement = JavaCore.create(relativePath.toString());
-				if (jelement == null) {
-					componentFolder = (IFolder) resource;
-				}
-				else if (jelem instanceof IPackageFragmentRoot) {
-					// check if there's any package fragment or compilation unit kids
-					IPackageFragmentRoot froot = (IPackageFragmentRoot) jelem;
-					try {
-						boolean isValid = true;
-						for (IJavaElement el : froot.getChildren()) {
-							if (el instanceof IPackageFragment || el instanceof ICompilationUnit) {
-								isValid = false;
-								break;
-							}
-						}
-						if (isValid) {
-							componentFolder = (IFolder) froot.getCorrespondingResource();
-						}
-					} catch (JavaModelException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+			componentFolder = (IFolder) resource;
+			IPath componentFolderPath = componentFolder.getFullPath();
+			if (isReservedSourcesPath(componentFolderPath)) {
+				componentFolder = null;
 			}
 		}
+		
 		if (componentFolder == null) {
 			if (getComponentContainer() != null) {
 				componentFolder = getComponentContainer();
 			}
 			else if (selection != null) {
-				for (String container : componentContainers) {
+				for (String container : PREFERRED_COMPONENT_CONTAINER_PATHS) {
 					IResource el = project.findMember(container);
 					if (el instanceof IFolder) {
 						componentFolder = (IFolder) el;
@@ -1255,51 +1315,127 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 		}
 		setComponentContainerRoot(componentFolder, true);
 	}
-	
+
 	protected void initContainerPage(IJavaElement elem) {
-		List<String> preferredContainers = Arrays.asList("Sources", "src/main/java", "src");
-        IPackageFragmentRoot initRoot = null;
+		IPackageFragmentRoot initRoot = null;
         if (elem != null) {
-            initRoot = JavaModelUtil.getPackageFragmentRoot(elem);
-            try {
-                if (initRoot == null || initRoot.getKind() != IPackageFragmentRoot.K_SOURCE) {
-                    IJavaProject jproject = elem.getJavaProject();
-                    if (jproject != null) {
-                        initRoot = null;
-                        if (jproject.exists()) {
-                        	IPackageFragmentRoot roots[] = jproject.getPackageFragmentRoots();
-                            if (!(elem instanceof IPackageFragment)) {
-                            	CONTAINERS: for (String root : preferredContainers) {
-		                            for (int i = 0; i < roots.length; i++) {
-		                            	if (roots[i].getKind() != IPackageFragmentRoot.K_SOURCE || !root.equals(roots[i].getElementName())) {
-		                                    continue;
-		                                }
-		                                initRoot = roots[i];
-		                                break CONTAINERS;
-		                            }
-	                            }
-                            }
-                            if (initRoot == null) {
-	                            for (int i = 0; i < roots.length; i++) {
-	                                if (roots[i].getKind() != IPackageFragmentRoot.K_SOURCE || !preferredContainers.contains(roots[i].getElementName()))
-	                                    continue;
-	                                initRoot = roots[i];
-	                                break;
-	                            }
-                            }
-                        }
-                        if (initRoot == null) {
-                            initRoot = jproject.getPackageFragmentRoot(jproject.getResource());
-                        }
-                    }
-                }
-            }
+        	try {
+        		initRoot = JavaModelUtil.getPackageFragmentRoot(elem);
+                
+        		IPath initRootPath = initRoot == null ? null : initRoot.getPath();
+				if (isReservedResourcesPath(initRootPath)) {
+					initRoot = null;
+					initRootPath = null;
+				}
+	            
+				if (initRoot == null) {
+	        		IJavaProject jproject = elem.getJavaProject();
+	        		if (jproject != null && jproject.exists()) {
+	                    IPackageFragmentRoot roots[] = jproject.getPackageFragmentRoots();
+	                    CONTAINERS: for (String root : PREFERRED_SOURCE_CONTAINER_PATHS) {
+	                    	for (int i = 0; i < roots.length; i++) {
+	    				    	if (roots[i].getKind() != IPackageFragmentRoot.K_SOURCE) {
+	    				    		IPath rootPath = roots[i].getPath().makeRelative().removeFirstSegments(1);
+		    				    	if (!root.equals(rootPath.toString())) {
+		    				    		continue;
+		    				    	}
+	    				        }
+	    				        initRoot = roots[i];
+	    				        break CONTAINERS;
+	    				    }
+	    				}
+	                }
+	        	}
+        	}
             catch (JavaModelException e) {
                 JavaPlugin.log(e);
             }
         }
         setPackageFragmentRoot(initRoot, true);
     }
+	
+	@Override
+	protected void initTypePage(IJavaElement elem) {
+		super.initTypePage(elem);
+		
+		if (getJavaProject() != null) {
+			
+			// auto-populate superclass from selection (if WOComponent assignable)
+			if (elem instanceof ICompilationUnit) {
+				ICompilationUnit unit = (ICompilationUnit) elem;
+				try {
+					IType primaryType = unit.findPrimaryType();
+					if (primaryType != null) {
+						ITypeHierarchy supertypeHierarchy = primaryType.newSupertypeHierarchy(new NullProgressMonitor());
+						if (supertypeHierarchy.contains(getDefaultWOComponentType())) {
+							setSuperClass(primaryType.getFullyQualifiedName(), true);
+						}
+					}
+				} catch (JavaModelException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+			// auto-populate implementing interface (if selected)
+			if (getSuperInterfaces() == null || getSuperInterfaces().size() == 0) {
+				List<String> interfaces = new ArrayList<String>();
+				if (elem instanceof ICompilationUnit) {
+					ICompilationUnit unit = (ICompilationUnit) elem;
+					
+					try {
+						if (elem.getElementType() == IJavaElement.COMPILATION_UNIT) {
+							IType primaryType = unit.findPrimaryType();
+							if (primaryType.exists() && primaryType.isInterface()) {
+								String interfaceName = SuperInterfaceSelectionDialog.getNameWithTypeParameters(primaryType);
+								if (interfaceName != null) {
+									interfaces.add(interfaceName);
+								}
+							}
+						}
+						
+					} catch (JavaModelException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				if (interfaces.size() > 0) {
+					setSuperInterfaces(interfaces, true);
+				}
+			}
+			
+			// if the package fragment isn't set default to Main.class's package 
+			if (getPackageFragment() == null || getPackageFragment().isDefaultPackage()) {
+				IPackageFragmentRoot froot = getPackageFragmentRoot();
+				if (froot != null) {
+					IJavaElement compilationUnit = findMainClass(froot);
+					if (compilationUnit instanceof ICompilationUnit) {
+						IType type = ((ICompilationUnit) compilationUnit).findPrimaryType();
+						if (type != null) {
+							setPackageFragment(type.getPackageFragment(), true);
+						}
+					}
+				}
+			}
+		}
+		// if the superclass isn't initialised set the default
+		boolean requiresSuperclass = getSuperClass() == null || getSuperClass().matches("\\s*");
+		if (!requiresSuperclass) {
+			requiresSuperclass = true;
+			try {
+				IType supertype = getJavaProject().findType(getSuperClass());
+				ITypeHierarchy supertypeHierarchy = supertype.newSupertypeHierarchy(new NullProgressMonitor());
+				if (supertypeHierarchy.contains(getDefaultWOComponentType())) {
+					requiresSuperclass = false;
+				}
+			} catch (JavaModelException e) {
+				// nothing to do, invalid type
+			}
+		}
+		if (requiresSuperclass) {
+			setSuperClass(DEFAULT_SUPERCLASS_NAME, true);
+		}
+	}
 
 	public boolean isCreateConstructors() {
 		return fMethodStubsButtons.isSelected(1);
@@ -1308,16 +1444,41 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 	public boolean isCreateInherited() {
 		return fMethodStubsButtons.isSelected(2);
 	}
-
+	
 	public boolean isCreateMain() {
 		return false;
+	}
+
+	private boolean isFragmentRootAndResourcesCompatible(IJavaElement el) {
+		boolean result = false;
+		if (el instanceof IPackageFragmentRoot) {
+			IPackageFragmentRoot froot = (IPackageFragmentRoot) el;
+			IPath frootPath = froot.getPath();
+			
+			if (!isReservedResourcesPath(frootPath)) {
+				result = true;
+				try {
+					for (IJavaElement child : froot.getChildren()) {
+						if (child instanceof IPackageFragment || child instanceof ICompilationUnit) {
+							result = false;
+							break;
+						}
+					}
+				} catch (JavaModelException e) {
+					System.err.println(getClass().getName() + ".isFragmentRootAndResourcesCompatible(IJavaElement)");
+					e.printStackTrace(System.err);
+					result = false;
+				}
+			}
+		}
+		return result;
 	}
 
 	/**
 	 * @param componentAPIEncodingCombo
 	 */
 	private void populateComponentWOOEncodingCombo(Combo componentAPIEncodingCombo) {
-		for (String charset : Charset.availableCharsets().keySet()) {
+		for (String charset : CharSetUtils.defaultCharsetEncodingNames()) {
 			componentAPIEncodingCombo.add(charset);
 		}
 		// TODO (ldeck) change pref name
@@ -1399,7 +1560,7 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 		// default
 		c.select(0);
 	}
-	
+
 	/**
 	 * @param folder
 	 * @param canBeModified
@@ -1422,7 +1583,7 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 		HTML html = HTML.getValueForKey(getComponentHTMLKey());
 		this.vComponentHTMLBodyEnabled = !HTML.BLANK_CONTENT.equals(html);
 	}
-
+	
 	protected void setComponentViewEnabled(boolean enabled) {
 		if (enabled) {
 			this.componentViewTitle.setBackground(componentViewTitle.getDisplay().getSystemColor(SWT.COLOR_TITLE_BACKGROUND_GRADIENT));
@@ -1474,6 +1635,70 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 				section.put(SETTINGS_CREATEUNIMPLEMENTED, isCreateInherited());
 			}
 		}
+	}
+
+	@Override
+	protected IStatus superClassChanged() {
+		StatusInfo superclassStatus = new StatusInfo();
+		if (!DEFAULT_SUPERCLASS_NAME.equals(getSuperClass())) {
+			if (getSuperClass() == null || getSuperClass().matches("\\s*")) {
+				superclassStatus.setError("The super type must be assignable to " + DEFAULT_SUPERCLASS_NAME);
+			}
+			else if (getDefaultWOComponentType() == null) {
+				superclassStatus.setError(DEFAULT_SUPERCLASS_NAME + " is not on the classpath");
+			}
+			else {
+				try {
+					IType type = getJavaProject().findType(getSuperClass());
+					ITypeHierarchy typeHierarchy = type.newSupertypeHierarchy(new NullProgressMonitor());
+					if (!JavaModelUtil.isSuperType(typeHierarchy, getDefaultWOComponentType(), type)) {
+						superclassStatus.setError("The super type must be assignable to " + DEFAULT_SUPERCLASS_NAME);
+					}
+				} catch (JavaModelException e) {
+					System.err.println(getClass().getName() + ".superClassChanged() Failed to determine superclass hierarchy.");
+					e.printStackTrace(System.err);
+					superclassStatus.setWarning("Unable to determine superclass hierarchy");
+				}
+			}
+		}
+		if (!superclassStatus.isError()) {
+			IStatus status = super.superClassChanged();
+			if (!superclassStatus.isWarning() && status.getSeverity() == (IStatus.ERROR | IStatus.WARNING)) {
+				return status;
+			}
+		}
+		return superclassStatus;
+	}
+
+	@Override
+	protected IStatus typeNameChanged() {
+		IStatus typeNameStatus = super.typeNameChanged();
+		
+		if (typeNameStatus.getSeverity() != IStatus.ERROR && getTypeName() != null && !getTypeName().matches("\\s*")) {
+			if (getComponentContainer() == null) {
+				if (typeNameStatus.getSeverity() != IStatus.WARNING) {
+					typeNameStatus = new StatusInfo(IStatus.WARNING, "The component source folder is required");
+				}
+			}
+			else {
+				String componentName = getTypeName() + ".wo";
+				try {
+					for (IResource member : getComponentContainer().members()) {
+						if (member.getName().equalsIgnoreCase(componentName)) {
+							String typeName = "component";
+							if (member.getType() == IResource.FILE) {
+								typeName = "file";
+							}
+							typeNameStatus = new StatusInfo(IStatus.ERROR, "The component name matches an existing " + typeName);
+						}
+					}
+				} catch (CoreException e) {
+					System.err.println(getClass().getName() + ".typeNameChanged() failed to iterate members");
+					e.printStackTrace(System.err);
+				}
+			}
+		}
+		return typeNameStatus;
 	}
 
 }
