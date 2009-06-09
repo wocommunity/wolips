@@ -1,8 +1,12 @@
 package org.objectstyle.wolips.baseforplugins.util;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class CharSetUtils {
 	
   public static final String ENCODING_UTF8 = "UTF-8";
+  public static final String ENCODING_UTF16 = "UTF-16";
   public static final String ENCODING_MACROMAN = "MacRoman";
   public static final String ENCODING_MACSYMBOL = "MacSymbol";
   public static final String ENCODING_US_ASCII = "US-ASCII";
@@ -21,6 +25,18 @@ public class CharSetUtils {
   private CharSetUtils() { 
 	  /* Should not be instantiated */
   }
+  
+  public static List<String> defaultCharsetEncodingNames() {
+	  return Arrays.asList(
+			  ENCODING_UTF8,
+			  ENCODING_UTF16,
+			  ENCODING_US_ASCII,
+			  ENCODING_ISO_LATIN1,
+			  ENCODING_ISO_LATIN2,
+			  ENCODING_JAPANESE_EUC,
+			  ENCODING_JAPANESE_ISO2022,
+			  ENCODING_JAPANESE_SHIFTJIS);
+  }
 
   public static String encodingNameFromObjectiveC(final String encodingName) {
     if (encodingName.equals("NSISOLatin1StringEncoding"))
@@ -35,6 +51,8 @@ public class CharSetUtils {
       return ENCODING_JAPANESE_EUC;
     if (encodingName.equals("NSUTF8StringEncoding"))
       return ENCODING_UTF8;
+    if (encodingName.equals("NSUTF16StringEncoding"))
+        return ENCODING_UTF16;
     if (encodingName.equals("NSSymbolStringEncoding"))
       return ENCODING_MACSYMBOL;
     if (encodingName.equals("NSNonLossyASCIIStringEncoding"))
