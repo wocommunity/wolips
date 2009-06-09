@@ -26,6 +26,19 @@ public class CharSetUtils {
 	  /* Should not be instantiated */
   }
   
+  /**
+   * <ul>
+   * <li>UTF-8
+   * <li>UTF-16
+   * <li>US-ASCII
+   * <li>ISO-8859-1
+   * <li>ISO-8859-2
+   * <li>EUC_JP
+   * <li>ISO2022JP
+   * <li>SJIS
+   * </ul>
+   * @return the list of default suggested encoding names. UTF-8 is always preferred.
+   */
   public static List<String> defaultCharsetEncodingNames() {
 	  return Arrays.asList(
 			  ENCODING_UTF8,
