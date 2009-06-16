@@ -1,0 +1,24 @@
+# ApplicationClass == com.webobjects.eoapplication.client.EOClientApplicationSupport
+# JDB              == jdb
+# JDBOptions       == 
+# JVM              == java
+# JVMOptions       == 
+
+APPROOT/WebServerResources/Java/${projectName}.jar
+APPROOT/WebServerResources/Java/log4j-1.2.15.jar
+/System/Library/Frameworks/JavaFoundation.framework/WebServerResources/Java/JavaFoundation.jar
+WOROOT/Library/Frameworks/JavaEOControl.framework/WebServerResources/Java/JavaEOControl.jar
+WOROOT/Library/Frameworks/JavaXML.framework/WebServerResources/Java/JavaXML.jar
+WOROOT/Library/Frameworks/JavaDirectToWeb.framework/WebServerResources/Java/JavaDirectToWeb.jar
+WOROOT/Library/Frameworks/JavaEOApplication.framework/WebServerResources/Java/JavaEOApplication.jar
+WOROOT/Library/Frameworks/JavaEODistribution.framework/WebServerResources/Java/JavaEODistribution.jar
+WOROOT/Library/Frameworks/JavaEOGeneration.framework/WebServerResources/Java/JavaEOGeneration.jar
+WOROOT/Library/Frameworks/JavaEOInterface.framework/WebServerResources/Java/JavaEOInterface.jar
+WOROOT/Library/Frameworks/JavaEOInterfaceSwing.framework/WebServerResources/Java/JavaEOInterfaceSwing.jar
+WOROOT/Library/Frameworks/JavaEORuleSystem.framework/WebServerResources/Java/JavaEORuleSystem.jar
+HOMEROOT/Library/Java
+LOCALROOT/Library/Java
+WOROOT/Library/Java
+/Network/Library/Java
+WOROOT/Library/Frameworks/JavaVM.framework/Classes/classes.jar
+WOROOT/Library/Frameworks/JavaVM.framework/Classes/ui.jar

@@ -1,0 +1,49 @@
+<project name="javaclient" default="javaclient" basedir=".">
+	<!-- property determination  -->
+	<target name="init.properties">
+		<property file="build.properties" />
+
+		<property name="wolips.properties" value="${user.home}${file.separator}Library${file.separator}Application Support${file.separator}WOLips${file.separator}wolips.properties" />
+		<property file="${wolips.properties}" />
+		<condition property="wo.properties.check.failed">
+			<not>
+				<and>
+					<isset property="wo.system.frameworks" />
+					<isset property="wo.local.frameworks" />
+				</and>
+			</not>
+		</condition>
+		<fail message="The properties 'wo.system.frameworks' and 'wo.local.frameworks' must be set. Check that your ${wolips.properties} is correct." if="wo.properties.check.failed" />
+
+		<property name="build.app.name" value="${project.name}" />
+		<property name="build.app.name.lowercase" value="${project.name.lowercase}" />
+	</target>
+	
+	<target name="javaclient" depends="init.properties">
+		<!-- project client-side classes -->
+		<mkdir dir="build/${project.name}.woa/Contents/WebServerResources/Java" />
+		<copy todir="build/${project.name}.woa/Contents/WebServerResources/Java/">
+			<fileset dir="${classes.dir}" includes="**/client/**/*.class,**/common/**/*.class" />
+		</copy>
+		<jar basedir="${classes.dir}" includes="**/client/**/*.class,**/common/**/*.class" jarfile="build/${project.name}.woa/Contents/WebServerResources/Java/${project.name}.jar">
+		</jar>
+		
+		<!-- Launch Scripts and WOBootstrap.jar-->
+		<mkdir dir="build/${project.name}.woa/Contents/MacOS" />
+		<mkdir dir="build/${project.name}.woa/Contents/UNIX" />
+		<mkdir dir="build/${project.name}.woa/Contents/Windows" />
+
+		<copy file="/Library/Application Support/Apple/Developer Tools/WebObjects Support/UnixLaunch.sh" tofile="build/${project.name}.woa/Contents/${project.name}" />
+		<chmod file="build/${project.name}.woa/Contents/${project.name}" perm="ugo+rx" />
+		<copy file="/Library/Application Support/Apple/Developer Tools/WebObjects Support/WinLaunch.CMD" tofile="build/${project.name}.woa/Contents/${project.name}.CMD" />
+		<copy file="/Library/Application Support/Apple/Developer Tools/WebObjects Support/WinLaunch.CMD" tofile="build/${project.name}.woa/Contents/Windows/${project.name}.CMD" />
+		<copy file="/Library/Application Support/Apple/Developer Tools/WebObjects Support/WOBootstrap.jar" tofile="build/${project.name}.woa/Contents/WOBootstrap.jar" />
+
+		<!-- Don't copy the script over. For some reason the client-side application cannot connect to the server-side when launched using the script. -->
+		<copy file="/Library/Application Support/Apple/Developer Tools/WebObjects Support/UnixLaunchClient.sh" tofile="build/${project.name}.woa/Contents/MacOS/${project.name}_Client" />
+		<chmod file="build/${project.name}.woa/Contents/MacOS/${project.name}_Client" perm="ugo+rx" />
+		<copy file="ClasspathClient.txt" tofile="build/${project.name}.woa/Contents/MacOS/ClasspathClient.txt" />
+
+
+	</target>
+</project>

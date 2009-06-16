@@ -1,0 +1,29 @@
+#if ($entity.packageName)
+package $entity.packageName;
+
+#end
+import org.apache.log4j.Logger;
+
+import com.webobjects.eocontrol.EOEditingContext;
+
+public class ${entity.classNameWithoutPackage} extends ${entity.prefixClassNameWithOptionalPackage} {
+
+	@SuppressWarnings("unused")
+	private static Logger log = Logger.getLogger(${entity.classNameWithoutPackage}.class);
+
+	public ${entity.classNameWithoutPackage}() {
+		super();
+		// Don't do anything here! All initial object setup must 
+		// be done in the awakeFromInsertion(EOEditingContext) method.
+	}
+
+	@Override
+	public void awakeFromInsertion(EOEditingContext ec) {
+		super.awakeFromInsertion(ec);
+		/*
+		* All attributes you set here should be wrapped in a if(attribute == null) conditional, otherwise
+		* many bad things can happen as new instances are copied back from the java client and inserted into
+		* the server-side editing context! 
+		*/
+	}
+}

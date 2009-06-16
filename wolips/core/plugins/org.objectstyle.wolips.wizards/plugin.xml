@@ -143,6 +143,18 @@
          </description>
       </wizard>
       <wizard
+            name="D2JC Application"
+            icon="icons/woproject/d2wapplication_wiz.gif"
+            category="org.objectstyle.wolips.wizards"
+            project="true"
+            id="org.objectstyle.wolips.wizards.d2jcapplication">
+            <class class="org.objectstyle.wolips.wizards.D2JCApplicationWizard">
+              <parameter name="wotype" value="true"/>
+            </class>
+         <description>
+         </description>
+      </wizard>
+      <wizard
             name="Jar Project"
             icon="icons/woproject/jar_project_wiz.gif"
             category="org.objectstyle.wolips.wizards"
