@@ -322,67 +322,69 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 			if (this._html == null) {
 				StringBuilder buff = new StringBuilder();
 				
-				String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-				String userName = System.getProperty("user.name", "WOLips");
-				boolean isXML = true;
-				
-				if (HTML_UNSPECIFIED.equals(this)) {
-					isXML = false;
-					buff.append("<html>");
+				if (!BLANK_CONTENT.equals(this)) {
+					String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+					String userName = System.getProperty("user.name", "WOLips");
+					boolean isXML = true;
+					
+					if (HTML_UNSPECIFIED.equals(this)) {
+						isXML = false;
+						buff.append("<html>");
+					}
+					else if (HTML401_STRICT.equals(this)) {
+						isXML = false;
+						buff.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\"").append(lineSeparator);
+						buff.append("   \"http://www.w3.org/TR/html4/strict.dtd\">").append(lineSeparator);
+						buff.append(lineSeparator);
+						buff.append("<html lang=\"en\">").append(lineSeparator);
+					}
+					else if (HTML401_TRANSITIONAL.equals(this)) {
+						isXML = false;
+						buff.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"").append(lineSeparator);
+						buff.append("   \"http://www.w3.org/TR/html4/loose.dtd\">").append(lineSeparator);
+						buff.append(lineSeparator);
+						buff.append("<html lang=\"en\">").append(lineSeparator);
+					}
+					else if (XHTML10_FRAMESET.equals(this)) {
+						buff.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\"").append(lineSeparator);
+						buff.append("	\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">").append(lineSeparator);
+						buff.append(lineSeparator);
+						buff.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">").append(lineSeparator);
+					}
+					else if (XHTML10_STRICT.equals(this)) {
+						buff.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"").append(lineSeparator);
+						buff.append("	\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">").append(lineSeparator);
+						buff.append(lineSeparator);
+						buff.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">").append(lineSeparator);
+					}
+					else if (XHTML10_TRANSITIONAL.equals(this)) {
+						buff.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"").append(lineSeparator);
+						buff.append("	\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">").append(lineSeparator);
+						buff.append(lineSeparator);
+						buff.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">").append(lineSeparator);
+					}
+					else if (XHTML11.equals(this)) {
+						buff.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(lineSeparator);
+						buff.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"").append(lineSeparator);
+						buff.append("	\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">").append(lineSeparator);
+						buff.append(lineSeparator);
+						buff.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">").append(lineSeparator);
+					}
+					
+					String closingTag = isXML ? "/>" : ">";
+					
+					buff.append(lineSeparator).append("<head>").append(lineSeparator);
+					buff.append(lineSeparator).append("	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"").append(closingTag);
+					buff.append(lineSeparator).append("	<title>untitled</title>");
+					buff.append(lineSeparator).append("	<meta name=\"generator\" content=\"WOLips http://wiki.objectstyle.org/confluence/display/WOL/Home\"").append(closingTag);
+					buff.append(lineSeparator).append("	<meta name=\"author\" content=\"").append(userName).append('"').append(closingTag);
+					buff.append(lineSeparator).append("	<!-- Date: ").append(dateString).append(" -->");
+					buff.append(lineSeparator).append("</head>");
+					buff.append(lineSeparator).append("<body>");
+					buff.append(lineSeparator).append(lineSeparator);
+					buff.append(lineSeparator).append("</body>");
+					buff.append(lineSeparator).append("</html>");
 				}
-				else if (HTML401_STRICT.equals(this)) {
-					isXML = false;
-					buff.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\"").append(lineSeparator);
-					buff.append("   \"http://www.w3.org/TR/html4/strict.dtd\">").append(lineSeparator);
-					buff.append(lineSeparator);
-					buff.append("<html lang=\"en\">").append(lineSeparator);
-				}
-				else if (HTML401_TRANSITIONAL.equals(this)) {
-					isXML = false;
-					buff.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"").append(lineSeparator);
-					buff.append("   \"http://www.w3.org/TR/html4/loose.dtd\">").append(lineSeparator);
-					buff.append(lineSeparator);
-					buff.append("<html lang=\"en\">").append(lineSeparator);
-				}
-				else if (XHTML10_FRAMESET.equals(this)) {
-					buff.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Frameset//EN\"").append(lineSeparator);
-					buff.append("	\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd\">").append(lineSeparator);
-					buff.append(lineSeparator);
-					buff.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">").append(lineSeparator);
-				}
-				else if (XHTML10_STRICT.equals(this)) {
-					buff.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\"").append(lineSeparator);
-					buff.append("	\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">").append(lineSeparator);
-					buff.append(lineSeparator);
-					buff.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">").append(lineSeparator);
-				}
-				else if (XHTML10_TRANSITIONAL.equals(this)) {
-					buff.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"").append(lineSeparator);
-					buff.append("	\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">").append(lineSeparator);
-					buff.append(lineSeparator);
-					buff.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">").append(lineSeparator);
-				}
-				else if (XHTML11.equals(this)) {
-					buff.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(lineSeparator);
-					buff.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\"").append(lineSeparator);
-					buff.append("	\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">").append(lineSeparator);
-					buff.append(lineSeparator);
-					buff.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\">").append(lineSeparator);
-				}
-				
-				String closingTag = isXML ? "/>" : ">";
-				
-				buff.append(lineSeparator).append("<head>").append(lineSeparator);
-				buff.append(lineSeparator).append("	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"").append(closingTag);
-				buff.append(lineSeparator).append("	<title>untitled</title>");
-				buff.append(lineSeparator).append("	<meta name=\"generator\" content=\"WOLips http://wiki.objectstyle.org/confluence/display/WOL/Home\"").append(closingTag);
-				buff.append(lineSeparator).append("	<meta name=\"author\" content=\"").append(userName).append('"').append(closingTag);
-				buff.append(lineSeparator).append("	<!-- Date: ").append(dateString).append(" -->");
-				buff.append(lineSeparator).append("</head>");
-				buff.append(lineSeparator).append("<body>");
-				buff.append(lineSeparator).append(lineSeparator);
-				buff.append(lineSeparator).append("</body>");
-				buff.append(lineSeparator).append("</html>");
 				
 				this._html = buff.toString();
 			}
@@ -999,7 +1001,9 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 		//createTypeNameControls(composite, nColumns);
 		//createModifierControls(composite, nColumns);
 		createSuperClassControls(composite, nColumns);
-		createSuperInterfacesControls(composite, nColumns);
+		if (isSuperInterfacesEnabled()) {
+			createSuperInterfacesControls(composite, nColumns);
+		}
 		//createMethodStubSelectionControls(composite, nColumns);
 		//createCommentControls(composite, nColumns);
 		
@@ -1354,6 +1358,34 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
         setPackageFragmentRoot(initRoot, true);
     }
 	
+	protected void initSuperInterfaces(IJavaElement elem) {
+		if (isSuperInterfacesEnabled() && (getSuperInterfaces() == null || getSuperInterfaces().size() == 0)) {
+			List<String> interfaces = new ArrayList<String>();
+			if (elem instanceof ICompilationUnit) {
+				ICompilationUnit unit = (ICompilationUnit) elem;
+				
+				try {
+					if (elem.getElementType() == IJavaElement.COMPILATION_UNIT) {
+						IType primaryType = unit.findPrimaryType();
+						if (primaryType.exists() && primaryType.isInterface()) {
+							String interfaceName = SuperInterfaceSelectionDialog.getNameWithTypeParameters(primaryType);
+							if (interfaceName != null) {
+								interfaces.add(interfaceName);
+							}
+						}
+					}
+					
+				} catch (JavaModelException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if (interfaces.size() > 0) {
+				setSuperInterfaces(interfaces, true);
+			}
+		}
+	}
+	
 	@Override
 	protected void initTypePage(IJavaElement elem) {
 		super.initTypePage(elem);
@@ -1378,31 +1410,7 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 			}
 			
 			// auto-populate implementing interface (if selected)
-			if (getSuperInterfaces() == null || getSuperInterfaces().size() == 0) {
-				List<String> interfaces = new ArrayList<String>();
-				if (elem instanceof ICompilationUnit) {
-					ICompilationUnit unit = (ICompilationUnit) elem;
-					
-					try {
-						if (elem.getElementType() == IJavaElement.COMPILATION_UNIT) {
-							IType primaryType = unit.findPrimaryType();
-							if (primaryType.exists() && primaryType.isInterface()) {
-								String interfaceName = SuperInterfaceSelectionDialog.getNameWithTypeParameters(primaryType);
-								if (interfaceName != null) {
-									interfaces.add(interfaceName);
-								}
-							}
-						}
-						
-					} catch (JavaModelException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				if (interfaces.size() > 0) {
-					setSuperInterfaces(interfaces, true);
-				}
-			}
+			initSuperInterfaces(elem);
 			
 			// if the package fragment isn't set default to Main.class's package 
 			if (getPackageFragment() == null || getPackageFragment().isDefaultPackage()) {
@@ -1472,6 +1480,10 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 			}
 		}
 		return result;
+	}
+	
+	protected boolean isSuperInterfacesEnabled() {
+		return false;
 	}
 
 	/**
