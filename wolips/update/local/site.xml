@@ -31,7 +31,7 @@
       <category name="Scripting Support"/>
    </feature>
    <feature url="features/org.objectstyle.wolips.apple.mavenintegration.feature_1.0.6.jar" id="org.objectstyle.wolips.apple.mavenintegration.feature" version="1.0.6">
-      <category name="Apple Maven Support"/>
+      <category name="Maven Support"/>
    </feature>
    <category-def name="Standard Install" label="Standard Install">
       <description>
@@ -45,12 +45,7 @@
    </category-def>
    <category-def name="Maven Support" label="Maven Support">
       <description>
-         maven
-      </description>
-   </category-def>
-   <category-def name="Apple Maven Support" label="Apple Maven Support">
-      <description>
-         Apple Maven Extensions
+         WOLips extensions to support the WebObjects project development using Maven 1 and Maven 2.
       </description>
    </category-def>
    <category-def name="Scripting Support" label="Scripting Support">
