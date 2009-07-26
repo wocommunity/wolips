@@ -69,6 +69,13 @@
 			<artifactId>JavaWOJSPServlet</artifactId>
 			<version>${dollar}{webobjects.version}</version>
 		</dependency>
+#if( $WebObjectsVersion.contains( "5.3" ) )
+		<dependency>
+			<groupId>${dollar}{webobjects.groupId}</groupId>
+			<artifactId>JavaWOJSPServlet_client</artifactId>
+			<version>${dollar}{webobjects.version}</version>
+		</dependency>
+#end
 		<dependency>
 			<groupId>${dollar}{webobjects.groupId}</groupId>
 			<artifactId>JavaFoundation</artifactId>

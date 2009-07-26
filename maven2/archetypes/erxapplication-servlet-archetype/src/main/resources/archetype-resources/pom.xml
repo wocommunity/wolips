@@ -72,6 +72,11 @@
 		</dependency>
 		<dependency>
 			<groupId>${dollar}{wonder.core.groupId}</groupId>
+			<artifactId>ERServlet</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>${dollar}{wonder.core.groupId}</groupId>
 			<artifactId>WOOgnl</artifactId>
 			<version>${dollar}{wonder.version}</version>
 			<classifier>${dollar}{wonder.classifier}</classifier>
@@ -96,6 +101,13 @@
 			<artifactId>JavaWOJSPServlet</artifactId>
 			<version>${dollar}{webobjects.version}</version>
 		</dependency>
+#if( $WebObjectsVersion.contains( "5.3" ) )
+		<dependency>
+			<groupId>${dollar}{webobjects.groupId}</groupId>
+			<artifactId>JavaWOJSPServlet_client</artifactId>
+			<version>${dollar}{webobjects.version}</version>
+		</dependency>
+#end
 		<dependency>
 			<groupId>${dollar}{webobjects.groupId}</groupId>
 			<artifactId>JavaFoundation</artifactId>
