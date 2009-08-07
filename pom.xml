@@ -92,5 +92,10 @@
 			</extension>
 		</extensions>
 	</build>
-
+	
+	<scm>
+		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/archetypes</connection>
+		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/archetypes</developerConnection>
+		<url>http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/archetypes</url>
+	</scm>
 </project>
