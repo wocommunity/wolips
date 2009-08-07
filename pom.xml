@@ -90,4 +90,10 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<scm>
+		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/maven-wolifecycle-plugin</connection>
+		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/maven-wolifecycle-plugin</developerConnection>
+		<url>http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/maven-wolifecycle-plugin</url>
+	</scm>
 </project>
