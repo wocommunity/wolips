@@ -89,7 +89,7 @@ public class TestPomGenerator extends XMLTestCase {
 		createdFile.deleteOnExit();
 
 		generator.writeModel(createdFile);
-
+		
 		assertXMLEqual(FileUtils.readFileToString(expectedFile, null), FileUtils.readFileToString(createdFile, null));
 	}
 
