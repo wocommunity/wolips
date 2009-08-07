@@ -77,4 +77,10 @@
 			<artifactId>maven-plugin-testing-harness</artifactId>
 		</dependency>
 	</dependencies>
+
+	<scm>
+		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/maven-wobootstrap-plugin</connection>
+		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/maven-wobootstrap-plugin</developerConnection>
+		<url>http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/maven-wobootstrap-plugin</url>
+	</scm>
 </project>

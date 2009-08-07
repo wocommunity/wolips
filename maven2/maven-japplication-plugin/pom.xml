@@ -57,4 +57,10 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<scm>
+		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/maven-japplication-plugin</connection>
+		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/maven-japplication-plugin</developerConnection>
+		<url>http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/maven-japplication-plugin</url>
+	</scm>
 </project>
