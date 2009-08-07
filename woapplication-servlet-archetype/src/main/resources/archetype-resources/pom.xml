@@ -23,6 +23,8 @@
 			<resource>
 				<targetPath>Resources</targetPath>
 				<directory>${dollar}{basedir}/src/main/resources</directory>
+				<!-- The archetype created project uses filtering in the Info.plist, you may wish to change this -->
+				<filtering>true</filtering>
 			</resource>
 			<resource>
 				<targetPath>Resources</targetPath>
@@ -39,6 +41,7 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
 					<archiveClasses>true</archiveClasses>
+					<!-- The archetype created project uses filtering in the web.xml, you may wish to change this -->
 					<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
 				</configuration>
 			</plugin>
