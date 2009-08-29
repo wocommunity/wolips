@@ -33,12 +33,6 @@
 		</archetype>
 		<archetype>
 			<groupId>org.objectstyle.woproject.maven2</groupId>
-			<artifactId>woapplication-archetype</artifactId>
-			<version>${project.version}</version>
-			<description>WebObjects Application Archetype</description>
-		</archetype>
-		<archetype>
-			<groupId>org.objectstyle.woproject.maven2</groupId>
 			<artifactId>woapplication-servlet-archetype</artifactId>
 			<version>${project.version}</version>
 			<description>WebObjects Servlet Application Archetype</description>
