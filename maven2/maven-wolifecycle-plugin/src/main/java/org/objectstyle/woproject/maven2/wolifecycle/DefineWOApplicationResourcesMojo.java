@@ -180,6 +180,10 @@ public class DefineWOApplicationResourcesMojo extends AbstractDefineResourcesMoj
 			fileWriter = new FileWriter(file);
 
 			fileWriter.write("classpath.localRepository.baseDir = " + normalizedPath(localRepository.getBasedir()));
+			
+			// Fixes the wrong BUILD FAILED message. Those variable are not really used when building with Maven 
+			fileWriter.write("\nwo.wolocalroot = foo");
+			fileWriter.write("\nwo.wosystemroot = bar");
 
 			fileWriter.flush();
 			fileWriter.close();
