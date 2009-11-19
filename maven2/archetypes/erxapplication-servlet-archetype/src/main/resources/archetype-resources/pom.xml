@@ -18,14 +18,18 @@
 
 		<wonder.core.groupId>wonder.core</wonder.core.groupId>
 		<wonder.version>${WonderVersion}</wonder.version>
-	#if( $WebObjectsVersion.contains( "5.3" ) )
-	<wonder.classifier>wo53</wonder.classifier>
-	#elseif( $WebObjectsVersion.contains( "5.4" ) )
-	<wonder.classifier>wo54</wonder.classifier>
-	#else
-	<wonder.classifier>unknown</wonder.classifier>
-	#end
-</properties>
+#if( $WebObjectsVersion.contains( "5.3" ) )
+		<wonder.classifier>wo53</wonder.classifier>
+#elseif( $WebObjectsVersion.contains( "5.4" ) )
+		<wonder.classifier>wo54</wonder.classifier>
+#else
+		<wonder.classifier>unknown</wonder.classifier>
+#end
+
+		<!-- encoding properties -->
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 
 	<build>
 		<finalName>${dollar}{project.artifactId}</finalName>

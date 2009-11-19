@@ -15,6 +15,10 @@
 		<mainclass>${package}.app.Application</mainclass>
 		<webobjects.groupId>com.webobjects</webobjects.groupId>
 		<webobjects.version>${WebObjectsVersion}</webobjects.version>
+		
+		<!-- encoding properties -->
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 </properties>
 
 	<build>
