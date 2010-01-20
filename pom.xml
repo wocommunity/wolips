@@ -19,6 +19,13 @@
 			<groupId>org.objectstyle.woproject.ant</groupId>
 			<artifactId>woproject-ant-tasks</artifactId>
 			<scope>runtime</scope>
+			<!-- There is a conflict with the new groupId org.apache.ant (should be fixed in the woproject-ant-tasks pom.xml) -->
+			<exclusions>
+				<exclusion>
+					<groupId>ant</groupId>
+					<artifactId>ant</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -43,6 +50,13 @@
 		<dependency>
 			<groupId>org.apache.maven</groupId>
 			<artifactId>maven-artifact-ant</artifactId>
+			<!-- There is a conflict with the new groupId org.apache.ant -->
+			<exclusions>
+				<exclusion>
+					<groupId>ant</groupId>
+					<artifactId>ant</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>
@@ -73,6 +87,17 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.ant</groupId>
+				<artifactId>ant</artifactId>
+				<version>1.7.1</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -90,7 +115,7 @@
 			</plugin>
 		</plugins>
 	</build>
-	
+
 	<scm>
 		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/maven-wolifecycle-plugin</connection>
 		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/maven-wolifecycle-plugin</developerConnection>
