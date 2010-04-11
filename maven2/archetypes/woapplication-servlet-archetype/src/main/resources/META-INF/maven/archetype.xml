@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archetype>
-	<id>woapplication-archetype</id>
+	<id>woapplication-servlet-archetype</id>
 	<sources>
 		<source>src/main/java/app/Application.java</source>
 		<source>src/main/java/app/DirectAction.java</source>

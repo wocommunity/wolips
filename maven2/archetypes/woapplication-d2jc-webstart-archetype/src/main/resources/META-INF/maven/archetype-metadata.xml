@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<archetype-descriptor name="woapplication-archetype">
+<archetype-descriptor name="woapplication-d2jc-webstart-archetype">
 	<requiredProperties>
 		<requiredProperty key="WebObjectsVersion">
 			<defaultValue>5.4.3</defaultValue>
@@ -16,11 +16,6 @@
 			<directory>src/main/components</directory>
 			<includes>
 				<include>**/*.html</include>
-			</includes>
-		</fileSet>
-		<fileSet encoding="UTF-8">
-			<directory>src/main/components</directory>
-			<includes>
 				<include>**/*.woo</include>
 				<include>**/*.wod</include>
 				<include>**/*.api</include>
