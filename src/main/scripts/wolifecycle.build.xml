@@ -55,9 +55,14 @@
 		</woapplication>
 
 		<tar tarfile="target/${finalName}.woapplication.tar" longfile="gnu">
-			<tarfileset dir="target/${finalName}.woa/" prefix="${finalName}.woa/" preserveLeadingSlashes="true" filemode="755">
-				<!-- exclude name="**/Contents/WebServerResources/**"/>
-				<exclude name="**/Contents/Frameworks/**"/ -->
+			<tarfileset dir="target" preserveLeadingSlashes="true" filemode="755">
+				<include name="${finalName}.woa/${artifactId}" />
+				<include name="${finalName}.woa/Contents/MacOS/${finalName}" />
+			</tarfileset>
+			<tarfileset dir="target" preserveLeadingSlashes="true">
+				<include name="${finalName}.woa/**" />
+				<exclude name="${finalName}.woa/${artifactId}" />
+				<exclude name="${finalName}.woa/Contents/MacOS/${finalName}" />
 			</tarfileset>
 		</tar>
 
