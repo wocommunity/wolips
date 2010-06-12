@@ -18,7 +18,7 @@
 	</target>
 
 	<!-- ================================================================== -->
-	<!-- W O A P L L I C A T I O N P R O P E R T I E S                      -->
+	<!-- W O A P P L I C A T I O N P R O P E R T I E S                      -->
 	<!-- ================================================================== -->
 	<target name="woapplicationproperties" depends="test-pom">
 		<property file="build.properties" />
@@ -44,7 +44,7 @@
 		  </delete> -->
 
 
-		<woapplication name="${finalName}" frameworksBaseURL="/WebObjects/${finalName}.woa/Contents/Frameworks" startupScriptName="${artifactId}" stdFrameworks="false" destDir="target" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}">
+		<woapplication name="${finalName}" frameworksBaseURL="/WebObjects/${finalName}.woa/Contents/Frameworks" startupScriptName="${artifactId}" stdFrameworks="false" destDir="target" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" cfBundleVersion="${version}" cfBundleShortVersion="${version}">
 			<classes dir="target/classes">
 			</classes>
 			<lib dir="${dependencies.lib}">
@@ -100,7 +100,7 @@
 	</target>
 
 	<target name="build-woframework" depends="woframeworkproperties">
-		<woframework name="${artifactId}" destDir="target" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" eoAdaptorClassName="${eoAdaptorClassName}">
+		<woframework name="${artifactId}" destDir="target" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" eoAdaptorClassName="${eoAdaptorClassName}" cfBundleVersion="${version}" cfBundleShortVersion="${version}">
 			<classes dir="target/classes">
 			</classes>
 		</woframework>
