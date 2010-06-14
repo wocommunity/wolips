@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.objectstyle.woproject</groupId>
@@ -24,4 +23,54 @@
 		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject/woenvironment</developerConnection>
 		<url>http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/woenvironment</url>
 	</scm>
+
+	<repositories>
+		<repository>
+			<id>wocommunity.releases</id>
+			<name>WOCommunity Maven 2 Releases Repository</name>
+			<url>http://maven.wocommunity.org/content/groups/public</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>wocommunity.snapshots</id>
+			<name>WOCommunity Maven 2 Snapshots Repository</name>
+			<url>http://maven.wocommunity.org/content/groups/public-snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>wocommunity.releases</id>
+			<name>WOCommunity Maven 2 Releases Repository</name>
+			<url>http://maven.wocommunity.org/content/groups/public</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
+		<pluginRepository>
+			<id>wocommunity.snapshots</id>
+			<name>WOCommunity Maven 2 Snapshots Repository</name>
+			<url>http://maven.wocommunity.org/content/groups/public-snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
 </project>

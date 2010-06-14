@@ -70,4 +70,54 @@
 		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/woproject-ant-tasks</developerConnection>
 		<url>http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/woproject-ant-tasks</url>
 	</scm>
+
+	<repositories>
+		<repository>
+			<id>wocommunity.releases</id>
+			<name>WOCommunity Maven 2 Releases Repository</name>
+			<url>http://maven.wocommunity.org/content/groups/public</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+		<repository>
+			<id>wocommunity.snapshots</id>
+			<name>WOCommunity Maven 2 Snapshots Repository</name>
+			<url>http://maven.wocommunity.org/content/groups/public-snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>wocommunity.releases</id>
+			<name>WOCommunity Maven 2 Releases Repository</name>
+			<url>http://maven.wocommunity.org/content/groups/public</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
+		<pluginRepository>
+			<id>wocommunity.snapshots</id>
+			<name>WOCommunity Maven 2 Snapshots Repository</name>
+			<url>http://maven.wocommunity.org/content/groups/public-snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
 </project>
