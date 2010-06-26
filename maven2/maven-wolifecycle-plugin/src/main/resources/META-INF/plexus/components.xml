@@ -9,10 +9,8 @@
 				org.apache.maven.artifact.handler.DefaultArtifactHandler
 			</implementation>
 			<configuration>
-				<!-- classifier>wowebserverresources</classifier -->
 				<extension>wowebserverresources.tar.gz</extension>
 				<type>wowebserverresources.tar.gz</type>
-				<packaging>wowebserverresources.tar.gz</packaging>
 				<language>html</language>
 				<addedToClasspath>false</addedToClasspath>
 			</configuration>
@@ -26,10 +24,8 @@
 				org.apache.maven.artifact.handler.DefaultArtifactHandler
 			</implementation>
 			<configuration>
-				<!-- classifier>woapplication</classifier-->
 				<extension>woapplication.tar.gz</extension>
 				<type>woapplication.tar.gz</type>
-				<packaging>woapplication.tar.gz</packaging>
 				<language>java</language>
 				<addedToClasspath>false</addedToClasspath>
 				<includesDependencies>true</includesDependencies>
@@ -44,10 +40,8 @@
 				org.apache.maven.artifact.handler.DefaultArtifactHandler
 			</implementation>
 			<configuration>
-				<!-- classifier>woapplication</classifier-->
 				<extension>woapplication</extension>
 				<type>woapplication</type>
-				<packaging>woapplication</packaging>
 				<language>java</language>
 				<addedToClasspath>false</addedToClasspath>
 				<includesDependencies>false</includesDependencies>
@@ -113,7 +107,6 @@
 			<configuration>
 				<type>woframework</type>
 				<extension>jar</extension>
-				<packaging>jar</packaging>
 				<language>java</language>
 				<addedToClasspath>true</addedToClasspath>
 			</configuration>
