@@ -20,51 +20,59 @@ import org.apache.maven.project.MavenProject;
  */
 public class PackageWOApplicationResourcesMojo extends AbstractPackageMojo {
 
-	/**
-	 * The maven project.
-	 * 
-	 * @parameter expression="${project}"
-	 * @required
-	 * @readonly
-	 */
-	private MavenProject project;
+    /**
+     * The maven project.
+     * 
+     * @parameter expression="${project}"
+     * @required
+     * @readonly
+     */
+    private MavenProject project;
 
-	public PackageWOApplicationResourcesMojo() {
-		super();
-	}
+    public PackageWOApplicationResourcesMojo() {
+	super();
+    }
 
-	@Override
-	public void execute() throws MojoExecutionException, MojoFailureException {
-		super.execute();
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+	super.execute();
 
-		File woapplicationFile = getWOApplicationFile();
+	File woapplicationFile = getWOApplicationFile();
 
-		getLog().info("Attaching artifact: " + woapplicationFile.getAbsolutePath());
+	getLog().info(
+		"Attaching artifact: " + woapplicationFile.getAbsolutePath());
 
-		getProjectHelper().attachArtifact(project, "woapplication.tar.gz", getClassifier(), woapplicationFile);
+	getProjectHelper().attachArtifact(project, "woapplication.tar.gz",
+		getClassifier(), woapplicationFile);
 
-		File webServerResourcesArtifactFile = getWOWebServerResourcesArtifactFile();
+	File webServerResourcesArtifactFile = getWOWebServerResourcesArtifactFile();
 
-		getLog().info("Attaching artifact: " + webServerResourcesArtifactFile.getAbsolutePath());
+	getLog().info(
+		"Attaching artifact: "
+			+ webServerResourcesArtifactFile.getAbsolutePath());
 
-		getProjectHelper().attachArtifact(project, "wowebserverresources.tar.gz", getClassifier(), webServerResourcesArtifactFile);
-	}
+	getProjectHelper().attachArtifact(project,
+		"wowebserverresources.tar.gz", getClassifier(),
+		webServerResourcesArtifactFile);
+    }
 
-	@Override
-	public String getProductExtension() {
-		return "woapplication";
-	}
+    @Override
+    public String getProductExtension() {
+	return "woapplication";
+    }
 
-	@Override
-	public MavenProject getProject() {
-		return project;
-	}
+    @Override
+    public MavenProject getProject() {
+	return project;
+    }
 
-	protected File getWOApplicationFile() {
-		return new File(getBuildDirectory(), getFinalName() + ".woapplication.tar.gz");
-	}
+    protected File getWOApplicationFile() {
+	return new File(getBuildDirectory(), getFinalName()
+		+ ".woapplication.tar.gz");
+    }
 
-	private File getWOWebServerResourcesArtifactFile() {
-		return new File(getBuildDirectory(), getFinalName() + ".wowebserverresources.tar.gz");
-	}
+    private File getWOWebServerResourcesArtifactFile() {
+	return new File(getBuildDirectory(), getFinalName()
+		+ ".wowebserverresources.tar.gz");
+    }
 }

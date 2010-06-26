@@ -59,29 +59,29 @@ import junit.framework.TestCase;
 
 public class TestWOMojo extends TestCase {
 
-	protected AbstractWOMojo mojo;
+    protected AbstractWOMojo mojo;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+    @Override
+    protected void setUp() throws Exception {
+	super.setUp();
 
-		mojo = new MockWOMojo();
-	}
+	mojo = new MockWOMojo();
+    }
 
-	public void testIsNotWebObjectsGroup() throws Exception {
-		String group = "another.group";
+    public void testIsNotWebObjectsGroup() throws Exception {
+	String group = "another.group";
 
-		assertFalse(mojo.isWebObjectAppleGroup(group));
-	}
+	assertFalse(mojo.isWebObjectAppleGroup(group));
+    }
 
-	public void testIsNullGroup() throws Exception {
-		assertFalse(mojo.isWebObjectAppleGroup(null));
-	}
+    public void testIsNullGroup() throws Exception {
+	assertFalse(mojo.isWebObjectAppleGroup(null));
+    }
 
-	public void testWebObjectsGroupIsOsIndependent() throws Exception {
-		String group = "com.webobjects";
+    public void testWebObjectsGroupIsOsIndependent() throws Exception {
+	String group = "com.webobjects";
 
-		assertTrue(mojo.isWebObjectAppleGroup(group));
-	}
+	assertTrue(mojo.isWebObjectAppleGroup(group));
+    }
 
 }

@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2004 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -68,56 +68,52 @@ import java.util.List;
  * @author ulrich
  */
 public class PatternsetReader {
-	private List<String> pattern = Collections.emptyList();
+    private List<String> pattern = Collections.emptyList();
 
-	/*
-	 * private long lastReadAt = 0; private IFile theFile = null;
-	 */
+    public PatternsetReader(final File patternset) throws IOException {
 
-	public PatternsetReader(final File patternset) throws IOException {
+	List<String> patternList = new ArrayList<String>();
 
-		List<String> patternList = new ArrayList<String>();
+	BufferedReader patternReader = null;
 
-		BufferedReader patternReader = null;
+	try {
+	    patternReader = new BufferedReader(new FileReader(patternset));
 
-		try {
-			patternReader = new BufferedReader(new FileReader(patternset));
+	    String line = patternReader.readLine();
 
-			String line = patternReader.readLine();
-
-			while (line != null) {
-				if (line.length() > 0) {
-					patternList.add(line);
-				}
-
-				line = patternReader.readLine();
-			}
-		} finally {
-			if (null != patternReader) {
-				try {
-					patternReader.close();
-				} catch (IOException ioe) {
-					// Ignore exception
-				}
-			}
+	    while (line != null) {
+		if (line.length() > 0) {
+		    patternList.add(line);
 		}
 
-		pattern = patternList;
+		line = patternReader.readLine();
+	    }
+	} finally {
+	    if (null != patternReader) {
+		try {
+		    patternReader.close();
+		} catch (IOException ioe) {
+		    // Ignore exception
+		}
+	    }
 	}
 
-	/**
-	 * @param pattern
-	 */
-	public PatternsetReader(final List<String> pattern) {
-		super();
+	pattern = patternList;
+    }
 
-		this.pattern = pattern;
-	}
+    /**
+     * @param pattern
+     */
+    public PatternsetReader(final List<String> pattern) {
+	super();
 
-	/**
-	 * @return Returns the pattern.
-	 */
-	public List<String> getPattern() {
-		return pattern;
-	}
+	this.pattern = pattern;
+    }
+
+    /**
+     * @return Returns the pattern.
+     */
+    public List<String> getPattern() {
+	return pattern;
+    }
 }
