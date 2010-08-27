@@ -19,6 +19,8 @@ public abstract class AbstractPackageMojo extends AbstractWOMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
 	getLog().info("Packaging WebObjects project");
+
+	getProject().getArtifact().setFile(getArtifactFile());
     }
 
     protected File getArtifactFile() {
