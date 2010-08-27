@@ -148,9 +148,6 @@
 							<package>
 								org.objectstyle.woproject.maven2:maven-wolifecycle-plugin:package-woframework
 							</package>
-							<integration-test>
-								org.apache.maven.plugins:maven-install-plugin:install
-							</integration-test>
 							<install>
 								org.apache.maven.plugins:maven-install-plugin:install
 							</install>
