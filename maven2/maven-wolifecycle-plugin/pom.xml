@@ -6,7 +6,7 @@
 		<version>2.1</version>
 	</parent>
 	<artifactId>maven-wolifecycle-plugin</artifactId>
-	<version>2.2</version>
+	<version>2.3-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<name>Maven WOLifecycle Plugin</name>
 	<dependencies>
@@ -117,8 +117,8 @@
 	</build>
 
 	<scm>
-		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/tags/maven-wolifecycle-plugin-2.2</connection>
-		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/tags/maven-wolifecycle-plugin-2.2</developerConnection>
-		<url>http://svn.objectstyle.org/repos/woproject/tags/maven-wolifecycle-plugin-2.2</url>
+		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/maven-wolifecycle-plugin</connection>
+		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/maven-wolifecycle-plugin</developerConnection>
+		<url>http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/maven-wolifecycle-plugin</url>
 	</scm>
 </project>
