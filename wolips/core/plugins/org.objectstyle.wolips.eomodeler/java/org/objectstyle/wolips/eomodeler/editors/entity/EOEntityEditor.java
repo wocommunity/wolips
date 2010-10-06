@@ -143,6 +143,17 @@ public class EOEntityEditor extends EditorPart implements IEntityEditor, ISelect
 	public void setFocus() {
 		// DO NOTHING
 	}
+	
+	@Override
+	public void dispose() {
+		if (myRelationshipsTableViewer != null) {
+			myRelationshipsTableViewer.dispose();
+		}
+		if (myAttributesTableViewer != null) {
+			myAttributesTableViewer.dispose();
+		}
+		super.dispose();
+	}
 
 	protected void updateTableViewers() {
 		if (myRelationshipsTableViewer != null) {
