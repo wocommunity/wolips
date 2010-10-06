@@ -45,6 +45,7 @@ package org.objectstyle.wolips.componenteditor.part;
 
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -61,8 +62,10 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IShowEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.MultiPageSelectionProvider;
@@ -78,7 +81,7 @@ import org.objectstyle.wolips.wodclipse.editor.WodEditor;
 /**
  * @author uli
  */
-public class ComponentEditorPart extends MultiPageEditorPart implements IEditorTarget, IResourceChangeListener, IComponentEditor {
+public class ComponentEditorPart extends MultiPageEditorPart implements IEditorTarget, IResourceChangeListener, IComponentEditor, IShowEditorInput {
 	private int htmlPageId;
 	private int wodPageId;
 	private int wooPageId;
@@ -491,4 +494,34 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 		super.dispose();
 	}
 
+	public void showEditorInput(IEditorInput editorInput) {
+		IFile inputFile = ((FileEditorInput) editorInput).getFile();
+		IEditorInput[] editorInputArray = componentEditorInput.getInput();
+		for (int i = 0; i < editorInputArray.length; i++) {
+			IFile inputFileFromEditor = ResourceUtil.getFile(editorInputArray[i]);
+			if (inputFileFromEditor == null) {
+				continue;
+			}
+			if (inputFileFromEditor.equals(inputFile)) {
+				switch (i) {
+				case 0:
+					switchToHtml();
+					break;
+				case 1:
+					switchToWod();
+					break;
+				case 2:
+					switchToWoo();
+					break;
+				case 3:
+					switchToApi();
+					break;
+
+				default:
+					break;
+				}
+			}
+
+		}
+	}
 }

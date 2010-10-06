@@ -120,23 +120,6 @@ public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy 
 				continue;
 			}
 			if (inputFileFromEditor.equals(inputFile)) {
-				switch (i) {
-				case 0:
-					componentEditor.switchToHtml();
-					break;
-				case 1:
-					componentEditor.switchToWod();
-					break;
-				case 2:
-					componentEditor.switchToWoo();
-					break;
-				case 3:
-					componentEditor.switchToApi();
-					break;
-
-				default:
-					break;
-				}
 				return true;
 			}
 
