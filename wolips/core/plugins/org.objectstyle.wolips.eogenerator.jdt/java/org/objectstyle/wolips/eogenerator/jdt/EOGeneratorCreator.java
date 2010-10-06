@@ -7,7 +7,9 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
+import org.objectstyle.wolips.jdt.ProjectFrameworkAdapter;
 
 public class EOGeneratorCreator {
 	public static EOGeneratorModel createDefaultModel(IProject project) {
@@ -41,6 +43,19 @@ public class EOGeneratorCreator {
 		} catch (JavaModelException e) {
 			e.printStackTrace();
 		}
+		
+		
+		// MS: If you link to ERExtensions and you didn't set your default template names, guess that you want the Wonder versions
+		try {
+			if (ComparisonUtils.equals(model.getDefaultJavaTemplate(), null, true) && ((ProjectFrameworkAdapter)project.getAdapter(ProjectFrameworkAdapter.class)).isLinkedToFrameworkNamed("ERExtensions")) {
+				model.setJavaTemplate("_WonderEntity.java");
+				model.setSubclassJavaTemplate("WonderEntity.java");
+			}
+		}
+		catch (Throwable t) {
+			t.printStackTrace();
+		}
+
 		return model;
 	}
 }

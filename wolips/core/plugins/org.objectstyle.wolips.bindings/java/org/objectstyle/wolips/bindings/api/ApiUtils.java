@@ -5,8 +5,8 @@ import java.net.URL;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.jar.JarFile;
 import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -29,9 +29,8 @@ import org.objectstyle.wolips.bindings.Activator;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 import org.objectstyle.wolips.bindings.wod.BindingValueKey;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
-import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.TypeNameCollector;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 import org.objectstyle.wolips.jdt.ProjectFrameworkAdapter;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
@@ -249,51 +248,59 @@ public class ApiUtils {
       validValues.add("\"image/png\"");
     }
     else if ("Direct Actions".equals(defaultsName)) {
-      TypeNameCollector typeNameCollector = new TypeNameCollector("com.webobjects.appserver.WODirectAction", javaProject, false);
-      BindingReflectionUtils.findMatchingElementClassNames("", SearchPattern.R_PREFIX_MATCH, typeNameCollector, new NullProgressMonitor());
-      for (IType type : typeNameCollector.types()) {
-        IMethod[] methods = type.getMethods();
-        for (IMethod method : methods) {
-          String name = method.getElementName();
-          if (name.endsWith("Action") && method.getParameterNames().length == 0) {
-            validValues.add("\"" + name.substring(0, name.length() - "Action".length()) + "\"");
-          }
-        }
-      }
+    	if (partialValue != null && partialValue.startsWith("\"")) {
+	      TypeNameCollector typeNameCollector = new TypeNameCollector("com.webobjects.appserver.WODirectAction", javaProject, false);
+	      BindingReflectionUtils.findMatchingElementClassNames("", SearchPattern.R_PREFIX_MATCH, typeNameCollector, new NullProgressMonitor());
+	      for (IType type : typeNameCollector.types()) {
+	        IMethod[] methods = type.getMethods();
+	        for (IMethod method : methods) {
+	          String name = method.getElementName();
+	          if (name.endsWith("Action") && method.getParameterNames().length == 0) {
+	            validValues.add("\"" + name.substring(0, name.length() - "Action".length()) + "\"");
+	          }
+	        }
+	      }
+    	}
     }
     else if ("Direct Action Classes".equals(defaultsName)) {
-      TypeNameCollector typeNameCollector = new TypeNameCollector("com.webobjects.appserver.WODirectAction", javaProject, false);
-      BindingReflectionUtils.findMatchingElementClassNames(partialValue, SearchPattern.R_PREFIX_MATCH, typeNameCollector, new NullProgressMonitor());
-      for (String typeName : typeNameCollector.getTypeNames()) {
-        int dotIndex = typeName.lastIndexOf('.');
-        if (dotIndex != -1) {
-          typeName = typeName.substring(dotIndex + 1);
-        }
-        validValues.add("\"" + typeName + "\"");
-      }
+    	if (partialValue != null && partialValue.startsWith("\"")) {
+	      TypeNameCollector typeNameCollector = new TypeNameCollector("com.webobjects.appserver.WODirectAction", javaProject, false);
+	      BindingReflectionUtils.findMatchingElementClassNames(partialValue.substring(1), SearchPattern.R_PREFIX_MATCH, typeNameCollector, new NullProgressMonitor());
+	      for (String typeName : typeNameCollector.getTypeNames()) {
+	        int dotIndex = typeName.lastIndexOf('.');
+	        if (dotIndex != -1) {
+	          typeName = typeName.substring(dotIndex + 1);
+	        }
+	        validValues.add("\"" + typeName + "\"");
+	      }
+    	}
     }
     else if ("Page Names".equals(defaultsName)) {
-      TypeNameCollector typeNameCollector = new TypeNameCollector(javaProject, false);
-      BindingReflectionUtils.findMatchingElementClassNames(partialValue, SearchPattern.R_PREFIX_MATCH, typeNameCollector, new NullProgressMonitor());
-      for (String typeName : typeNameCollector.getTypeNames()) {
-        int dotIndex = typeName.lastIndexOf('.');
-        if (dotIndex != -1) {
-          typeName = typeName.substring(dotIndex + 1);
-        }
-        validValues.add("\"" + typeName + "\"");
-      }
+    	if (partialValue != null && partialValue.startsWith("\"")) {
+	      TypeNameCollector typeNameCollector = new TypeNameCollector(javaProject, false);
+	      BindingReflectionUtils.findMatchingElementClassNames(partialValue.substring(1), SearchPattern.R_PREFIX_MATCH, typeNameCollector, new NullProgressMonitor());
+	      for (String typeName : typeNameCollector.getTypeNames()) {
+	        int dotIndex = typeName.lastIndexOf('.');
+	        if (dotIndex != -1) {
+	          typeName = typeName.substring(dotIndex + 1);
+	        }
+	        validValues.add("\"" + typeName + "\"");
+	      }
+    	}
     }
     else if ("Frameworks".equals(defaultsName)) {
-      validValues.add("\"app\"");
-      ProjectFrameworkAdapter projectFrameworkAdapter = (ProjectFrameworkAdapter) javaProject.getProject().getAdapter(ProjectFrameworkAdapter.class);
-      if (projectFrameworkAdapter != null) {
-        for (String frameworkName : projectFrameworkAdapter.getFrameworkNames()) {
-          validValues.add("\"" + frameworkName + "\"");
-        }
-      }
+    	if (partialValue != null && partialValue.startsWith("\"")) {
+	      validValues.add("\"app\"");
+	      ProjectFrameworkAdapter projectFrameworkAdapter = (ProjectFrameworkAdapter) javaProject.getProject().getAdapter(ProjectFrameworkAdapter.class);
+	      if (projectFrameworkAdapter != null) {
+	        for (String frameworkName : projectFrameworkAdapter.getLinkedFrameworkNames()) {
+	          validValues.add("\"" + frameworkName + "\"");
+	        }
+	      }
+    	}
     }
     else if ("Resources".equals(defaultsName)) {
-      ProjectAdapter projectAdapter = (ProjectAdapter) javaProject.getProject().getAdapter(IProjectAdapter.class);
+      ProjectAdapter projectAdapter = (ProjectAdapter) javaProject.getProject().getAdapter(ProjectAdapter.class);
       if (projectAdapter != null) {
         IFolder folder = projectAdapter.getBuildAdapter().getProductAdapter().getContentsAdapter().getWebServerResourcesAdapter().getUnderlyingFolder();
         try {

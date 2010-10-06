@@ -19,8 +19,9 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.woenvironment.frameworks.FrameworkModel;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 import org.objectstyle.wolips.jdt.classpath.model.IEclipseFramework;
+import org.objectstyle.wolips.variables.BuildProperties;
 
 public class ProjectFrameworkAdapter {
 	private IProject _project;
@@ -31,6 +32,15 @@ public class ProjectFrameworkAdapter {
 
 	public IProject getProject() {
 		return _project;
+	}
+	
+	public IEclipseFramework getFramework() {
+		FrameworkModel<IEclipseFramework> frameworkModel = JdtPlugin.getDefault().getFrameworkModel(_project);
+		IEclipseFramework framework = frameworkModel.getApplicationWithName(_project.getName());
+		if (framework == null) {
+			framework = frameworkModel.getFrameworkWithName(_project.getName());
+		}
+		return framework;
 	}
 
 	public void addFrameworkNamed(String frameworkName) throws JavaModelException {
@@ -55,7 +65,7 @@ public class ProjectFrameworkAdapter {
 		IJavaProject javaProject = JavaCore.create(project);
 		IEclipseFramework.Utility.addFrameworksToProject(frameworks, javaProject, true);
 	}
-	
+
 	public void addFrameworks(IEclipseFramework... frameworks) throws JavaModelException {
 		List<IEclipseFramework> frameworksList = new LinkedList<IEclipseFramework>();
 		for (IEclipseFramework framework : frameworks) {
@@ -91,26 +101,37 @@ public class ProjectFrameworkAdapter {
 		IEclipseFramework.Utility.removeFrameworksFromProject(frameworks, javaProject, true);
 	}
 
-	public List<IEclipseFramework> getFrameworks() throws JavaModelException {
+	public List<IEclipseFramework> getLinkedFrameworks() throws JavaModelException {
 		IProject project = getProject();
 		IJavaProject javaProject = JavaCore.create(project);
 		return IEclipseFramework.Utility.getFrameworks(javaProject);
 	}
 
-	public Set<String> getFrameworkNames() throws JavaModelException {
+	public Set<String> getLinkedFrameworkNames() throws JavaModelException {
 		Set<String> frameworkNames = new HashSet<String>();
-		for (IEclipseFramework framework : getFrameworks()) {
+		for (IEclipseFramework framework : getLinkedFrameworks()) {
 			frameworkNames.add(framework.getName());
 		}
 		return frameworkNames;
 	}
 
 	public boolean isLinkedToFrameworkNamed(String frameworkName) throws JavaModelException {
-		return getFrameworkNames().contains(frameworkName);
+		return getLinkedFrameworkNames().contains(frameworkName);
+	}
+
+	public IEclipseFramework getLinkedFrameworkNamed(String frameworkName) throws JavaModelException {
+		for (IEclipseFramework linkedFramework : getLinkedFrameworks()) {
+			if (linkedFramework.getName().equals(frameworkName)) {
+				return linkedFramework;
+			}
+		}
+		FrameworkModel<IEclipseFramework> frameworkModel = JdtPlugin.getDefault().getFrameworkModel(getProject());
+		IEclipseFramework framework = frameworkModel.getFrameworkWithName(frameworkName);
+		return framework;
 	}
 
 	public Map<String, IEclipseFramework> getPluginFrameworks() {
-		Map<String, IEclipseFramework> pluginFrameworks = new TreeMap<String, IEclipseFramework>(); 
+		Map<String, IEclipseFramework> pluginFrameworks = new TreeMap<String, IEclipseFramework>();
 		Pattern pluginPattern = Pattern.compile("(.*)PlugIn");
 		FrameworkModel<IEclipseFramework> frameworkModel = JdtPlugin.getDefault().getFrameworkModel(getProject());
 		for (IEclipseFramework framework : frameworkModel.getAllFrameworks()) {
@@ -125,7 +146,7 @@ public class ProjectFrameworkAdapter {
 	}
 
 	public Map<String, IEclipseFramework> getAdaptorFrameworks() {
-		Map<String, IEclipseFramework> adaptorFrameworks = new TreeMap<String, IEclipseFramework>(); 
+		Map<String, IEclipseFramework> adaptorFrameworks = new TreeMap<String, IEclipseFramework>();
 		Pattern adaptorPattern = Pattern.compile("Java(.*)Adaptor");
 		FrameworkModel<IEclipseFramework> frameworkModel = JdtPlugin.getDefault().getFrameworkModel(getProject());
 		for (IEclipseFramework framework : frameworkModel.getAllFrameworks()) {
@@ -141,9 +162,9 @@ public class ProjectFrameworkAdapter {
 
 	/** OLD FRAMEWORK API'S -- SHOULD BE REWRITTEN USING NEW FRAMEWORK API'S **/
 	public List<IPath> getFrameworkPaths() {
-//		for (IEclipseFramework framework : getFrameworks()) {
-//			
-//		}
+		// for (IEclipseFramework framework : getFrameworks()) {
+		//			
+		// }
 		ArrayList<IPath> list = new ArrayList<IPath>();
 		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (int i = 0; i < projects.length; i++) {
@@ -187,7 +208,7 @@ public class ProjectFrameworkAdapter {
 			if (javaProject == null) {
 				isFrameworkReference = false;
 			} else {
-				IProjectAdapter project = (IProjectAdapter) iProject.getAdapter(IProjectAdapter.class);
+				ProjectAdapter project = (ProjectAdapter) iProject.getAdapter(ProjectAdapter.class);
 				isFrameworkReference = project != null && project.isFramework() && ProjectFrameworkAdapter.isProjectReferencedByProject(iProject, javaProject.getProject());
 			}
 		} catch (Exception e) {
@@ -213,4 +234,15 @@ public class ProjectFrameworkAdapter {
 		return false;
 	}
 
+	public void initializeProject() {
+		// MS: Touching build props is enough to initialize them ...
+		_project.getAdapter(BuildProperties.class);
+		// MS: I can't decide if we should save dirty ones or not ... If you touch something in build
+		// props, it will resave, so maybe that's enough.
+//		try {
+//			buildProperties.save();
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+	}
 }

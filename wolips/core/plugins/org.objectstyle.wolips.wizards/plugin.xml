@@ -66,6 +66,7 @@
          <description>
          </description>
       </wizard>
+      <!--
       <wizard
             category="org.objectstyle.wolips.wizards"
             helpHref="http://developer.apple.com/documentation/WebObjects/Developing_With_D2W/Introduction/chapter_1_section_1.html"
@@ -80,6 +81,7 @@
             Build a Direct To Web Application
          </description>
       </wizard>
+      -->
             <wizard
             category="org.objectstyle.wolips.wizards"
             helpHref="http://developer.apple.com/DOCUMENTATION/WebObjects/Web_Services/index.html?http://developer.apple.com/DOCUMENTATION/WebObjects/Web_Services/About/chapter_1_section_1.html"
@@ -143,7 +145,7 @@
          </description>
       </wizard>
       <wizard
-            name="D2JC Application"
+            name="Direct To Java Client WebStart Project"
             icon="icons/woproject/d2wapplication_wiz.gif"
             category="org.objectstyle.wolips.wizards"
             project="true"

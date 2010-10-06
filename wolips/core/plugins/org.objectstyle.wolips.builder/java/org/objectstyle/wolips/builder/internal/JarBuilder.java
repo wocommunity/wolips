@@ -59,7 +59,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets;
 
 /**
  * @author Harald Niesche
@@ -75,8 +75,9 @@ public class JarBuilder extends BuildHelper {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.objectstyle.wolips.projectbuild.builder.WOIncrementalBuilder.WOBuildHelper#handleResource(org.eclipse.core.resources.IResource,
-	 *      org.eclipse.core.resources.IResourceDelta)
+	 * @seeorg.objectstyle.wolips.projectbuild.builder.WOIncrementalBuilder.
+	 * WOBuildHelper#handleResource(org.eclipse.core.resources.IResource,
+	 * org.eclipse.core.resources.IResourceDelta)
 	 */
 	/**
 	 * @param resource
@@ -93,7 +94,7 @@ public class JarBuilder extends BuildHelper {
 		compilerOutPath = this.getJavaProject().getOutputLocation();
 		baseSegments = compilerOutPath.segmentCount();
 
-		Project adaptedProject = this.getProject();
+		IProjectPatternsets adaptedProject = (IProjectPatternsets) this.getProject().getAdapter(IProjectPatternsets.class);
 		if (adaptedProject.matchesClassesPattern(resource)) {
 			IPath path = resource.getFullPath();
 			if (compilerOutPath.isPrefixOf(path) && !outPath.isPrefixOf(path)) {

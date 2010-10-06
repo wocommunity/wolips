@@ -10,6 +10,11 @@
 	<!-- Build all.                                 -->
 	<!-- ========================================== -->
 	<target name="all">
+		<ant dir="org.objectstyle.wolips.thirdparty.commonscollections" target="all" />
+		<ant dir="org.objectstyle.wolips.thirdparty.log4j" target="all" />
+		<ant dir="org.objectstyle.wolips.thirdparty.velocity" target="all" />
+		<ant dir="org.objectstyle.wolips.baseforplugins" target="all" />
+		<ant dir="org.objectstyle.wolips.baseforuiplugins" target="all" />
 		<ant dir="org.objectstyle.wolips.woproject" target="all" />
 		<ant dir="org.objectstyle.wolips.preferences" target="all" />
 		<ant dir="org.objectstyle.wolips.variables" target="all" />
@@ -19,17 +24,16 @@
 		<ant dir="org.objectstyle.wolips.refactoring" target="all" />
 		<ant dir="org.objectstyle.wolips.jdt" target="all" />
 		<ant dir="org.objectstyle.wolips.bindings" target="all" />
-		<ant dir="org.objectstyle.wolips.datasets" target="all" />
 		<ant dir="org.objectstyle.wolips.ant" target="all" />
 		<ant dir="org.objectstyle.wolips.documentation" target="all" />
 		<ant dir="org.objectstyle.wolips.pbserver" target="all" />
+		<ant dir="org.objectstyle.wolips.templateengine" target="all" />
 		<ant dir="org.objectstyle.wolips.builder" target="all" />
 		<ant dir="org.objectstyle.wolips.ui" target="all" />
 		<ant dir="org.objectstyle.wolips.deployment.ui" target="all" />
 		<ant dir="org.objectstyle.wolips.launching" target="all" />
 		<ant dir="org.objectstyle.wolips.targetbuilder" target="all" />
 		<ant dir="org.objectstyle.wolips.team" target="all" />
-		<ant dir="org.objectstyle.wolips.templateengine" target="all" />
 		<ant dir="org.objectstyle.wolips.eomodeler.core" target="all" />
 		<ant dir="org.objectstyle.wolips.eomodeler.factories" target="all" />
 		<ant dir="org.objectstyle.wolips.eogenerator.core" target="all" />
@@ -57,6 +61,11 @@
 	<!-- Build dist.                                -->
 	<!-- ========================================== -->
 	<target name="dist">
+		<ant dir="org.objectstyle.wolips.thirdparty.commonscollections" target="dist" />
+		<ant dir="org.objectstyle.wolips.thirdparty.log4j" target="dist" />
+		<ant dir="org.objectstyle.wolips.thirdparty.velocity" target="dist" />
+		<ant dir="org.objectstyle.wolips.baseforplugins" target="dist" />
+		<ant dir="org.objectstyle.wolips.baseforuiplugins" target="dist" />
 		<ant dir="org.objectstyle.wolips.woproject" target="dist" />
 		<ant dir="org.objectstyle.wolips.preferences" target="dist" />
 		<ant dir="org.objectstyle.wolips.variables" target="dist" />
@@ -66,7 +75,6 @@
 		<ant dir="org.objectstyle.wolips.refactoring" target="dist" />
 		<ant dir="org.objectstyle.wolips.jdt" target="dist" />
 		<ant dir="org.objectstyle.wolips.bindings" target="dist" />
-		<ant dir="org.objectstyle.wolips.datasets" target="dist" />
 		<ant dir="org.objectstyle.wolips.ant" target="dist" />
 		<ant dir="org.objectstyle.wolips.documentation" target="dist" />
 		<ant dir="org.objectstyle.wolips.pbserver" target="dist" />

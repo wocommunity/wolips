@@ -65,8 +65,8 @@ import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
+import org.objectstyle.wolips.baseforuiplugins.utils.WorkbenchUtilities;
 import org.objectstyle.wolips.wizards.WizardsPlugin;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
  * @author uli
@@ -83,7 +83,7 @@ public abstract class AbstractOpenWizardAction extends Action implements IWorkbe
 	}
 
 	public void run() {
-		Shell shell = WorkbenchUtilitiesPlugin.getActiveWorkbenchShell();
+		Shell shell = WorkbenchUtilities.getActiveWorkbenchShell();
 		try {
 			INewWizard wizard = createWizard();
 			wizard.init(PlatformUI.getWorkbench(), currentSelection);

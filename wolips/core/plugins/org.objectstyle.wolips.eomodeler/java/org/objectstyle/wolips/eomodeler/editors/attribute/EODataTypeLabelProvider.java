@@ -64,6 +64,7 @@ public class EODataTypeLabelProvider implements ILabelProvider {
 		StringBuffer displayNameBuffer = new StringBuffer();
 		String valueClass = dataType.getShortJavaValueClass();
 		displayNameBuffer.append(dataType.getName());
+		/*
 		if (valueClass != null) {
 			displayNameBuffer.append(" - ");
 			displayNameBuffer.append(valueClass);
@@ -72,13 +73,15 @@ public class EODataTypeLabelProvider implements ILabelProvider {
 		for (int valueTypeNum = 0; valueTypeNum < valueTypes.length; valueTypeNum++) {
 			String valueType = valueTypes[valueTypeNum];
 			if (valueType != null && valueType.length() > 0) {
-				displayNameBuffer.append(" ");
+				displayNameBuffer.append(" (");
 				displayNameBuffer.append(valueType);
+				displayNameBuffer.append(")");
 			}
 		}
 		if (valueClass != null) {
 			displayNameBuffer.append("");
 		}
+		*/
 
 		return displayNameBuffer.toString();
 	}

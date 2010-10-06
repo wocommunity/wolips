@@ -57,69 +57,34 @@
 package org.objectstyle.wolips.goodies.core.mac;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.io.IOException;
 
-import org.eclipse.core.resources.IContainer;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
 import org.eclipse.core.resources.IResource;
 
 /**
  * @author ulrich
  * @author Mike Schrag
+ * @author q
  */
 public class NativeHelper {
-	private static URLClassLoader APPLE_CLASS_LOADER;
-
-	static {
+	public static void revealInFileBrowser(IResource resource) {
 		try {
-			// Note: This HAS to only be loaded one time or the app will explode
-			// because the dylib will have already been loaded
-			// in another class loader.
-			NativeHelper.APPLE_CLASS_LOADER = URLClassLoader.newInstance(new URL[] { new File("/System/Library/Java").toURL() });
+			String resourcePath = getParentOfResource(resource).replaceAll(" ", "\\ ");
+			String openInFinder = "tell application \"Finder\"\n reveal POSIX file \"" + resourcePath + "\"\n activate\nend tell";
+			executeAppleScript(openInFinder);
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
 	}
 
-	public static void revealInFinder(IResource resource) {
+	public static void cdInShell(IResource resource) {
 		try {
-			Class nsApplicationClass = NativeHelper.APPLE_CLASS_LOADER.loadClass("com.apple.cocoa.application.NSApplication");
-			Method nsApplicationSharedApplicationMethod = nsApplicationClass.getMethod("sharedApplication", null);
-			nsApplicationSharedApplicationMethod.invoke(null, null);
-
-			Class nsWorkspaceClass = NativeHelper.APPLE_CLASS_LOADER.loadClass("com.apple.cocoa.application.NSWorkspace");
-			Method nsWorkspaceSharedWorkspaceMethod = nsWorkspaceClass.getMethod("sharedWorkspace", null);
-			Object nsWorkspace = nsWorkspaceSharedWorkspaceMethod.invoke(null, null);
-
-			Method nsWorkspaceSelectFileMethod = nsWorkspaceClass.getMethod("selectFile", new Class[] { String.class, String.class });
-			String resourcePath = resource.getLocation().toOSString();
-			nsWorkspaceSelectFileMethod.invoke(nsWorkspace, new Object[] { resourcePath, resourcePath });
-		} catch (Throwable t) {
-			t.printStackTrace();
-		}
-	}
-
-	public static void cdInTerminal(IResource resource) {
-		try {
-			Class nsApplicationClass = NativeHelper.APPLE_CLASS_LOADER.loadClass("com.apple.cocoa.application.NSApplication");
-			Method nsApplicationSharedApplicationMethod = nsApplicationClass.getMethod("sharedApplication", null);
-			nsApplicationSharedApplicationMethod.invoke(null, null);
-
-			Class nsAppleScriptClass = NativeHelper.APPLE_CLASS_LOADER.loadClass("com.apple.cocoa.foundation.NSAppleScript");
-			Constructor nsAppleScriptConstructor = nsAppleScriptClass.getConstructor(new Class[] { String.class });
-
-			Class nsMutableDictionaryClass = NativeHelper.APPLE_CLASS_LOADER.loadClass("com.apple.cocoa.foundation.NSMutableDictionary");
-			Constructor nsMutableDictionaryConstructor = nsMutableDictionaryClass.getConstructor(null);
-			Object errorsDictionary = nsMutableDictionaryConstructor.newInstance(null);
-
-            String containerPath = getParentOfResource(resource).replaceAll(" ", "\\ ");
+	        String containerPath = getParentOfResource(resource).replaceAll(" ", "\\ ");
 			String openInTerminalString = "tell application \"Terminal\"\n do script \"cd " + containerPath + "\"\n activate\nend tell";
-			Object nsAppleScript = nsAppleScriptConstructor.newInstance(new Object[] { openInTerminalString });
-
-			Method nsAppleScriptExecuteMethod = nsAppleScriptClass.getMethod("execute", new Class[] { nsMutableDictionaryClass });
-			nsAppleScriptExecuteMethod.invoke(nsAppleScript, new Object[] { errorsDictionary });
+			executeAppleScript(openInTerminalString);
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
@@ -137,5 +102,24 @@ public class NativeHelper {
         }
         return path.getPath();
 	}
-
+	
+	private static void _executeAppleScript(String script) {
+		Runtime runtime = Runtime.getRuntime();
+		String[] args = { "/usr/bin/osascript", "-e", script };
+		try {
+			runtime.exec(args);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void executeAppleScript(String script) {
+		try {
+			ScriptEngineManager mgr = new ScriptEngineManager();
+			ScriptEngine engine = mgr.getEngineByName("AppleScript");
+			engine.eval(script);
+		} catch (Throwable e) {
+			_executeAppleScript(script);
+		}
+	}
 }

@@ -142,4 +142,8 @@ public interface IProjectPatternsets {
 	 * @param string
 	 */
 	public abstract void addResourcesExcludePattern(String string);
+
+	public void setUpPatternsetFiles();
+
+	public void releasePatternsetCache();
 }

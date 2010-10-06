@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.NamingConventions;
 import org.eclipse.jdt.internal.corext.codemanipulation.StubUtility;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
@@ -137,7 +138,7 @@ public class AddKeyInfo {
   }
 
   public String getFieldName() {
-    String[] suggestedFieldNames = StubUtility.getVariableNameSuggestions(StubUtility.INSTANCE_FIELD, _componentType.getJavaProject(), getName(), 0, null, true);
+    String[] suggestedFieldNames = StubUtility.getVariableNameSuggestions(NamingConventions.VK_INSTANCE_FIELD, _componentType.getJavaProject(), getName(), 0, null, true);
     String fieldName = suggestedFieldNames[0];
     return fieldName;
   }

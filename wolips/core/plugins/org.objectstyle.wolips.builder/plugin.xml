@@ -66,4 +66,12 @@
          class="org.objectstyle.wolips.builder.internal.WOIncrementalBuilder"
          context="incremental"/>
    </extension>
+   <extension
+         point="org.eclipse.ant.core.antProperties">
+      <antProperty
+            class="org.objectstyle.wolips.builder.internal.WOLipsAntPropertyValueProvider"
+            name="org.objectstyle.wolips.builder.ant.wolipsProperties"
+            value="wolips.global.properties">
+      </antProperty>
+   </extension>
 </plugin>

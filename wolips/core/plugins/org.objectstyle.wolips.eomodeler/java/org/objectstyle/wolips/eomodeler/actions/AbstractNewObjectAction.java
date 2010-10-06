@@ -70,7 +70,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 
-public abstract class AbstractNewObjectAction<T extends EOModelObject, U extends EOModelObject> extends AbstractObjectAction {
+public abstract class AbstractNewObjectAction<T extends EOModelObject, U extends EOModelObject> extends EMAction {
 	private Class<T> _parentType;
 
 	private String _label;

@@ -14,7 +14,15 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 
 public class EOFSQLGeneratorFactory implements IEOSQLGeneratorFactory {
 	public IEOSQLGenerator sqlGenerator(EOModel model, List<String> entityNames, EODatabaseConfig databaseConfig, ClassLoader eomodelClassLoader, boolean runInEntityModeler) throws SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
-		Class sqlGeneratorClass = Class.forName("org.objectstyle.wolips.eomodeler.core.sql.EOFSQLGenerator", true, eomodelClassLoader);
+		WOUtils.setWOSystemProperties();
+		String className;
+		if (WOUtils.version(eomodelClassLoader) == WOUtils.Version.WO_5_6) {
+			className = "org.objectstyle.wolips.eomodeler.core.sql.EOFSQLGenerator56";
+		}
+		else {
+			className = "org.objectstyle.wolips.eomodeler.core.sql.EOFSQLGenerator53";
+		}
+		Class sqlGeneratorClass = Class.forName(className, true, eomodelClassLoader);
 
 		List<URL> modelURLs = new LinkedList();
 		// AK: I hope this does the right thing... we add all other models
@@ -24,10 +32,10 @@ public class EOFSQLGeneratorFactory implements IEOSQLGeneratorFactory {
 			EOModel otherModel = (EOModel) modelsIter.next();
 			if (otherModel != model) {
 				URL otherModelURL = otherModel.getModelURL();
-				modelURLs.add(otherModelURL);
+				modelURLs.add(WOUtils.trimModelURLs(otherModelURL));
 			}
 		}
-		modelURLs.add(model.getModelURL());
+		modelURLs.add(WOUtils.trimModelURLs(model.getModelURL()));
 
 		Constructor sqlGeneratorConstructor = sqlGeneratorClass.getConstructor(new Class[] { String.class, List.class, List.class, Map.class, boolean.class });
 		if(databaseConfig == null) {

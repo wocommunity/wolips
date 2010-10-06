@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.variables.BuildProperties;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.document.WodElementTypeHyperlink;
 import org.objectstyle.wolips.wodclipse.core.util.ICursorPositionListener;
@@ -101,8 +102,8 @@ public class TemplateBreadcrumb extends Composite implements ICursorPositionList
             boolean isWOTag = WodHtmlUtils.isWOTag(tagName);
             String displayName = null;
             if (isWOTag) {
-              boolean wo54 = org.objectstyle.wolips.bindings.Activator.getDefault().isWO54(cache.getProject());
-              IWodElement wodElement = WodHtmlUtils.getWodElement(stackElement, wo54, true, cache);
+              BuildProperties buildProperties = (BuildProperties)cache.getProject().getAdapter(BuildProperties.class);
+              IWodElement wodElement = WodHtmlUtils.getWodElement(stackElement, buildProperties, true, cache);
               if (wodElement != null) {
                 displayName = wodElement.getElementType();
               }

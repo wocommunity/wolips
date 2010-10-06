@@ -27,8 +27,7 @@ import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry2;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntryResolver;
 import org.eclipse.jdt.launching.JavaRuntime;
-import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapter;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 import org.objectstyle.wolips.jdt.classpath.WOFrameworkClasspathContainer;
 
 public class WOJavaRuntime {
@@ -136,7 +135,7 @@ public class WOJavaRuntime {
 	 * @since 2.0
 	 */
 	public static IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(IRuntimeClasspathEntry entry, IJavaProject project) throws CoreException {
-		ProjectAdapter projectAdapter = (ProjectAdapter)project.getProject().getAdapter(IProjectAdapter.class);
+		ProjectAdapter projectAdapter = (ProjectAdapter)project.getProject().getAdapter(ProjectAdapter.class);
 		if (projectAdapter != null && projectAdapter.isFramework()) {
 			IClasspathEntry cp = entry.getClasspathEntry();
 			if (cp != null && !cp.isExported() && cp.getPath() != null && cp.getPath().segmentCount() > 0 && WOFrameworkClasspathContainer.ID.equals(cp.getPath().segment(0))) {

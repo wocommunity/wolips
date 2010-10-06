@@ -337,7 +337,7 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
               if (requireAttrs[j].hasValue()) {
                 assistKeyword = assistKeyword + equals + "\"\"";
                 if (j == 0) {
-                  position = tagName.length() + requireAttrs[j].getAttributeName().length() + 5;
+                  position = tagName.length() + requireAttrs[j].getAttributeName().length() + (spacesAroundEquals ? 5 : 3);
                 }
               }
             }

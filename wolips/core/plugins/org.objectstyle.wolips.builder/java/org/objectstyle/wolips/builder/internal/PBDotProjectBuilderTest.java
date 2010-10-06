@@ -62,7 +62,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.core.resources.tests.AbstractProjectTestCase;
 import org.objectstyle.wolips.core.resources.types.file.IPBDotProjectAdapter;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 
 public class PBDotProjectBuilderTest extends AbstractProjectTestCase {
 
@@ -72,7 +72,7 @@ public class PBDotProjectBuilderTest extends AbstractProjectTestCase {
 
 		NullProgressMonitor monitor = new NullProgressMonitor();
 		this.initIncrementalFrameworkProject(project, monitor);
-		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
+		ProjectAdapter projectAdapter = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
 		assertNotNull(projectAdapter);
 		IResource resource = projectAdapter.getUnderlyingProject().getFile(IPBDotProjectAdapter.FILE_NAME);
 		assertFalse(resource.exists());

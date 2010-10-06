@@ -13,6 +13,7 @@ import org.eclipse.jface.text.Position;
 import org.objectstyle.wolips.bindings.Activator;
 import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
 import org.objectstyle.wolips.bindings.wod.HtmlElementCache;
+import org.objectstyle.wolips.variables.BuildProperties;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 import org.objectstyle.wolips.wodclipse.core.validation.HtmlProblem;
 import org.objectstyle.wolips.wodclipse.core.validation.TemplateValidator;
@@ -37,11 +38,11 @@ public class HtmlCacheEntry extends AbstractCacheEntry<FuzzyXMLDocument> impleme
     IFile htmlFile = getFile();
     FuzzyXMLDocument htmlXmlDocument = _getModel();
     if (htmlXmlDocument != null && (htmlFile == null || htmlFile.exists())) {
-      boolean errorOnHtmlErrorsKey = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.ERROR_ON_HTML_ERRORS_KEY);
-      if (errorOnHtmlErrorsKey) {
+      String htmlErrorsSeverity = Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.HTML_ERRORS_SEVERITY_KEY);
+      if (!PreferenceConstants.IGNORE.equals(htmlErrorsSeverity)) {
         if (htmlFile != null && htmlFile.exists()) {
           for (HtmlProblem problem : getParserProblems()) {
-            problem.createMarker(htmlFile);
+            problem.createMarker(htmlFile, htmlErrorsSeverity);
           }
         }
       }
@@ -59,7 +60,8 @@ public class HtmlCacheEntry extends AbstractCacheEntry<FuzzyXMLDocument> impleme
 
   @Override
   protected FuzzyXMLDocument _parse(String contents) {
-    FuzzyXMLParser parser = new FuzzyXMLParser(Activator.getDefault().isWO54(getCache().getProject()), true);
+    BuildProperties buildProperties = (BuildProperties)getCache().getProject().getAdapter(BuildProperties.class);
+    FuzzyXMLParser parser = new FuzzyXMLParser(buildProperties != null ? buildProperties.isWellFormedTemplateRequired() : false, true);
     parser.addErrorListener(this);
     FuzzyXMLDocument htmlXmlDocument = parser.parse(contents);
     return htmlXmlDocument;

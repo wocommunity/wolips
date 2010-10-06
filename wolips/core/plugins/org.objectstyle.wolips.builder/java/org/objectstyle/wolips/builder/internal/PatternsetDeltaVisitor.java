@@ -53,15 +53,15 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
-import org.objectstyle.wolips.datasets.adaptable.Project;
-import org.objectstyle.wolips.datasets.adaptable.ProjectPatternsets;
+import org.objectstyle.wolips.core.resources.internal.types.project.ProjectPatternsets;
+import org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets;
 
 /**
  * @author ulrich
  */
 public class PatternsetDeltaVisitor extends DefaultDeltaVisitor {
-
-	private boolean needsFurtherInvestigation = true;
+	private boolean _fullBuildRequired;
+	private boolean _needsFurtherInvestigation = true;
 
 	/*
 	 * (non-Javadoc)
@@ -69,7 +69,7 @@ public class PatternsetDeltaVisitor extends DefaultDeltaVisitor {
 	 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core.resources.IResourceDelta)
 	 */
 	public boolean visit(IResourceDelta delta) throws CoreException {
-		if (!this.needsFurtherInvestigation) {
+		if (!this._needsFurtherInvestigation) {
 			return false;
 		}
 		if (!super.visit(delta)) {
@@ -84,19 +84,24 @@ public class PatternsetDeltaVisitor extends DefaultDeltaVisitor {
 		}
 		if (ProjectPatternsets.EXTENSION.equals(resource.getFileExtension())) {
 			IProject iProject = resource.getProject();
-			Project project = (Project) iProject.getAdapter(Project.class);
+			IProjectPatternsets project = (IProjectPatternsets) iProject.getAdapter(IProjectPatternsets.class);
 			project.releasePatternsetCache();
-			this.needsFurtherInvestigation = false;
-			project.fullBuildRequired = true;
+			_needsFurtherInvestigation = false;
+			_fullBuildRequired = true;
 			return false;
 		}
 		return false;
+	}
+	
+	public boolean isFullBuildRequired() {
+		return _fullBuildRequired;
 	}
 
 	/**
 	 * 
 	 */
 	public void reset() {
-		needsFurtherInvestigation = true;
+		_needsFurtherInvestigation = true;
+		_fullBuildRequired = false;
 	}
 }

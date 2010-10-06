@@ -67,7 +67,7 @@ import org.eclipse.core.resources.IResource;
  */
 public class NativeHelper {
 
-    public static void cdInCmd(IResource resource) {
+    public static void cdInShell(IResource resource) {
         try {
             String cmdstart[] = { "cmd.exe", "/c", "start", "cmd.exe", "/k", "pushd", getParentOfResource(resource) };
             Runtime.getRuntime().exec(cmdstart);
@@ -76,7 +76,7 @@ public class NativeHelper {
         }
     }
 
-    public static void revealInExplorer(IResource resource) {
+    public static void revealInFileBrowser(IResource resource) {
         try {
             String cmdstart[] = { "cmd.exe", "/c", "start", "explorer.exe",getParentOfResource(resource) };
             Runtime.getRuntime().exec(cmdstart);

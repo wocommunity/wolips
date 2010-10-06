@@ -65,7 +65,11 @@ public abstract class FrameworkModel<T extends IFramework> {
 	private List<Root<T>> roots;
 
 	protected abstract List<Root<T>> createRoots();
-
+	
+	public synchronized void invalidateRoots() {
+		this.roots = null;
+	}
+	
 	public synchronized List<Root<T>> getRoots() {
 		if (this.roots == null) {
 			this.roots = createRoots();
@@ -86,6 +90,19 @@ public abstract class FrameworkModel<T extends IFramework> {
 		return new HashSet<T>(frameworks.values());
 	}
 
+	public synchronized Set<T> getAllApplications() {
+		Map<String, T> applications = new HashMap<String, T>();
+		for (Root<T> root : getRoots()) {
+			for (T application : root.getApplications()) {
+				String frameworkName = application.getName();
+				if (!applications.containsKey(frameworkName)) {
+					applications.put(frameworkName, application);
+				}
+			}
+		}
+		return new HashSet<T>(applications.values());
+	}
+
 	public synchronized void refreshRoots() {
 		this.roots = null;
 		getRoots();
@@ -96,6 +113,16 @@ public abstract class FrameworkModel<T extends IFramework> {
 			T framework = root.getFrameworkWithName(frameworkName);
 			if (framework != null) {
 				return framework;
+			}
+		}
+		return null;
+	}
+
+	public T getApplicationWithName(String applicationName) {
+		for (Root<T> root : getRoots()) {
+			T application = root.getApplicationWithName(applicationName);
+			if (application != null) {
+				return application;
 			}
 		}
 		return null;

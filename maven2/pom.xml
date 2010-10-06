@@ -1,30 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<artifactId>woproject-all-parent</artifactId>
 		<groupId>org.objectstyle.woproject</groupId>
-		<version>2.1</version>
+		<version>2.1-SNAPSHOT</version>
 	</parent>
 	<groupId>org.objectstyle.woproject.maven2</groupId>
 	<artifactId>maven2</artifactId>
-	<version>2.2-SNAPSHOT</version>
+	<version>2.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Maven2 All</name>
 	<description>Contains WOProject Maven2 plugins collection. </description>
 
-	<profiles>
-		<profile>
-			<id>build-all</id>
-			<modules>
-				<module>archetypes</module>
-				<module>maven-wobootstrap-plugin</module>
-				<module>maven-japplication-plugin</module>
-				<module>maven-javamonitor-plugin</module>
-				<module>maven-wolifecycle-plugin</module>
-			</modules>
-		</profile>
-	</profiles>
+	<modules>
+		<module>archetypes</module>
+		<module>maven-wobootstrap-plugin</module>
+		<module>maven-japplication-plugin</module>
+		<module>maven-wolifecycle-plugin</module>
+	</modules>
 
 	<dependencyManagement>
 		<dependencies>
@@ -41,22 +36,22 @@
 			<dependency>
 				<groupId>org.apache.maven</groupId>
 				<artifactId>maven-plugin-api</artifactId>
-				<version>2.2.0</version>
+				<version>2.0.9</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.maven</groupId>
 				<artifactId>maven-artifact</artifactId>
-				<version>2.2.0</version>
+				<version>2.1.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.maven</groupId>
 				<artifactId>maven-project</artifactId>
-				<version>2.2.0</version>
+				<version>2.0.9</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.maven</groupId>
 				<artifactId>maven-model</artifactId>
-				<version>2.2.0</version>
+				<version>2.0.9</version>
 			</dependency>
 			<dependency>
 				<groupId>org.codehaus.plexus</groupId>
@@ -71,7 +66,7 @@
 			<dependency>
 				<groupId>org.apache.maven</groupId>
 				<artifactId>maven-script-ant</artifactId>
-				<version>2.2.0</version>
+				<version>2.1.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.maven</groupId>
@@ -97,13 +92,13 @@
 			<dependency>
 				<groupId>org.easymock</groupId>
 				<artifactId>easymock</artifactId>
-				<version>2.5.1</version>
+				<version>2.4</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.mockito</groupId>
 				<artifactId>mockito-core</artifactId>
-				<version>1.8.0</version>
+				<version>1.6</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>

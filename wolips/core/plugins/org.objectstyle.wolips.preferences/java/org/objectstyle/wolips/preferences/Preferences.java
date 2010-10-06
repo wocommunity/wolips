@@ -73,6 +73,8 @@ public class Preferences {
 	 */
 	public static final String PREF_WRITE_PB_DOT_PROJECT_ON_BUILD = "org.objectstyle.wolips.preference.WritePB_DotProjectOnBuild";
 
+	public static final String PREF_MOCK_BUNDLE_ENABLED = "org.objectstyle.wolips.preference.MockBundleEnabled";
+
 	/**
 	 * Comment for <code>PREF_WRITE_XCODE_ON_BUILD</code>
 	 */
@@ -173,8 +175,14 @@ public class Preferences {
 	 */
 	public static synchronized void setDefaults() {
 		IPreferenceStore store = getPreferenceStore();
+		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WOLIPS_PROPERTIES_FILE)) {
+			store.setDefault(Preferences.PREF_WOLIPS_PROPERTIES_FILE, "wolips.properties");
+		}
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_CAPTURE_ANT_OUTPUT)) {
 			store.setDefault(Preferences.PREF_CAPTURE_ANT_OUTPUT, Preferences.falseString);
+		}
+		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_MOCK_BUNDLE_ENABLED)) {
+			store.setDefault(Preferences.PREF_MOCK_BUNDLE_ENABLED, Preferences.trueString);
 		}
 		if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD)) {
 			store.setDefault(Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD, Preferences.falseString);
@@ -407,6 +415,10 @@ public class Preferences {
 		return Preferences.getBoolean(Preferences.PREF_CAPTURE_ANT_OUTPUT);
 	}
 
+	public static boolean mockBundleEnabled() {
+		return Preferences.getBoolean(Preferences.PREF_MOCK_BUNDLE_ENABLED);
+	}
+	
 	public static boolean shouldWritePBProjOnBuild() {
 		return Preferences.getBoolean(Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD);
 	}

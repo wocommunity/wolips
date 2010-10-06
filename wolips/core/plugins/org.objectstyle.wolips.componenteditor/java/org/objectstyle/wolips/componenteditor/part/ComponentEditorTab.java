@@ -46,6 +46,7 @@ package org.objectstyle.wolips.componenteditor.part;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
@@ -59,13 +60,16 @@ public abstract class ComponentEditorTab extends Composite {
 	private SashForm parentSashForm;
 
 	private int tabIndex;
+	
+	private Color _sashColor;
 
 	public ComponentEditorTab(ComponentEditorPart componentEditorPart, int tabIndex) {
 		super(componentEditorPart.publicGetContainer(), SWT.NONE);
 		this.componentEditorPart = componentEditorPart;
 		parentSashForm = new SashForm(this, SWT.VERTICAL | SWT.SMOOTH);
-		parentSashForm.setSashWidth(5);
-		//parentSashForm.setBackground(getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
+		parentSashForm.setSashWidth(4);
+		_sashColor = new Color(getDisplay(), 205, 205, 205);
+		parentSashForm.setBackground(_sashColor);
 
 		this.setLayout(new FillLayout());
 		this.tabIndex = tabIndex;
@@ -77,7 +81,7 @@ public abstract class ComponentEditorTab extends Composite {
 
 	protected Composite createInnerPartControl(Composite parent, final IEditorPart e) {
 		Composite content = new Composite(parent, SWT.NONE);
-		content.setLayout(new FillLayout());
+		content.setLayout(new FillLayout(SWT.VERTICAL));
 		e.createPartControl(content);
 		return content;
 	}
@@ -94,7 +98,9 @@ public abstract class ComponentEditorTab extends Composite {
 
 	public abstract void close(boolean save);
 	
-	public abstract void dispose();
+	public void dispose() {
+		_sashColor.dispose();
+	}
 
 	public void editorSelected() {
 		if (this.getActiveEmbeddedEditor() instanceof IEmbeddedEditorSelected) {

@@ -37,6 +37,8 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   private int _closeNameOffset;
   
   private Boolean _isNonBreaking;
+  
+  private boolean _synthetic;
 
   //	private HashMap namespace = new HashMap();
 
@@ -102,24 +104,24 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   }
 
   /**
-   * XML‚Ì’f•ĞƒeƒLƒXƒg‚©‚çqƒm[ƒhŒQ‚ğ’Ç‰Á‚µ‚Ü‚·B
+   * XMLï¿½Ì’fï¿½Ğƒeï¿½Lï¿½Xï¿½gï¿½ï¿½ï¿½ï¿½qï¿½mï¿½[ï¿½hï¿½Qï¿½ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
    * <p>
-   * ’Êí‚Ì<code>appendChild()</code>‚Åqƒm[ƒh‚ğ’Ç‰Á‚µ‚½ê‡A
-   * ƒŠƒXƒi‚É‚Í<code>FuzzyXMLNode#toXMLString()</code>‚ÌŒ‹‰Ê‚ªV‚µ‚¢ƒeƒLƒXƒg‚Æ‚µ‚Ä’Ê’m‚³‚ê‚Ü‚·‚ªA
-   * ‚±‚Ìƒƒ\ƒbƒh‚ğ—p‚¢‚Äqƒm[ƒh‚ğ’Ç‰Á‚µ‚½ê‡Aˆø”‚Å“n‚µ‚½ƒeƒLƒXƒg‚ªV‚µ‚¢ƒeƒLƒXƒg‚Æ‚µ‚Ä“n‚³‚ê‚Ü‚·B
-   * •s³‚ÈXML‚ğƒp[ƒX‚µAŒ³‚ÌƒeƒLƒXƒgî•ñ‚ğ•Û‚·‚é•K—v‚ª‚ ‚éê‡‚Ég—p‚µ‚Ä‚­‚¾‚³‚¢B
+   * ï¿½Êï¿½ï¿½<code>appendChild()</code>ï¿½Åqï¿½mï¿½[ï¿½hï¿½ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½A
+   * ï¿½ï¿½ï¿½Xï¿½iï¿½É‚ï¿½<code>FuzzyXMLNode#toXMLString()</code>ï¿½ÌŒï¿½ï¿½Ê‚ï¿½ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½eï¿½Lï¿½Xï¿½gï¿½Æ‚ï¿½ï¿½Ä’Ê’mï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½ï¿½A
+   * ï¿½ï¿½ï¿½Ìƒï¿½ï¿½\ï¿½bï¿½hï¿½ï¿½pï¿½ï¿½ï¿½Äqï¿½mï¿½[ï¿½hï¿½ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½Aï¿½ï¿½Å“nï¿½ï¿½ï¿½ï¿½ï¿½eï¿½Lï¿½Xï¿½gï¿½ï¿½ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½eï¿½Lï¿½Xï¿½gï¿½Æ‚ï¿½ï¿½Ä“nï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
+   * ï¿½sï¿½ï¿½ï¿½ï¿½XMLï¿½ï¿½ï¿½pï¿½[ï¿½Xï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½Ìƒeï¿½Lï¿½Xï¿½gï¿½ï¿½ï¿½ï¿½Ûï¿½ï¿½ï¿½ï¿½ï¿½Kï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½Égï¿½pï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
    * </p>
-   * @param text ’Ç‰Á‚·‚éq—v‘f‚ğŠÜ‚ñ‚¾XML‚Ì’f•ĞB
+   * @param text ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½qï¿½vï¿½fï¿½ï¿½ï¿½Ü‚ï¿½XMLï¿½Ì’fï¿½ĞB
    */
   public void appendChildrenFromText(String text, boolean wo54) {
     if (text.length() == 0) {
       return;
     }
-    // ˆê“xƒGƒŒƒƒ“ƒg‚ğ‘}“ü‚µ‚ÄƒIƒtƒZƒbƒg‚ğæ“¾
+    // ï¿½ï¿½xï¿½Gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½}ï¿½ï¿½ÄƒIï¿½tï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½æ“¾
     FuzzyXMLElement test = new FuzzyXMLElementImpl("test");
     appendChild(test);
     int offset = test.getOffset();
-    // ƒIƒtƒZƒbƒg‚ğæ“¾‚µ‚½‚ç‚·‚®íœ
+    // ï¿½Iï¿½tï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½ï¿½ç‚·ï¿½ï¿½ï¿½íœ
     removeChild(test);
 
     String parseText = "<root>" + text + "</root>";
@@ -139,48 +141,48 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   }
 
   /**
-   * ‚±‚ÌƒGƒŒƒƒ“ƒg‚Éqƒm[ƒh‚ğ’Ç‰Á‚µ‚Ü‚·B
-   * ˆÈ‰º‚Ìê‡‚Íƒm[ƒh‚ğ’Ç‰Á‚·‚é‚±‚Æ‚Í‚Å‚«‚Ü‚¹‚ñiFuzzyXMLException‚ª”­¶‚µ‚Ü‚·jB
+   * ï¿½ï¿½ï¿½ÌƒGï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½Éqï¿½mï¿½[ï¿½hï¿½ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
+   * ï¿½È‰ï¿½ï¿½Ìê‡ï¿½Íƒmï¿½[ï¿½hï¿½ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½é‚±ï¿½Æ‚Í‚Å‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½iFuzzyXMLExceptionï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½jï¿½B
    * 
    * <ul>
-   *   <li>ƒGƒŒƒƒ“ƒg‚ª‘¼‚ÌƒcƒŠ[‚É‘®‚µ‚Ä‚¢‚éê‡ieƒGƒŒƒƒ“ƒg‚©‚çremove‚·‚ê‚Î’Ç‰Á‚Å‚«‚Ü‚·j</li>
-   *   <li>ƒGƒŒƒƒ“ƒg‚ªqƒm[ƒh‚ğ‚Á‚Ä‚¢‚éê‡</li>
+   *   <li>ï¿½Gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½Ìƒcï¿½ï¿½ï¿½[ï¿½É‘ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡ï¿½iï¿½eï¿½Gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½removeï¿½ï¿½ï¿½ï¿½Î’Ç‰ï¿½ï¿½Å‚ï¿½ï¿½Ü‚ï¿½ï¿½j</li>
+   *   <li>ï¿½Gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½qï¿½mï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡</li>
    * </ul>
    * 
-   * @param node ’Ç‰Á‚·‚éƒm[ƒhB
-   *   ƒGƒŒƒƒ“ƒg‚Ìê‡Aq‚ğ‚½‚È‚¢ƒGƒŒƒƒ“ƒg‚ğw’è‚µ‚Ä‚­‚¾‚³‚¢B
-   *   ‚·‚Å‚Éq—v‘f‚ğ\’zÏ‚İ‚ÌƒGƒŒƒƒ“ƒg‚ğ“n‚·‚Æ“à•”‚Å•Û‚µ‚Ä‚¢‚éˆÊ’uî•ñ‚ª“¯Šú‚³‚ê‚Ü‚¹‚ñB
+   * @param node ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½mï¿½[ï¿½hï¿½B
+   *   ï¿½Gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½Ìê‡ï¿½Aï¿½qï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½Gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½wï¿½è‚µï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
+   *   ï¿½ï¿½ï¿½Å‚Éqï¿½vï¿½fï¿½ï¿½ï¿½\ï¿½zï¿½Ï‚İ‚ÌƒGï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½nï¿½ï¿½ï¿½Æ“ï¿½ï¿½ï¿½ï¿½Å•Ûï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Ê’uï¿½ï¿½ñ‚ª“ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B
    *   
-   * @exception jp.aonir.fuzzyxml.FuzzyXMLException ƒm[ƒh‚ğ’Ç‰Á‚Å‚«‚È‚¢ê‡
+   * @exception jp.aonir.fuzzyxml.FuzzyXMLException ï¿½mï¿½[ï¿½hï¿½ï¿½Ç‰ï¿½ï¿½Å‚ï¿½ï¿½È‚ï¿½ï¿½ê‡
    */
   public void appendChild(FuzzyXMLNode node) {
     appendChild(node, true, true);
   }
 
   /**
-   * ƒp[ƒX‚É<code>appendChild()</code>ƒƒ\ƒbƒh‚Ì‘ã‚í‚è‚Ég—p‚µ‚Ü‚·B
+   * ï¿½pï¿½[ï¿½Xï¿½ï¿½ï¿½ï¿½<code>appendChild()</code>ï¿½ï¿½ï¿½\ï¿½bï¿½hï¿½Ì‘ï¿½ï¿½ï¿½Égï¿½pï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
    */
   public void appendChildWithNoCheck(FuzzyXMLNode node) {
     appendChild(node, true, false);
   }
 
   /**
-   * ‚±‚ÌƒGƒŒƒƒ“ƒg‚Éqƒm[ƒh‚ğ’Ç‰ÁB
+   * ï¿½ï¿½ï¿½ÌƒGï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½Éqï¿½mï¿½[ï¿½hï¿½ï¿½Ç‰ï¿½ï¿½B
    * 
-   * @param node ’Ç‰Á‚·‚éƒm[ƒhB
-   *   ƒGƒŒƒƒ“ƒg‚Ìê‡Aq‚ğ‚½‚È‚¢ƒGƒŒƒƒ“ƒg‚ğw’è‚µ‚Ä‚­‚¾‚³‚¢B
-   *   ‚·‚Å‚Éq—v‘f‚ğ\’zÏ‚İ‚ÌƒGƒŒƒƒ“ƒg‚ğ“n‚·‚Æ“à•”‚Å•Û‚µ‚Ä‚¢‚éˆÊ’uî•ñ‚ª“¯Šú‚³‚ê‚Ü‚¹‚ñB
-   * @param fireEvent ƒCƒxƒ“ƒg‚ğ”­‰Î‚·‚é‚©‚Ç‚¤‚©B
-   *   false‚ğw’è‚µ‚½ê‡Aƒm[ƒh‚ª‚Á‚Ä‚¢‚éˆÊ’uî•ñ‚Ì“¯Šúˆ—‚às‚¢‚Ü‚¹‚ñB
-   * @param check ’Ç‰Á‚·‚éƒm[ƒh‚ÌŒŸØ‚ğs‚¤‚©‚Ç‚¤‚©B
-   *   true‚ğw’è‚µ‚½ê‡AˆÈ‰º‚Ì‚ÉŠY“–‚·‚éê‡FuzzyXMLException‚ğthrow‚µ‚Ü‚·B
+   * @param node ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½mï¿½[ï¿½hï¿½B
+   *   ï¿½Gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½Ìê‡ï¿½Aï¿½qï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½Gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½wï¿½è‚µï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
+   *   ï¿½ï¿½ï¿½Å‚Éqï¿½vï¿½fï¿½ï¿½ï¿½\ï¿½zï¿½Ï‚İ‚ÌƒGï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½nï¿½ï¿½ï¿½Æ“ï¿½ï¿½ï¿½ï¿½Å•Ûï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Ê’uï¿½ï¿½ñ‚ª“ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B
+   * @param fireEvent ï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½ğ”­‰Î‚ï¿½ï¿½é‚©ï¿½Ç‚ï¿½ï¿½ï¿½ï¿½B
+   *   falseï¿½ï¿½ï¿½wï¿½è‚µï¿½ï¿½ï¿½ê‡ï¿½Aï¿½mï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Ê’uï¿½ï¿½ï¿½Ì“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½B
+   * @param check ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½mï¿½[ï¿½hï¿½ÌŒï¿½ï¿½Ø‚ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½Ç‚ï¿½ï¿½ï¿½ï¿½B
+   *   trueï¿½ï¿½ï¿½wï¿½è‚µï¿½ï¿½ï¿½ê‡ï¿½Aï¿½È‰ï¿½ï¿½Ì‚ÉŠYï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡FuzzyXMLExceptionï¿½ï¿½throwï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
    *   <ul>
-   *     <li>ƒm[ƒh‚ª‘¼‚ÌƒcƒŠ[‚É‘®‚µ‚Ä‚¢‚éê‡</li>
-   *     <li>ƒGƒŒƒƒ“ƒg‚ª‚·‚Å‚Éq‹Ÿ‚ğ‚Á‚Ä‚¢‚éê‡</li>
+   *     <li>ï¿½mï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½Ìƒcï¿½ï¿½ï¿½[ï¿½É‘ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡</li>
+   *     <li>ï¿½Gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½Å‚Éqï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡</li>
    *   </ul>
-   *   ƒp[ƒX‚È‚ÇAŒŸØ‚ğs‚¢‚½‚­‚È‚¢ê‡‚Ífalse‚ğw’è‚µ‚Ü‚·B
+   *   ï¿½pï¿½[ï¿½Xï¿½ï¿½ï¿½È‚ÇAï¿½ï¿½ï¿½Ø‚ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½ï¿½falseï¿½ï¿½ï¿½wï¿½è‚µï¿½Ü‚ï¿½ï¿½B
    *   
-   * @exception jp.aonir.fuzzyxml.FuzzyXMLException ƒm[ƒh‚ğ’Ç‰Á‚Å‚«‚È‚¢ê‡
+   * @exception jp.aonir.fuzzyxml.FuzzyXMLException ï¿½mï¿½[ï¿½hï¿½ï¿½Ç‰ï¿½ï¿½Å‚ï¿½ï¿½È‚ï¿½ï¿½ê‡
    */
   private void appendChild(FuzzyXMLNode node, boolean fireEvent, boolean check) {
     if (check) {
@@ -209,7 +211,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
         _children.add(node);
         return;
       }
-      // ’Ç‰Á‚·‚éƒm[ƒh‚ÌˆÊ’u(ÅŒã)‚ğŒvZ
+      // ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½mï¿½[ï¿½hï¿½ÌˆÊ’u(ï¿½ÅŒï¿½)ï¿½ï¿½ï¿½vï¿½Z
       FuzzyXMLNode[] nodes = getChildren();
       int offset = 0;
       if (nodes.length == 0) {
@@ -219,7 +221,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
         for (int i = 0; i < attrs.length; i++) {
           offset = offset + attrs[i].toXMLString(new RenderContext(getDocument().isHTML())).length();
         }
-        // ‚±‚±”÷–­H
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½H
         offset = offset + 2;
 
         nodeImpl.setOffset(offset);
@@ -231,10 +233,10 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
         String xml = toXMLString(new RenderContext(getDocument().isHTML()));
         _children.remove(node);
 
-        // ƒCƒxƒ“ƒg‚Ì”­‰Î
+        // ï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½Ì”ï¿½ï¿½ï¿½
         if (fireEvent) {
           fireModifyEvent(xml, getOffset(), getLength());
-          // ˆÊ’uî•ñ‚ÌXV
+          // ï¿½Ê’uï¿½ï¿½ï¿½ÌXï¿½V
           appendOffset(this, offset, xml.length() - length);
         }
 
@@ -245,14 +247,14 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
         for (int i = 0; i < nodes.length; i++) {
           offset = nodes[i].getOffset() + nodes[i].getLength();
         }
-        // ƒCƒxƒ“ƒg‚Ì”­‰Î
+        // ï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½Ì”ï¿½ï¿½ï¿½
         if (fireEvent) {
           fireModifyEvent(nodeImpl.toXMLString(new RenderContext(getDocument().isHTML())), offset, 0);
-          // ˆÊ’uî•ñ‚ÌXV
+          // ï¿½Ê’uï¿½ï¿½ï¿½ÌXï¿½V
           appendOffset(this, offset, node.toXMLString(new RenderContext(getDocument().isHTML())).length());
         }
 
-        // ÅŒã‚É’Ç‰Á
+        // ï¿½ÅŒï¿½É’Ç‰ï¿½
         nodeImpl.setOffset(offset);
         if (fireEvent) {
           nodeImpl.setLength(node.toXMLString(new RenderContext(getDocument().isHTML())).length());
@@ -276,7 +278,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   }
   
   public FuzzyXMLNode[] getChildren() {
-    // ƒAƒgƒŠƒrƒ…[ƒg‚ÍŠÜ‚Ü‚È‚¢H
+    // ï¿½Aï¿½gï¿½ï¿½ï¿½rï¿½ï¿½ï¿½[ï¿½gï¿½ÍŠÜ‚Ü‚È‚ï¿½ï¿½H
     return _children.toArray(new FuzzyXMLNode[_children.size()]);
   }
 
@@ -307,11 +309,11 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   }
 
   public void insertAfter(FuzzyXMLNode newChild, FuzzyXMLNode refChild) {
-    // ƒAƒgƒŠƒrƒ…[ƒg‚Ìê‡‚Í‚È‚É‚à‚µ‚È‚¢
+    // ï¿½Aï¿½gï¿½ï¿½ï¿½rï¿½ï¿½ï¿½[ï¿½gï¿½Ìê‡ï¿½Í‚È‚É‚ï¿½ï¿½ï¿½ï¿½È‚ï¿½
     if (newChild instanceof FuzzyXMLAttribute || refChild instanceof FuzzyXMLAttribute) {
       return;
     }
-    // ‘}“ü‚·‚éˆÊ’u‚ğ’T‚·
+    // ï¿½}ï¿½ï¿½ï¿½Ê’uï¿½ï¿½Tï¿½ï¿½
     FuzzyXMLNode[] children = getChildren();
     FuzzyXMLNode targetNode = null;
     boolean flag = false;
@@ -332,11 +334,11 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   }
 
   public void insertBefore(FuzzyXMLNode newChild, FuzzyXMLNode refChild) {
-    // ƒAƒgƒŠƒrƒ…[ƒg‚Ìê‡‚Í‚È‚É‚à‚µ‚È‚¢
+    // ï¿½Aï¿½gï¿½ï¿½ï¿½rï¿½ï¿½ï¿½[ï¿½gï¿½Ìê‡ï¿½Í‚È‚É‚ï¿½ï¿½ï¿½ï¿½È‚ï¿½
     if (newChild instanceof FuzzyXMLAttribute || refChild instanceof FuzzyXMLAttribute) {
       return;
     }
-    // ‘}“ü‚·‚éˆÊ’u‚ğ’T‚·
+    // ï¿½}ï¿½ï¿½ï¿½Ê’uï¿½ï¿½Tï¿½ï¿½
     FuzzyXMLNode target = null;
     int index = -1;
     FuzzyXMLNode[] children = getChildren();
@@ -351,7 +353,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
       return;
     }
     int offset = target.getOffset();
-    // ƒCƒxƒ“ƒg‚Ì”­‰Î
+    // ï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½Ì”ï¿½ï¿½ï¿½
     fireModifyEvent(newChild.toXMLString(new RenderContext(getDocument().isHTML())), offset, 0);
 
     AbstractFuzzyXMLNode nodeImpl = (AbstractFuzzyXMLNode) newChild;
@@ -360,19 +362,19 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     nodeImpl.setOffset(offset);
     nodeImpl.setLength(newChild.toXMLString(new RenderContext(getDocument().isHTML())).length());
 
-    // ˆÊ’uî•ñ‚ÌXV
+    // ï¿½Ê’uï¿½ï¿½ï¿½ÌXï¿½V
     appendOffset(this, offset, nodeImpl.toXMLString(new RenderContext(getDocument().isHTML())).length());
 
-    // ÅŒã‚É’Ç‰Á
+    // ï¿½ÅŒï¿½É’Ç‰ï¿½
     this._children.add(index, nodeImpl);
   }
 
   public void replaceChild(FuzzyXMLNode newChild, FuzzyXMLNode refChild) {
-    // ƒAƒgƒŠƒrƒ…[ƒg‚Ìê‡‚Í‚È‚É‚à‚µ‚È‚¢
+    // ï¿½Aï¿½gï¿½ï¿½ï¿½rï¿½ï¿½ï¿½[ï¿½gï¿½Ìê‡ï¿½Í‚È‚É‚ï¿½ï¿½ï¿½ï¿½È‚ï¿½
     if (newChild instanceof FuzzyXMLAttribute || refChild instanceof FuzzyXMLAttribute) {
       return;
     }
-    // ’uŠ·‚·‚éƒm[ƒh‚ÌƒCƒ“ƒfƒbƒNƒX‚ğæ“¾
+    // ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mï¿½[ï¿½hï¿½ÌƒCï¿½ï¿½ï¿½fï¿½bï¿½Nï¿½Xï¿½ï¿½ï¿½æ“¾
     int index = -1;
     for (int i = 0; i < _children.size(); i++) {
       if (refChild == _children.get(i)) {
@@ -380,7 +382,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
         break;
       }
     }
-    // ƒm[ƒh‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½‚ç‚È‚É‚à‚µ‚È‚¢
+    // ï¿½mï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚É‚ï¿½ï¿½ï¿½ï¿½È‚ï¿½
     if (index == -1) {
       return;
     }
@@ -392,9 +394,9 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     nodeImpl.setOffset(refChild.getOffset());
     nodeImpl.setLength(newChild.toXMLString(new RenderContext(getDocument().isHTML())).length());
 
-    // ƒCƒxƒ“ƒg‚Ì”­‰Î
+    // ï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½Ì”ï¿½ï¿½ï¿½
     fireModifyEvent(newChild.toXMLString(new RenderContext(getDocument().isHTML())), refChild.getOffset(), refChild.getLength());
-    // ˆÊ’uî•ñ‚ÌXV
+    // ï¿½Ê’uï¿½ï¿½ï¿½ÌXï¿½V
     appendOffset(this, refChild.getOffset(), newChild.getLength() - refChild.getLength());
 
     _children.add(index, newChild);
@@ -406,14 +408,14 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
       return;
     }
     if (_children.contains(oldChild)) {
-      // ƒfƒ^ƒbƒ`
+      // ï¿½fï¿½^ï¿½bï¿½`
       ((AbstractFuzzyXMLNode) oldChild).setParentNode(null);
       ((AbstractFuzzyXMLNode) oldChild).setDocument(null);
-      // ƒŠƒXƒg‚©‚çíœ
+      // ï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½ï¿½íœ
       _children.remove(oldChild);
-      // ƒCƒxƒ“ƒg‚Ì”­‰Î
+      // ï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½Ì”ï¿½ï¿½ï¿½
       fireModifyEvent("", oldChild.getOffset(), oldChild.getLength());
-      // ˆÊ’uî•ñ‚ÌXV
+      // ï¿½Ê’uï¿½ï¿½ï¿½ÌXï¿½V
       appendOffset(this, oldChild.getOffset(), oldChild.getLength() * -1);
     }
   }
@@ -431,23 +433,23 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
       FuzzyXMLAttributeImpl attrImpl = (FuzzyXMLAttributeImpl) attr;
       attrImpl.setDocument(getDocument());
       attrImpl.setParentNode(this);
-      // ’Ç‰Á‚·‚éƒAƒgƒŠƒrƒ…[ƒg‚ÌˆÊ’u‚ğŒŸõ
+      // ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½gï¿½ï¿½ï¿½rï¿½ï¿½ï¿½[ï¿½gï¿½ÌˆÊ’uï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
       FuzzyXMLAttribute[] attrs = getAttributes();
       int offset = getOffset() + getName().length() + 1;
       for (int i = 0; i < attrs.length; i++) {
         offset = offset + attrs[i].toXMLString(new RenderContext(getDocument().isHTML())).length();
       }
-      // XVƒCƒxƒ“ƒg‚ğ”­‰Î
+      // ï¿½Xï¿½Vï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½ğ”­‰ï¿½
       fireModifyEvent(attr.toXMLString(new RenderContext(getDocument().isHTML())), offset, 0);
-      // ˆÊ’uî•ñ‚ÌXV
+      // ï¿½Ê’uï¿½ï¿½ï¿½ÌXï¿½V
       appendOffset(this, offset, attr.toXMLString(new RenderContext(getDocument().isHTML())).length());
-      // ÅŒã‚É’Ç‰Á
+      // ï¿½ÅŒï¿½É’Ç‰ï¿½
       attrImpl.setOffset(offset);
       attrImpl.setLength(attrImpl.toXMLString(new RenderContext(getDocument().isHTML())).length());
       _attributes.add(attrImpl);
     }
     else {
-      // ‚±‚Ìê‡‚ÍƒAƒgƒŠƒrƒ…[ƒg‚ÌsetValueƒƒ\ƒbƒh“à‚ÅƒCƒxƒ“ƒg”­‰Î
+      // ï¿½ï¿½ï¿½Ìê‡ï¿½ÍƒAï¿½gï¿½ï¿½ï¿½rï¿½ï¿½ï¿½[ï¿½gï¿½ï¿½setValueï¿½ï¿½ï¿½\ï¿½bï¿½hï¿½ï¿½ï¿½ÅƒCï¿½xï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½
       FuzzyXMLAttributeImpl attrImpl = (FuzzyXMLAttributeImpl) attrNode;
       attrImpl.setValue(attr.getValue());
     }
@@ -479,14 +481,14 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
 
   public void removeAttributeNode(FuzzyXMLAttribute attr) {
     if (_attributes.contains(attr)) {
-      // ƒfƒ^ƒbƒ`
+      // ï¿½fï¿½^ï¿½bï¿½`
       ((AbstractFuzzyXMLNode) attr).setParentNode(null);
       ((AbstractFuzzyXMLNode) attr).setDocument(null);
-      // ƒŠƒXƒg‚©‚çíœ
+      // ï¿½ï¿½ï¿½Xï¿½gï¿½ï¿½ï¿½ï¿½íœ
       _attributes.remove(attr);
-      // ƒCƒxƒ“ƒg‚Ì”­‰Î
+      // ï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½Ì”ï¿½ï¿½ï¿½
       fireModifyEvent("", attr.getOffset(), attr.getLength());
-      // ˆÊ’uî•ñ‚ÌXV
+      // ï¿½Ê’uï¿½ï¿½ï¿½ÌXï¿½V
       appendOffset(this, attr.getOffset(), attr.getLength() * -1);
     }
   }
@@ -549,6 +551,10 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   }
   
   public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer) {
+  	if (isSynthetic()) {
+  		return;
+  	}
+  	
     boolean isHTML = renderContext.isHtml();
 
     boolean renderSurroundingTags = true;
@@ -577,6 +583,8 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
           }
           xmlBuffer.append("/>");
         }
+
+        xmlBuffer.append(getValue(renderContext, xmlBuffer));
       }
       else {
         if (renderSurroundingTags) {
@@ -612,12 +620,12 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     if (obj instanceof FuzzyXMLElement) {
       FuzzyXMLElement element = (FuzzyXMLElement) obj;
 
-      // ƒ^ƒO‚Ì–¼‘O‚ªˆá‚Á‚½‚çfalse
+      // ï¿½^ï¿½Oï¿½Ì–ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½false
       if (!element.getName().equals(getName())) {
         return false;
       }
 
-      // e‚ª—¼•û‚Æ‚ànull‚¾‚Á‚½‚çtrue
+      // ï¿½eï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½nullï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½true
       FuzzyXMLNode parent = element.getParentNode();
       if (parent == null) {
         if (getParentNode() == null) {
@@ -626,7 +634,7 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
         return false;
       }
 
-      // ŠJnƒIƒtƒZƒbƒg‚ª“¯‚¶‚¾‚Á‚½‚çtrue
+      // ï¿½Jï¿½nï¿½Iï¿½tï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½true
       if (element.getOffset() == getOffset()) {
         return true;
       }
@@ -762,6 +770,11 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
     return isSelfClosing(this);
   }
   
+  public boolean isForbiddenFromHavingChildren() {
+    String tagName = getName().toLowerCase();
+  	return FORBIDDEN_CLOSE_TAG.contains(tagName);
+  }
+  
   public static boolean isSelfClosing(FuzzyXMLElement node) {
     FuzzyXMLNode[] children = node.getChildren();
     String tagName = node.getName().toLowerCase();
@@ -773,5 +786,13 @@ public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXM
   @Override
   public boolean isHidden() {
     return getName() == null || getName().equals("");
+  }
+  
+  public void setSynthetic(boolean synthetic) {
+  	_synthetic = synthetic;
+  }
+  
+  public boolean isSynthetic() {
+  	return _synthetic;
   }
 }

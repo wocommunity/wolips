@@ -84,5 +84,11 @@
             class="org.objectstyle.woproject.ant.XcodeIndex"
             eclipseRuntime="false">
       </antTask>
+      <antTask
+            class="org.objectstyle.woproject.ant.WOLipsPropertiesTask"
+            eclipseRuntime="false"
+            library="lib/woproject.jar"
+            name="wolipsproperties">
+      </antTask>
    </extension>
 </plugin>

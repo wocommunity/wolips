@@ -64,7 +64,6 @@ import org.eclipse.jdt.core.JavaConventions;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.corext.refactoring.JDTRefactoringDescriptorComment;
-import org.eclipse.jdt.internal.corext.refactoring.RefactoringCoreMessages;
 import org.eclipse.jdt.internal.corext.refactoring.changes.DynamicValidationStateChange;
 import org.eclipse.jdt.internal.corext.util.Messages;
 import org.eclipse.ltk.core.refactoring.Change;
@@ -92,8 +91,8 @@ public class RenameWOComponentProcessor extends RenameResourceProcessor {
 				project= _resource.getProject().getName();
 			}
 			// TODO Replace Core messages. 
-			final String header= Messages.format(RefactoringCoreMessages.RenameResourceChange_descriptor_description, new String[] { _resource.getFullPath().toString(), getNewResourceName()});
-			final String description= Messages.format(RefactoringCoreMessages.RenameResourceChange_descriptor_description_short, _resource.getName());
+			final String header= Messages.format("Renaming WO Component {0} to {1}", new String[] { _resource.getFullPath().toString(), getNewResourceName()});
+			final String description= Messages.format("Renaming WO Component {0}", _resource.getName());
 			final String comment= new JDTRefactoringDescriptorComment(project, this, header).asString();
 			final int flags= RefactoringDescriptor.STRUCTURAL_CHANGE | RefactoringDescriptor.MULTI_CHANGE | RefactoringDescriptor.BREAKING_CHANGE;
 			final RenameResourceDescriptor descriptor= new RenameResourceDescriptor();

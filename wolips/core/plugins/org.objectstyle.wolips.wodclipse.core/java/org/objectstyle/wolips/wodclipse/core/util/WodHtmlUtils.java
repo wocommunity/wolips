@@ -8,6 +8,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.variables.BuildProperties;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 
 public class WodHtmlUtils {
@@ -102,17 +103,12 @@ public class WodHtmlUtils {
     }
   }
 
-  public static BindingValue toBindingValue(String rawValue, boolean wo54) {
-    BindingValue bindingValue;
+  public static BindingValue toBindingValue(String rawValue, String inlineBindingPrefix, String inlineBindingSuffix) {
     String valueNamespace = null;
     String value = rawValue;
     boolean literal;
-    if (value.startsWith("$")) {
-      value = value.substring(1);
-      literal = false;
-    }
-    else if (wo54 && value.startsWith("[") && value.endsWith("]")) {
-      value = value.substring(1, value.length() - 1);
+    if (value.startsWith(inlineBindingPrefix) && (inlineBindingSuffix.length() == 0 || value.endsWith(inlineBindingSuffix))) {
+      value = value.substring(inlineBindingPrefix.length(), value.length() - inlineBindingSuffix.length());
       int colonIndex = value.indexOf(':');
       if (colonIndex != -1) {
         valueNamespace = value.substring(0, colonIndex).trim();
@@ -132,17 +128,17 @@ public class WodHtmlUtils {
    * return the corresponding WOD element entry.
    * 
    * @param element the XML element to process
-   * @param wo54 whether or not the node should be processed in WO 5.4 mode
+   * @param buildProperties the build properties for this project
    * @param resolveWodElement if true, webobject tags will resolve to their DocumentWodElement
    * @param cache the WodParserCache
    * @return an IWodElement corresponding to the node
    * @throws Exception 
    */
-  public static IWodElement getWodElement(FuzzyXMLElement element, boolean wo54, boolean resolveWodElement, WodParserCache cache) throws Exception {
+  public static IWodElement getWodElement(FuzzyXMLElement element, BuildProperties buildProperties, boolean resolveWodElement, WodParserCache cache) throws Exception {
     IWodElement wodElement;
     if (WodHtmlUtils.isWOTag(element)) {
       if (WodHtmlUtils.isInline(element.getName()) || !resolveWodElement) {
-        wodElement = new FuzzyXMLWodElement(element, wo54);
+        wodElement = new FuzzyXMLWodElement(element, buildProperties);
       }
       else {
         String elementName = element.getAttributeValue("name");

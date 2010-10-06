@@ -3,7 +3,7 @@ package entitymodeler.actions;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
 
@@ -24,8 +24,8 @@ public class OpenEOModelAction extends Action implements ActionFactory.IWorkbenc
 
   @Override
   public void run() {
-    DirectoryDialog dialog = new DirectoryDialog(_window.getShell());
-    //dialog.setFilterPath("*.eomodeld");
+    FileDialog dialog = new FileDialog(_window.getShell());
+    dialog.setFilterPath("*.eomodeld");
     String selectedDirectory = dialog.open();
     if (selectedDirectory != null) {
       try {

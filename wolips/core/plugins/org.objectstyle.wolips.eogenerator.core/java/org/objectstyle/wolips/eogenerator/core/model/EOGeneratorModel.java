@@ -204,6 +204,9 @@ public class EOGeneratorModel {
 		catch (NoClassDefFoundError e) {
 			// IGNORE THIS -- We're not running in Eclipse
 		}
+		catch (NullPointerException e) {
+			// IGNORE THIS -- We're not running in Eclipse
+		}
 	}
 	
 	public void setJava14(boolean java14) {

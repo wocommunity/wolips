@@ -102,11 +102,6 @@ public class PatternsetMatcher extends PatternsetReader {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.objectstyle.wolips.datasets.pattern.IStringMatcher#match(java.lang.String)
-	 */
 	public boolean match(String[] strings) {
 		for (int i = 0; i < strings.length; i++) {
 			if (this.match(strings[i])) {
@@ -116,11 +111,6 @@ public class PatternsetMatcher extends PatternsetReader {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.objectstyle.wolips.datasets.pattern.IStringMatcher#hasPattern(java.lang.String)
-	 */
 	public boolean hasPattern(String string) {
 		String[] pattern = this.getPattern();
 		for (int i = 0; i < pattern.length; i++) {

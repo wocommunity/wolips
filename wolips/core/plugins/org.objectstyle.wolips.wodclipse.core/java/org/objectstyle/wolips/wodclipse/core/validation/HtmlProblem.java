@@ -4,6 +4,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.Position;
+import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 
 public class HtmlProblem {
@@ -46,13 +47,13 @@ public class HtmlProblem {
     return "[HtmlProblem: message = " + _message + "]";
   }
 
-  public IMarker createMarker(IFile file) {
+  public IMarker createMarker(IFile file, String severityPreference) {
     IMarker marker = null;
     try {
       marker = _htmlFile.createMarker(Activator.TEMPLATE_PROBLEM_MARKER);
       marker.setAttribute(IMarker.MESSAGE, getMessage());
       int severity;
-      if (isWarning()) {
+      if (isWarning() || PreferenceConstants.WARNING.equals(severityPreference)) {
         severity = IMarker.SEVERITY_WARNING;
       }
       else {

@@ -60,7 +60,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.core.resources.tests.AbstractProjectTestCase;
 import org.objectstyle.wolips.core.resources.types.file.IPBDotProjectAdapter;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 
 public class ProjectAdapterTest extends AbstractProjectTestCase {
 
@@ -68,7 +68,7 @@ public class ProjectAdapterTest extends AbstractProjectTestCase {
 		IProject project = this.getProject("testProjectAdapter");
 		NullProgressMonitor monitor = new NullProgressMonitor();
 		this.initIncrementalApplicationProject(project, monitor);
-		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
+		ProjectAdapter projectAdapter = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
 		assertNotNull(projectAdapter);
 		assertNotNull(projectAdapter.getUnderlyingProject());
 		assertFalse(projectAdapter.isFramework());
@@ -79,7 +79,7 @@ public class ProjectAdapterTest extends AbstractProjectTestCase {
 		} catch (CoreException e) {
 			assertTrue(false);
 		}
-		IProjectAdapter projectAdapter2 = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
+		ProjectAdapter projectAdapter2 = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
 		assertNotNull(projectAdapter2);
 		try {
 			projectAdapter.getUnderlyingProject().close(monitor);
@@ -87,7 +87,7 @@ public class ProjectAdapterTest extends AbstractProjectTestCase {
 		} catch (CoreException e) {
 			assertTrue(false);
 		}
-		projectAdapter2 = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
+		projectAdapter2 = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
 		assertNotNull(projectAdapter2);
 		assertTrue(projectAdapter != projectAdapter2);
 	}
@@ -96,7 +96,7 @@ public class ProjectAdapterTest extends AbstractProjectTestCase {
 		IProject project = this.getProject("testPBDotProjectAdapter");
 		NullProgressMonitor monitor = new NullProgressMonitor();
 		this.initIncrementalApplicationProject(project, monitor);
-		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
+		ProjectAdapter projectAdapter = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
 		assertNotNull(projectAdapter);
 		IPBDotProjectAdapter pbDotProjectAdapter = projectAdapter.getPBDotProjectAdapter();
 		assertNotNull(pbDotProjectAdapter);

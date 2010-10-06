@@ -4,11 +4,10 @@
 	<parent>
 		<artifactId>maven2</artifactId>
 		<groupId>org.objectstyle.woproject.maven2</groupId>
-		<version>2.1</version>
+		<version>2.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>maven-wobootstrap-plugin</artifactId>
-	<version>2.1-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 	<name>Maven WOBootstrap Plugin</name>
 
@@ -77,10 +76,4 @@
 			<artifactId>maven-plugin-testing-harness</artifactId>
 		</dependency>
 	</dependencies>
-
-	<scm>
-		<connection>scm:svn:http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/maven-wobootstrap-plugin</connection>
-		<developerConnection>scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/maven-wobootstrap-plugin</developerConnection>
-		<url>http://svn.objectstyle.org/repos/woproject/trunk/woproject/maven2/maven-wobootstrap-plugin</url>
-	</scm>
 </project>

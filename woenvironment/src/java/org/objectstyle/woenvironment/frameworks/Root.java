@@ -58,21 +58,26 @@ package org.objectstyle.woenvironment.frameworks;
 import java.util.Set;
 
 public abstract class Root<T extends IFramework> {
-  public static final String PROJECT_ROOT = "Project";
-  public static final String PROJECT_LOCAL_ROOT = "ProjectLocal";
-  public static final String EXTERNAL_ROOT = "External";
-  public static final String USER_ROOT = "User";
-  public static final String NETWORK_ROOT = "Network";
-  public static final String LOCAL_ROOT = "Local";
-  public static final String SYSTEM_ROOT = "System";
-  
-  private String shortName;
+	public static final String PROJECT_ROOT = "Project";
+	public static final String PROJECT_LOCAL_ROOT = "ProjectLocal";
+	public static final String EXTERNAL_ROOT = "External";
+	public static final String USER_ROOT = "User";
+	public static final String NETWORK_ROOT = "Network";
+	public static final String LOCAL_ROOT = "Local";
+	public static final String SYSTEM_ROOT = "System";
+
+	private String shortName;
 	private String name;
+	private long creationDate;
 
 	public Root(String shortName, String name) {
-	  this.shortName = shortName;
+		this.shortName = shortName;
 		this.name = name;
-		//System.out.println("Root.Root: " + this.name);
+		this.creationDate = System.currentTimeMillis();
+	}
+	
+	public boolean shouldReload() {
+		return System.currentTimeMillis() - this.creationDate > 30000;
 	}
 
 	public abstract Set<T> getFrameworks();
@@ -86,10 +91,22 @@ public abstract class Root<T extends IFramework> {
 		}
 		return null;
 	}
-	
+
+	public abstract Set<T> getApplications();
+
+	public T getApplicationWithName(String applicationName) {
+		Set<T> applications = getApplications();
+		for (T application : applications) {
+			if (application.getName().equals(applicationName)) {
+				return application;
+			}
+		}
+		return null;
+	}
+
 	public String getShortName() {
-    return shortName;
-  }
+		return shortName;
+	}
 
 	public String getName() {
 		return this.name;

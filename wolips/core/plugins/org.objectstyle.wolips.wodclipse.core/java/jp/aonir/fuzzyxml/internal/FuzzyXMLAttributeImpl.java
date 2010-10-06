@@ -15,6 +15,7 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
   private String _value;
   private String _rawValue;
   private int _valueOffset;
+  private boolean _hasNestedTag;
 
   public FuzzyXMLAttributeImpl(String namespace, String name) {
     this(null, namespace, name, null, null, -1, -1, -1);
@@ -34,6 +35,14 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
     this._rawValue = rawValue;
     _valueOffset = valueOffset;
   }
+  
+  public void setHasNestedTag(boolean hasNestedTag) {
+		_hasNestedTag = hasNestedTag;
+	}
+  
+  public boolean hasNestedTag() {
+		return _hasNestedTag;
+	}
 
   public String getRawValue() {
     return _rawValue;
@@ -106,11 +115,11 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
     this._value = (value == null) ? "" : value;
     this._rawValue = this._value;
 
-    // XVƒCƒxƒ“ƒg‚ğ”­‰Î
+    // ï¿½Xï¿½Vï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½ğ”­‰ï¿½
     FuzzyXMLDocumentImpl document = getDocument();
     boolean html = (document == null) ? true : document.isHTML();
     fireModifyEvent(toXMLString(new RenderContext(html)), getOffset(), getLength());
-    // ˆÊ’uî•ñ‚ğXV
+    // ï¿½Ê’uï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½V
     appendOffset((FuzzyXMLElement) getParentNode(), getOffset(), this._value.length() - length);
   }
 
@@ -191,15 +200,24 @@ public class FuzzyXMLAttributeImpl extends AbstractFuzzyXMLNode implements Fuzzy
     if (quote != 0) {
       xmlBuffer.append(quote);
     }
-    if (_escape) {
+    // MS: Technically we want to escape everything BUT the nested tags, but just avoid it all for now
+    boolean hasNestedTag = hasNestedTag();
+    if (_escape && hasNestedTag) {
       // Only do minimal XML escaping on the contents of attribute values
       xmlBuffer.append(FuzzyXMLUtil.escape(_value, false));
     }
     else {
+    	boolean inNestedTag = false;
       String value = getValue();
       for (int i = 0; i < value.length(); i++) {
         char c = value.charAt(i);
-        if (_quote == c) {
+        if (hasNestedTag && c == '<') {
+        	inNestedTag = true;
+        }
+        else if (c == '>') {
+        	inNestedTag = false;
+        }
+        else if (!inNestedTag && _quote == c) {
           xmlBuffer.append('\\');
         }
         xmlBuffer.append(c);

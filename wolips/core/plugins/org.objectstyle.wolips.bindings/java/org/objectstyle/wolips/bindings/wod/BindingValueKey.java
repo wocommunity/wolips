@@ -67,7 +67,7 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
 			  result = ((IField) member).getTypeSignature();
 		  }
 	  }
-	  return result;
+ 	  return result;
   }
   
   public String getNextTypeName() {
@@ -77,7 +77,7 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
         nextTypeName = Signature.createTypeSignature(_nextType.getFullyQualifiedName(),true);
       }
       else {
-    	nextTypeName = getMemberTypeName(_bindingMember);
+      	nextTypeName = getMemberTypeName(_bindingMember);
       }
       return nextTypeName;
     }
@@ -121,6 +121,7 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
       return null;
     }
     String typeSignatureName = Signature.getSignatureSimpleName(Signature.getElementType(nextTypeName));
+    //long a = System.currentTimeMillis();
 
     if (parentBinding != null) {
       _parent = parentBinding;
@@ -197,7 +198,11 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
             
     String nextTypeNameErasure = Signature.getTypeErasure(nextTypeName);
     //System.out.println("BindingValueKey.resolveNextType: " + nextTypeNameErasure + " / " + _bindingDeclaringType);
-    return _cache.getTypeForNameInType(nextTypeNameErasure, declaringType);
+    IType nextType = _cache.getTypeForNameInType(nextTypeNameErasure, declaringType);
+    //if (System.currentTimeMillis() - a > 0) {
+    //	System.out.println("BindingValueKey.resolveNextType: " + nextTypeNameErasure + ", " + (System.currentTimeMillis() - a) + ", " + declaringType.getElementName());
+    //}
+    return nextType;
   }
 
   private static boolean isGenericType(String typeName, IType declaringType) throws JavaModelException {    

@@ -55,8 +55,11 @@
  */
 package org.objectstyle.wolips.templateengine;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -196,21 +199,21 @@ public class TemplateEngine implements IRunnableWithProgress {
 	}
 
 	private void run(TemplateDefinition templateDefinition) {
-		FileWriter writer = null;
+		Writer writer = null;
 		File file = null;
 		try {
 			/*
 			 * make a writer, and merge the template 'against' the context
 			 */
 			String templateName = templateDefinition.getTemplateName();
-			Template template = _velocityEngine.getTemplate(templateName);
+			Template template = _velocityEngine.getTemplate(templateName, "UTF-8");
 			//writer = new FileWriter(templateDefinition.getDestinationPath());
 			file = new File(templateDefinition.getDestinationPath());
 			File parentDir = file.getParentFile();
 			if (!parentDir.exists()) {
 				parentDir.mkdirs();
 			}
-			writer = new FileWriter(file);
+			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
 			template.merge(_context, writer);
 		} catch (Exception e) {
 			e.printStackTrace();

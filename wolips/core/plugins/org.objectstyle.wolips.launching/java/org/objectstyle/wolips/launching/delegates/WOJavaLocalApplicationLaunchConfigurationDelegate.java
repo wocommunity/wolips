@@ -57,9 +57,12 @@
 package org.objectstyle.wolips.launching.delegates;
 
 import java.io.File;
-import java.text.MessageFormat;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -70,19 +73,21 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.sourcelookup.ISourceLookupDirector;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.JavaLaunchDelegate;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.swt.widgets.Display;
+import org.objectstyle.woenvironment.util.FileStringScanner;
 import org.objectstyle.wolips.baseforplugins.util.StringUtilities;
-import org.objectstyle.wolips.datasets.adaptable.JavaProject;
-import org.objectstyle.wolips.launching.LaunchingMessages;
+import org.objectstyle.wolips.baseforuiplugins.utils.WorkbenchUtilities;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 import org.objectstyle.wolips.launching.LaunchingPlugin;
 import org.objectstyle.wolips.launching.classpath.WORuntimeClasspathProvider;
 import org.objectstyle.wolips.preferences.ILaunchInfo;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.variables.VariablesPlugin;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
  * @author ulrich Launches a local VM.
@@ -156,13 +161,12 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends JavaLaunc
 
 			public void run() {
 				Status status = new Status(IStatus.ERROR, "org.objectstyle.wolips.launching", IStatus.ERROR, "Classpath Provider missing or invalid", null);
-				WorkbenchUtilitiesPlugin.errorDialog(Display.getCurrent().getActiveShell(), "WOLips", message, status);
+				WorkbenchUtilities.errorDialog(Display.getCurrent().getActiveShell(), "WOLips", message, status);
 			}
 		}
 		RunnableExceptionHandler runnable = new RunnableExceptionHandler();
 		Display.getDefault().asyncExec(runnable);
 	}
-
 
 	/**
 	 * @see org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate#verifyWorkingDirectory(org.eclipse.debug.core.ILaunchConfiguration)
@@ -170,38 +174,134 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends JavaLaunc
 	public File verifyWorkingDirectory(ILaunchConfiguration configuration) throws CoreException {
 		IProject theProject = this.getJavaProject(configuration).getProject();
 
-		IPath wd = getWorkingDirectoryPath(configuration);
-		JavaProject javaProject = (JavaProject) (this.getJavaProject(configuration).getAdapter(JavaProject.class));
+		// IPath wd = getWorkingDirectoryPath(configuration);
+		ProjectAdapter projectAdaptor = (ProjectAdapter) theProject.getAdapter(ProjectAdapter.class);
 
-		File wdFile = javaProject.getWDFolder(theProject, wd);
-		if (null == wdFile) {
-			IPath path = VariablesPlugin.getDefault().getProjectVariables(theProject).getExternalBuildRoot();
-			if(path != null) {
-				path = path.append(theProject.getName() + ".woa");
-				wdFile = path.toFile();
-				if (!wdFile.exists()) {
-					wdFile = null;
+		IContainer workingDirectoryFolder = projectAdaptor.getWorkingDirFolder();
+		File workingDirectoryFile;
+		if (workingDirectoryFolder == null) {
+			workingDirectoryFile = super.verifyWorkingDirectory(configuration);
+		} else {
+			workingDirectoryFile = workingDirectoryFolder.getLocation().toFile();
+		}
+		/*
+		 * if (null == wdFile) { IPath path =
+		 * VariablesPlugin.getDefault().getProjectVariables
+		 * (theProject).getExternalBuildRoot(); if(path != null) { path =
+		 * path.append(theProject.getName() + ".woa"); wdFile = path.toFile();
+		 * if (!wdFile.exists()) { wdFile = null; } } else { wdFile = null; } }
+		 * if (null == wdFile) { wdFile =
+		 * super.verifyWorkingDirectory(configuration); } if (((wdFile == null)
+		 * || (wdFile.toString().indexOf(".woa") < 0))) {
+		 * abort(MessageFormat.format(LaunchingMessages.getString(
+		 * "WOJavaLocalApplicationLaunchConfigurationDelegate.Working_directory_is_not_a_woa__{0}_12"
+		 * ), new Object[] { wdFile.toString() }), null,
+		 * IJavaLaunchConfigurationConstants
+		 * .ERR_WORKING_DIRECTORY_DOES_NOT_EXIST); //$NON-NLS-1$ }
+		 */
+
+		return workingDirectoryFile;
+	}
+
+	public boolean isValidProjectPath(IProject project) {
+		try {
+			return true;//project.getLocation().toOSString().indexOf("-") == -1;
+		} catch (Exception anException) {
+			LaunchingPlugin.getDefault().log(anException);
+			return false;
+		}
+	}
+
+	protected void addProjectsToSearchPath(IProject buildProject, IProject project, StringBuffer searchPathBuffer, Set<IProject> visitedProjects, Set<IProject> invalidProjects) throws JavaModelException {
+		if (!visitedProjects.contains(project)) {
+			visitedProjects.add(project);
+			if (project.equals(buildProject)) {
+				searchPathBuffer.append("\"..\",\"../..\"");
+			}
+			if (isValidProjectPath(project)) {
+				ProjectAdapter projectAdapter = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
+				if (projectAdapter != null && projectAdapter.isFramework()) {
+					searchPathBuffer.append(",\"");
+					searchPathBuffer.append(project.getLocation().toOSString());
+					searchPathBuffer.append("\"");
 				}
 			} else {
-				wdFile = null;
+				invalidProjects.add(project);
+			}
+			IJavaProject javaProject = JavaCore.create(project);
+			if (javaProject != null) {
+				String[] requiredProjectNames = javaProject.getRequiredProjectNames();
+				for (int requiredProjectNameNum = 0; requiredProjectNameNum < requiredProjectNames.length; requiredProjectNameNum++) {
+					String requiredProjectName = requiredProjectNames[requiredProjectNameNum];
+					IProject requiredProject = ResourcesPlugin.getWorkspace().getRoot().getProject(requiredProjectName);
+					addProjectsToSearchPath(buildProject, requiredProject, searchPathBuffer, visitedProjects, invalidProjects);
+				}
 			}
 		}
-		if (null == wdFile) {
-			wdFile = super.verifyWorkingDirectory(configuration);
-		}
-		if (((wdFile == null) || (wdFile.toString().indexOf(".woa") < 0))) {
-			abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Working_directory_is_not_a_woa__{0}_12"), new Object[] { wdFile.toString() }), null, IJavaLaunchConfigurationConstants.ERR_WORKING_DIRECTORY_DOES_NOT_EXIST); //$NON-NLS-1$
-		}
+	}
 
-		return wdFile;
+	/**
+	 * Method addPreferencesValue.
+	 * 
+	 * @param value
+	 * @param projectSearchPathPreferences
+	 * @return String
+	 */
+	private String addPreferencesValue(String aString, String projectSearchPathPreferences) {
+		String value = aString;
+		if (value == null) {
+			return value;
+		}
+		String nsProjectSarchPath = projectSearchPathPreferences;
+		if (nsProjectSarchPath == null || nsProjectSarchPath.length() == 0) {
+			return value;
+		}
+		if (value.length() > 0) {
+			value = value + ",";
+		}
+		return value + nsProjectSarchPath;
+	}
+
+	/**
+	 * Method getGeneratedByWOLips.
+	 * 
+	 * @param projectSearchPathPreferences
+	 * 
+	 * @return String
+	 * @throws JavaModelException
+	 */
+	public String getGeneratedByWOLips(IProject project, String projectSearchPathPreferences) throws JavaModelException {
+		StringBuffer searchPathBuffer = new StringBuffer();
+		final HashSet<IProject> invalidProjects = new HashSet<IProject>();
+		addProjectsToSearchPath(project, project, searchPathBuffer, new HashSet<IProject>(), invalidProjects);
+		String returnValue = FileStringScanner.replace(searchPathBuffer.toString(), "\\", "/");
+		returnValue = this.addPreferencesValue(returnValue, projectSearchPathPreferences);
+		if ("".equals(returnValue)) {
+			returnValue = "\"" + ".." + "\"";
+		}
+		returnValue = "(" + returnValue + ")";
+//		if (!invalidProjects.isEmpty()) {
+//			Display.getDefault().asyncExec(new Runnable() {
+//				public void run() {
+//					WorkbenchUtilities.errorDialog(WorkbenchUtilities.getActiveWorkbenchShell(), "NSProjectSearchPath", "The projects " + invalidProjects + " contain dashes in their paths.  This breaks NSProjectSearchPath. Rapid turnaround will be disabled.", (Throwable) null);
+//				}
+//			});
+//		}
+		return returnValue;
 	}
 
 	public String getProgramArguments(ILaunchConfiguration configuration) throws CoreException {
+		return getProgramArguments(configuration, true, true, false);
+	}
+	
+	public String getProgramArguments(ILaunchConfiguration configuration, boolean includeDash, boolean includeDashD, boolean equalSeparator) throws CoreException {
 		IProject theProject = this.getJavaProject(configuration).getProject();
 
-		StringBuffer launchArgument = new StringBuffer(super.getProgramArguments(configuration));
+		StringBuffer launchArgument = new StringBuffer();
+		if (includeDash) {
+			launchArgument.append(super.getProgramArguments(configuration));
+		}
 		launchArgument.append(" ");
-		JavaProject javaProject = (JavaProject) (this.getJavaProject(configuration).getAdapter(JavaProject.class));
 
 		String mainTypeName = verifyMainTypeName(configuration);
 
@@ -212,49 +312,69 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends JavaLaunc
 		}
 		ILaunchInfo[] launchInfo = Preferences.getLaunchInfoFrom(launchArguments);
 		String automatic = "Automatic";
+		boolean isMacOSX = System.getProperty("os.name", "Unknown").contains("Mac");
+		boolean nsProjectBundleEnabledExists = false;
 		for (int i = 0; i < launchInfo.length; i++) {
 			if (launchInfo[i].isEnabled()) {
 				// -WOApplicationClassName
 				String parameter = launchInfo[i].getParameter();
 				String argument = launchInfo[i].getArgument();
-				if (automatic.equals(argument)) {
-					if ("-WOApplicationClassName".equals(parameter))
-						argument = mainTypeName;
-					if ("-DWORoot=".equals(parameter)) {
-						IPath systemRoot = VariablesPlugin.getDefault().getProjectVariables(theProject).getSystemRoot();
-						if (javaProject.isOnMacOSX() || systemRoot == null) {
-							parameter = "";
-							argument = "";
-						}
-						else {
-							argument = systemRoot.toOSString();
-						}
-					}
-					if ("-DWORootDirectory=".equals(parameter)) {
-						IPath systemRoot = VariablesPlugin.getDefault().getProjectVariables(theProject).getSystemRoot();
-						if (javaProject.isOnMacOSX() || systemRoot == null) {
-							parameter = "";
-							argument = "";
-						}
-						else {
-							argument = systemRoot.toOSString();
-						}
-					}
-					if ("-DWOUserDirectory=".equals(parameter)) {
-						argument = workingDir.getAbsolutePath();
-					}
-					if ("-NSProjectSearchPath".equals(parameter)) {
-						argument = javaProject.getGeneratedByWOLips(Preferences.getNSProjectSearchPath());
-					}
-
+				boolean includeParam = true;
+				if (parameter.startsWith("-D")) {
+					includeParam = includeDashD;
 				}
-
-				launchArgument.append(StringUtilities.toCommandlineParameterFormat(parameter, argument, true));
-				launchArgument.append(" ");
+				else {
+					includeParam = includeDash;
+				}
+				if (includeParam) {
+					if (automatic.equals(argument)) {
+						if ("-WOApplicationClassName".equals(parameter))
+							argument = mainTypeName;
+						if ("-DWORoot=".equals(parameter)) {
+							IPath systemRoot = VariablesPlugin.getDefault().getProjectVariables(theProject).getSystemRoot();
+							if (isMacOSX || systemRoot == null) {
+								parameter = "";
+								argument = "";
+							} else {
+								argument = systemRoot.toOSString();
+							}
+						}
+						if ("-DWORootDirectory=".equals(parameter)) {
+							IPath systemRoot = VariablesPlugin.getDefault().getProjectVariables(theProject).getSystemRoot();
+							if (isMacOSX || systemRoot == null) {
+								parameter = "";
+								argument = "";
+							} else {
+								argument = systemRoot.toOSString();
+							}
+						}
+						if ("-DWOUserDirectory=".equals(parameter)) {
+							argument = workingDir.getAbsolutePath();
+						}
+						if ("-NSProjectSearchPath".equals(parameter) || "-DNSProjectSearchPath".equals(parameter)) {
+							argument = getGeneratedByWOLips(theProject, Preferences.getNSProjectSearchPath());
+						}
+	
+					}
+	
+					if (parameter != null && parameter.length() > 0) {
+						launchArgument.append(StringUtilities.toCommandlineParameterFormat(parameter, argument, true, equalSeparator));
+						launchArgument.append(" ");
+					}
+				}
+			}
+			
+			if (launchInfo[i].getParameter() != null && launchInfo[i].getParameter().contains("NSProjectBundleEnabled")) {
+				nsProjectBundleEnabledExists = true;
 			}
 		}
+		
+		if (!nsProjectBundleEnabledExists && !Preferences.mockBundleEnabled()) {
+			launchArgument.append(" -DNSProjectBundleEnabled=true");
+		}
+		
 		String debugGroups = configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS, "");
-		if (debugGroups != null && debugGroups.length() > 0) {
+		if (debugGroups != null && debugGroups.length() > 0 && includeDashD) {
 			launchArgument.append(" -DNSDebugGroups=\"(");
 			launchArgument.append(debugGroups);
 			launchArgument.append(")\"");
@@ -262,6 +382,16 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends JavaLaunc
 		return launchArgument.toString();
 	}
 
+	public String getVMArguments(ILaunchConfiguration configuration) throws CoreException {
+		String vmArguments = super.getVMArguments(configuration);
+		StringBuffer vmArgumentsBuffer = new StringBuffer();
+		if (vmArguments != null) {
+			vmArgumentsBuffer.append(vmArguments);
+		}
+		vmArgumentsBuffer.append(getProgramArguments(configuration, false, true, true));
+		return vmArgumentsBuffer.toString();
+	}
+	
 	/**
 	 * for the profiling plugin
 	 * 
@@ -271,7 +401,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends JavaLaunc
 	 * @throws CoreException
 	 */
 	public String getVMArguments(ILaunchConfiguration configuration, ILaunch launch) throws CoreException {
-		return super.getVMArguments(configuration);
+		return getVMArguments(configuration);
 	}
 
 	protected void setDefaultSourceLocator(ILaunch launch, ILaunchConfiguration configuration) throws CoreException {

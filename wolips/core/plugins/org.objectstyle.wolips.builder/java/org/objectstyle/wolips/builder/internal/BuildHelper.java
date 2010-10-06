@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.builder.internal;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -77,14 +78,15 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.baseforplugins.AbstractBaseActivator;
+import org.objectstyle.wolips.baseforplugins.util.FileUtilities;
 import org.objectstyle.wolips.builder.BuilderPlugin;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 
 /**
  * @author Harald Niesche
  */
 public abstract class BuildHelper extends ResourceUtilities implements IResourceDeltaVisitor, IResourceVisitor {
-	private Project _project;
+	private IProject _project;
 
 	private IPath _distPath;
 
@@ -95,8 +97,8 @@ public abstract class BuildHelper extends ResourceUtilities implements IResource
 	/**
 	 * @author Harald Niesche
 	 * 
-	 * A single resource-related task (copy or delete a resource, see
-	 * subclasses)
+	 *         A single resource-related task (copy or delete a resource, see
+	 *         subclasses)
 	 */
 	public static interface Buildtask {
 		/**
@@ -119,7 +121,9 @@ public abstract class BuildHelper extends ResourceUtilities implements IResource
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.objectstyle.wolips.projectbuild.builder.WOIncrementalBuilder.WOBuildHelper.Buildtask#amountOfWork()
+		 * @see
+		 * org.objectstyle.wolips.projectbuild.builder.WOIncrementalBuilder.
+		 * WOBuildHelper.Buildtask#amountOfWork()
 		 */
 		/**
 		 * @return Returns the amount of work.
@@ -164,7 +168,10 @@ public abstract class BuildHelper extends ResourceUtilities implements IResource
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.objectstyle.wolips.projectbuild.builder.WOIncrementalBuilder.WOBuildHelper.Buildtask#doWork(org.eclipse.core.runtime.IProgressMonitor)
+		 * @see
+		 * org.objectstyle.wolips.projectbuild.builder.WOIncrementalBuilder.
+		 * WOBuildHelper
+		 * .Buildtask#doWork(org.eclipse.core.runtime.IProgressMonitor)
 		 */
 		public void doWork(IProgressMonitor m) throws CoreException {
 			String error = null;
@@ -208,8 +215,8 @@ public abstract class BuildHelper extends ResourceUtilities implements IResource
 	/**
 	 * @author Harald Niesche
 	 * 
-	 * To change the template for this generated type comment go to
-	 * Window>Preferences>Java>Code Generation>Code and Comments
+	 *         To change the template for this generated type comment go to
+	 *         Window>Preferences>Java>Code Generation>Code and Comments
 	 */
 	public static class DeleteTask extends BuildtaskAbstract {
 		/**
@@ -225,28 +232,39 @@ public abstract class BuildHelper extends ResourceUtilities implements IResource
 		/*
 		 * (non-Javadoc)
 		 * 
-		 * @see org.objectstyle.wolips.projectbuild.builder.WOIncrementalBuilder.WOBuildHelper.Buildtask#doWork(org.eclipse.core.runtime.IProgressMonitor)
+		 * @see
+		 * org.objectstyle.wolips.projectbuild.builder.WOIncrementalBuilder.
+		 * WOBuildHelper
+		 * .Buildtask#doWork(org.eclipse.core.runtime.IProgressMonitor)
 		 */
 		public void doWork(IProgressMonitor m) throws CoreException {
 			if (_path == null) {
 				// this really really should not happen! (again ...)
 				throw new OperationCanceledException("(deleting a null path wipes the workspace)");
 			}
+			boolean deletedUnderlyingFile = false;
 			IResource res = getWorkspaceRoot().findMember(_path);
 			if (res != null) {
+				// IContainer parentFolder = res.getParent();
+				File file = res.getLocation().toFile();
+				if (file.exists()) {
+					FileUtilities.deleteRecursively(file);
+					deletedUnderlyingFile = true;
+				}
 				res.refreshLocal(IResource.DEPTH_ONE, m);
 			}
-			IFile theFile = getWorkspaceRoot().getFile(_path);
-			IContainer theFolder = getWorkspaceRoot().getFolder(_path);
-			if (theFolder instanceof IFolder && theFolder.exists()) {
-				_getLogger().debug(_msgPrefix + " delete " + _path);
-				m.subTask("delete " + _path);
-				((IFolder) theFolder).delete(true, true, null);
-			}
-			else if (theFile != null && theFile.exists()) {
-				_getLogger().debug(_msgPrefix + " delete " + _path);
-				m.subTask("delete " + _path);
-				theFile.delete(true, true, null);
+			if (!deletedUnderlyingFile) {
+				IFile theFile = getWorkspaceRoot().getFile(_path);
+				IContainer theFolder = getWorkspaceRoot().getFolder(_path);
+				if (theFolder instanceof IFolder && theFolder.exists()) {
+					_getLogger().debug(_msgPrefix + " delete " + _path);
+					m.subTask("delete " + _path);
+					((IFolder) theFolder).delete(true, true, null);
+				} else if (theFile != null && theFile.exists()) {
+					_getLogger().debug(_msgPrefix + " delete " + _path);
+					m.subTask("delete " + _path);
+					theFile.delete(true, true, null);
+				}
 			}
 		}
 
@@ -265,7 +283,7 @@ public abstract class BuildHelper extends ResourceUtilities implements IResource
 	/**
 	 * @param project
 	 */
-	public void reinitForNextBuild(Project project) {
+	public void reinitForNextBuild(IProject project) {
 		_project = project;
 		_distPath = new Path("dist");
 		_buildWork = 0;
@@ -328,12 +346,8 @@ public abstract class BuildHelper extends ResourceUtilities implements IResource
 
 	public abstract boolean handleResource(IResource res, IResourceDelta delta) throws CoreException;
 
-	public Project getProject() {
+	public IProject getProject() {
 		return _project;
-	}
-
-	public IProject getIProject() {
-		return _project.getIProject();
 	}
 
 	/**
@@ -341,13 +355,7 @@ public abstract class BuildHelper extends ResourceUtilities implements IResource
 	 * 
 	 */
 	public IJavaProject getJavaProject() {
-		try {
-			return ((IJavaProject) getIProject().getNature(JavaCore.NATURE_ID));
-		} catch (CoreException up) {
-			BuilderPlugin.getDefault().log(up);
-		}
-
-		return (null);
+		return JavaCore.create(getProject());
 	}
 
 	/**
@@ -385,14 +393,8 @@ public abstract class BuildHelper extends ResourceUtilities implements IResource
 	// }
 	public boolean isFramework() {
 		// return (getBooleanProperty(FRAMEWORK_PROPERTY));
-		try {
-			Project project = (Project) (this.getIProject()).getAdapter(Project.class);
-			return (project.isFramework());
-		} catch (CoreException up) {
-			BuilderPlugin.getDefault().log(up.getStatus());
-		}
-
-		return false;
+		ProjectAdapter project = (ProjectAdapter) (this.getProject()).getAdapter(ProjectAdapter.class);
+		return (project.isFramework());
 	}
 
 	// public void setIsFramework(boolean isFramework) {
@@ -405,7 +407,7 @@ public abstract class BuildHelper extends ResourceUtilities implements IResource
 	 * @return
 	 */
 	public String getResultName() {
-		String name = getIProject().getName();
+		String name = getProject().getName();
 
 		if (isFramework()) {
 			return (name + ".framework");
@@ -417,7 +419,7 @@ public abstract class BuildHelper extends ResourceUtilities implements IResource
 	 * @return
 	 */
 	public IPath getBuildPath() {
-		return (getIProject().getFullPath().append("build"));
+		return (getProject().getFullPath().append("build"));
 	}
 
 	/**

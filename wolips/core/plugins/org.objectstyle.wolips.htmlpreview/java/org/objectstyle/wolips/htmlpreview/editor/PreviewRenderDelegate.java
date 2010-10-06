@@ -37,6 +37,7 @@ import org.objectstyle.wolips.htmlpreview.editor.tags.WOTextFieldTagDelegate;
 import org.objectstyle.wolips.htmlpreview.editor.tags.WOTextTagDelegate;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
+import org.objectstyle.wolips.variables.BuildProperties;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
@@ -99,8 +100,8 @@ public class PreviewRenderDelegate implements RenderDelegate {
 			if (WodHtmlUtils.isWOTag(tagName)) {
 				try {
 					WodParserCache cache = _caches.peek();
-					boolean wo54 = org.objectstyle.wolips.bindings.Activator.getDefault().isWO54(_caches.peek().getProject());
-					IWodElement wodElement = WodHtmlUtils.getWodElement(element, wo54, true, cache);
+					BuildProperties buildProperties = (BuildProperties)cache.getProject().getAdapter(BuildProperties.class);
+					IWodElement wodElement = WodHtmlUtils.getWodElement(element, buildProperties, true, cache);
 					if (wodElement == null) {
 						return true;
 					}

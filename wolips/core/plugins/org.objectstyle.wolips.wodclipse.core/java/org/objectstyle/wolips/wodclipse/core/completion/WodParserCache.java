@@ -7,8 +7,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
@@ -58,6 +60,28 @@ public class WodParserCache implements ITypeOwner {
   static {
     WodParserCache._typeCache = new TypeCache();
     WodParserCache._modelGroupCache = new EOModelGroupCache();
+  }
+  
+  /**
+   * Returns a WodParserCache entry for the given component name.
+   * 
+   * @param project the project to scope the search to
+   * @param componentName the name of the component to lookup
+   * @return the WodParserCache for the component
+   * @throws CoreException if a core error occurs
+   * @throws LocateException if a locate error occurs
+   */
+  public static WodParserCache parser(IProject project, String componentName) throws CoreException, LocateException {
+  	LocalizedComponentsLocateResult locateResult = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(project, componentName);
+  	IFile resource = locateResult.getFirstWodFile();
+  	if (resource == null) {
+  		resource = locateResult.getFirstHtmlFile();
+  	}
+    WodParserCache parserCache = WodParserCache.parser(resource, true);
+    if (parserCache._componentsLocateResults == null) {
+    	parserCache._componentsLocateResults = locateResult;
+    }
+    return parserCache;
   }
   
   public static WodParserCache parser(IResource resource) throws CoreException, LocateException {
@@ -140,6 +164,9 @@ public class WodParserCache implements ITypeOwner {
 
   public IType getComponentType() throws CoreException, LocateException {
     checkLocateResults();
+    if (_componentType == null) {
+    	_componentType = _componentsLocateResults.getDotJavaType();
+    }
     return _componentType;
   }
 
@@ -183,7 +210,8 @@ public class WodParserCache implements ITypeOwner {
       _htmlEntry.setFile(_componentsLocateResults.getFirstHtmlFile());
       _wodEntry.setFile(_componentsLocateResults.getFirstWodFile());
       _apiFile = _componentsLocateResults.getDotApi(true);
-      _componentType = _componentsLocateResults.getDotJavaType();
+      _componentType = null;
+      //_componentType = _componentsLocateResults.getDotJavaType();
       _wooEntry.setFile(_componentsLocateResults.getFirstWooFile());
     }
     else {
@@ -263,6 +291,25 @@ public class WodParserCache implements ITypeOwner {
       // System.out.println("WodParserCache.parse: woo");
       _wooEntry.parse();
     }
+  }
+
+  public void scheduleValidate(final boolean force, final boolean threaded) {
+  	try {
+			ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+				public void run(IProgressMonitor monitor) {
+					try {
+						parse();
+						validate(force, threaded);
+					}
+					catch (Exception ex) {
+						Activator.getDefault().log(ex);
+					}
+				}
+			}, null);
+		}
+  	catch (CoreException e) {
+			Activator.getDefault().log(e);
+		}
   }
 
   public void validate(boolean force, boolean threaded) throws CoreException {

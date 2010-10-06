@@ -58,7 +58,7 @@ package org.objectstyle.wolips.deployment.ui.actions;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.IAction;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 
 /**
  * @author ulrich
@@ -66,7 +66,7 @@ import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 public class InstallAction extends AbstractInstallAction {
 
 	public void run(IAction action) {
-		IProjectAdapter project = (IProjectAdapter) this.getIProject().getAdapter(IProjectAdapter.class);
+		ProjectAdapter project = (ProjectAdapter) this.getIProject().getAdapter(ProjectAdapter.class);
 		if (project != null && this.getIProject().getFile("build.xml").exists()) {
 			this.install(new IProject[] { this.getIProject() });
 		}

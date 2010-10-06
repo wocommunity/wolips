@@ -67,7 +67,6 @@
         * build.output.build.dir = ${build.output.build.dir}
         * build.output.dist.dir = ${build.output.dist.dir}
         * build.output.dist.targz.dir = ${build.output.dist.targz.dir}
-        * build.output.homepage.dir = ${build.output.homepage.dir}
         * deploy.dir = ${deploy.dir} (set by the buildserver)
         * eclipse.home = ${eclipse.home}
         * eclipse.deps.home = ${eclipse.deps.home}
@@ -83,13 +82,6 @@
         * feature.updateSite= ${feature.updateSite}
         ****************************************
         </echo>
-	</target>
-
-	<!-- ========================================== -->
-	<!-- Build homepage.                            -->
-	<!-- ========================================== -->
-	<target name="homepage" unless="no.docs">
-		<ant dir="${project.homepage.dir}" target="all" />
 	</target>
 
 	<!-- ========================================== -->
@@ -168,21 +160,6 @@
 		<ant dir="${project.woenvironment.dir}" target="dist" />
 		<ant dir="${project.woproject.dir}" target="dist" />
 		<ant dir="${project.wolips.dir}" target="dist" />
-	</target>
-
-	<!-- ========================================== -->
-	<!-- Build dist.                                -->
-	<!-- ========================================== -->
-	<target name="distincludinghomepage" depends="allincludinghomepage">
-		<ant dir="${project.woenvironment.dir}" target="dist" />
-		<ant dir="${project.woproject.dir}" target="dist" />
-		<ant dir="${project.wolips.dir}" target="dist" />
-	</target>
-
-	<!-- ========================================== -->
-	<!-- Build all except homepage.                 -->
-	<!-- ========================================== -->
-	<target name="allincludinghomepage" depends="print.environment,verify.clean,set.clean,call.clean,prepare,homepage,woenvironment,woproject,wolips">
 	</target>
 
 	<!-- ========================================== -->

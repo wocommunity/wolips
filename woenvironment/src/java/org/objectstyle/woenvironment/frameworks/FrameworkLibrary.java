@@ -12,6 +12,8 @@ public class FrameworkLibrary {
 	private File docJar;
 
 	private String docPath;
+	
+	private long _lastModified;
 
 	public FrameworkLibrary(File libraryFile, File sourceJar, String sourcePath, File docJar, String docPath) {
 		this.libraryFile = libraryFile;
@@ -19,6 +21,11 @@ public class FrameworkLibrary {
 		this.sourcePath = sourcePath;
 		this.docJar = docJar;
 		this.docPath = docPath;
+		_lastModified = this.libraryFile.lastModified();
+	}
+	
+	public long getLastModified() {
+		return _lastModified;
 	}
 
 	public File getLibraryFile() {

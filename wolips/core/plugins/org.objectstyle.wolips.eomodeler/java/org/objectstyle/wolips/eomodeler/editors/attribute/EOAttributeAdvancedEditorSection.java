@@ -55,11 +55,8 @@ import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -71,6 +68,7 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttributePath;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
+import org.objectstyle.wolips.eomodeler.utils.FormUtils;
 
 public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
 	private EOAttribute _attribute;
@@ -99,28 +97,7 @@ public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
 		FormLayout formLayout = new FormLayout();
 		form.setLayout(formLayout);
 
-		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0, 5);
-		topFormData.left = new FormAttachment(0, 5);
-		topFormData.right = new FormAttachment(100, -5);
-		topForm.setLayoutData(topFormData);
-
-		GridLayout topFormLayout = new GridLayout();
-		topFormLayout.numColumns = 2;
-		topForm.setLayout(topFormLayout);
-
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.READ_ONLY), SWT.NONE);
-		_readOnlyButton = new Button(topForm, SWT.CHECK);
-
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.CLIENT_CLASS_PROPERTY), SWT.NONE);
-		_clientClassPropertyButton = new Button(topForm, SWT.CHECK);
-
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.COMMON_CLASS_PROPERTY), SWT.NONE);
-		_commonClassPropertyButton = new Button(topForm, SWT.CHECK);
-
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.GENERATE_SOURCE), SWT.NONE);
-		_generateSourceButton = new Button(topForm, SWT.CHECK);
+		Composite topForm = FormUtils.createForm(getWidgetFactory(), form);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.READ_FORMAT), SWT.NONE);
 		_readFormatText = new Text(topForm, SWT.BORDER);
@@ -131,6 +108,22 @@ public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
 		_writeFormatText = new Text(topForm, SWT.BORDER);
 		GridData writeFormatFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_writeFormatText.setLayoutData(writeFormatFieldLayoutData);
+
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
+		_readOnlyButton = new Button(topForm, SWT.CHECK);
+		_readOnlyButton.setText(Messages.getString("EOAttribute." + EOAttribute.READ_ONLY));
+
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
+		_clientClassPropertyButton = new Button(topForm, SWT.CHECK);
+		_clientClassPropertyButton.setText(Messages.getString("EOAttribute." + EOAttribute.CLIENT_CLASS_PROPERTY));
+
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
+		_commonClassPropertyButton = new Button(topForm, SWT.CHECK);
+		_commonClassPropertyButton.setText(Messages.getString("EOAttribute." + EOAttribute.COMMON_CLASS_PROPERTY));
+
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
+		_generateSourceButton = new Button(topForm, SWT.CHECK);
+		_generateSourceButton.setText(Messages.getString("EOAttribute." + EOAttribute.GENERATE_SOURCE));
 	}
 
 	public void setInput(IWorkbenchPart part, ISelection selection) {

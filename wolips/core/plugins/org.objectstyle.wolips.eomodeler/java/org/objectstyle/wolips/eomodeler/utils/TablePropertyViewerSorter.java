@@ -119,8 +119,8 @@ public class TablePropertyViewerSorter extends ViewerSorter {
 		} else if (o2 == null) {
 			comparison = 1;
 		} else if (o1 instanceof Boolean && o2 instanceof Boolean) {
-			boolean left = ((Boolean) _o1).booleanValue();
-			boolean right = ((Boolean) _o2).booleanValue();
+			boolean left = ((Boolean) o1).booleanValue();
+			boolean right = ((Boolean) o2).booleanValue();
 			if (left == right) {
 				comparison = 0;
 			} else if (left == true) {

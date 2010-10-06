@@ -109,8 +109,7 @@ public class WodScanner extends AbstractJavaScanner {
 		rules.add(new ElementTypeRule(getToken(PreferenceConstants.ELEMENT_TYPE)));
 		rules.add(new BindingNameRule(getToken(PreferenceConstants.BINDING_NAME)));
     rules.add(new BindingValueNamespaceRule(getToken(PreferenceConstants.BINDING_VALUE_NAMESPACE)));
-		String allowedBindingCharacters = org.objectstyle.wolips.bindings.Activator.getDefault().getPreferenceStore().getString(org.objectstyle.wolips.bindings.preferences.PreferenceConstants.ALLOWED_BINDING_CHARACTERS);
-		rules.add(new BindingValueRule(getToken(PreferenceConstants.BINDING_VALUE), allowedBindingCharacters));
+		rules.add(new BindingValueRule(getToken(PreferenceConstants.BINDING_VALUE)));
 		rules.add(new WordPredicateRule(new UnknownWordDetector(), getToken(PreferenceConstants.UNKNOWN)));
 		// setDefaultReturnToken(getToken("Default"));
 		return rules;

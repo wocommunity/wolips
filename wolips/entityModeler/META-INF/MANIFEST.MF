@@ -12,8 +12,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.views.properties.tabbed,
  org.eclipse.core.filesystem,
  org.objectstyle.wolips.eomodeler.factories,
- org.objectstyle.wolips.baseforplugins;bundle-version="1.0.6",
- org.objectstyle.wolips.woproject;bundle-version="1.0.6"
+ org.objectstyle.wolips.baseforplugins,
+ org.objectstyle.wolips.woproject
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: objectstyle.org
 Export-Package: entitymodeler

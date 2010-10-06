@@ -11,17 +11,17 @@
             category="org.objectstyle.wolips.preferences.PreferencesPage"
             class="org.objectstyle.wolips.bindings.preferences.TagShortcutPreferencePage"
             id="org.objectstyle.wolips.bindings.preferences.TagShortcutPreferencePage"
-            name="Inline Tag Shortcuts"/>
+            name="Inline Binding Shortcuts"/>
       <page
             category="org.objectstyle.wolips.preferences.PreferencesPage"
             class="org.objectstyle.wolips.bindings.preferences.BindingValidationRulePreferencePage"
             id="org.objectstyle.wolips.bindings.preferences.BindingValidationRulePreferencePage"
-            name="Binding Validation Rules"/>
+            name="Validation Rules"/>
       <page
             category="org.objectstyle.wolips.preferences.PreferencesPage"
             class="org.objectstyle.wolips.bindings.preferences.BindingValidationPreferencePage"
             id="org.objectstyle.wolips.bindings.preferences.BindingValidationPreferencePage"
-            name="Binding Validation"/>
+            name="Validation"/>
    </extension>
 
 </plugin>

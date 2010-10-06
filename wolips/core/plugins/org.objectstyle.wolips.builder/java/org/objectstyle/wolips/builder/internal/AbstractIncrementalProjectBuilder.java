@@ -59,39 +59,56 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.objectstyle.wolips.builder.BuilderPlugin;
 import org.objectstyle.wolips.core.resources.builder.AbstractOldBuilder;
-import org.objectstyle.wolips.datasets.adaptable.Project;
 
 /**
  * @author ulrich
  */
 public abstract class AbstractIncrementalProjectBuilder extends AbstractOldBuilder {
 
-	private BuildResourceValidator buildResourceValidator = new BuildResourceValidator();
+	private ThreadLocal<BuildResourceValidator> _buildResourceValidator = new ThreadLocal<BuildResourceValidator>();
 
-	private PatternsetDeltaVisitor patternsetDeltaVisitor = new PatternsetDeltaVisitor();
+	private ThreadLocal<PatternsetDeltaVisitor> _patternsetDeltaVisitor = new ThreadLocal<PatternsetDeltaVisitor>();
 
+	public PatternsetDeltaVisitor patternsetDeltaVisitor() {
+		PatternsetDeltaVisitor patternsetDeltaVisitor = _patternsetDeltaVisitor.get();
+		if (patternsetDeltaVisitor == null) {
+			patternsetDeltaVisitor = new PatternsetDeltaVisitor();
+			_patternsetDeltaVisitor.set(patternsetDeltaVisitor);
+		}
+		return patternsetDeltaVisitor;
+	}
+	
+	public BuildResourceValidator buildResourceValidator() {
+		BuildResourceValidator buildResourceValidator = _buildResourceValidator.get();
+		if (buildResourceValidator == null) {
+			buildResourceValidator = new BuildResourceValidator();
+			_buildResourceValidator.set(buildResourceValidator);
+		}
+		return buildResourceValidator;
+	}
+	
 	/**
 	 * Method projectNeedsAnUpdate.
 	 * 
 	 * @return boolean
 	 */
 	protected boolean projectNeedsAnUpdate(IResourceDelta delta) {
-		this.buildResourceValidator.reset();
-		this.patternsetDeltaVisitor.reset();
+		BuildResourceValidator buildResourceValidator = buildResourceValidator();
+		buildResourceValidator.reset();
+		PatternsetDeltaVisitor patternsetDeltaVisitor = patternsetDeltaVisitor();
+		patternsetDeltaVisitor.reset();
 		if (delta == null)
 			return false;
 		try {
 			delta.accept(patternsetDeltaVisitor);
-			Project project = (Project) this.getProject().getAdapter(Project.class);
-			if (project.fullBuildRequired) {
+			if (patternsetDeltaVisitor.isFullBuildRequired()) {
 				return true;
 			}
-			delta.accept(this.buildResourceValidator);
+			delta.accept(buildResourceValidator);
 		} catch (CoreException e) {
 			BuilderPlugin.getDefault().log(e);
 			return false;
 		}
-		return this.buildResourceValidator.isBuildRequired();
+		return buildResourceValidator.isBuildRequired();
 	}
-
 }

@@ -124,7 +124,9 @@ public class AddKeyOperation extends JavaModelOperation {
     }
     String keyField = accessModifier + simpleTypeName + " " + fieldName + ";";
     CreateFieldOperation op = new CreateFieldOperation(componentType, keyField, _force);
-    op.createAfter(_sibling);
+    if (_sibling != null) {
+      op.createAfter(_sibling);
+    }
     op.runOperation(progressMonitor);
   }
 

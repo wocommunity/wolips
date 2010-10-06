@@ -84,6 +84,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -93,12 +94,14 @@ import org.eclipse.ui.IStorageEditorInput;
 import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
@@ -114,6 +117,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntityIndex;
 import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
+import org.objectstyle.wolips.eomodeler.core.model.EOLastModified;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
@@ -479,7 +483,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			EOModel model = modelGroup.getEditingModel();
 			boolean showModelGroup = true;
 			if (model == null) {
-				handleModelErrors(myLoadFailures, true);
+				handleModelErrors(myLoadFailures, true, null);
 				Set<EOModel> models = modelGroup.getModels();
 				if (models.size() > 0) {
 					model = models.iterator().next();
@@ -493,7 +497,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				if (openingEntityName != null) {
 					myOpeningEntity = model.getEntityNamed(openingEntityName);
 				}
-				handleModelErrors(myLoadFailures, false);
+				handleModelErrors(myLoadFailures, false, null);
 
 				if (model.getModelGroup() != null) {
 					model.getModelGroup().addPropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
@@ -539,10 +543,19 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 						});
 					}
 				}
+
+				if (myOpeningEntity != null) {
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							setSelectedEntity(myOpeningEntity);
+							setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
+						}
+					});
+				}
 			}
 		} catch (Throwable e) {
 			myLoadFailures.add(new EOModelVerificationFailure(null, "Failed to load model.", false, e));
-			handleModelErrors(myLoadFailures, true);
+			handleModelErrors(myLoadFailures, true, null);
 			e.printStackTrace();
 			// throw new PartInitException("Failed to create EOModelEditorInput
 			// for " + getEditorInput() + ".", e);
@@ -583,11 +596,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				EOArgumentSelectionChangedListener argumentSelectionChangedListener = new EOArgumentSelectionChangedListener();
 				myStoredProcedureEditor.addSelectionChangedListener(argumentSelectionChangedListener);
 
-				if (myOpeningEntity != null) {
-					setSelectedEntity(myOpeningEntity);
-					setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
-				}
-
 			} catch (PartInitException e) {
 				ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
 			}
@@ -622,7 +630,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			if (input != null && myModel != null) {
 				Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 
-				List<EOModel> dirtyModels = new LinkedList<EOModel>();
+				final List<EOModel> dirtyModels = new LinkedList<EOModel>();
 				for (EOModel model : myModel.getModelGroup().getModels()) {
 					if (model.isDirty()) {
 						dirtyModels.add(model);
@@ -639,8 +647,21 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 					}
 					saveAllModels = MessageDialog.openQuestion(getSite().getShell(), "Additional Models Modified", "You modified the following additional models in this model group: " + modelNames + ". Would you like to save them, also?");
 				}
-				
 
+				Set<EOModel> doNotSaveModels = new HashSet<EOModel>();
+				for (EOModel model : dirtyModels) {
+					if (model == myModel || saveAllModels) {
+						Set<EOLastModified> lastModified = new HashSet<EOLastModified>();
+						model.checkLastModified(lastModified);
+						if (!lastModified.isEmpty()) {
+							if (!MessageDialog.openConfirm(Display.getDefault().getActiveShell(), "Model Changed on Disk", "The model '" + model.getName() + "' changed on disk since you opened it. Are you want to overwrite those changes?")) {
+								doNotSaveModels.add(model);
+							}
+						}
+					}
+				}
+				dirtyModels.removeAll(doNotSaveModels);
+				
 				for (EOModel model : dirtyModels) {
 					if (model == myModel || saveAllModels) {
 						monitor.beginTask("Checking " + model.getName() + " ...", IProgressMonitor.UNKNOWN);
@@ -654,24 +675,35 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 						}
 					}
 				}
-
-				handleModelErrors(failures, false);
 				
-				for (EOModel model : dirtyModels) {
-					if (model.canSave() && (model == myModel || saveAllModels)) {
-						monitor.beginTask("Saving " + model.getName() + " ...", IProgressMonitor.UNKNOWN);
+				final boolean finalSaveAllModels = saveAllModels;
+				handleModelErrors(failures, false, new Runnable() {
+					public void run() {
+						showBusy(true);
 						try {
-							model.save();
-
-							IFile eclipseIndexFile = EclipseFileUtils.getEclipseFile(myModel.getIndexURL());
-							if (eclipseIndexFile != null) {
-								eclipseIndexFile.getParent().getParent().refreshLocal(IResource.DEPTH_INFINITE, monitor);
+							for (EOModel model : dirtyModels) {
+								if (model.canSave() && (model == myModel || finalSaveAllModels)) {
+									monitor.beginTask("Saving " + model.getName() + " ...", IProgressMonitor.UNKNOWN);
+									try {
+										model.save();
+		
+										IFile eclipseIndexFile = EclipseFileUtils.getEclipseFile(myModel.getIndexURL());
+										if (eclipseIndexFile != null) {
+											eclipseIndexFile.getParent().getParent().refreshLocal(IResource.DEPTH_INFINITE, monitor);
+										}
+									} finally {
+										monitor.done();
+									}
+								}
 							}
+						}
+						catch (Throwable t) {
+							ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), t);
 						} finally {
-							monitor.done();
+							showBusy(false);
 						}
 					}
-				}
+				});
 			}
 		} catch (Throwable t) {
 			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), t);
@@ -698,12 +730,17 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	}
 
 	protected void fireSelectionChanged(final ISelection _selection) {
+		// MS: It appears 3.5.1, at least, no longer requires this hack
 		// Hack: When the selection changes, update the focus on the outline
-		// view or
-		// the properties view can sometimes not refresh properly -- It's really
-		// silly
-		// and I don't know why it's happening.
-		getContentOutlinePage().setFocus();
+		// view or the properties view can sometimes not refresh properly -- It's really
+		// silly and I don't know why it's happening.
+		// MS: 3.6 needs it again :\ I still don't understand it, but we're a little better now -- we 
+		// steal away focus and then steal it back.
+		IWorkbenchPart activePart = getSite().getPage().getActivePart();
+		if (activePart instanceof PropertySheet) {
+			getContentOutlinePage().setFocus();
+			getSite().getPage().activate(activePart);
+		}
 		Object[] selectionChangedListeners = mySelectionChangedListeners.getListeners();
 		SelectionChangedEvent selectionChangedEvent = new SelectionChangedEvent(this, _selection);
 		for (int listenerNum = 0; listenerNum < selectionChangedListeners.length; listenerNum++) {
@@ -796,7 +833,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		return new EOModelEditorUndoContext();
 	}
 
-	protected void handleModelErrors(final Set<EOModelVerificationFailure> failures, final boolean forceOpen) {
+	protected void handleModelErrors(final Set<EOModelVerificationFailure> failures, final boolean forceOpen, final Runnable executeWhenApproved) {
 		if (myModel != null) {
 			try {
 				if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.SHOW_ERRORS_IN_PROBLEMS_VIEW_KEY)) {
@@ -875,7 +912,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				errors = true;
 			}
 		}
-
+		
 		boolean openWindow = false;
 		if (forceOpen) {
 			openWindow = true;
@@ -898,12 +935,29 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					if (!failures.isEmpty()) {
-						EOModelErrorDialog dialog = new EOModelErrorDialog(Display.getCurrent().getActiveShell(), failures, EOModelEditor.this);
+						EOModelErrorDialog dialog;
+						if (executeWhenApproved != null) {
+							dialog = new EOModelSaveErrorDialog(Display.getCurrent().getActiveShell(), failures, EOModelEditor.this);
+						}
+						else {
+							dialog = new EOModelErrorDialog(Display.getCurrent().getActiveShell(), failures, EOModelEditor.this);
+						}
 						dialog.setBlockOnOpen(true);
-						dialog.open();
+						int result = dialog.open();
+						if (executeWhenApproved != null) {
+							if (result == Window.OK) {
+								executeWhenApproved.run();
+							}
+							else {
+								_failuresHashCode = 0;
+							}
+						}
 					}
 				}
 			});
+		}
+		else if (executeWhenApproved != null) {
+			executeWhenApproved.run();
 		}
 	}
 

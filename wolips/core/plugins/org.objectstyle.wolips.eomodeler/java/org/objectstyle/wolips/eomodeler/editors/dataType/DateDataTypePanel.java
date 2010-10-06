@@ -68,7 +68,12 @@ public class DateDataTypePanel extends Composite implements IDataTypePanel {
 	public DateDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
 		super(_parent, _style);
 		setBackground(_parent.getBackground());
-		setLayout(new GridLayout(2, false));
+		GridLayout layout = new GridLayout(2, false);
+		layout.verticalSpacing = 10;
+		layout.marginLeft = 7;
+		layout.marginRight = 7;
+		layout.marginBottom = 13;
+		setLayout(layout);
 		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.SERVER_TIME_ZONE), SWT.NONE);
 		Combo timeZoneCombo = new Combo(this, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
 		myServerTimeZoneViewer = new ComboViewer(timeZoneCombo);

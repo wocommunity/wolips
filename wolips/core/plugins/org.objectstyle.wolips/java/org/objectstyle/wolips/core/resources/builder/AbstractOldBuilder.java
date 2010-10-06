@@ -59,7 +59,6 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 public abstract class AbstractOldBuilder implements IIncrementalBuilder {
@@ -70,7 +69,7 @@ public abstract class AbstractOldBuilder implements IIncrementalBuilder {
 		super();
 	}
 
-	public abstract void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor, IResourceDelta delta) throws CoreException;
+	public abstract void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor, IResourceDelta delta) throws Exception;
 
 	public IProject getProject() {
 		return currentProject;

@@ -151,4 +151,16 @@ public class WOFramework extends WOTask {
 	public void setEOAdaptorClassName(String eoAdaptorClassName) {
 		this.eoAdaptorClassName = eoAdaptorClassName;
 	}
+	
+	@Override
+	public String getCustomInfoPListContent() {
+		if (eoAdaptorClassName == null || eoAdaptorClassName.trim().equals("")) {
+			return super.getCustomInfoPListContent();
+		}
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("<key>EOAdaptorClassName</key><string>").append(eoAdaptorClassName).append("</string>\n");
+		sb.append(super.getCustomInfoPListContent());
+		return sb.toString();
+	}
 }

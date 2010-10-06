@@ -55,46 +55,22 @@ import java.util.List;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 
-public class GenerateSQLAction implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
-	private IWorkbenchWindow _window;
-
-	private ISelection _selection;
-
-	public void dispose() {
-		// DO NOTHING
-	}
-
-	public void init(IWorkbenchWindow window) {
-		_window = window;
-	}
-
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		_window = targetPart.getSite().getWorkbenchWindow();
-	}
-
-	public void selectionChanged(IAction action, ISelection selection) {
-		_selection = selection;
-	}
-
+public class GenerateSQLAction extends EMAction {
 	public void run(IAction action) {
 		try {
-			if (_selection instanceof IStructuredSelection) {
+			IStructuredSelection selection = getSelection();
+			if (selection != null) {
 				EOModel model = null;
 				boolean modelSelected = false;
 				List<String> entityNames = new LinkedList<String>();
-				Iterator selectionIter = ((IStructuredSelection) _selection).iterator();
+				Iterator selectionIter = selection.iterator();
 				while (!modelSelected && selectionIter.hasNext()) {
 					Object obj = selectionIter.next();
 					EOEntity entity = EOModelUtils.getRelatedEntity(obj);
@@ -115,9 +91,9 @@ public class GenerateSQLAction implements IWorkbenchWindowActionDelegate, IObjec
 
 				if (model != null) {
 					if (model.isDirty()) {
-						MessageDialog.openWarning(_window.getShell(), "Model Not Saved", "Your model has unsaved changes. Unsaved changes will not be reflected in generated SQL.");
+						MessageDialog.openWarning(getWindow().getShell(), "Model Not Saved", "Your model has unsaved changes. Unsaved changes will not be reflected in generated SQL.");
 					}
-					GenerateSQLDialog dialog = new GenerateSQLDialog(_window.getShell(), model, entityNames);
+					GenerateSQLDialog dialog = new GenerateSQLDialog(getWindow().getShell(), model, entityNames);
 					dialog.open();
 				}
 			}

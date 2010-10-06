@@ -38,9 +38,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.objectstyle.wolips.bindings.Activator;
 import org.objectstyle.wolips.bindings.wod.IWodBinding;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.variables.BuildProperties;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
@@ -99,7 +99,8 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
   }
 
   protected FuzzyXMLParser createParser(IProject project) {
-    FuzzyXMLParser parser = new FuzzyXMLParser(Activator.getDefault().isWO54(project), isHTML());
+    BuildProperties buildProperties = (BuildProperties)project.getAdapter(BuildProperties.class);
+    FuzzyXMLParser parser = new FuzzyXMLParser(buildProperties != null ? buildProperties.isWellFormedTemplateRequired() : false, isHTML());
     return parser;
   }
 
@@ -559,8 +560,8 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       if (woTag) {
         className = className + " wo";
         try {
-          boolean wo54 = Activator.getDefault().isWO54(_editor.getParserCache().getProject());
-          wodElement = WodHtmlUtils.getWodElement(element, wo54, true, cache);
+          BuildProperties buildProperties = (BuildProperties)_editor.getParserCache().getProject().getAdapter(BuildProperties.class);
+          wodElement = WodHtmlUtils.getWodElement(element, buildProperties, true, cache);
         }
         catch (Throwable t) {
           // IGNORE

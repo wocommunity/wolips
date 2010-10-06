@@ -72,6 +72,10 @@ public class IncrementalBuildDeltaVisitor extends AbstractBuildVisitor implement
 			return false;
 		}
 		IResource resource = delta.getResource();
+		if (resource.isDerived()) {
+			//System.out.println("IncrementalBuildDeltaVisitor.visit: " + resource);
+			return false;
+		}
 		IProgressMonitor progressMonitor = getProgressMonitor();
 		Map buildCache = getBuildCache();
 		int woResourceType = getWoResourceType(resource);
@@ -98,7 +102,7 @@ public class IncrementalBuildDeltaVisitor extends AbstractBuildVisitor implement
 		BuilderWrapper[] builderWrappers = getBuilderWrappers();
 		for (int i = 0; i < builderWrappers.length; i++) {
 			IBuilder builder = builderWrappers[i].getBuilder();
-			if (builder instanceof IIncrementalBuilder) {
+			if (builder.isEnabled() && builder instanceof IIncrementalBuilder) {
 				((IIncrementalBuilder) builder).classpathChanged(delta, progressMonitor, buildCache);
 			}
 		}
@@ -108,7 +112,7 @@ public class IncrementalBuildDeltaVisitor extends AbstractBuildVisitor implement
 		BuilderWrapper[] builderWrappers = getBuilderWrappers();
 		for (int i = 0; i < builderWrappers.length; i++) {
 			IBuilder builder = builderWrappers[i].getBuilder();
-			if (builder instanceof IIncrementalBuilder) {
+			if (builder.isEnabled() && builder instanceof IIncrementalBuilder) {
 				((IIncrementalBuilder) builder).handleClassesDelta(delta, progressMonitor, buildCache);
 			}
 		}
@@ -118,7 +122,7 @@ public class IncrementalBuildDeltaVisitor extends AbstractBuildVisitor implement
 		BuilderWrapper[] builderWrappers = getBuilderWrappers();
 		for (int i = 0; i < builderWrappers.length; i++) {
 			IBuilder builder = builderWrappers[i].getBuilder();
-			if (builder instanceof IIncrementalBuilder) {
+			if (builder.isEnabled() && builder instanceof IIncrementalBuilder) {
 				((IIncrementalBuilder) builder).handleWoappResourcesDelta(delta, progressMonitor, buildCache);
 			}
 		}
@@ -128,7 +132,7 @@ public class IncrementalBuildDeltaVisitor extends AbstractBuildVisitor implement
 		BuilderWrapper[] builderWrappers = getBuilderWrappers();
 		for (int i = 0; i < builderWrappers.length; i++) {
 			IBuilder builder = builderWrappers[i].getBuilder();
-			if (builder instanceof IIncrementalBuilder) {
+			if (builder.isEnabled() && builder instanceof IIncrementalBuilder) {
 				((IIncrementalBuilder) builder).handleSourceDelta(delta, progressMonitor, buildCache);
 			}
 		}
@@ -138,7 +142,7 @@ public class IncrementalBuildDeltaVisitor extends AbstractBuildVisitor implement
 		BuilderWrapper[] builderWrappers = getBuilderWrappers();
 		for (int i = 0; i < builderWrappers.length; i++) {
 			IBuilder builder = builderWrappers[i].getBuilder();
-			if (builder instanceof IIncrementalBuilder) {
+			if (builder.isEnabled() && builder instanceof IIncrementalBuilder) {
 				((IIncrementalBuilder) builder).handleWebServerResourcesDelta(delta, progressMonitor, buildCache);
 			}
 		}
@@ -148,7 +152,7 @@ public class IncrementalBuildDeltaVisitor extends AbstractBuildVisitor implement
 		BuilderWrapper[] builderWrappers = getBuilderWrappers();
 		for (int i = 0; i < builderWrappers.length; i++) {
 			IBuilder builder = builderWrappers[i].getBuilder();
-			if (builder instanceof IIncrementalBuilder) {
+			if (builder.isEnabled() && builder instanceof IIncrementalBuilder) {
 				((IIncrementalBuilder) builder).handleOtherDelta(delta, progressMonitor, buildCache);
 			}
 		}

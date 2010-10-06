@@ -62,6 +62,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
+import org.osgi.framework.Bundle;
 
 /**
  * @author mnolte
@@ -113,9 +114,12 @@ public class PluginImages {
 	 * @return
 	 */
 	public static ImageDescriptor createImageDescriptor(String path) {
-		URL url = FileLocator.find(JdtPlugin.getDefault().getBundle(), new Path(path), null);
-		if (url != null) {
-			return ImageDescriptor.createFromURL(url);
+		Bundle bundle = JdtPlugin.getDefault().getBundle();
+		if (bundle != null) {
+			URL url = FileLocator.find(bundle, new Path(path), null);
+			if (url != null) {
+				return ImageDescriptor.createFromURL(url);
+			}
 		}
 		return ImageDescriptor.getMissingImageDescriptor();
 	}

@@ -7,4 +7,9 @@ public interface IComponentEditor {
 	public boolean embeddedEditorWillSave(IProgressMonitor progressMonitor);
 	
 	public IEditorPart getActiveEditor();
+	
+	public IEditorPart getWodEditor();
+	
+	public IEditorPart getTemplateEditor();
+
 }

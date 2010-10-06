@@ -60,11 +60,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
@@ -78,6 +75,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.core.model.IEOAttribute;
 import org.objectstyle.wolips.eomodeler.outline.EOEntityTreeViewUpdater;
 import org.objectstyle.wolips.eomodeler.outline.EOModelOutlineContentProvider;
+import org.objectstyle.wolips.eomodeler.utils.FormUtils;
 
 public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection implements ISelectionChangedListener {
 	private EOFetchSpecification _fetchSpecification;
@@ -106,22 +104,10 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 	public void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
 		super.createControls(parent, tabbedPropertySheetPage);
 		Composite form = getWidgetFactory().createFlatFormComposite(parent);
-		((FormLayout) form.getLayout()).marginWidth = 10;
-		((FormLayout) form.getLayout()).marginHeight = 10;
+		FormLayout formLayout = new FormLayout();
+		form.setLayout(formLayout);
 
-		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0);
-		topFormData.left = new FormAttachment(0);
-		topFormData.right = new FormAttachment(100);
-		topFormData.bottom = new FormAttachment(100);
-		topForm.setLayoutData(topFormData);
-
-		GridLayout topFormLayout = new GridLayout();
-		topFormLayout.numColumns = 2;
-		topFormLayout.marginWidth = 0;
-		topFormLayout.marginHeight = 0;
-		topForm.setLayout(topFormLayout);
+		Composite topForm = FormUtils.createForm(getWidgetFactory(), form);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.NAME), SWT.NONE);
 		_nameText = new Text(topForm, SWT.BORDER);

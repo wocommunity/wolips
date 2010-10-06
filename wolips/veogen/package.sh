@@ -1,6 +1,6 @@
 #/bin/bash
-WORKSPACE=/Users/mschrag/Documents/workspace
-ECLIPSE=/Developer/Applications/eclipse
+WORKSPACE=/Users/mschrag/Documents/wolips
+ECLIPSE=/Developer/Applications/Eclipse/eclipse36RC3Cocoa
 TEMPDIR=/tmp/veogenjar
 MANIFEST=/tmp/MANIFEST.MF
 OUTPUT=/tmp/veogen-`svn info | grep Revision | sed 's#.* ##g'`.jar
@@ -15,24 +15,23 @@ cp -r $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.eogenerato
 rm -rf $TEMPDIR/templates/.svn
 cp -r $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.eomodeler.core/bin/* .
 cp -r $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.eomodeler.eclipse/bin/* .
-#cp -r $WORKSPACE/woproject/wolips/3rdparty/plugins/org.objectstyle.wolips.thirdparty.cayenne/bin/* .
-cp -r $WORKSPACE/woproject/wolips/base/plugins/org.objectstyle.wolips.baseforplugins/bin/* .
+cp -r $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.baseforplugins/bin/* .
 cp -r $WORKSPACE/woproject/wolips/veogen/bin/* .
 cp -r $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.eomodeler.doc/bin/* .
 cp -r $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.eomodeler.factories/bin/* .
-cp -r $WORKSPACE/woproject/wolips/3rdparty/plugins/org.objectstyle.wolips.thirdparty.velocity/bin/* .
+cp -r $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.thirdparty.velocity/bin/* .
 
 echo Unjarring plugins ...
-jar xvf $ECLIPSE/plugins/org.eclipse.equinox.common_3.4.0.v20080421-2006.jar > /dev/null
-jar xvf $ECLIPSE/plugins/org.eclipse.core.runtime_3.4.0.v20080512.jar > /dev/null
-jar xvf $ECLIPSE/plugins/org.eclipse.core.resources_3.4.1.R34x_v20080902.jar > /dev/null
-jar xvf $ECLIPSE/plugins/org.eclipse.core.jobs_3.4.0.v20080512.jar > /dev/null
-jar xvf $ECLIPSE/plugins/org.eclipse.osgi_3.4.2.R34x_v20080826-1230.jar > /dev/null
+jar xvf $ECLIPSE/plugins/org.eclipse.equinox.common_*.jar > /dev/null
+jar xvf $ECLIPSE/plugins/org.eclipse.core.runtime_*.jar > /dev/null
+jar xvf $ECLIPSE/plugins/org.eclipse.core.resources_*.jar > /dev/null
+jar xvf $ECLIPSE/plugins/org.eclipse.core.jobs_*.jar > /dev/null
+jar xvf $ECLIPSE/plugins/org.eclipse.osgi_*.jar > /dev/null
 jar xvf $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.woproject/lib/woproject.jar > /dev/null
-#jar xvf $WORKSPACE/woproject/wolips/3rdparty/plugins/org.objectstyle.wolips.thirdparty.cayenne/lib/cayenne-1.2M12.jar > /dev/null
-jar xvf $WORKSPACE/woproject/wolips/3rdparty/plugins/org.objectstyle.wolips.thirdparty.velocity/lib/velocity-1.5.jar > /dev/null
-jar xvf $WORKSPACE/woproject/wolips/3rdparty/plugins/org.objectstyle.wolips.thirdparty.velocity/lib/velocity-tools-generic-1.4.jar > /dev/null
-jar xvf $WORKSPACE/woproject/wolips/3rdparty/plugins/org.objectstyle.wolips.thirdparty.commonscollections/lib/commons-collections-3.1.jar > /dev/null
+jar xvf $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.thirdparty.velocity/lib/velocity-1.5.jar > /dev/null
+jar xvf $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.thirdparty.velocity/lib/velocity-tools-generic-1.4.jar > /dev/null
+jar xvf $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.thirdparty.velocity/lib/commons-lang-2.1.jar > /dev/null
+jar xvf $WORKSPACE/woproject/wolips/core/plugins/org.objectstyle.wolips.thirdparty.commonscollections/lib/commons-collections-3.1.jar > /dev/null
 
 rm -rf META-INF
 if [ -e $MANIFEST ]; then

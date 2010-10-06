@@ -62,9 +62,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.objectstyle.wolips.baseforplugins.util.WOLipsNatureUtils;
 import org.objectstyle.wolips.builder.BuilderPlugin;
-import org.objectstyle.wolips.core.resources.internal.build.Nature;
-import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 import org.objectstyle.wolips.ui.UIPlugin;
 import org.objectstyle.wolips.variables.BuildProperties;
 
@@ -100,6 +100,12 @@ public class WOLipsDevelopmentPropertyPage extends WOLipsPropertyPage {
 	private Button _bundleTypeFrameworkButton;
 
 	private Button _bundleTypeApplicationButton;
+
+	private Button _wellFormedRequiredButton;
+
+	private Text _inlineBindingsPrefixText;
+
+	private Text _inlineBindingsSuffixText;
 
 	private Text _principalClassText;
 
@@ -179,6 +185,7 @@ public class WOLipsDevelopmentPropertyPage extends WOLipsPropertyPage {
 
 		Composite textSettingsGroup = new Composite(buildStyleGroup, SWT.NONE);
 		GridLayout textSettingsLayout = new GridLayout(2, false);
+		textSettingsLayout.marginLeft = -3;
 		textSettingsGroup.setLayout(textSettingsLayout);
 		FormData textSettingsLayoutData = new FormData();
 		textSettingsLayoutData.top = new FormAttachment(_useTargetBuilderCheck, 10);
@@ -193,6 +200,46 @@ public class WOLipsDevelopmentPropertyPage extends WOLipsPropertyPage {
 				projectFrameworkFolder = "";
 			}
 			_projectFrameworkFolderText.setText(projectFrameworkFolder);
+		}
+	}
+
+	private void _addComponentsSection(Composite parent, ProjectAdapter project) {
+		Composite componentsGroup = _createGroupWithLabel(parent, "Components");
+
+		_wellFormedRequiredButton = new Button(componentsGroup, SWT.CHECK | SWT.LEFT);
+		_wellFormedRequiredButton.setText("Require well-formed HTML");
+		_wellFormedRequiredButton.setEnabled(true);
+		FormData wellFormedLayoutData = new FormData();
+		wellFormedLayoutData.left = new FormAttachment(0, 0);
+		_wellFormedRequiredButton.setLayoutData(wellFormedLayoutData);
+		_wellFormedRequiredButton.setSelection(project.getBuildProperties().isWellFormedTemplateRequired());
+		_wellFormedRequiredButton.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent e) {
+				WOLipsDevelopmentPropertyPage.this.enableWidgets();
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				widgetSelected(e);
+			}
+		});
+
+		Composite textSettingsGroup = new Composite(componentsGroup, SWT.NONE);
+		GridLayout textSettingsLayout = new GridLayout(2, false);
+		textSettingsLayout.marginLeft = -3;
+		textSettingsGroup.setLayout(textSettingsLayout);
+		FormData textSettingsLayoutData = new FormData();
+		textSettingsLayoutData.top = new FormAttachment(_wellFormedRequiredButton, 10);
+		textSettingsLayoutData.left = new FormAttachment(0, 0);
+		textSettingsLayoutData.right = new FormAttachment(100, 0);
+		textSettingsGroup.setLayoutData(textSettingsLayoutData);
+		_inlineBindingsPrefixText = _addTextField(textSettingsGroup, "Inline Bindings Prefix");
+		if (project != null) {
+			_inlineBindingsPrefixText.setText(project.getBuildProperties().getInlineBindingPrefix());
+		}
+
+		_inlineBindingsSuffixText = _addTextField(textSettingsGroup, "Inline Bindings Suffix");
+		if (project != null) {
+			_inlineBindingsSuffixText.setText(project.getBuildProperties().getInlineBindingSuffix());
 		}
 	}
 
@@ -231,6 +278,7 @@ public class WOLipsDevelopmentPropertyPage extends WOLipsPropertyPage {
 
 		Composite textSettingsGroup = new Composite(bundleTypeGroup, SWT.NONE);
 		GridLayout textSettingsLayout = new GridLayout(2, false);
+		textSettingsLayout.marginLeft = -3;
 		textSettingsGroup.setLayout(textSettingsLayout);
 		FormData textSettingsLayoutData = new FormData();
 		textSettingsLayoutData.top = new FormAttachment(_bundleTypeFrameworkButton, 10);
@@ -257,8 +305,9 @@ public class WOLipsDevelopmentPropertyPage extends WOLipsPropertyPage {
 	@Override
 	protected void _createContents(Composite parent, ProjectAdapter projectAdapter, boolean isWOProject) {
 		_addWOProjectSection(parent, isWOProject);
-		_addBuildStyleSection(parent, projectAdapter);
 		_addBundleSettingsSection(parent, projectAdapter);
+		_addComponentsSection(parent, projectAdapter);
+		_addBuildStyleSection(parent, projectAdapter);
 
 		enableWidgets();
 	}
@@ -287,15 +336,15 @@ public class WOLipsDevelopmentPropertyPage extends WOLipsPropertyPage {
 			if (_webObjectsProjectCheck.getSelection()) {
 				if (_bundleTypeFrameworkButton.getSelection()) {
 					if (_buildStyleIncrementalButton.getSelection()) {
-						Nature.setNatureForProject(Nature.INCREMENTAL_FRAMEWORK_ID, useTargetBuilder, getProject(), new NullProgressMonitor());
+						WOLipsNatureUtils.setNatureForProject(WOLipsNatureUtils.INCREMENTAL_FRAMEWORK_ID, useTargetBuilder, getProject(), new NullProgressMonitor());
 					} else if (_buildStyleAntButton.getSelection()) {
-						Nature.setNatureForProject(Nature.ANT_FRAMEWORK_ID, useTargetBuilder, getProject(), new NullProgressMonitor());
+						WOLipsNatureUtils.setNatureForProject(WOLipsNatureUtils.ANT_FRAMEWORK_ID, useTargetBuilder, getProject(), new NullProgressMonitor());
 					}
 				} else if (_bundleTypeApplicationButton.getSelection()) {
 					if (_buildStyleIncrementalButton.getSelection()) {
-						Nature.setNatureForProject(Nature.INCREMENTAL_APPLICATION_ID, useTargetBuilder, getProject(), new NullProgressMonitor());
+						WOLipsNatureUtils.setNatureForProject(WOLipsNatureUtils.INCREMENTAL_APPLICATION_ID, useTargetBuilder, getProject(), new NullProgressMonitor());
 					} else if (_buildStyleAntButton.getSelection()) {
-						Nature.setNatureForProject(Nature.ANT_APPLICATION_ID, useTargetBuilder, getProject(), new NullProgressMonitor());
+						WOLipsNatureUtils.setNatureForProject(WOLipsNatureUtils.ANT_APPLICATION_ID, useTargetBuilder, getProject(), new NullProgressMonitor());
 					}
 				}
 				ProjectAdapter project = getProjectAdapter();
@@ -310,10 +359,13 @@ public class WOLipsDevelopmentPropertyPage extends WOLipsPropertyPage {
 						buildProperties.setProjectFrameworkFolder(projectFrameworkFolderText);
 					}
 					buildProperties.setFramework(_bundleTypeFrameworkButton.getSelection());
+					buildProperties.setWellFormedTemplateRequired(_wellFormedRequiredButton.getSelection());
+					buildProperties.setInlineBindingPrefix(_inlineBindingsPrefixText.getText());
+					buildProperties.setInlineBindingSuffix(_inlineBindingsSuffixText.getText());
 					buildProperties.save();
 				}
 			} else {
-				Nature.removeNaturesFromProject(getProject(), new NullProgressMonitor());
+				WOLipsNatureUtils.removeNaturesFromProject(getProject(), new NullProgressMonitor());
 			}
 		} catch (Exception up) {
 			UIPlugin.getDefault().log(up);

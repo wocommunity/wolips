@@ -63,7 +63,7 @@ import org.objectstyle.wolips.core.resources.types.ILocalizedPath;
 import org.objectstyle.wolips.core.resources.types.IPBDotProjectOwner;
 import org.objectstyle.wolips.core.resources.types.IResourceType;
 import org.objectstyle.wolips.core.resources.types.folder.IDotSubprojAdapter;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 
 public abstract class AbstractResourceAdapter implements IResourceType {
 
@@ -98,10 +98,10 @@ public abstract class AbstractResourceAdapter implements IResourceType {
 				parent = parent.getParent();
 			} while (!(parent instanceof IProject));
 		}
-		if (this instanceof IProjectAdapter) {
+		if (this instanceof ProjectAdapter) {
 			return (IPBDotProjectOwner) this;
 		}
-		IProjectAdapter projectAdapter = (IProjectAdapter) resource.getProject().getAdapter(IProjectAdapter.class);
+		ProjectAdapter projectAdapter = (ProjectAdapter) resource.getProject().getAdapter(ProjectAdapter.class);
 		return projectAdapter;
 	}
 

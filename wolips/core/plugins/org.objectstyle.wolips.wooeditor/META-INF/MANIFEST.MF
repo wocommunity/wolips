@@ -25,3 +25,4 @@ Export-Package: org.objectstyle.wolips.wooeditor,
  org.objectstyle.wolips.wooeditor.editor,
  org.objectstyle.wolips.wooeditor.plisteditor,
  org.objectstyle.wolips.wooeditor.widgets
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

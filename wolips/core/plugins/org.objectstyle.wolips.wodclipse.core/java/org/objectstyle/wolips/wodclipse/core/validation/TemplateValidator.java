@@ -21,6 +21,7 @@ import org.objectstyle.wolips.bindings.wod.SimpleWodBinding;
 import org.objectstyle.wolips.bindings.wod.WodBindingValueProblem;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.locate.LocateException;
+import org.objectstyle.wolips.variables.BuildProperties;
 import org.objectstyle.wolips.wodclipse.core.completion.HtmlCacheEntry;
 import org.objectstyle.wolips.wodclipse.core.completion.WodCacheEntry;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
@@ -28,13 +29,13 @@ import org.objectstyle.wolips.wodclipse.core.util.FuzzyXMLWodElement;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 public class TemplateValidator {
-  private boolean _wo54;
+  private BuildProperties _buildProperties;
   private WodParserCache _cache;
   private Set<FuzzyXMLElement> _woElements;
 
   public TemplateValidator(WodParserCache cache) {
     _cache = cache;
-    _wo54 = Activator.getDefault().isWO54(cache.getProject());
+    _buildProperties = (BuildProperties)cache.getProject().getAdapter(BuildProperties.class);
   }
 
   /**
@@ -63,8 +64,8 @@ public class TemplateValidator {
         IWodModel wodModel = wodCacheEntry.getModel();
         for (FuzzyXMLElement woElement : _woElements) {
           String woElementName = woElement.getAttributeValue("name");
-          int startOffset = woElement.getOffset();
-          int endOffset = woElement.getOffset() + woElement.getLength();
+          int startOffset = woElement.getOffset() + woElement.getNameOffset() + 1;
+          int endOffset = startOffset + woElement.getNameLength() - 1;
           HtmlElementName elementName = new HtmlElementName(htmlCacheEntry.getFile(), woElementName, startOffset, endOffset);
           htmlCacheEntry.getHtmlElementCache().addHtmlElement(elementName);
 
@@ -92,10 +93,10 @@ public class TemplateValidator {
     String elementName = element.getName();
     if (WodHtmlUtils.isInline(elementName)) {
       if (validate) {
-        IWodElement wodElement = new FuzzyXMLWodElement(element, _wo54);
+        IWodElement wodElement = new FuzzyXMLWodElement(element, _buildProperties);
         if (wodElement != null) {
           boolean validateBindingValues = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.VALIDATE_BINDING_VALUES);
-          boolean validateOGNL = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.VALIDATE_OGNL_KEY);
+          //String invalidOGNLSeverity = Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.INVALID_OGNL_SEVERITY_KEY);
           List<WodProblem> wodProblems = new LinkedList<WodProblem>();
           try {
             wodElement.fillInProblems(_cache.getJavaProject(), _cache.getComponentType(), validateBindingValues, wodProblems, WodParserCache.getTypeCache(), _cache.getHtmlEntry().getHtmlElementCache());

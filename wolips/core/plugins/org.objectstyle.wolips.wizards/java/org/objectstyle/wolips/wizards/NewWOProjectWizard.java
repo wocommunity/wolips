@@ -237,6 +237,9 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	public NewWOProjectWizard(String projectTemplateName) {
 		this();
 		_projectTemplate = ProjectTemplate.loadProjectTemplateNamed(ProjectTemplate.PROJECT_TEMPLATES, projectTemplateName);
+		if (_projectTemplate == null) {
+			throw new IllegalArgumentException("There was no project template with the name '" + projectTemplateName + "'.");
+		}
 		_templateInputsWizardPage = new TemplateInputsWizardPage();
 		_templateInputsWizardPage.setProjectTemplate(_projectTemplate);
 	}

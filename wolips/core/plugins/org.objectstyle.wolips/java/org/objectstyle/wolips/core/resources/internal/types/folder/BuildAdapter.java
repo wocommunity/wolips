@@ -55,17 +55,20 @@
  */
 package org.objectstyle.wolips.core.resources.internal.types.folder;
 
+import java.io.File;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.objectstyle.wolips.baseforplugins.util.FileUtilities;
 import org.objectstyle.wolips.core.CorePlugin;
 import org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotApplicationAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotFrameworkAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IProductAdapter;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 
 public class BuildAdapter extends AbstractFolderAdapter implements IBuildAdapter {
 
@@ -85,7 +88,7 @@ public class BuildAdapter extends AbstractFolderAdapter implements IBuildAdapter
 
 	public IProductAdapter getProductAdapter() {
 		IProject project = this.getUnderlyingResource().getProject();
-		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
+		ProjectAdapter projectAdapter = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
 		if (projectAdapter.isFramework()) {
 			return this.getDotFrameworkAdapter();
 		}
@@ -94,13 +97,25 @@ public class BuildAdapter extends AbstractFolderAdapter implements IBuildAdapter
 	}
 
 	public void clean(IProgressMonitor monitor) {
-		if (!this.getUnderlyingFolder().exists()) {
+		IFolder underlyingFolder = this.getUnderlyingFolder();
+		if (!underlyingFolder.exists()) {
 			return;
 		}
-		try {
-			this.getUnderlyingFolder().delete(true, monitor);
-		} catch (CoreException e) {
-			CorePlugin.getDefault().log(e);
+		File underlyingFile = underlyingFolder.getLocation().toFile();
+		if (underlyingFile.exists()) {
+			FileUtilities.deleteRecursively(underlyingFile);
+			try {
+				underlyingFolder.refreshLocal(IResource.DEPTH_ONE, monitor);
+			} catch (CoreException e) {
+				CorePlugin.getDefault().log(e);
+			}
+		}
+		else {
+			try {
+				this.getUnderlyingFolder().delete(true, monitor);
+			} catch (CoreException e) {
+				CorePlugin.getDefault().log(e);
+			}
 		}
 	}
 

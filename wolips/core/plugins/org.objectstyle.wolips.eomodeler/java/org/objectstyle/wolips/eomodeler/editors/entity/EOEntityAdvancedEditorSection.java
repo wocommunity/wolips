@@ -56,11 +56,8 @@ import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -74,6 +71,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
+import org.objectstyle.wolips.eomodeler.utils.FormUtils;
 
 public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 	private EOEntity _entity;
@@ -85,6 +83,8 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 	private Button _readOnlyButton;
 
 	private Button _generateSourceButton;
+
+	private Button _rawRowsOnlyButton;
 
 	private Text _externalQueryText;
 
@@ -108,27 +108,28 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 		FormLayout formLayout = new FormLayout();
 		form.setLayout(formLayout);
 
-		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0, 5);
-		topFormData.left = new FormAttachment(0, 5);
-		topFormData.right = new FormAttachment(100, -5);
-		topForm.setLayoutData(topFormData);
-
-		GridLayout topFormLayout = new GridLayout();
-		topFormLayout.numColumns = 2;
-		topForm.setLayout(topFormLayout);
+		Composite topForm = FormUtils.createForm(getWidgetFactory(), form);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), SWT.NONE);
 		_maxNumberOfInstancesToBatchFetchText = new Text(topForm, SWT.BORDER);
 		GridData maxNumberOfInstancesToBatchFetchFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_maxNumberOfInstancesToBatchFetchText.setLayoutData(maxNumberOfInstancesToBatchFetchFieldLayoutData);
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.CACHES_OBJECTS), SWT.NONE);
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		_cacheInMemoryButton = new Button(topForm, SWT.CHECK);
+		_cacheInMemoryButton.setText(Messages.getString("EOEntity." + EOEntity.CACHES_OBJECTS));
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.READ_ONLY), SWT.NONE);
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		_readOnlyButton = new Button(topForm, SWT.CHECK);
+		_readOnlyButton.setText(Messages.getString("EOEntity." + EOEntity.READ_ONLY));
+
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
+		_generateSourceButton = new Button(topForm, SWT.CHECK);
+		_generateSourceButton.setText(Messages.getString("EOEntity." + EOEntity.GENERATE_SOURCE));
+
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
+		_rawRowsOnlyButton = new Button(topForm, SWT.CHECK);
+		_rawRowsOnlyButton.setText(Messages.getString("EOEntity." + EOEntity.RAW_ROWS_ONLY));
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.EXTERNAL_QUERY), SWT.NONE);
 		_externalQueryText = new Text(topForm, SWT.BORDER);
@@ -144,9 +145,6 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 		_parentClassNameText = new Text(topForm, SWT.BORDER);
 		GridData parentClassNameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_parentClassNameText.setLayoutData(parentClassNameLayoutData);
-
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.GENERATE_SOURCE), SWT.NONE);
-		_generateSourceButton = new Button(topForm, SWT.CHECK);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.PARTIAL_ENTITY), SWT.NONE);
 		Combo partialEntityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
@@ -175,6 +173,7 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 			_bindingContext.bindValue(SWTObservables.observeSelection(_cacheInMemoryButton), BeansObservables.observeValue(_entity, EOEntity.CACHES_OBJECTS), null, new BooleanUpdateValueStrategy());
 			_bindingContext.bindValue(SWTObservables.observeSelection(_readOnlyButton), BeansObservables.observeValue(_entity, EOEntity.READ_ONLY), null, new BooleanUpdateValueStrategy());
 			_bindingContext.bindValue(SWTObservables.observeSelection(_generateSourceButton), BeansObservables.observeValue(_entity, EOEntity.GENERATE_SOURCE), null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(SWTObservables.observeSelection(_rawRowsOnlyButton), BeansObservables.observeValue(_entity, EOEntity.RAW_ROWS_ONLY), null, new BooleanUpdateValueStrategy());
 			_bindingContext.bindValue(SWTObservables.observeText(_externalQueryText, SWT.Modify), BeansObservables.observeValue(_entity, EOEntity.EXTERNAL_QUERY), null, null);
 			_bindingContext.bindValue(SWTObservables.observeText(_clientClassNameText, SWT.Modify), BeansObservables.observeValue(_entity, EOEntity.CLIENT_CLASS_NAME), null, null);
 			_bindingContext.bindValue(SWTObservables.observeText(_parentClassNameText, SWT.Modify), BeansObservables.observeValue(_entity, EOEntity.PARENT_CLASS_NAME), null, null);

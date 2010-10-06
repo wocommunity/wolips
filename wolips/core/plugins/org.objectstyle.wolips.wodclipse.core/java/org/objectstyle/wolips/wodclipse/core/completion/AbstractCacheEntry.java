@@ -187,8 +187,13 @@ public abstract class AbstractCacheEntry<T> {
     finally {
       in.close();
     }
-    T model = _parse(contents, updateCache);
-    return model;
+    try {
+    	T model = _parse(contents, updateCache);
+      return model;
+    }
+    catch (Throwable t) {
+    	throw new RuntimeException("Failed to parse '" + file + "'.", t);
+    }
   }
 
   public synchronized T parse(IFile file, boolean updateCache) throws Exception {

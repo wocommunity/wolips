@@ -21,23 +21,25 @@ import org.eclipse.text.edits.TextEdit;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.IWodModel;
 import org.objectstyle.wolips.bindings.wod.SimpleWodElement;
+import org.objectstyle.wolips.variables.BuildProperties;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.util.FuzzyXMLWodElement;
 import org.objectstyle.wolips.wodclipse.core.util.WodDocumentUtils;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 public class ConvertInlineToWodRefactoring implements IRunnableWithProgress {
-  public static void run(WodParserCache cache, int offset, boolean wo54, IProgressMonitor progressMonitor) throws InvocationTargetException, InterruptedException, CoreException {
-    TemplateRefactoring.processHtmlAndWod(new ConvertInlineToWodRefactoring(cache, offset, wo54), cache, progressMonitor);
+  public static void run(WodParserCache cache, int offset, BuildProperties buildProperties, IProgressMonitor progressMonitor) throws InvocationTargetException, InterruptedException, CoreException {
+    TemplateRefactoring.processHtmlAndWod(new ConvertInlineToWodRefactoring(cache, offset, buildProperties), cache, progressMonitor);
   }
 
   private WodParserCache _cache;
   private int _offset;
-  private boolean _wo54;
+  private BuildProperties _buildProperties;
 
-  public ConvertInlineToWodRefactoring(WodParserCache cache, int offset, boolean _wo54) {
+  public ConvertInlineToWodRefactoring(WodParserCache cache, int offset, BuildProperties buildProperties) {
     _cache = cache;
     _offset = offset;
+    _buildProperties = buildProperties;
   }
 
   public void run(IProgressMonitor monitor) throws InvocationTargetException {
@@ -48,7 +50,7 @@ public class ConvertInlineToWodRefactoring implements IRunnableWithProgress {
         IWodModel wodModel = _cache.getWodEntry().getModel();
         String tagName = element.getName();
         if (WodHtmlUtils.isInline(tagName)) {
-          SimpleWodElement wodElement = new FuzzyXMLWodElement(element, _wo54);
+          SimpleWodElement wodElement = new FuzzyXMLWodElement(element, _buildProperties);
           ElementRename elementRename = ElementRename.newUniqueName(wodModel, wodElement, true);
           wodElement.setElementName(elementRename.getNewName());
 

@@ -58,67 +58,36 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 
-public class CopyAction extends Action implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
-	private ISelection _selection;
-
-	public CopyAction() {
-		// DO NOTHING
-	}
-
-	public void dispose() {
-		// DO NOTHING
-	}
-
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		// DO NOTHING
-	}
-
-	public void init(IWorkbenchWindow window) {
-		// DO NOTHING
-	}
-
-	public void selectionChanged(IAction action, ISelection selection) {
-		_selection = selection;
-	}
-
+public class CopyAction extends EMAction {
 	public void run() {
 		try {
 			Control focusControl = Display.getCurrent().getFocusControl();
 			// Is this a copy for the viewer? styled text? or regular text?
 			if (focusControl instanceof Text) {
-				( (Text) focusControl ).copy();
+				((Text) focusControl).copy();
 				return;
 			} else if (focusControl instanceof StyledText) {
-				( (StyledText) focusControl ).copy();
+				((StyledText) focusControl).copy();
 				return;
-			}			
-			
-			Object[] selectedObjects = null;
-			if (_selection instanceof IStructuredSelection) {
-				selectedObjects = ((IStructuredSelection) _selection).toArray();
 			}
-			List<EOModelObject> selectedObjectsList = new LinkedList<EOModelObject>();
+
+			Object[] selectedObjects = getSelectedObjects();
 			if (selectedObjects != null) {
+				List<EOModelObject> selectedObjectsList = new LinkedList<EOModelObject>();
 				for (Object selectedObject : selectedObjects) {
 					if (selectedObject instanceof EOModelObject) {
 						EOModelObject<?> object = (EOModelObject) selectedObject;

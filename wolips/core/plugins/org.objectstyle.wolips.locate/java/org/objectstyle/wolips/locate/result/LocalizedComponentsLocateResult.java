@@ -198,7 +198,7 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 	}
 
 	private void alert(final String message) {
-		Display.getCurrent().asyncExec(new Runnable() {
+		Display.getDefault().asyncExec(new Runnable() {
 
 			public void run() {
 				MessageDialog.openError(null, "", message);

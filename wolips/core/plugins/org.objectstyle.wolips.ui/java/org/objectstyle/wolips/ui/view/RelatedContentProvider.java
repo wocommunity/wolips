@@ -10,14 +10,13 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceProxy;
 import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.IFileEditorInput;
-import org.objectstyle.wolips.datasets.project.WOLipsCore;
-import org.objectstyle.wolips.datasets.resources.IWOLipsResource;
+import org.objectstyle.wolips.core.resources.IWOLipsResource;
 import org.objectstyle.wolips.ui.UIPlugin;
 
 public class RelatedContentProvider implements ITreeContentProvider {
@@ -68,11 +67,9 @@ public class RelatedContentProvider implements ITreeContentProvider {
 		if (actualParent instanceof IMember) {
 			actualParent = ((IMember) actualParent).getCompilationUnit();
 		}
-		if (actualParent instanceof IResource) {
-			wolipsResource = WOLipsCore.getWOLipsModel().getWOLipsResource((IResource) actualParent);
+		if (actualParent instanceof IAdaptable) {
+			wolipsResource = (IWOLipsResource)((IAdaptable)actualParent).getAdapter(IWOLipsResource.class);
 			// getViewer().setInput(wolipsResource);
-		} else if (actualParent instanceof ICompilationUnit) {
-			wolipsResource = WOLipsCore.getWOLipsModel().getWOLipsCompilationUnit((ICompilationUnit) actualParent);
 		}
 		
 		Object[] resultList;

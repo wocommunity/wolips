@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template name = "Direct To Java Client WebStart Project">
+	<inputs>
+		<input name = "basePackage" type = "Package">
+			<question>Base Package?</question>
+			<default>your.project.app.server</default>
+		</input>
+		<input name = "componentsPackage" type = "Package">
+			<question>Components Package?</question>
+			<default>your.project.app.server.components</default>
+		</input>
+		<input name = "serverSideEOFPackage" type = "Package">
+			<question>Server-Side EOF Class Package?</question>
+			<default>your.project.eof.server</default>
+		</input>
+		<input name = "clientSideEOFPackage" type = "Package">
+			<question>Client-Side EOF Class Package?</question>
+			<default>your.project.eof.client</default>
+		</input>
+	</inputs>
+</template>

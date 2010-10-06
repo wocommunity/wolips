@@ -10,12 +10,13 @@ import org.objectstyle.wolips.bindings.api.ApiCache;
 import org.objectstyle.wolips.bindings.wod.SimpleWodBinding;
 import org.objectstyle.wolips.bindings.wod.SimpleWodElement;
 import org.objectstyle.wolips.bindings.wod.TagShortcut;
+import org.objectstyle.wolips.variables.BuildProperties;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils.BindingValue;
 
 public class FuzzyXMLWodElement extends SimpleWodElement {
   private FuzzyXMLElement _xmlElement;
 
-  public FuzzyXMLWodElement(FuzzyXMLElement element, boolean wo54) {
+  public FuzzyXMLWodElement(FuzzyXMLElement element, BuildProperties buildProperties) {
     String elementName = element.getName();
     String namespaceElementName = elementName.substring("wo:".length()).trim();
     int elementTypePosition = element.getOffset() + element.getNameOffset() + "wo:".length() + 1;
@@ -38,7 +39,7 @@ public class FuzzyXMLWodElement extends SimpleWodElement {
 
     if (matchingTagShortcut != null) {
       for (Map.Entry<String, String> shortcutAttribute : matchingTagShortcut.getAttributes().entrySet()) {
-        BindingValue value = WodHtmlUtils.toBindingValue(shortcutAttribute.getValue(), wo54);
+        BindingValue value = WodHtmlUtils.toBindingValue(shortcutAttribute.getValue(), buildProperties.getInlineBindingPrefix(), buildProperties.getInlineBindingSuffix());
         SimpleWodBinding wodBinding = new SimpleWodBinding(null, shortcutAttribute.getKey(), value.getValue());
         addBinding(wodBinding);
       }
@@ -49,7 +50,7 @@ public class FuzzyXMLWodElement extends SimpleWodElement {
       String namespace = attribute.getNamespace();
       String name = attribute.getName();
       String originalValue = attribute.getValue();
-      BindingValue value = WodHtmlUtils.toBindingValue(originalValue, wo54);
+      BindingValue value = WodHtmlUtils.toBindingValue(originalValue, buildProperties.getInlineBindingPrefix(), buildProperties.getInlineBindingSuffix());
       Position valuePosition;
       Position valueNamespacePosition = null;
       if (value.getValueNamespace() != null) {

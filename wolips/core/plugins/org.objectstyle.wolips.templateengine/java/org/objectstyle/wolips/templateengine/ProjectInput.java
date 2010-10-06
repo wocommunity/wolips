@@ -18,7 +18,7 @@ public class ProjectInput {
 	 * @author mschrag
 	 */
 	public static enum Type {
-		String, Integer, Boolean, Package
+		String, Integer, Boolean, Package, Object
 	}
 
 	private String _name;
@@ -45,6 +45,33 @@ public class ProjectInput {
 		_name = name;
 		_type = type;
 		_options = new LinkedList<Option>();
+	}
+
+	/**
+	 * Constructs a new ProjectInput.
+	 * 
+	 * @param name
+	 *            the name of the input
+	 * @param type
+	 *            the type of the input
+	 * @param value
+	 *            the value of this input
+	 */
+	public ProjectInput(String name, ProjectInput.Type type, Object value) {
+		this(name, type);
+		_value = value;
+	}
+
+	/**
+	 * Constructs a new ProjectInput.
+	 * 
+	 * @param name
+	 *            the name of the input
+	 * @param value
+	 *            the value of this input
+	 */
+	public ProjectInput(String name, Object value) {
+		this(name, ProjectInput.Type.Object, value);
 	}
 
 	/**
@@ -160,12 +187,14 @@ public class ProjectInput {
 		}
 		return value;
 	}
-	
+
 	/**
 	 * Adds an option to the options list.
 	 * 
-	 * @param name the name of the option
-	 * @param textValue the text value of the option
+	 * @param name
+	 *            the name of the option
+	 * @param textValue
+	 *            the text value of the option
 	 */
 	public void addOption(String name, String textValue) {
 		_options.add(new ProjectInput.Option(name, toObjectValue(textValue)));
@@ -187,9 +216,9 @@ public class ProjectInput {
 	 * @return whether or not this input has multiple options
 	 */
 	public boolean hasOptions() {
-		return _options != null && _options.size() > 0; 
+		return _options != null && _options.size() > 0;
 	}
-	
+
 	/**
 	 * Returns the possible options for this input.
 	 * 

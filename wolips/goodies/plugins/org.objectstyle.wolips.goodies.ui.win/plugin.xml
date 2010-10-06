@@ -39,7 +39,7 @@
             id="org.objectstyle.wolips.goodies.ui.win.actions.ShowFileInExplorerAction">
          <action
                label="Show File In Explorer"
-               class="org.objectstyle.wolips.goodies.ui.win.actions.ShowFileInExplorerAction"
+               class="org.objectstyle.wolips.goodies.ui.win.actions.RevealInFileBrowserAction"
                menubarPath="org.objectstyle.wolips.goodies.ui.win.ResourceContributions/group1"
                enablesFor="1"
                id="org.objectstyle.wolips.goodies.ui.win.actions.ShowFileInExplorerAction">
@@ -51,7 +51,7 @@
             id="org.objectstyle.wolips.goodies.ui.win.actions.ShowFileInShellAction">
          <action
                label="Show File In Shell"
-               class="org.objectstyle.wolips.goodies.ui.win.actions.ShowFileInShellAction"
+               class="org.objectstyle.wolips.goodies.ui.win.actions.CdInShellAction"
                menubarPath="org.objectstyle.wolips.goodies.ui.win.ResourceContributions/group1"
                enablesFor="1"
                id="org.objectstyle.wolips.goodies.ui.win.actions.ShowFileInShellAction">

@@ -11,7 +11,15 @@ import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 
 public class EOFSQLReverseEngineerFactory implements IEOSQLReverseEngineerFactory {
 	public IEOSQLReverseEngineer reverseEngineer(EODatabaseConfig databaseConfig, ClassLoader eomodelClassLoader) throws SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
-		Class reverseEngineerClass = Class.forName("org.objectstyle.wolips.eomodeler.core.sql.EOFSQLReverseEngineer", true, eomodelClassLoader);
+		WOUtils.setWOSystemProperties();
+		String className;
+		if (WOUtils.version(eomodelClassLoader) == WOUtils.Version.WO_5_6) {
+			className = "org.objectstyle.wolips.eomodeler.core.sql.EOFSQLReverseEngineer56";
+		}
+		else {
+			className = "org.objectstyle.wolips.eomodeler.core.sql.EOFSQLReverseEngineer53";
+		}
+		Class reverseEngineerClass = Class.forName(className, true, eomodelClassLoader);
 		Constructor reverseEngineerConstructor = reverseEngineerClass.getConstructor(new Class[] { String.class, Map.class });
 		Object reverseEngineerButICantCastItBecauseItCrossesClassLoaders = reverseEngineerConstructor.newInstance(new Object[] { databaseConfig.getAdaptorName(), databaseConfig.getConnectionDictionary() });
 		IEOSQLReverseEngineer reverseEngineer = new ReflectionSQLReverseEngineer(reverseEngineerButICantCastItBecauseItCrossesClassLoaders);

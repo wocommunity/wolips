@@ -68,6 +68,12 @@ public abstract class DependencyOrdering<T extends Dependency> {
   // jars from the first framework we come across 
   private Map<String, String> addedFrameworkPaths;
 
+  private boolean _includeProjectDependency;
+  
+  public DependencyOrdering(boolean includeProjectDependency) {
+  	_includeProjectDependency = includeProjectDependency;
+  }
+  
   // Pending results contains all of the classpath entries, filtered such that we only
   // load the first of a framework from a /Frameworks folder, but we may end up with
   // dupes that are in a project AND a /Frameworks folder -- we'll clean that up later.
@@ -159,7 +165,7 @@ public abstract class DependencyOrdering<T extends Dependency> {
         String frameworkName = dependencyFramework.get(dependency);
         if (dependency.isProject()) {
           // Don't double-add project deps -- Remove the /bin folder, because the build/App.woa/Contents/Resources/Java version will also be in there
-          if (!dependency.isWOProject()) {
+          if (_includeProjectDependency || !dependency.isWOProject()) {
             projectDeps.add(dependency);
           }
         }

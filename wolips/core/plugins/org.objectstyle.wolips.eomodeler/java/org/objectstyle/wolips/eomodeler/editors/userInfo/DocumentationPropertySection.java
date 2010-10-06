@@ -80,19 +80,22 @@ public class DocumentationPropertySection extends AbstractPropertySection {
 		super.createControls(parent, tabbedPropertySheetPage);
 		Composite composite = getWidgetFactory().createFlatFormComposite(parent);
 
+		int leftMargin = 13;
+		int rightMargin = 10;
+		
 		Label documentationLabel = new Label(composite, SWT.NONE);
 		documentationLabel.setBackground(composite.getBackground());
 		documentationLabel.setText("Documentation");
 		FormData documentationLabelFormData = new FormData();
-		documentationLabelFormData.left = new FormAttachment(0, 8);
-		documentationLabelFormData.right = new FormAttachment(100, -6);
-		documentationLabelFormData.top = new FormAttachment(0, 5);
+		documentationLabelFormData.left = new FormAttachment(0, leftMargin - 3);
+		documentationLabelFormData.right = new FormAttachment(100, -rightMargin);
+		documentationLabelFormData.top = new FormAttachment(0, 11);
 		documentationLabel.setLayoutData(documentationLabelFormData);
 
 		_documentationText = getWidgetFactory().createText(composite, "", SWT.BORDER | SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
 		FormData textFormData = new FormData();
-		textFormData.left = new FormAttachment(0, 5);
-		textFormData.right = new FormAttachment(100, -3);
+		textFormData.left = new FormAttachment(0, leftMargin);
+		textFormData.right = new FormAttachment(100, -rightMargin);
 		textFormData.top = new FormAttachment(documentationLabel, -3);
 		textFormData.bottom = new FormAttachment(50, 0);
 		textFormData.width = 100;
@@ -103,15 +106,15 @@ public class DocumentationPropertySection extends AbstractPropertySection {
 		previewLabel.setBackground(composite.getBackground());
 		previewLabel.setText("HTML Preview");
 		FormData labelFormData = new FormData();
-		labelFormData.left = new FormAttachment(0, 8);
-		labelFormData.right = new FormAttachment(100, -6);
+		labelFormData.left = new FormAttachment(0, leftMargin - 3);
+		labelFormData.right = new FormAttachment(100, -rightMargin);
 		labelFormData.top = new FormAttachment(_documentationText, 5);
 		previewLabel.setLayoutData(labelFormData);
 
 		_browser = new Browser(composite, SWT.NONE);
 		FormData browserFormData = new FormData();
-		browserFormData.left = new FormAttachment(0, 8);
-		browserFormData.right = new FormAttachment(100, -6);
+		browserFormData.left = new FormAttachment(0, leftMargin);
+		browserFormData.right = new FormAttachment(100, -rightMargin);
 		browserFormData.top = new FormAttachment(previewLabel, -3);
 		browserFormData.bottom = new FormAttachment(100, -5);
 		browserFormData.width = 100;

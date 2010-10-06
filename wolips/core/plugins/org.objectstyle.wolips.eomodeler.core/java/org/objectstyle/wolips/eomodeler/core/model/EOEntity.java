@@ -114,6 +114,8 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public static final String READ_ONLY = "readOnly";
 
+	public static final String RAW_ROWS_ONLY = "rawRowsOnly";
+
 	public static final String EXTERNAL_NAME = "externalName";
 
 	public static final String ABSTRACT_ENTITY = "abstractEntity";
@@ -170,6 +172,8 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	private Boolean myReadOnly;
 
+	private Boolean myRawRowsOnly;
+
 	private Integer myMaxNumberOfInstancesToBatchFetch;
 
 	private Set<EOAttribute> myAttributes;
@@ -197,6 +201,10 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	private boolean _entityDirty;
 	
 	private boolean _fetchSpecsDirty;
+	
+	private EOLastModified _lastModified;
+	
+	private EOLastModified _fspecLastModified;
 
 	public EOEntity() {
 		myAttributes = new HashSet<EOAttribute>();
@@ -830,6 +838,20 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		firePropertyChange(EOEntity.READ_ONLY, oldReadOnly, myReadOnly);
 	}
 
+	public Boolean getRawRowsOnly() {
+		return isRawRowsOnly();
+	}
+
+	public Boolean isRawRowsOnly() {
+		return myRawRowsOnly;
+	}
+
+	public void setRawRowsOnly(Boolean _rawRowsOnly) {
+		Boolean oldRawRowsOnly = myRawRowsOnly;
+		myRawRowsOnly = _rawRowsOnly;
+		firePropertyChange(EOEntity.RAW_ROWS_ONLY, oldRawRowsOnly, myRawRowsOnly);
+	}
+
 	public String getPluralName() {
 		return StringUtils.toPlural(myName);
 	}
@@ -870,11 +892,13 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 					if (relationship.getEntity().getModel() != myModel) {
 						relationship.getEntity().getModel().setDirty(true);
 					}
+					relationship.getEntity().setEntityDirty(true);
 				}
 				for (EOEntity childEntity : getChildrenEntities()) {
 					if (childEntity.getModel() != myModel) {
 						childEntity.getModel().setDirty(true);
 					}
+					childEntity.setEntityDirty(true);
 				}
 			}
 		}
@@ -2038,6 +2062,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			myAbstractEntity = _entityMap.getBoolean("isAbstractEntity");
 		}
 		myReadOnly = _entityMap.getBoolean("isReadOnly");
+		myRawRowsOnly = _entityMap.getBoolean("isRawRowsOnly");
 		if (_entityMap.containsKey("mappingQualifier")) {
 			myRestrictingQualifier = _entityMap.getString("mappingQualifier", true);
 		} else {
@@ -2137,6 +2162,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		entityMap.setBoolean("isAbstractEntity", myAbstractEntity, EOModelMap.YNOptionalDefaultNo);
 		entityMap.remove("isFetchable");
 		entityMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YNOptionalDefaultNo);
+		entityMap.setBoolean("isRawRowsOnly", myRawRowsOnly, EOModelMap.YNOptionalDefaultNo);
 		entityMap.setString("restrictingQualifier", myRestrictingQualifier, true);
 		entityMap.remove("mappingQualifier");
 		entityMap.setString("externalQuery", myExternalQuery, true);
@@ -2290,11 +2316,21 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		return fetchSpecsMap;
 	}
 
+	public void checkLastModified(Set<EOLastModified> lastModified) {
+		if (_lastModified != null && _lastModified.hasBeenModified()) {
+			lastModified.add(_lastModified);
+		}
+		if (_fspecLastModified != null && _fspecLastModified.hasBeenModified()) {
+			lastModified.add(_fspecLastModified);
+		}
+	}
+
 	public void loadFromURL(URL entityURL, Set<EOModelVerificationFailure> failures) throws EOModelException {
 		try {
 			EOModelMap entityMap = new EOModelMap((Map) WOLPropertyListSerialization.propertyListFromURL(entityURL, new EOModelParserDataStructureFactory()));
 			loadFromMap(entityMap, failures);
 			setEntityDirty(false);
+			_lastModified = new EOLastModified(entityURL);
 		} catch (Throwable e) {
 			throw new EOModelException("Failed to load entity from '" + entityURL.getFile() + "'.", e);
 		}
@@ -2305,14 +2341,15 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			EOModelMap fspecMap = new EOModelMap((Map) WOLPropertyListSerialization.propertyListFromURL(fetchSpecURL, new EOModelParserDataStructureFactory()));
 			loadFetchSpecsFromMap(fspecMap, failures);
 			setFetchSpecsDirty(false);
+			_fspecLastModified = new EOLastModified(fetchSpecURL);
 		} catch (Throwable e) {
 			throw new EOModelException("Failed to load fetch specifications from '" + fetchSpecURL.getFile() + "'.", e);
 		}
 	}
 
-	public void saveToFile(File _entityFile, File fetchSpecsFile) throws PropertyListParserException, IOException {
+	public void saveToFile(File entityFile, File fetchSpecsFile) throws PropertyListParserException, IOException {
 		EOModelMap entityMap = toEntityMap();
-		WOLPropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, _entityFile, entityMap);
+		WOLPropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, entityFile, entityMap);
 
 		if (myFetchSpecs.size() == 0) {
 			fetchSpecsFile.delete();
@@ -2323,6 +2360,8 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 		myOriginalName = myName;
 		setEntityDirty(false);
+		_lastModified = new EOLastModified(entityFile);
+		_fspecLastModified = new EOLastModified(fetchSpecsFile);
 	}
 
 	public void resolveFlattened(Set<EOModelVerificationFailure> _failures) {
@@ -2522,12 +2561,18 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 
 		Set<EOAttribute> primaryKeyAttributes = getPrimaryKeyAttributes();
-		if (primaryKeyAttributes.isEmpty() && !isPartialEntitySet()) {
+		if (primaryKeyAttributes.isEmpty() && !isPartialEntitySet() && BooleanUtils.isFalse(isRawRowsOnly())) {
 			failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + " does not have a primary key.", false));
 		}
 
 		if (isPartialEntitySet() && getPartialEntity().isPartialEntitySet()) {
 			failures.add(new EOModelVerificationFailure(myModel, this, "The entity " + getName() + " is a partial of an entity that is itself a partial. This is not currently allowed.", false));
+		}
+		
+		if (_lastModified == null) {
+			if (getClassName() != null && getPackageName() == null && !isGenericRecord()) {
+				failures.add(new EOModelVerificationFailure(myModel, this, "The class '" + getClassName() + "' for the entity " + getName() + " doesn't have a package name.", true));
+			}
 		}
 	}
 
@@ -2547,6 +2592,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		entity.myCachesObjects = myCachesObjects;
 		entity.myAbstractEntity = myAbstractEntity;
 		entity.myReadOnly = myReadOnly;
+		entity.myRawRowsOnly = myRawRowsOnly;
 		entity.myMaxNumberOfInstancesToBatchFetch = myMaxNumberOfInstancesToBatchFetch;
 		entity.myGenerateSource = myGenerateSource;
 		return entity;

@@ -60,7 +60,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.ant.AntPlugin;
 import org.objectstyle.wolips.builder.BuilderPlugin;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets;
 import org.objectstyle.wolips.preferences.Preferences;
 
 /**
@@ -74,6 +74,10 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 	 */
 	public WOAntBuilder() {
 		super();
+	}
+
+	public boolean isEnabled() {
+		return true;
 	}
 
 	public void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor, IResourceDelta delta) {
@@ -117,7 +121,7 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 		// RunAnt runAnt = new RunAnt();
 		// if (projectNeedsClean())
 		// TODO:handle clean
-		Project project = (Project) this.getProject().getAdapter(Project.class);
+		IProjectPatternsets project = (IProjectPatternsets) this.getProject().getAdapter(IProjectPatternsets.class);
 		project.setUpPatternsetFiles();
 		this.launchAntInExternalVM(getProject().getFile(aBuildFile), monitor);
 	}

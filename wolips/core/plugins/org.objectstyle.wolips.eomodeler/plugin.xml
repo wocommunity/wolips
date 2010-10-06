@@ -714,4 +714,41 @@
             priority="high">
       </content-type>
    </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="org.eclipse.ui.category.navigate"
+            id="org.objectstyle.wolips.eomodeler.openEntity"
+            name="Open Entity...">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.objectstyle.wolips.eomodeler.eclipse.modelActionSet"
+            label="EOModel Actions"
+            visible="true">
+         <action
+               class="org.objectstyle.wolips.eomodeler.editors.openEntity.OpenEntityHandler"
+               definitionId="org.objectstyle.wolips.eomodeler.openEntity"
+               id="org.objectstyle.wolips.eomodeler.openEntity"
+               label="Open Entity..."
+               menubarPath="navigate/open.ext2">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="org.objectstyle.wolips.eomodeler.openEntity"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+V">
+      </key>
+      <key
+            commandId="org.objectstyle.wolips.eomodeler.openEntity"
+            contextId="org.eclipse.jdt.ui.javaEditorScope"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+V">
+      </key>
+   </extension>
 </plugin>

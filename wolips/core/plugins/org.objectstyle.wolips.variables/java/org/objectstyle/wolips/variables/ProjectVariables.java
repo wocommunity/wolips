@@ -1,11 +1,22 @@
 package org.objectstyle.wolips.variables;
 
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.objectstyle.woenvironment.env.WOVariables;
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 
-public class ProjectVariables {
+import er.extensions.foundation.ERXValueUtilities;
+
+public class ProjectVariables implements IPersistentPreferenceStore {
 	private WOVariables _variables;
+	private boolean _dirty;
 
 	public ProjectVariables(WOVariables variables) {
 		_variables = variables;
@@ -135,8 +146,184 @@ public class ProjectVariables {
 		return null;
 	}
 
-	public String getProperty(String key) {
-		return _variables.getProperty(key);
+//	public String getProperty(String key) {
+//		return _variables.getProperty(key);
+//	}
+//
+//	public String getProperty(String key, String defaultValue) {
+//		String value =  _variables.getProperty(key);
+//		if (value == null) {
+//			value = defaultValue;
+//		}
+//		return value;
+//	}
+//	
+//	public void setProperty(String key, String value) {
+//		_variables.setProperty(key, value);
+//	}
+//	
+//	public void setDefaultProperty(String key, String value) {
+//		_variables.setProperty(key, value);
+//	}
+//
+//	public boolean getBooleanProperty(String key) {
+//		return getBooleanProperty(key, false);
+//	}
+//
+//	public boolean getBooleanProperty(String key, boolean defaultValue) {
+//		return "true".equals(getProperty(key, String.valueOf(defaultValue)));
+//	}
+
+	private List<IPropertyChangeListener> _listeners = new LinkedList<IPropertyChangeListener>();
+	
+	public void addPropertyChangeListener(IPropertyChangeListener listener) {
+		_listeners.add(listener);
 	}
 
+	public boolean contains(String name) {
+		return getString(name) != null;
+	}
+
+	public void firePropertyChangeEvent(String name, Object oldValue, Object newValue) {
+		PropertyChangeEvent event = new PropertyChangeEvent(this, name, oldValue, newValue);
+		for (IPropertyChangeListener listener : _listeners) {
+			listener.propertyChange(event);
+		}
+	}
+
+	public boolean getBoolean(String name) {
+		return ERXValueUtilities.booleanValue(getString(name));
+	}
+
+	public boolean getBoolean(String name, boolean defaultValue) {
+		return ERXValueUtilities.booleanValueWithDefault(getString(name), defaultValue);
+	}
+
+	public boolean getDefaultBoolean(String name) {
+		return ERXValueUtilities.booleanValue(getDefaultString(name));
+	}
+
+	public double getDefaultDouble(String name) {
+		return ERXValueUtilities.doubleValue(getDefaultString(name));
+	}
+
+	public float getDefaultFloat(String name) {
+		return ERXValueUtilities.floatValue(getDefaultString(name));
+	}
+
+	public int getDefaultInt(String name) {
+		return ERXValueUtilities.intValue(getDefaultString(name));
+	}
+
+	public long getDefaultLong(String name) {
+		return ERXValueUtilities.longValue(getDefaultString(name));
+	}
+
+	public String getDefaultString(String name) {
+		return _variables.getDefault(name);
+	}
+
+	public double getDouble(String name) {
+		return ERXValueUtilities.doubleValue(getString(name));
+	}
+
+	public float getFloat(String name) {
+		return ERXValueUtilities.floatValue(getString(name));
+	}
+
+	public int getInt(String name) {
+		return ERXValueUtilities.intValue(getString(name));
+	}
+
+	public long getLong(String name) {
+		return ERXValueUtilities.longValue(getString(name));
+	}
+
+	public String getString(String name, String defaultValue) {
+		String value = getString(name);
+		if (value == null) {
+			value = defaultValue;
+		}
+		return value;
+	}
+	
+	public String getString(String name) {
+		return _variables.getProperty(name);
+	}
+
+	public boolean isDefault(String name) {
+		return ComparisonUtils.equals(getDefaultString(name), getString(name), false);
+	}
+
+	public boolean needsSaving() {
+		return _dirty;
+	}
+
+	public void putValue(String name, String value) {
+		_variables.setProperty(name, value);
+		_dirty = true;
+	}
+
+	public void removePropertyChangeListener(IPropertyChangeListener listener) {
+		_listeners.remove(listener);
+	}
+
+	public void setDefault(String name, double value) {
+		setDefault(name, String.valueOf(value));
+	}
+
+	public void setDefault(String name, float value) {
+		setDefault(name, String.valueOf(value));
+	}
+
+	public void setDefault(String name, int value) {
+		setDefault(name, String.valueOf(value));
+	}
+
+	public void setDefault(String name, long value) {
+		setDefault(name, String.valueOf(value));
+	}
+
+	public void setDefault(String name, String defaultObject) {
+		_variables.setDefault(name, defaultObject);
+		_dirty = true;
+	}
+
+	public void setDefault(String name, boolean value) {
+		setDefault(name, String.valueOf(value));
+	}
+
+	public void setToDefault(String name) {
+		setValue(name, getDefaultString(name));
+	}
+
+	public void setValue(String name, double value) {
+		setValue(name, String.valueOf(value));
+	}
+
+	public void setValue(String name, float value) {
+		setValue(name, String.valueOf(value));
+	}
+
+	public void setValue(String name, int value) {
+		setValue(name, String.valueOf(value));
+	}
+
+	public void setValue(String name, long value) {
+		setValue(name, String.valueOf(value));
+	}
+
+	public void setValue(String name, String value) {
+		_variables.setProperty(name, value);
+		_dirty = true;
+	}
+
+	public void setValue(String name, boolean value) {
+		setValue(name, String.valueOf(value));
+	}
+
+	public void save() throws IOException {
+		_variables.save();
+		_dirty = false;
+	}
 }

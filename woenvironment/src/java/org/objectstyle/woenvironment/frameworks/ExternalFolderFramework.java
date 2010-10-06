@@ -58,7 +58,7 @@ package org.objectstyle.woenvironment.frameworks;
 import java.io.File;
 
 public class ExternalFolderFramework extends AbstractFolderFramework {
-	public ExternalFolderFramework(Root root, File frameworkFolder) {
+	public ExternalFolderFramework(Root<?> root, File frameworkFolder) {
 		super(root, frameworkFolder);
 	}
 }

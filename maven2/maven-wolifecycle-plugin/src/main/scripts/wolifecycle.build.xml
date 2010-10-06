@@ -35,7 +35,7 @@
 	</target>
 
 	<target name="build-woapplication" depends="woapplicationproperties">
-		<!-- <delete>
+		 <!-- <delete>
 		    <fileset dir="target/${finalName}.woa" includes="**/*.jar">
 				<patternset>
 					<excludesfile name="target/classpath.txt" />
@@ -44,7 +44,14 @@
 		  </delete> -->
 
 
-		<woapplication name="${finalName}" frameworksBaseURL="/WebObjects/${finalName}.woa/Contents/Frameworks" startupScriptName="${artifactId}" stdFrameworks="false" destDir="target" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" cfBundleVersion="${version}" cfBundleShortVersion="${version}">
+		<woapplication name="${finalName}"
+			frameworksBaseURL="/WebObjects/${finalName}.woa/Contents/Frameworks"
+			startupScriptName="${artifactId}"
+			stdFrameworks="false" destDir="target"
+			customInfoPListContent="${customInfoPListContent}"
+			principalClass="${principalClass}"
+			cfBundleVersion="${version}"
+			cfBundleShortVersion="${version}">
 			<classes dir="target/classes">
 			</classes>
 			<lib dir="${dependencies.lib}">
@@ -55,32 +62,33 @@
 		</woapplication>
 
 		<tar tarfile="target/${finalName}.woapplication.tar" longfile="gnu">
-			<tarfileset dir="target" preserveLeadingSlashes="true" filemode="755">
-				<include name="${finalName}.woa/${artifactId}" />
-				<include name="${finalName}.woa/Contents/MacOS/${finalName}" />
-			</tarfileset>
-			<tarfileset dir="target" preserveLeadingSlashes="true">
-				<include name="${finalName}.woa/**" />
-				<exclude name="${finalName}.woa/${artifactId}" />
-				<exclude name="${finalName}.woa/Contents/MacOS/${finalName}" />
+			<tarfileset dir="target/${finalName}.woa/"
+				prefix="${finalName}.woa/"
+						preserveLeadingSlashes="true">
+				<!-- exclude name="**/Contents/WebServerResources/**"/>
+				<exclude name="**/Contents/Frameworks/**"/ -->
 			</tarfileset>
 		</tar>
 
-		<gzip src="target/${finalName}.woapplication.tar" zipfile="target/${finalName}.woapplication.tar.gz" />
-		<delete file="target/${finalName}.woapplication.tar" />
+		<gzip src="target/${finalName}.woapplication.tar"
+			  zipfile="target/${finalName}.woapplication.tar.gz"/>
+		<delete file="target/${finalName}.woapplication.tar"/>
 
 		<!-- force WebServerResourcesDir -->
 
-		<mkdir dir="target/${finalName}.woa/Contents/WebServerResources" />
+		<mkdir dir="target/${finalName}.woa/Contents/WebServerResources"/>
 
 		<tar tarfile="target/${finalName}.wowebserverresources.tar" longfile="gnu">
-			<tarfileset dir="target/${finalName}.woa/" prefix="${finalName}.woa/" preserveLeadingSlashes="true">
-				<include name="**/WebServerResources/**" />
+			<tarfileset dir="target/${finalName}.woa/"
+				prefix="${finalName}.woa/"
+						preserveLeadingSlashes="true">
+				<include name="**/WebServerResources/**"/>
 			</tarfileset>
 		</tar>
 
-		<gzip src="target/${finalName}.wowebserverresources.tar" zipfile="target/${finalName}.wowebserverresources.tar.gz" />
-		<delete file="target/${finalName}.wowebserverresources.tar" />
+		<gzip src="target/${finalName}.wowebserverresources.tar"
+			  zipfile="target/${finalName}.wowebserverresources.tar.gz"/>
+		<delete file="target/${finalName}.wowebserverresources.tar"/>
 	</target>
 
 	<!-- ================================================================== -->
@@ -106,7 +114,7 @@
 		</woframework>
 		<zip zipfile="target/${finalName}.jar" roundup="false">
 			<fileset dir="target/${artifactId}.framework">
-				<exclude name="**/Java/**" />
+				<exclude name="**/Java/**"/>
 			</fileset>
 			<fileset dir="target/classes">
 			</fileset>

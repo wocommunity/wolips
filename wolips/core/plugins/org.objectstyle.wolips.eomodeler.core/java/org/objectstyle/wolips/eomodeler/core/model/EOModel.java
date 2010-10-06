@@ -136,6 +136,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	private NamingConvention _attributeNamingConvention;
 	
 	private boolean _reverseEngineered;
+	
+	private EOLastModified _lastModified;
 
 	public EOModel(String _name) {
 		myName = _name;
@@ -222,28 +224,29 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 					} else if ("".equals(guessPackageName)) {
 						// it can't change from ""
 					} else if (!guessPackageName.equals(packageName)) {
-						if (guessPackageName.startsWith(packageName)) {
-							guessPackageName = packageName;
-						} else if (packageName.startsWith(guessPackageName)) {
-							// leave it as is
-						} else {
-							int lastMatchingIndex = -1;
-							for (int index = 0; index < guessPackageName.length() && index < packageName.length(); index++) {
-								if (guessPackageName.charAt(index) == packageName.charAt(index)) {
-									lastMatchingIndex = index;
-								} else {
-									break;
-								}
-							}
-							if (lastMatchingIndex != -1) {
-								guessPackageName = guessPackageName.substring(0, lastMatchingIndex);
-								if (guessPackageName.endsWith(".")) {
-									guessPackageName = guessPackageName.substring(0, guessPackageName.length() - 1);
-								}
-							} else {
-								guessPackageName = "";
-							}
-						}
+						guessPackageName = "";
+//						if (guessPackageName.startsWith(packageName)) {
+//							guessPackageName = packageName;
+//						} else if (packageName.startsWith(guessPackageName)) {
+//							// leave it as is
+//						} else {
+//							int lastMatchingIndex = -1;
+//							for (int index = 0; index < guessPackageName.length() && index < packageName.length(); index++) {
+//								if (guessPackageName.charAt(index) == packageName.charAt(index)) {
+//									lastMatchingIndex = index;
+//								} else {
+//									break;
+//								}
+//							}
+//							if (lastMatchingIndex != -1) {
+//								guessPackageName = guessPackageName.substring(0, lastMatchingIndex);
+//								if (guessPackageName.endsWith(".")) {
+//									guessPackageName = guessPackageName.substring(0, guessPackageName.length() - 1);
+//								}
+//							} else {
+//								guessPackageName = "";
+//							}
+//						}
 					}
 				}
 			}
@@ -598,7 +601,6 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		}
 	}
 
-	@SuppressWarnings("unused")
 	public void _entityNameChanged(String _originalName, String _oldName, String _newName) {
 		if (myDeletedEntityNamesInObjectStore == null) {
 			myDeletedEntityNamesInObjectStore = new PropertyListSet<String>();
@@ -608,6 +610,12 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			// myDeletedEntityNamesInObjectStore.remove(_newName);
 			myDeletedEntityNames.add(_originalName);
 			// myDeletedEntityNames.remove(_newName);
+			synchronized (_entitiesCache) {
+				EOEntity entity = _entitiesCache.remove(_oldName);
+				if (entity != null) {
+					_entitiesCache.put(_newName, entity);
+				}
+			}
 		}
 	}
 
@@ -656,6 +664,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		}
 	}
 
+	private Map<String, EOEntity> _entitiesCache = new HashMap<String, EOEntity>();
+	
 	public void addEntities(Set<EOEntity> entities, Set<EOModelVerificationFailure> failures) throws DuplicateNameException {
 		Set<EOEntity> oldEntities = new HashSet<EOEntity>();
 		oldEntities.addAll(myEntities);
@@ -681,6 +691,9 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		if (pasteImmediately) {
 			entity.pasted();
 		}
+		synchronized (_entitiesCache) {
+			_entitiesCache.put(entity.getName(), entity);
+		}
 		myDeletedEntityNames.remove(entity.getName());
 		if (fireEvents) {
 			Set<EOEntity> oldEntities = null;
@@ -698,6 +711,9 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 
 	public void removeEntity(EOEntity _entity) {
 		myDeletedEntityNames.add(_entity.getName());
+		synchronized (_entitiesCache) {
+			_entitiesCache.remove(_entity.getName());
+		}
 		Set<EOEntity> oldEntities = myEntities;
 		Set<EOEntity> newEntities = new HashSet<EOEntity>();
 		newEntities.addAll(myEntities);
@@ -708,16 +724,10 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		_entity._setModel(null);
 	}
 
-	public EOEntity getEntityNamed(String _name) {
-		EOEntity matchingEntity = null;
-		Iterator<EOEntity> entitiesIter = myEntities.iterator();
-		while (matchingEntity == null && entitiesIter.hasNext()) {
-			EOEntity entity = entitiesIter.next();
-			if (ComparisonUtils.equalsIgnoreCase(entity.getName(), _name)) {
-				matchingEntity = entity;
-			}
+	public EOEntity getEntityNamed(String name) {
+		synchronized (_entitiesCache) {
+			return _entitiesCache.get(name);
 		}
-		return matchingEntity;
 	}
 
 	public void _storedProcedureNameChanged(String _oldName, String _newName) {
@@ -803,8 +813,23 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	}
 
 	public URL getIndexURL() throws MalformedURLException {
-		URL indexURL = new URL(myModelURL, "index.eomodeld");
+		URL indexURL = null;
+		if (myModelURL != null) {
+			indexURL = new URL(myModelURL, "index.eomodeld");
+		}
 		return indexURL;
+	}
+
+	public void checkLastModified(Set<EOLastModified> lastModified) {
+		if (_lastModified != null && _lastModified.hasBeenModified()) {
+			lastModified.add(_lastModified);
+		}
+		for (EOEntity entity : getEntities()) {
+			entity.checkLastModified(lastModified);
+		}
+		for (EOStoredProcedure storedProc : getStoredProcedures()) {
+			storedProc.checkLastModified(lastModified);
+		}
 	}
 
 	public void loadFromURL(URL _modelFolder, Set<EOModelVerificationFailure> _failures) throws EOModelException, MalformedURLException {
@@ -953,6 +978,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 				setActiveDatabaseConfig(activeDatabaseConfig, false);
 			}
 		}
+
+		_lastModified = new EOLastModified(indexURL);
 	}
 
 	public EOModelMap toMap() {
@@ -1170,6 +1197,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			}
 	
 			setDirty(false);
+			_lastModified = new EOLastModified(indexFile);
 	
 			return modelFolder;
 		}

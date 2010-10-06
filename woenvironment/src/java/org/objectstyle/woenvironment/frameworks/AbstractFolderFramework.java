@@ -56,61 +56,96 @@
 package org.objectstyle.woenvironment.frameworks;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.objectstyle.woenvironment.util.Parser;
+import org.objectstyle.woenvironment.plist.SimpleParserDataStructureFactory;
+import org.objectstyle.woenvironment.plist.WOLXMLPropertyListSerialization;
 
 public abstract class AbstractFolderFramework extends Framework {
-  private File frameworkFolder;
+  private File _frameworkFolder;
 
-  private List<FrameworkLibrary> libraries;
+  private List<FrameworkLibrary> _libraries;
 
-  private File javaFolder;
+  private File _javaFolder;
 
-  public AbstractFolderFramework(Root root, File frameworkFolder) {
+  private File _javaClientFolder;
+
+  private Map<String, Object> _infoPlist;
+  private long _infoPListLastModified;
+  
+  public AbstractFolderFramework(Root<?> root, File frameworkFolder) {
     super(root, AbstractFolderFramework.frameworkNameForFolder(frameworkFolder));
-    this.frameworkFolder = frameworkFolder;
+    this._frameworkFolder = frameworkFolder;
     reloadLibraries();
   }
   
   public File getFrameworkFolder() {
-    return frameworkFolder;
+    return _frameworkFolder;
   }
 
   @SuppressWarnings("unchecked")
-  public Map<String, Object> getInfoPlist() {
-    Map<String, Object> propertyList;
-    File infoPlist = new File(frameworkFolder, "Resources/Info.plist");
+  public synchronized Map<String, Object> getInfoPlist() {
+    Map<String, Object> propertyList = _infoPlist;
+    File infoPlist = new File(_frameworkFolder, "Resources/Info.plist");
     if (infoPlist.exists()) {
-      Parser propertyListParser;
-      try {
-        propertyListParser = new Parser(infoPlist);
-        Object propertyListObj = propertyListParser.propertyList();
-        if (propertyListObj instanceof Map) {
-          propertyList = (Map<String, Object>) propertyListObj;
-        }
-        else if (propertyListObj instanceof String) {
-          //Document infoPlist = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(infoPlist);
-          // XML Plist
-          propertyList = null;
-        }
-        else {
-          propertyList = null;
-        }
-      }
-      catch (FileNotFoundException e) {
-        throw new RuntimeException("Failed to load info.plist for " + getName() + ".", e);
-      }
-    }
-    else {
-      propertyList = null;
+        long infoPlistLastModified = infoPlist.lastModified();
+        if (propertyList == null || infoPlistLastModified != _infoPListLastModified) {
+	    	try {
+	    		propertyList = (Map<String, Object>) WOLXMLPropertyListSerialization.propertyListWithContentsOfFile(infoPlist, new SimpleParserDataStructureFactory());
+	    	}
+	    	catch (Throwable t) {
+	    		throw new RuntimeException("Failed to parse an XML plist from '" + infoPlist + "'.", t);
+	    	}
+		    _infoPlist = propertyList;
+		    _infoPListLastModified = infoPlistLastModified;
+		    _libraries = null;
+	    }
     }
     return propertyList;
   }
 
+  @SuppressWarnings("unchecked")
+  protected File addJars(File defaultJarFolder, Map<String, Object> infoPlist, String jarRootKey, String jarListKey, List<File> jarFiles) {
+	  boolean guessJars = true;
+	  
+	  File jarFolder = defaultJarFolder;
+	  if (infoPlist != null) {
+		  String javaRoot = (String) infoPlist.get(jarRootKey);
+		  if (javaRoot != null) {
+			  jarFolder = new File(_frameworkFolder, javaRoot);
+		  }
+		  Object javaPathsObj = infoPlist.get(jarListKey);
+		  if (javaPathsObj != null) {
+			  List<String> javaPaths;
+			  if (javaPathsObj instanceof List) {
+				  javaPaths = (List<String>) javaPathsObj;
+			  }
+			  else {
+				  javaPaths = new LinkedList<String>();
+				  javaPaths.add((String)javaPathsObj);
+			  }
+			  if (javaPaths != null) {
+			    for (String javaPath : javaPaths) {
+			      File jarFile = new File(jarFolder, javaPath);
+			      String jarFileName = jarFile.getName();
+			      if (jarFile.exists() && !isSourceJar(jarFileName)) {
+			        jarFiles.add(jarFile);
+			      }
+			    }
+			    guessJars = false;
+			  }
+		  }
+	  }
+	  
+	  if (guessJars && jarFolder.exists()) {
+		  guessJars(jarFolder, jarFiles);
+	  }
+	  
+	  return jarFolder;
+  }
+  
   protected void guessJars(File folder, List<File> jarFiles) {
     File[] guessedJarFiles = folder.listFiles();
     if (guessedJarFiles != null && guessedJarFiles.length > 0) {
@@ -128,36 +163,14 @@ public abstract class AbstractFolderFramework extends Framework {
     }
   }
   
-  @SuppressWarnings("unchecked")
   public synchronized void reloadLibraries() {
-    this.libraries = new LinkedList<FrameworkLibrary>();
     List<File> jarFiles = new LinkedList<File>();
 
-    boolean guessJars = true;
-    javaFolder = new File(frameworkFolder, "Resources/Java");
-    Map infoPlist = getInfoPlist();
-    if (infoPlist != null) {
-      String javaRoot = (String) infoPlist.get("NSJavaRoot");
-      if (javaRoot != null) {
-        javaFolder = new File(frameworkFolder, javaRoot);
-      }
-      List<String> javaPaths = (List<String>) infoPlist.get("NSJavaPath");
-      if (javaPaths != null) {
-        for (String javaPath : javaPaths) {
-          File jarFile = new File(javaFolder, javaPath);
-          String jarFileName = jarFile.getName();
-          if (jarFile.exists() && !isSourceJar(jarFileName)) {
-            jarFiles.add(jarFile);
-          }
-        }
-        guessJars = false;
-      }
-    }
+    Map<String, Object> infoPlist = getInfoPlist();
+    _javaFolder = addJars(new File(_frameworkFolder, "Resources/Java"), infoPlist, "NSJavaRoot", "NSJavaPath", jarFiles);
+    _javaClientFolder = addJars(new File(_frameworkFolder, "WebServerResources/Java"), infoPlist, "NSJavaClientRoot", "NSJavaPathClient", jarFiles);
 
-    if (guessJars && javaFolder.exists()) {
-      guessJars(javaFolder, jarFiles);
-    }
-
+    _libraries = new LinkedList<FrameworkLibrary>();
     for (File jarFile : jarFiles) {
       String jarFileName = jarFile.getName();
       String sourceJar = getSourceJarNameForJarNamed(jarFileName);
@@ -166,7 +179,7 @@ public abstract class AbstractFolderFramework extends Framework {
         sourceJarFile = jarFile;
       }
       FrameworkLibrary library = new FrameworkLibrary(jarFile, sourceJarFile, null, null, null);
-      this.libraries.add(library);
+      _libraries.add(library);
     }
   }
 
@@ -189,8 +202,11 @@ public abstract class AbstractFolderFramework extends Framework {
     return isSourceJar;
   }
 
-  public List<FrameworkLibrary> getFrameworkLibraries() {
-    return this.libraries;
+  public synchronized List<FrameworkLibrary> getFrameworkLibraries() {
+	  if (_libraries == null) {
+		  reloadLibraries();
+	  }
+    return _libraries;
   }
 
   public IFramework resolveFramework() {

@@ -67,4 +67,10 @@ public interface FuzzyXMLElement extends FuzzyXMLNode, FuzzyXMLFormat {
 	public void removeAllChildren();
 
 	public IRegion getRegionAtOffset(int offset, IDocument doc, boolean regionForInsert) throws BadLocationException;
+	
+	public boolean isSelfClosing();
+  
+  public boolean isForbiddenFromHavingChildren();
+  
+  public void setSynthetic(boolean synthetic);
 }

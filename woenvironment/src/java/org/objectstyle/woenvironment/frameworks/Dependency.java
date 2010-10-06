@@ -20,7 +20,7 @@ public abstract class Dependency {
     if (location != null) {
       // check user settings (from wobuild.properties)
       String systemRootPath = getSystemRoot();
-      if (systemRootPath != null && location.startsWith(systemRootPath.toString())) {
+      if (systemRootPath != null && location.startsWith(systemRootPath)) {
         return location.indexOf("JavaVM") < 0;
       }
       // check maven path (first french version)

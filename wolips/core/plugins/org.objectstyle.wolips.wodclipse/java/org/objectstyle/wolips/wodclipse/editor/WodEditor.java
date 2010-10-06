@@ -46,17 +46,14 @@ package org.objectstyle.wolips.wodclipse.editor;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
-import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.viewers.ISelection;
@@ -77,6 +74,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ContentAssistAction;
+import org.eclipse.ui.texteditor.IAbstractTextEditorHelpContextIds;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.objectstyle.wolips.baseforplugins.util.Throttle;
@@ -92,10 +90,8 @@ import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
+import org.objectstyle.wolips.wodclipse.core.document.DocumentWodElement;
 import org.objectstyle.wolips.wodclipse.core.document.ITextWOEditor;
-import org.objectstyle.wolips.wodclipse.core.parser.ElementNameRule;
-import org.objectstyle.wolips.wodclipse.core.parser.RulePosition;
-import org.objectstyle.wolips.wodclipse.core.parser.WodScanner;
 import org.objectstyle.wolips.wodclipse.core.util.CursorPositionSupport;
 import org.objectstyle.wolips.wodclipse.core.util.ICursorPositionListener;
 import org.objectstyle.wolips.wodclipse.core.util.WodModelUtils;
@@ -143,6 +139,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 	protected void doSetInput(IEditorInput input) throws CoreException {
 		super.doSetInput(input);
 		_cache = null;
+	    updateValidation();
 	}
 
 	@Override
@@ -182,20 +179,9 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 
 	protected void updateValidation() {
 		try {
-			// resource.getWorkspace().run(r, null,IWorkspace.AVOID_UPDATE,
-			// null);
-			ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
-				public void run(IProgressMonitor monitor) {
-					try {
-						WodParserCache cache = getParserCache();
-						cache.parse();
-						cache.validate(false, true);
-					} catch (Exception ex) {
-						Activator.getDefault().log(ex);
-					}
-				}
-			}, null);
-		} catch (CoreException e) {
+			getParserCache().scheduleValidate(true, true);
+		}
+		catch (Throwable e) {
 			Activator.getDefault().log(e);
 		}
 	}
@@ -236,7 +222,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 		action.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
 		setAction("ContentAssistProposal", action);
 		markAsStateDependentAction("ContentAssistProposal", true);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(action, IJavaHelpContextIds.CONTENT_ASSIST_ACTION);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(action, IAbstractTextEditorHelpContextIds.CONTENT_ASSIST_ACTION);
 	}
 
 	public void updateWebObjectsTagNames() {
@@ -294,7 +280,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 
 		_wodOutlineUpdateThrottle.start();
 	}
-
+	
 	public void dispose() {
 		try {
 			getParserCache().getWodEntry().setDocument(null);
@@ -338,14 +324,17 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 
 	public void webObjectTagSelected(String name) {
 		try {
-			IDocument document = getDocumentProvider().getDocument(getEditorInput());
-			WodScanner wodScanner = WodScanner.wodScannerForDocument(document);
-			RulePosition elementNameRulePosition = wodScanner.firstRulePositionOfTypeWithText(ElementNameRule.class, name);
-			if (elementNameRulePosition != null) {
-				IRegion region = document.getLineInformationOfOffset(elementNameRulePosition.getTokenOffset());
-				setHighlightRange(region.getOffset(), region.getLength(), true);
+			IWodElement wodElement = getWodModel(false).getElementNamed(name);
+			if (wodElement instanceof DocumentWodElement) {
+				DocumentWodElement docWodElement = (DocumentWodElement)wodElement;
+				Position namePosition = docWodElement.getElementNamePosition();
+				getSourceViewer().setSelectedRange(namePosition.getOffset(), namePosition.getLength());
+				getSourceViewer().revealRange(namePosition.getOffset(), namePosition.getLength());
+				//setHighlightRange(namePosition.getOffset(), namePosition.getLength(), true);
 			}
 		} catch (BadLocationException e) {
+			WodclipsePlugin.getDefault().log(e);
+		} catch (Exception e) {
 			WodclipsePlugin.getDefault().log(e);
 		}
 	}

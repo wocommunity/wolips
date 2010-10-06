@@ -91,8 +91,10 @@ public class ApiTab extends ComponentEditorTab {
 		apiEditor.close(save);
 	}
 	
+	@Override
 	public void dispose() {
 		apiEditor.dispose();
+		super.dispose();
 	}
 	
 	public IEditorInput getActiveEditorInput() {

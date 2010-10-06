@@ -62,15 +62,13 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -92,6 +90,7 @@ import org.objectstyle.wolips.eomodeler.editors.dataType.IntegerDataTypePanel;
 import org.objectstyle.wolips.eomodeler.editors.dataType.StringDataTypePanel;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
+import org.objectstyle.wolips.eomodeler.utils.FormUtils;
 
 public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPropertySection {
 	private static String COLUMN = "Column";
@@ -150,17 +149,8 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 		FormLayout formLayout = new FormLayout();
 		form.setLayout(formLayout);
 
-		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-		topForm.setBackgroundMode(SWT.INHERIT_DEFAULT);
-		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0, 5);
-		topFormData.left = new FormAttachment(0, 5);
-		topFormData.right = new FormAttachment(100, -5);
-		topForm.setLayoutData(topFormData);
-
-		GridLayout topFormLayout = new GridLayout();
-		topFormLayout.numColumns = 2;
-		topForm.setLayout(topFormLayout);
+		Composite topForm = FormUtils.createForm(getWidgetFactory(), form);
+		((FormData)topForm.getLayoutData()).bottom = null;
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("AbstractEOArgument." + AbstractEOArgument.NAME), SWT.NONE);
 		_nameText = new Text(topForm, SWT.BORDER);
@@ -196,15 +186,31 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 		getWidgetFactory().createCLabel(topForm, Messages.getString("AbstractEOArgument.settings"), SWT.NONE);
 		
 		Composite settingsComposite = new Composite(topForm, SWT.NONE);
-		settingsComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
+		settingsComposite.setBackground(topForm.getBackground());
+		FillLayout settingsLayout = new FillLayout(SWT.HORIZONTAL);
+		settingsLayout.spacing = 10;
+		settingsComposite.setLayout(settingsLayout);
+		GridData settingsLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		settingsLayoutData.heightHint = 25;
+		settingsComposite.setLayoutData(settingsLayoutData);
 
 		_addSettings(settingsComposite);
 
-		_allowNullsButton = new Button(settingsComposite, SWT.TOGGLE);
+		_allowNullsButton = new Button(settingsComposite, SWT.TOGGLE | SWT.FLAT);
 		_allowNullsButton.setToolTipText(Messages.getString("AbstractEOArgument." + AbstractEOArgument.ALLOWS_NULL));
 		_allowNullsButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.ALLOW_NULL_ICON));
 
 		_addComponents(topForm);
+
+		getWidgetFactory().createCLabel(topForm, Messages.getString("AbstractEOArgument." + AbstractEOArgument.DATA_TYPE), SWT.NONE);
+		Combo dataTypeCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
+		_dataTypeComboViewer = new ComboViewer(dataTypeCombo);
+		_dataTypeComboViewer.setLabelProvider(new EODataTypeLabelProvider());
+		_dataTypeComboViewer.setContentProvider(new EODataTypeContentProvider());
+		//_dataTypeComboViewer.setSorter(new ViewerSorter());
+		_dataTypeComboViewer.setInput(EODataType.DATA_TYPES);
+		GridData dataTypeComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		dataTypeCombo.setLayoutData(dataTypeComboLayoutData);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("AbstractEOArgument." + AbstractEOArgument.EXTERNAL_TYPE), SWT.NONE);
 		_externalTypeText = new Text(topForm, SWT.BORDER);
@@ -215,16 +221,6 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 		_classNameText = new Text(topForm, SWT.BORDER);
 		GridData classNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_classNameText.setLayoutData(classNameFieldLayoutData);
-
-		getWidgetFactory().createCLabel(topForm, Messages.getString("AbstractEOArgument." + AbstractEOArgument.DATA_TYPE), SWT.NONE);
-		Combo dataTypeCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
-		_dataTypeComboViewer = new ComboViewer(dataTypeCombo);
-		_dataTypeComboViewer.setLabelProvider(new EODataTypeLabelProvider());
-		_dataTypeComboViewer.setContentProvider(new EODataTypeContentProvider());
-		_dataTypeComboViewer.setSorter(new ViewerSorter());
-		_dataTypeComboViewer.setInput(EODataType.DATA_TYPES);
-		GridData dataTypeComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-		dataTypeCombo.setLayoutData(dataTypeComboLayoutData);
 
 		_dataTypePanel = getWidgetFactory().createPlainComposite(form, SWT.NONE);
 		FormData dataTypeFormData = new FormData();
@@ -253,7 +249,7 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 		_dataTypeToDataTypePanel.put(EODataType.STRING, new StringDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
 		_dataTypeToDataTypePanel.put(EODataType.STRING_CHAR, new StringDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
 		_dataTypeToDataTypePanel.put(EODataType.STRING_RTRIM, new StringDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
-		_dataTypeToDataTypePanel.put(EODataType.STRING_SET, new StringDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
+		//_dataTypeToDataTypePanel.put(EODataType.STRING_SET, new StringDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
 		_dataTypeToDataTypePanel.put(EODataType.STRING_UTF, new StringDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
 		_dataTypeToDataTypePanel.put(EODataType.TIME, new DateDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));
 		_dataTypeToDataTypePanel.put(EODataType.TIMESTAMP, new DateDataTypePanel(_dataTypePanel, SWT.NONE, getWidgetFactory()));

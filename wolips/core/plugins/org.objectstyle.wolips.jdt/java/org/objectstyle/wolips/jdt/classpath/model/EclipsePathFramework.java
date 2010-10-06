@@ -71,38 +71,46 @@ import org.objectstyle.woenvironment.frameworks.Root;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
 public class EclipsePathFramework extends AbstractFolderFramework implements IEclipseFramework {
+	private List<IClasspathEntry> cachedClasspathEntries;
+	
 	public EclipsePathFramework(Root root, File frameworkFolder) {
 		super(root, frameworkFolder);
 	}
-
-	public List<IClasspathEntry> getClasspathEntries() {
-		List<IClasspathEntry> classpathEntries = new LinkedList<IClasspathEntry>();
-		for (FrameworkLibrary library : getFrameworkLibraries()) {
-			IPath jarPath = new Path(library.getLibraryFile().getAbsolutePath());
-			IPath sourceJarPath = null;
-			File sourceJar = library.getSourceJar();
-			if (sourceJar != null) {
-				sourceJarPath = new Path(library.getSourceJar().getAbsolutePath());
-			}
-			String sourcePathStr = library.getSourcePath();
-			IPath sourcePath = null;
-			if (sourcePathStr != null) {
-				sourcePath = new Path(sourcePathStr);
-			}
-			String docPathStr = library.getDocPath();
-			IClasspathAttribute[] attributes = ClasspathEntry.NO_EXTRA_ATTRIBUTES;
-			if (docPathStr != null || getName().startsWith("Java")) {
-				if (docPathStr == null) {
-					docPathStr = VariablesPlugin.getDefault().getGlobalVariables().getReferenceApiAsJavaDocCompatibleString();
+	
+	public synchronized List<IClasspathEntry> getClasspathEntries() {
+		List<IClasspathEntry> classpathEntries = cachedClasspathEntries;
+		
+		if (cachedClasspathEntries == null) {
+			classpathEntries =  new LinkedList<IClasspathEntry>();
+			for (FrameworkLibrary library : getFrameworkLibraries()) {
+				IPath jarPath = new Path(library.getLibraryFile().getAbsolutePath());
+				IPath sourceJarPath = null;
+				File sourceJar = library.getSourceJar();
+				if (sourceJar != null) {
+					sourceJarPath = new Path(library.getSourceJar().getAbsolutePath());
 				}
-				if (docPathStr != null) {
-					IClasspathAttribute javadoc = JavaCore.newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME, docPathStr);
-					attributes = new IClasspathAttribute[]{ javadoc };
+				String sourcePathStr = library.getSourcePath();
+				IPath sourcePath = null;
+				if (sourcePathStr != null) {
+					sourcePath = new Path(sourcePathStr);
 				}
+				String docPathStr = library.getDocPath();
+				IClasspathAttribute[] attributes = ClasspathEntry.NO_EXTRA_ATTRIBUTES;
+				if (docPathStr != null || getName().startsWith("Java")) {
+					if (docPathStr == null) {
+						docPathStr = VariablesPlugin.getDefault().getGlobalVariables().getReferenceApiAsJavaDocCompatibleString();
+					}
+					if (docPathStr != null) {
+						IClasspathAttribute javadoc = JavaCore.newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME, docPathStr);
+						attributes = new IClasspathAttribute[]{ javadoc };
+					}
+				}
+				IClasspathEntry classpathEntry = JavaCore.newLibraryEntry(jarPath, sourceJarPath, sourcePath, ClasspathEntry.NO_ACCESS_RULES, attributes, false);
+				classpathEntries.add(classpathEntry);
 			}
-			IClasspathEntry classpathEntry = JavaCore.newLibraryEntry(jarPath, sourceJarPath, sourcePath, ClasspathEntry.NO_ACCESS_RULES, attributes, false);
-			classpathEntries.add(classpathEntry);
+			cachedClasspathEntries = classpathEntries;
 		}
+		
 		return classpathEntries;
 	}
 }

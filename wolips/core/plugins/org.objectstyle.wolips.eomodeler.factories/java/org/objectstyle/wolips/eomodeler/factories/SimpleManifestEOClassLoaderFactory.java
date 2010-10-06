@@ -22,8 +22,10 @@ public class SimpleManifestEOClassLoaderFactory extends AbstractEOClassLoader {
 		File modelFolder = URLUtils.cheatAndTurnIntoFile(model.getModelURL()).getParentFile();
 		fillInClasspathURLs(new File(modelFolder, "EntityModeler.classpath"), classpathUrls);
 		fillInClasspathURLs(new File(modelFolder, ".EntityModeler.classpath"), classpathUrls);
-		fillInClasspathURLs(new File(modelFolder.getParent(), "EntityModeler.classpath"), classpathUrls);
-		fillInClasspathURLs(new File(modelFolder.getParent(), ".EntityModeler.classpath"), classpathUrls);
+		for (File modelParentFolder = modelFolder.getParentFile(); modelParentFolder != null; modelParentFolder = modelParentFolder.getParentFile()) {
+			fillInClasspathURLs(new File(modelParentFolder, "EntityModeler.classpath"), classpathUrls);
+			fillInClasspathURLs(new File(modelParentFolder, ".EntityModeler.classpath"), classpathUrls);
+		}
 		fillInClasspathURLs(new File(System.getProperty("user.home"), "EntityModeler.classpath"), classpathUrls);
 		fillInClasspathURLs(new File(System.getProperty("user.home"), ".EntityModeler.classpath"), classpathUrls);
 		fillInClasspathURLs(new File(System.getProperty("user.home") + "/Library", "EntityModeler.classpath"), classpathUrls);
@@ -32,30 +34,43 @@ public class SimpleManifestEOClassLoaderFactory extends AbstractEOClassLoader {
 		fillInClasspathURLs(new File(System.getProperty("user.home") + "/Library/Preferences", ".EntityModeler.classpath"), classpathUrls);
 	}
 
-	protected void fillInClasspathURLs(File manifestFile, Set<URL> classpathUrls) throws IOException {
+	protected void addClasspathURL(File manifestItem, final Set<URL> classpathUrls) throws IOException {
+		File searchFolder = manifestItem.getCanonicalFile();
+		if (searchFolder != null && searchFolder.exists()) {
+			if (searchFolder.getName().endsWith(".framework")) {
+				File javaFolder = new File(searchFolder, "Resources/Java");
+				if (javaFolder.exists()) {
+					classpathUrls.add(javaFolder.toURL());
+					File[] jarFiles = javaFolder.listFiles();
+					for (File jarFile : jarFiles) {
+						if (jarFile.getName().toLowerCase().endsWith(".jar")) {
+							System.out.println("SimpleManifestEOClassLoaderFactory.fillInClasspathURLs:   jar = " + jarFile);
+							classpathUrls.add(jarFile.toURL());
+						}
+					}
+				}
+			} else {
+				classpathUrls.add(searchFolder.toURL());
+			}
+		}
+	}
+	
+	protected void fillInClasspathURLs(File manifestFile, final Set<URL> classpathUrls) throws IOException {
 		if (manifestFile.exists()) {
 			System.out.println("SimpleManifestEOClassLoaderFactory.fillInClasspathURLs: Manifest = " + manifestFile + " ...");
 			BufferedReader manifestReader = new BufferedReader(new FileReader(manifestFile));
 			try {
 				String searchFolderPath;
 				while ((searchFolderPath = manifestReader.readLine()) != null) {
-					File searchFolder = new File(searchFolderPath).getCanonicalFile();
-					if (searchFolder != null && searchFolder.exists()) {
-						if (searchFolder.getName().endsWith(".framework")) {
-							File javaFolder = new File(searchFolder, "Resources/Java");
-							if (javaFolder.exists()) {
-								classpathUrls.add(javaFolder.toURL());
-								File[] jarFiles = javaFolder.listFiles();
-								for (File jarFile : jarFiles) {
-									if (jarFile.getName().toLowerCase().endsWith(".jar")) {
-										System.out.println("SimpleManifestEOClassLoaderFactory.fillInClasspathURLs:   jar = " + jarFile);
-										classpathUrls.add(jarFile.toURL());
-									}
-								}
+					if (searchFolderPath.contains("*")) {
+						SimpleManifestUtilities.fillInSearchFolders(manifestFile.getParentFile(), searchFolderPath, new SimpleManifestUtilities.SearchFolderDelegate() {
+							public void fileMatched(File file) throws IOException {
+								addClasspathURL(file, classpathUrls);
 							}
-						} else {
-							classpathUrls.add(searchFolder.toURL());
-						}
+						});
+					}
+					else {
+						addClasspathURL(new File(searchFolderPath), classpathUrls);
 					}
 				}
 			} finally {

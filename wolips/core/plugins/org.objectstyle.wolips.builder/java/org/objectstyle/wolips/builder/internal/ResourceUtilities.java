@@ -56,6 +56,7 @@
 
 package org.objectstyle.wolips.builder.internal;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,6 +71,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.objectstyle.wolips.baseforplugins.util.FileUtilities;
 
 /**
  * @author Harald Niesche
@@ -153,40 +155,49 @@ public class ResourceUtilities {
 	 * @return
 	 * @throws CoreException
 	 */
-	public static IResource checkDestination(IPath path, IProgressMonitor m) throws CoreException {
-		return checkDestination(path, m, false);
+	public static IResource checkDestination(IPath path, IProgressMonitor m, boolean deleteIfExists) throws CoreException {
+		return checkDestination(path, m, false, deleteIfExists);
 	}
 
-	public static IResource checkDerivedDestination(IPath path, IProgressMonitor m) throws CoreException {
-		return checkDestination(path, m, true);
+	public static IResource checkDerivedDestination(IPath path, IProgressMonitor m, boolean deleteIfExists) throws CoreException {
+		return checkDestination(path, m, true, deleteIfExists);
 	}
 
-	public static IResource checkDestination(IPath path, IProgressMonitor m, boolean derived) throws CoreException {
+	public static IResource checkDestination(IPath path, IProgressMonitor m, boolean derived, boolean deleteIfExists) throws CoreException {
 		if (checkDir(path.removeLastSegments(1), m, derived)) {
 			IResource res = getWorkspaceRoot().findMember(path);
 			if (null != res && res.exists()) {
-				try {
-					res.delete(true, m);
-					// } catch
-					// (org.eclipse.core.internal.resources.ResourceException e)
-					// {
-				} catch (CoreException ce) {
-					ce.printStackTrace();
-					// NOTE AK: this code was commented out, I re-instated it as
-					// I think it's
-					// better to have the non-deletable files in one place,
-					// instead of messing the build directory
-					IPath trashFolder = res.getProject().getFullPath().append("build/.trash");
-					IPath trashPath = trashFolder.append(res.getName() + (_getUniqifier()));
-					checkDir(trashFolder, m);
-					res.move(trashPath, true, null);
-					/*
-					 * IPath newName = res.getLocation().removeLastSegments(1);
-					 * newName = newName.append(res.getName()+_getUniqifier());
-					 * File resFile = res.getLocation().toFile(); if
-					 * (!resFile.renameTo(newName.toFile())) { throw ce; }
-					 */}
-				// res.refreshLocal(IResource.DEPTH_ONE, m);
+				if (deleteIfExists) {
+					try {
+						File f = res.getLocation().toFile();
+						if (f.exists()) {
+							FileUtilities.deleteRecursively(f);
+						}
+						else {
+							res.delete(true, m);
+						}
+						// } catch
+						// (org.eclipse.core.internal.resources.ResourceException e)
+						// {
+					} catch (CoreException ce) {
+						ce.printStackTrace();
+						// NOTE AK: this code was commented out, I re-instated it as
+						// I think it's
+						// better to have the non-deletable files in one place,
+						// instead of messing the build directory
+						IPath trashFolder = res.getProject().getFullPath().append("build/.trash");
+						IPath trashPath = trashFolder.append(res.getName() + (_getUniqifier()));
+						checkDir(trashFolder, m);
+						res.move(trashPath, true, null);
+						/*
+						 * IPath newName = res.getLocation().removeLastSegments(1);
+						 * newName = newName.append(res.getName()+_getUniqifier());
+						 * File resFile = res.getLocation().toFile(); if
+						 * (!resFile.renameTo(newName.toFile())) { throw ce; }
+						 */
+					}
+				}
+				res.refreshLocal(IResource.DEPTH_ONE, m);
 			}
 			return res;
 		}
@@ -207,7 +218,7 @@ public class ResourceUtilities {
 		if (res.isTeamPrivateMember() || res.getName().equals(".svn"))
 			return;
 
-		IResource rdest = checkDestination(dest, m);
+		IResource rdest = checkDestination(dest, m, true);
 		res.copy(dest, true, null);
 		if (null != rdest) {
 			rdest.setDerived(true);
@@ -231,7 +242,11 @@ public class ResourceUtilities {
 
 		if (res instanceof IFolder) {
 			IResource[] members = ((IFolder) res).members();
-			IResource rdest = checkDerivedDestination(dest, m);
+			// MS: This is super goofy, but apparently Nonlocalized.lproj folders get fiddled with
+			// during the build and end up going to build/Whatever.framework/Resources directly,
+			// which makes the Resource folder get deleted, potentially tossing files you just built.
+			boolean deleteDestination = !res.getName().equals("Nonlocalized.lproj"); 
+			IResource rdest = checkDerivedDestination(dest, m, deleteDestination);
 
 			for (int i = 0; i < members.length; i++) {
 				IResource thisOne = members[i];
@@ -245,7 +260,7 @@ public class ResourceUtilities {
 			}
 		} else {
 			// it's a file, let's just copy it
-			IResource rdest = checkDestination(dest, m);
+			IResource rdest = checkDestination(dest, m, true);
 			res.copy(dest, true, m);
 			if (null != rdest) {
 				rdest.setDerived(true);

@@ -61,7 +61,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
+import org.objectstyle.wolips.baseforuiplugins.utils.WorkbenchUtilities;
 import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResource;
 
 /**
@@ -83,8 +83,8 @@ public class OpenSourceAction extends AbstractActionOnIResource {
 			}
 
 			List<IResource> list = new ArrayList<IResource>();
-			WorkbenchUtilitiesPlugin.findFilesInResourceByName(list, getIProject(), fileName + ".java");
-			WorkbenchUtilitiesPlugin.open(list);
+			WorkbenchUtilities.findFilesInResourceByName(list, getIProject(), fileName + ".java");
+			WorkbenchUtilities.open(list);
 		}
 	}
 

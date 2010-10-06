@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,14 +34,18 @@ public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGro
 
 			List<ManifestSearchFolder> searchFolders = getSearchFolders(modelGroupFile);
 			if (searchFolders != null) {
-				System.out.println(getClass().getSimpleName() + ", Searching: ");
-				for (ManifestSearchFolder searchFolder : searchFolders) {
+				LinkedHashSet<ManifestSearchFolder> uniqueSearchFolders = new LinkedHashSet<ManifestSearchFolder>(searchFolders);
+				boolean printedHeader = false;
+				for (ManifestSearchFolder searchFolder : uniqueSearchFolders) {
+					if (!printedHeader) {
+						System.out.println(getClass().getSimpleName() + ", Searching: ");
+						printedHeader = true;
+					}
 					System.out.println("  " + searchFolder);
 					modelGroup.loadModelsFromURL(searchFolder.getFolder().toURL(), searchFolder.getDepth(), failures, skipOnDuplicates, progressMonitor);
 				}
 			}
 			if (modelGroupFile != null && modelGroupFile.getName().endsWith(".eomodeld")) {
-				System.out.println("AbstractManifestEOModelGroupFactory.loadModelGroup: Searching " + modelGroupFile + " ...");
 				modelGroup.loadModelsFromURL(modelGroupFile.toURL(), 1, failures, skipOnDuplicates, progressMonitor);
 			}
 		} catch (IOException e) {
@@ -51,5 +56,5 @@ public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGro
 		return allModelsLoaded;
 	}
 
-	public abstract List<ManifestSearchFolder> getSearchFolders(File selectedModelFolder) throws IOException;
+	public abstract List<ManifestSearchFolder> getSearchFolders(File selectedModelFolder) throws IOException, EOModelException;
 }

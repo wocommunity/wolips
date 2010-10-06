@@ -62,7 +62,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 
 /**
  * @author ulrich
@@ -255,12 +254,12 @@ public class ComponentEngine extends AbstractEngine {
 		this.setPropertyForKey(encoding, "WOOEncoding");
 
 		setDateInContext();
-		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.html.vm", this.getComponentPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_HTML, IWOLipsModel.EXT_HTML, encoding));
-		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.wod.vm", this.getComponentPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_WOD, IWOLipsModel.EXT_WOD, encoding));
-		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.woo.vm", this.getComponentPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_WOO, IWOLipsModel.EXT_WOO, ENCODING_UTF8));
-		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.java.vm", this.getJavaPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_JAVA, IWOLipsModel.EXT_JAVA));
+		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.html.vm", this.getComponentPath().toOSString(), this.componentName + ".html", "html", encoding));
+		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.wod.vm", this.getComponentPath().toOSString(), this.componentName + ".wod", "wod", encoding));
+		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.woo.vm", this.getComponentPath().toOSString(), this.componentName + ".woo", "woo", ENCODING_UTF8));
+		this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.java.vm", this.getJavaPath().toOSString(), this.componentName + ".java", "java"));
 		if (this.createApiFile) {
-			this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.api.vm", this.getApiPath().toOSString(), this.componentName + "." + IWOLipsModel.EXT_API, IWOLipsModel.EXT_API));
+			this.addTemplate(new TemplateDefinition("wocomponent/wocomponent.api.vm", this.getApiPath().toOSString(), this.componentName + ".api", "api"));
 		}
 		try {
 			super.run(monitor);

@@ -7,10 +7,10 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
-import org.objectstyle.wolips.bindings.Activator;
 import org.objectstyle.wolips.bindings.wod.IWodBinding;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.SimpleWodBinding;
+import org.objectstyle.wolips.variables.BuildProperties;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 
 public class RefactoringWodBinding {
@@ -47,7 +47,7 @@ public class RefactoringWodBinding {
     return _changeValue(null, value);
   }
 
-  public static String toBindingValue(boolean inline, boolean wo54, String value) {
+  public static String toBindingValue(boolean inline, String inlineBindingPrefix, String inlineBindingSuffix, String value) {
     String newValue = value;
     newValue = newValue.trim();
 
@@ -66,11 +66,8 @@ public class RefactoringWodBinding {
       if (newValue.startsWith("\"")) {
         newValue = newValue.substring(1, newValue.length() - 1);
       }
-      else if (!wo54 && !newValue.startsWith("$")) {
-        newValue = "$" + value;
-      }
-      else if (wo54 && !newValue.startsWith("[")) {
-        newValue = "[" + value + "]";
+      else if (!newValue.startsWith(inlineBindingPrefix)) {
+    	  newValue = inlineBindingPrefix + value + inlineBindingSuffix;
       }
     }
     
@@ -80,7 +77,8 @@ public class RefactoringWodBinding {
   public String _changeValue(String oldValue, String value) throws CoreException, InvocationTargetException, InterruptedException {
     String newValue = value;
     if (!ComparisonUtils.equals(oldValue, newValue, true)) {
-      newValue = RefactoringWodBinding.toBindingValue(_wodElement.isInline(), Activator.getDefault().isWO54(_cache.getProject()), newValue);
+      BuildProperties buildProperties = (BuildProperties)_cache.getProject().getAdapter(BuildProperties.class);
+      newValue = RefactoringWodBinding.toBindingValue(_wodElement.isInline(), buildProperties.getInlineBindingPrefix(), buildProperties.getInlineBindingSuffix(), newValue);
       ChangeBindingValueRefactoring.run(newValue, _wodElement, _wodBinding, _cache, new NullProgressMonitor());
       _wodBinding.setValue(newValue);
     }

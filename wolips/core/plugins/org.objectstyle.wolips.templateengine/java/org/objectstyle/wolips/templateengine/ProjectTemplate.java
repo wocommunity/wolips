@@ -17,9 +17,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.baseforplugins.util.FileUtilities;
 import org.objectstyle.wolips.baseforplugins.util.URLUtils;
-import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapter;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
-import org.objectstyle.wolips.datasets.adaptable.ProjectPatternsets;
+import org.objectstyle.wolips.core.resources.internal.types.project.ProjectPatternsets;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 import org.objectstyle.wolips.variables.BuildProperties;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -299,7 +298,7 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 					else {
 						String templatePath = templateChild.getAbsolutePath();
 						templatePath = templatePath.substring(baseFolder.getAbsolutePath().length());
-						templateEngine.addTemplate(new TemplateDefinition(templatePath, destinationFile.getParentFile().getAbsolutePath(), destinationFile.getName(), destinationFile.getName()));
+						templateEngine.addTemplate(new TemplateDefinition(templatePath, destinationFile.getParentFile().getAbsolutePath(), destinationFile.getName(), destinationFile.getName(), "UTF-8"));
 					}
 				}
 			}
@@ -330,7 +329,7 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 		}
 		if (project != null) {
 			String templatesFolderName = "Templates";
-			ProjectAdapter projectAdapter = (ProjectAdapter) project.getProject().getAdapter(IProjectAdapter.class);
+			ProjectAdapter projectAdapter = (ProjectAdapter) project.getProject().getAdapter(ProjectAdapter.class);
 			if (projectAdapter != null) {
 				BuildProperties buildProperties = projectAdapter.getBuildProperties();
 				if (buildProperties != null) {

@@ -55,23 +55,29 @@
  */
 package org.objectstyle.woenvironment.frameworks;
 
-
-
 public abstract class Framework implements IFramework {
-	private Root root;
+	private Root<?> root;
 
 	private String name;
 
-	public Framework(Root root, String name) {
+	public Framework(Root<?> root, String name) {
 		this.root = root;
 		this.name = name;
 	}
+	
+	public Version getVersion() {
+		return IFramework.Utility.getInfoPListVersion(getInfoPlist());
+	}
 
+	protected void setName(String name) {
+		this.name = name;
+	}
+	
 	public String getName() {
 		return this.name;
 	}
 
-	public Root getRoot() {
+	public Root<?> getRoot() {
 		return this.root;
 	}
 

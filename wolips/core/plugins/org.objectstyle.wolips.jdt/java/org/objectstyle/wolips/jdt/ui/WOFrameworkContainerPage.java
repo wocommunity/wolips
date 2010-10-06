@@ -78,6 +78,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.jdt.JdtPlugin;
+import org.objectstyle.wolips.jdt.ProjectFrameworkAdapter;
 import org.objectstyle.wolips.jdt.classpath.WOFrameworkClasspathContainer;
 import org.objectstyle.wolips.jdt.classpath.model.IEclipseFramework;
 
@@ -159,14 +160,12 @@ public class WOFrameworkContainerPage extends WizardPage implements IClasspathCo
 				namedFrameworksMap.put(framework.getName(), framework);
 			}
 
-			for (IClasspathEntry classpathEntry : currentEntries) {
-				WOFrameworkClasspathContainer frameworkContainer = WOFrameworkClasspathContainer.getFrameworkClasspathContainer(_project, classpathEntry);
-				if (frameworkContainer != null) {
-					IEclipseFramework framework = frameworkContainer.getFramework();
-					IEclipseFramework localFramework = namedFrameworksMap.get(framework.getName());
-					if (localFramework != null) {
-						_usedFrameworks.add(localFramework);
-					}
+			ProjectFrameworkAdapter frameworkAdapter = (ProjectFrameworkAdapter)_project.getProject().getAdapter(ProjectFrameworkAdapter.class);
+			Set<String> linkedFrameworkNames = frameworkAdapter.getLinkedFrameworkNames();
+			for (String linkedFrameworkName : linkedFrameworkNames) {
+				IEclipseFramework localFramework = namedFrameworksMap.get(linkedFrameworkName);
+				if (localFramework != null) {
+					_usedFrameworks.add(localFramework);
 				}
 			}
 		} catch (Throwable t) {

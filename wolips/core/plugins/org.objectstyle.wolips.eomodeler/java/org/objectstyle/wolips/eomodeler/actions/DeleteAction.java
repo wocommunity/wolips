@@ -54,16 +54,9 @@ import java.util.Set;
 
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IOperationHistory;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.Messages;
@@ -72,42 +65,24 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelReferenceFailure;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
 
-public class DeleteAction extends Action implements IObjectActionDelegate {
-	private ISelection mySelection;
-
-	public void dispose() {
-		// DO NOTHING
-	}
-
-	public void selectionChanged(IAction _action, ISelection _selection) {
-		mySelection = _selection;
-	}
-
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		// DO NOTHING
-	}
-
+public class DeleteAction extends EMAction {
 	public void run() {
-		Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		Object[] selectedObjects = null;
-		if (mySelection instanceof IStructuredSelection) {
-			selectedObjects = ((IStructuredSelection) mySelection).toArray();
-		}
+		Object[] selectedObjects = getSelectedObjects();
 		if (selectedObjects != null) {
 			try {
+				Shell activeShell = getWindow().getShell();
 				Set<EOModelReferenceFailure> referenceFailures = EOModelUtils.getReferenceFailures(selectedObjects);
 				boolean delete = false;
 				if (referenceFailures.isEmpty()) {
 					delete = MessageDialog.openConfirm(activeShell, Messages.getString("delete.objectsTitle"), Messages.getString("delete.objectsMessage"));
-				}
-				else {
+				} else {
 					int results = new EOModelErrorDialog(activeShell, referenceFailures, true).open();
 					if (results == EOModelErrorDialog.DELETE_ANYWAY_ID) {
 						delete = MessageDialog.openConfirm(activeShell, Messages.getString("deleteAnyway.objectsTitle"), Messages.getString("deleteAnyway.objectsMessage"));
 						if (delete) {
 							Set<EOModelObject> recommendedDeletions = EOModelUtils.getRecommendedDeletions(selectedObjects);
 							selectedObjects = recommendedDeletions.toArray();
-							
+
 							Set<EOModelReferenceFailure> deleteAnywayReferenceFailures = EOModelUtils.getReferenceFailures(selectedObjects);
 							if (!deleteAnywayReferenceFailures.isEmpty()) {
 								delete = false;
@@ -116,7 +91,7 @@ public class DeleteAction extends Action implements IObjectActionDelegate {
 						}
 					}
 				}
-				
+
 				if (delete) {
 					try {
 						SimpleCompositeOperation compositeOperation = new SimpleCompositeOperation(EOModelUtils.getOperationLabel("Delete", Arrays.asList(selectedObjects)));
@@ -138,13 +113,5 @@ public class DeleteAction extends Action implements IObjectActionDelegate {
 				ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), t);
 			}
 		}
-	}
-
-	public void runWithEvent(Event _event) {
-		run();
-	}
-
-	public void run(IAction _action) {
-		run();
 	}
 }

@@ -50,8 +50,8 @@ import org.eclipse.ui.IEditorLauncher;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.baseforuiplugins.utils.WorkbenchUtilities;
 import org.objectstyle.wolips.editors.EditorsPlugin;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
  * @author uli
@@ -74,14 +74,14 @@ public class SystemEditorLauncher implements IEditorLauncher {
 	 */
 	public void open(IFile file) {
 		try {
-			WorkbenchUtilitiesPlugin.getActivePage().openEditor(new FileEditorInput(file), IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID);
+			WorkbenchUtilities.getActivePage().openEditor(new FileEditorInput(file), IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID);
 		} catch (PartInitException e) {
 			EditorsPlugin.getDefault().log(e);
 		}
 	}
 
 	public void open(IPath file) {
-		IFile input = WorkbenchUtilitiesPlugin.getWorkspace().getRoot().getFileForLocation(file);
+		IFile input = WorkbenchUtilities.getWorkspace().getRoot().getFileForLocation(file);
 		this.open(input);
 	}
 }

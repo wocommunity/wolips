@@ -53,6 +53,10 @@ public class EODatabaseConfig extends EOModelObject<EOModel> {
 	public static final String SCOPE = "scope";
 
 	public static final String TIMEOUT = "timeout";
+	
+	public static final String PRIORITY = "priority";
+	
+	public static final String DEPLOYMENT_PROFILE = "deploymentProfile";
 
 	private EOModel myModel;
 
@@ -229,6 +233,17 @@ public class EODatabaseConfig extends EOModelObject<EOModel> {
 		}
 		EOEntity newPrototype = getPrototype();
 		firePropertyChange(EODatabaseConfig.PROTOTYPE, oldPrototype, newPrototype);
+
+		if (newPrototype != null) {
+			Map<String, Object> exampleConnectionDictionary = (Map<String, Object>)newPrototype.getUserInfo().get("exampleConnectionDictionary");
+			if (exampleConnectionDictionary != null) {
+				for (Map.Entry<String, Object> entry : exampleConnectionDictionary.entrySet()) {
+					Object oldValue = getConnectionDictionary().get(entry.getKey());
+					getConnectionDictionary().put(entry.getKey(), entry.getValue());
+					firePropertyChange(entry.getKey(), oldValue, entry.getValue());
+				}
+			}
+		}
 	}
 
 	public void setUsername(String _userName) {
@@ -325,6 +340,22 @@ public class EODatabaseConfig extends EOModelObject<EOModel> {
 
 	public String getScope() {
 		return (String) getConnectionDictionary().get(EODatabaseConfig.SCOPE);
+	}
+
+	public void setPriority(Integer priority) {
+		getConnectionDictionary().put(EODatabaseConfig.PRIORITY, priority);
+	}
+
+	public Integer getPriority() {
+		return (Integer) getConnectionDictionary().get(EODatabaseConfig.PRIORITY);
+	}
+
+	public void setDeploymentProfile(String deploymentProfile) {
+		getConnectionDictionary().put(EODatabaseConfig.DEPLOYMENT_PROFILE, deploymentProfile);
+	}
+
+	public String getDeploymentProfile() {
+		return (String) getConnectionDictionary().get(EODatabaseConfig.DEPLOYMENT_PROFILE);
 	}
 
 	public void setConnectionDictionary(Map<Object, Object> _connectionDictionary) {

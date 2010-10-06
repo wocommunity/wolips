@@ -11,6 +11,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.objectstyle.wolips.jdt.JdtPlugin;
 import org.objectstyle.wolips.jdt.classpath.model.IEclipseFramework;
 
 /**
@@ -22,6 +23,8 @@ public class WOFrameworkClasspathContainer implements IClasspathContainer {
 	private IEclipseFramework framework;
 
 	private Map<String, String> params;
+	
+	private String _name;
 
 	public WOFrameworkClasspathContainer(IEclipseFramework framework) {
 		this(framework, new HashMap<String, String>());
@@ -41,7 +44,10 @@ public class WOFrameworkClasspathContainer implements IClasspathContainer {
 	}
 
 	public String getDescription() {
-		return getFramework().getName() + " Framework";
+		if (_name == null) {
+			_name = getFramework().getName() + " Framework";
+		}
+		return _name;
 	}
 
 	public int getKind() {
@@ -61,11 +67,16 @@ public class WOFrameworkClasspathContainer implements IClasspathContainer {
 		return classpathEntries.toArray(new IClasspathEntry[classpathEntries.size()]);
 	}
 
-	public static WOFrameworkClasspathContainer getFrameworkClasspathContainer(IJavaProject project, IClasspathEntry classpathEntry) throws JavaModelException {
+	public static WOFrameworkClasspathContainer getFrameworkClasspathContainer(IJavaProject project, IClasspathEntry classpathEntry) {
 		WOFrameworkClasspathContainer frameworkContainer = null;
-		IClasspathContainer container = JavaCore.getClasspathContainer(classpathEntry.getPath(), project);
-		if (container instanceof WOFrameworkClasspathContainer) {
-			frameworkContainer = (WOFrameworkClasspathContainer) container;
+		try {
+			IClasspathContainer container = JavaCore.getClasspathContainer(classpathEntry.getPath(), project);
+			if (container instanceof WOFrameworkClasspathContainer) {
+				frameworkContainer = (WOFrameworkClasspathContainer) container;
+			}
+		}
+		catch (Exception e) {
+			JdtPlugin.getDefault().getPluginLogger().debug(e);
 		}
 		return frameworkContainer;
 	}

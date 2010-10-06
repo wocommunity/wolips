@@ -1,6 +1,8 @@
 package org.objectstyle.wolips.templateeditor;
 
-import org.eclipse.core.resources.ResourcesPlugin;
+import jp.aonir.fuzzyxml.FuzzyXMLDocument;
+import jp.aonir.fuzzyxml.FuzzyXMLElement;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.content.IContentDescriber;
@@ -37,8 +39,10 @@ import org.objectstyle.wolips.components.editor.IHtmlDocumentProvider;
 import org.objectstyle.wolips.components.editor.IWebobjectTagListener;
 import org.objectstyle.wolips.editors.contentdescriber.ContentDescriberWO;
 import org.objectstyle.wolips.locate.LocateException;
+import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.document.ITextWOEditor;
+import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 import tk.eclipse.plugin.htmleditor.HTMLPlugin;
 import tk.eclipse.plugin.htmleditor.editors.HTMLConfiguration;
@@ -80,14 +84,17 @@ public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtml
   @Override
   public void createPartControl(Composite parent) {
     super.createPartControl(parent);
+    /*
     TemplateTripleClickAdapter tripleClickAdapter = new TemplateTripleClickAdapter(this);
     getSourceEditor().getViewer().getTextWidget().addMouseListener(tripleClickAdapter);
     getSourceEditor().getViewer().getTextWidget().addMouseMoveListener(tripleClickAdapter);
+    */
   }
 
   @Override
   public void setInput(IEditorInput input) {
     super.setInput(input);
+    updateValidation();
   }
 
   public TemplateSourceEditor getSourceEditor() {
@@ -137,12 +144,21 @@ public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtml
   public void doSave(IProgressMonitor monitor) {
     if (_editorInteraction == null || _editorInteraction.embeddedEditorWillSave(monitor)) {
       super.doSave(monitor);
-      boolean autoBuild = ResourcesPlugin.getPlugin().getPluginPreferences().getDefaultBoolean(ResourcesPlugin.PREF_AUTO_BUILDING);
+    	updateValidation();
       if (_editorInteraction != null) {
         _editorInteraction.fireWebObjectChanged();
       }
     }
   }
+  
+	protected void updateValidation() {
+		try {
+			getParserCache().scheduleValidate(true, true);
+		}
+		catch (Throwable e) {
+			Activator.getDefault().log(e);
+		}
+	}
 
   public void webObjectChanged() {
     getSourceEditor().getTemplateOutlinePage().update();
@@ -200,6 +216,7 @@ public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtml
   }
 
   public void doRevertToSaved() {
+  	updateValidation();
     getSourceEditor().doRevertToSaved();
   }
 
@@ -325,5 +342,29 @@ public class TemplateEditor extends HTMLEditor implements IEmbeddedEditor, IHtml
 
   public void saveState(IMemento memento) {
     getSourceEditor().saveState(memento);
+  }
+  
+  public void selectionChangedToOffset(int offset) {
+    TemplateSourceEditor sourceEditor = getSourceEditor();
+    if (sourceEditor != null) {
+    	try {
+	    	FuzzyXMLDocument xmlDocument = sourceEditor.getHtmlXmlDocument(true);
+	      if (xmlDocument != null) {
+	        FuzzyXMLElement selectedElement = xmlDocument.getElementByOffset(offset);
+	        if (selectedElement != null) {
+	          String tagName = selectedElement.getName();
+	          if (WodHtmlUtils.isWOTag(tagName)) {
+	            String woElementName = selectedElement.getAttributeValue("name");
+	            if (woElementName != null && woElementName.length() > 0) {
+	              _editorInteraction.fireWebObjectTagSelected(woElementName);
+	            }
+	          }
+	        }
+	      }
+      }
+    	catch (Throwable t) {
+    		t.printStackTrace();
+    	}
+    }
   }
 }

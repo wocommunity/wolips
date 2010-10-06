@@ -85,6 +85,8 @@ public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implem
 
 	private boolean _storedProcedureDirty;
 	
+	private EOLastModified _lastModified;
+	
 	public EOStoredProcedure() {
 		myStoredProcedureMap = new EOModelMap();
 		myArguments = new LinkedList<EOArgument>();
@@ -315,22 +317,30 @@ public class EOStoredProcedure extends UserInfoableEOModelObject<EOModel> implem
 		return fetchSpecMap;
 	}
 
-	public void loadFromURL(URL _storedProcedureURL, Set<EOModelVerificationFailure> _failures) throws EOModelException {
+	public void checkLastModified(Set<EOLastModified> lastModified) {
+		if (_lastModified != null && _lastModified.hasBeenModified()) {
+			lastModified.add(_lastModified);
+		}
+	}
+	
+	public void loadFromURL(URL storedProcedureURL, Set<EOModelVerificationFailure> failures) throws EOModelException {
 		try {
-			EOModelMap entityMap = new EOModelMap((Map) WOLPropertyListSerialization.propertyListFromURL(_storedProcedureURL, new EOModelParserDataStructureFactory()));
-			loadFromMap(entityMap, _failures);
+			_lastModified = new EOLastModified(storedProcedureURL);
+			EOModelMap entityMap = new EOModelMap((Map) WOLPropertyListSerialization.propertyListFromURL(storedProcedureURL, new EOModelParserDataStructureFactory()));
+			loadFromMap(entityMap, failures);
 			setStoredProcedureDirty(false);
 		} catch (Throwable e) {
-			throw new EOModelException("Failed to load stored procedure from '" + _storedProcedureURL + "'.", e);
+			throw new EOModelException("Failed to load stored procedure from '" + storedProcedureURL + "'.", e);
 		}
 	}
 
-	public void saveToFile(File _storedProcedureFile) throws PropertyListParserException, IOException {
+	public void saveToFile(File storedProcedureFile) throws PropertyListParserException, IOException {
 		EOModelMap storedProcedureMap = toMap();
-		WOLPropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, _storedProcedureFile, storedProcedureMap);
+		WOLPropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, storedProcedureFile, storedProcedureMap);
 		setStoredProcedureDirty(false);
+		_lastModified = new EOLastModified(storedProcedureFile);
 	}
-
+	
 	public void resolve(Set<EOModelVerificationFailure> _failures) {
 		for (EOArgument argument : myArguments) {
 			argument.resolve(_failures);

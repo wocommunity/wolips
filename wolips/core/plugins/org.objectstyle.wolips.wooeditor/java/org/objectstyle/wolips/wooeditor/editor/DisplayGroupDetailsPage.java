@@ -106,11 +106,11 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 	private Text myNameText;
 
 	private Combo myClassNameCombo;
-	
+
 	private Spinner myEntriesPerBatchSpinner;
 
 	private Combo myEntityCombo;
-	
+
 	private Text myEditingContextText;
 
 	private Combo myMasterEntityCombo;
@@ -128,7 +128,7 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 	private Button myFetchOnLoadButton;
 
 	private Button mySelectsFirstObjectButton;
-	
+
 	private RadioGroup mySortRadioGroup;
 
 	private DataBindingContext myBindingContext;
@@ -181,124 +181,78 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 		}
 		myBindingContext = new DataBindingContext();
 
-		myBindingContext.bindValue(SWTObservables.observeText(myNameText,
-				SWT.Modify), BeansObservables.observeValue(myDisplayGroup,
-				DisplayGroup.NAME), null, null);
-
-    myBindingContext.bindList(SWTObservables.observeItems(myClassNameCombo),
-        BeansObservables.observeList(Realm.getDefault(),
-            myDisplayGroup, DisplayGroup.CLASS_NAME_LIST), null, null);
-    myBindingContext.bindValue(SWTObservables
-        .observeSingleSelectionIndex(myClassNameCombo),
-        BeansObservables.observeValue(myDisplayGroup,
-            DisplayGroup.CLASS_NAME_INDEX), null, null);
-		
-		myBindingContext.bindList(SWTObservables.observeItems(myEntityCombo),
-				BeansObservables.observeList(Realm.getDefault(),
-						myDisplayGroup, DisplayGroup.ENTITY_LIST), null, null);
 		myBindingContext
-				.bindValue(SWTObservables.observeEnabled(myMasterDetailGroup),
-						BeansObservables.observeValue(myDisplayGroup,
-								DisplayGroup.HAS_MASTER_DETAIL),
-						new UpdateValueStrategy(
-								UpdateValueStrategy.POLICY_NEVER), null);
+		    .bindValue(SWTObservables.observeText(myNameText, SWT.Modify), BeansObservables.observeValue(myDisplayGroup, DisplayGroup.NAME), null, null);
 
-		UpdateValueStrategy booleanInverse = new UpdateValueStrategy(
-				UpdateValueStrategy.POLICY_UPDATE) {
+		myBindingContext.bindList(SWTObservables.observeItems(myClassNameCombo), BeansObservables.observeList(Realm.getDefault(), myDisplayGroup,
+		    DisplayGroup.CLASS_NAME_LIST), null, null);
+		myBindingContext.bindValue(SWTObservables.observeSingleSelectionIndex(myClassNameCombo), BeansObservables.observeValue(myDisplayGroup,
+		    DisplayGroup.CLASS_NAME_INDEX), null, null);
+
+		myBindingContext.bindList(SWTObservables.observeItems(myEntityCombo), BeansObservables.observeList(Realm.getDefault(), myDisplayGroup,
+		    DisplayGroup.ENTITY_LIST), null, null);
+		myBindingContext.bindValue(SWTObservables.observeEnabled(myMasterDetailGroup), BeansObservables
+		    .observeValue(myDisplayGroup, DisplayGroup.HAS_MASTER_DETAIL), new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), null);
+
+		UpdateValueStrategy booleanInverse = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE) {
 			@Override
-			protected IStatus doSet(final IObservableValue observableValue,
-					final Object value) {
+			protected IStatus doSet(final IObservableValue observableValue, final Object value) {
 				Boolean newValue = !(Boolean) value;
 				return super.doSet(observableValue, newValue);
 			}
 		};
 
-		myBindingContext.bindValue(
-				SWTObservables.observeEnabled(myEntityCombo), BeansObservables
-						.observeValue(myDisplayGroup,
-								DisplayGroup.HAS_MASTER_DETAIL),
-				new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), 
-				booleanInverse);
-		myBindingContext.bindValue(CustomSWTObservables
-				.observeText(myEntityCombo), BeansObservables.observeValue(
-				myDisplayGroup, DisplayGroup.ENTITY_NAME), null, null);
+		myBindingContext.bindValue(SWTObservables.observeEnabled(myEntityCombo), BeansObservables.observeValue(myDisplayGroup, DisplayGroup.HAS_MASTER_DETAIL),
+		    new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), booleanInverse);
+		myBindingContext.bindValue(CustomSWTObservables.observeText(myEntityCombo), BeansObservables.observeValue(myDisplayGroup, DisplayGroup.ENTITY_NAME), null,
+		    null);
 
-		myBindingContext.bindValue(
-				SWTObservables.observeEnabled(myEditingContextText), BeansObservables
-						.observeValue(myDisplayGroup,
-								DisplayGroup.HAS_MASTER_DETAIL),
-				new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), booleanInverse);
-		myBindingContext.bindValue(SWTObservables
-				.observeText(myEditingContextText, SWT.Modify), BeansObservables.observeValue(
-				myDisplayGroup, DisplayGroup.EDITING_CONTEXT), null, null);
-		
-		myBindingContext.bindValue(SWTObservables
-				.observeSelection(myHasDetailButton), BeansObservables
-				.observeValue(myDisplayGroup, DisplayGroup.HAS_MASTER_DETAIL),
-				null, null);
+		myBindingContext.bindValue(SWTObservables.observeEnabled(myEditingContextText), BeansObservables.observeValue(myDisplayGroup,
+		    DisplayGroup.HAS_MASTER_DETAIL), new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), booleanInverse);
+		myBindingContext.bindValue(SWTObservables.observeText(myEditingContextText, SWT.Modify), BeansObservables.observeValue(myDisplayGroup,
+		    DisplayGroup.EDITING_CONTEXT), null, null);
 
-		myBindingContext.bindList(SWTObservables
-				.observeItems(myMasterEntityCombo), BeansObservables
-				.observeList(Realm.getDefault(), myDisplayGroup,
-						DisplayGroup.ENTITY_LIST), null, null);
-		myBindingContext.bindValue(CustomSWTObservables
-				.observeText(myMasterEntityCombo), BeansObservables
-				.observeValue(myDisplayGroup, DisplayGroup.MASTER_ENTITY_NAME),
-				null, null);
+		myBindingContext.bindValue(SWTObservables.observeSelection(myHasDetailButton), BeansObservables
+		    .observeValue(myDisplayGroup, DisplayGroup.HAS_MASTER_DETAIL), null, null);
 
-		myBindingContext.bindList(
-				SWTObservables.observeItems(myDetailKeyCombo), BeansObservables
-						.observeList(Realm.getDefault(), myDisplayGroup,
-								DisplayGroup.DETAIL_KEY_LIST), null, null);
+		myBindingContext.bindList(SWTObservables.observeItems(myMasterEntityCombo), BeansObservables.observeList(Realm.getDefault(), myDisplayGroup,
+		    DisplayGroup.ENTITY_LIST), null, null);
+		myBindingContext.bindValue(CustomSWTObservables.observeText(myMasterEntityCombo), BeansObservables.observeValue(myDisplayGroup,
+		    DisplayGroup.MASTER_ENTITY_NAME), null, null);
 
-		myBindingContext.bindValue(CustomSWTObservables
-				.observeText(myDetailKeyCombo), BeansObservables.observeValue(
-				myDisplayGroup, DisplayGroup.DETAIL_KEY_NAME), null, null);
+		myBindingContext.bindList(SWTObservables.observeItems(myDetailKeyCombo), BeansObservables.observeList(Realm.getDefault(), myDisplayGroup,
+		    DisplayGroup.DETAIL_KEY_LIST), null, null);
 
-		myBindingContext.bindValue(SWTObservables
-				.observeSelection(myEntriesPerBatchSpinner), BeansObservables
-				.observeValue(myDisplayGroup, DisplayGroup.ENTRIES_PER_BATCH),
-				null, null);
+		myBindingContext.bindValue(CustomSWTObservables.observeText(myDetailKeyCombo), BeansObservables.observeValue(myDisplayGroup, DisplayGroup.DETAIL_KEY_NAME),
+		    null, null);
 
-		myBindingContext.bindValue(SWTObservables
-				.observeSelection(mySelectsFirstObjectButton), BeansObservables
-				.observeValue(myDisplayGroup, DisplayGroup.SELECTS_FIRST_OBJECT),
-				null, null);
-		
-		myBindingContext.bindList(SWTObservables
-				.observeItems(myQualificationCombo), BeansObservables
-				.observeList(Realm.getDefault(), myDisplayGroup,
-						DisplayGroup.QUALIFICATION_LIST), null, null);
-		myBindingContext.bindValue(SWTObservables
-				.observeSingleSelectionIndex(myQualificationCombo),
-				BeansObservables.observeValue(myDisplayGroup,
-						DisplayGroup.QUALIFICATION_INDEX), null, null);
+		myBindingContext.bindValue(SWTObservables.observeSelection(myEntriesPerBatchSpinner), BeansObservables.observeValue(myDisplayGroup,
+		    DisplayGroup.ENTRIES_PER_BATCH), null, null);
 
-		myBindingContext.bindValue(SWTObservables
-				.observeSelection(myFetchOnLoadButton), BeansObservables
-				.observeValue(myDisplayGroup, DisplayGroup.FETCHES_ON_LOAD),
-				null, null);
+		myBindingContext.bindValue(SWTObservables.observeSelection(mySelectsFirstObjectButton), BeansObservables.observeValue(myDisplayGroup,
+		    DisplayGroup.SELECTS_FIRST_OBJECT), null, null);
 
-		myBindingContext.bindList(SWTObservables
-				.observeItems(mySortAttributeCombo), BeansObservables
-				.observeList(Realm.getDefault(), myDisplayGroup,
-						DisplayGroup.SORT_LIST), null, null);
+		myBindingContext.bindList(SWTObservables.observeItems(myQualificationCombo), BeansObservables.observeList(Realm.getDefault(), myDisplayGroup,
+		    DisplayGroup.QUALIFICATION_LIST), null, null);
+		myBindingContext.bindValue(SWTObservables.observeSingleSelectionIndex(myQualificationCombo), BeansObservables.observeValue(myDisplayGroup,
+		    DisplayGroup.QUALIFICATION_INDEX), null, null);
 
-		myBindingContext.bindValue(CustomSWTObservables
-				.observeSelection(mySortAttributeCombo), BeansObservables
-				.observeValue(myDisplayGroup, DisplayGroup.SORT_ORDER_KEY),
-				null, null);
+		myBindingContext.bindValue(SWTObservables.observeSelection(myFetchOnLoadButton), BeansObservables
+		    .observeValue(myDisplayGroup, DisplayGroup.FETCHES_ON_LOAD), null, null);
 
-		myBindingContext.bindValue(CustomSWTObservables
-				.observeSelection(mySortRadioGroup), BeansObservables
-				.observeValue(myDisplayGroup, DisplayGroup.SORT_ORDER), null,
-				null);
+		myBindingContext.bindList(SWTObservables.observeItems(mySortAttributeCombo), BeansObservables.observeList(Realm.getDefault(), myDisplayGroup,
+		    DisplayGroup.SORT_LIST), null, null);
+
+		myBindingContext.bindValue(CustomSWTObservables.observeSelection(mySortAttributeCombo), BeansObservables.observeValue(myDisplayGroup,
+		    DisplayGroup.SORT_ORDER_KEY), null, null);
+
+		myBindingContext.bindValue(CustomSWTObservables.observeSelection(mySortRadioGroup), BeansObservables.observeValue(myDisplayGroup, DisplayGroup.SORT_ORDER),
+		    null, null);
 
 		UpdateValueStrategy fetchSpecEmpty = new UpdateValueStrategy();
 		fetchSpecEmpty.setConverter(new IConverter() {
 			public Object convert(final Object fromObject) {
-				boolean result = fromObject != null
-						&& ((List<?>) fromObject).size() > 0;
+				boolean result = fromObject != null && ((List<?>) fromObject).size() > 0;
 				if (!myHasDetailButton.getSelection()) {
 					return result;
 				}
@@ -314,11 +268,9 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 			}
 		});
 
-		UpdateValueStrategy fetchSpecEnabled = new UpdateValueStrategy(
-				UpdateValueStrategy.POLICY_UPDATE) {
+		UpdateValueStrategy fetchSpecEnabled = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE) {
 			@Override
-			protected IStatus doSet(final IObservableValue observableValue,
-					final Object value) {
+			protected IStatus doSet(final IObservableValue observableValue, final Object value) {
 				Boolean newValue = false;
 				if (myFetchSpecCombo.getItemCount() > 0) {
 					newValue = !(Boolean) value;
@@ -326,37 +278,26 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 				return super.doSet(observableValue, newValue);
 			}
 		};
-		myBindingContext.bindValue(SWTObservables
-				.observeEnabled(myFetchSpecCombo), BeansObservables
-				.observeValue(myDisplayGroup, DisplayGroup.HAS_MASTER_DETAIL),
-				new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER),
-				fetchSpecEnabled);
+		myBindingContext.bindValue(SWTObservables.observeEnabled(myFetchSpecCombo), BeansObservables.observeValue(myDisplayGroup, DisplayGroup.HAS_MASTER_DETAIL),
+		    new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), fetchSpecEnabled);
 
-		myBindingContext.bindValue(SWTObservables
-				.observeEnabled(myFetchSpecCombo), BeansObservables
-				.observeValue(myDisplayGroup, DisplayGroup.FETCH_SPEC_LIST),
-				new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER),
-				fetchSpecEmpty);
+		myBindingContext.bindValue(SWTObservables.observeEnabled(myFetchSpecCombo), BeansObservables.observeValue(myDisplayGroup, DisplayGroup.FETCH_SPEC_LIST),
+		    new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), fetchSpecEmpty);
 
-		myBindingContext.bindList(
-				SWTObservables.observeItems(myFetchSpecCombo), BeansObservables
-						.observeList(Realm.getDefault(), myDisplayGroup,
-								DisplayGroup.FETCH_SPEC_LIST), null, null);
+		myBindingContext.bindList(SWTObservables.observeItems(myFetchSpecCombo), BeansObservables.observeList(Realm.getDefault(), myDisplayGroup,
+		    DisplayGroup.FETCH_SPEC_LIST), null, null);
 
 		UpdateValueStrategy fetchSpecSelection = new UpdateValueStrategy() {
 			@Override
-			protected IStatus doSet(IObservableValue observableValue,
-					Object value) {
+			protected IStatus doSet(IObservableValue observableValue, Object value) {
 				if (value == null || value.equals("")) {
 					value = DisplayGroup.FETCH_SPEC_NONE;
 				}
 				return super.doSet(observableValue, value);
 			}
 		};
-		myBindingContext.bindValue(CustomSWTObservables
-				.observeSelection(myFetchSpecCombo), BeansObservables
-				.observeValue(myDisplayGroup, DisplayGroup.FETCH_SPEC_NAME),
-				null, fetchSpecSelection);
+		myBindingContext.bindValue(CustomSWTObservables.observeSelection(myFetchSpecCombo), BeansObservables.observeValue(myDisplayGroup,
+		    DisplayGroup.FETCH_SPEC_NAME), null, fetchSpecSelection);
 
 		myEntityCombo.addModifyListener(myEntityModifyListener);
 		myMasterEntityCombo.addModifyListener(myMasterEntityListener);
@@ -380,21 +321,17 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 
 		// Create form for layout
 		FormToolkit form = myManagedForm.getToolkit();
-		Section displayGroupSection = form.createSection(parent,
-				Section.TITLE_BAR);
+		Section displayGroupSection = form.createSection(parent, Section.TITLE_BAR);
 		displayGroupSection.marginWidth = 10;
 		displayGroupSection.setText("Display Group Details");
-		displayGroupSection.setDescription("Set the properties of the "
-				+ "selected display group.");
+		displayGroupSection.setDescription("Set the properties of the " + "selected display group.");
 
-		TableWrapData tableWrapData = new TableWrapData(TableWrapData.FILL,
-				TableWrapData.TOP);
+		TableWrapData tableWrapData = new TableWrapData(TableWrapData.FILL, TableWrapData.TOP);
 		tableWrapData.grabHorizontal = true;
 		displayGroupSection.setLayoutData(tableWrapData);
 
-		//form.createCompositeSeparator(displayGroupSection);
-		Composite displayGroupComposite = form
-				.createComposite(displayGroupSection);
+		// form.createCompositeSeparator(displayGroupSection);
+		Composite displayGroupComposite = form.createComposite(displayGroupSection);
 
 		GridLayout displayGroupLayout = new GridLayout();
 		displayGroupLayout.marginWidth = 0;
@@ -405,60 +342,51 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 		// Name
 		form.createLabel(displayGroupComposite, "Name:");
 		myNameText = form.createText(displayGroupComposite, "", SWT.SINGLE);
-		GridData nameFieldLayoutData = new GridData(SWT.FILL, SWT.FILL, true,
-				false);
+		GridData nameFieldLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		myNameText.setLayoutData(nameFieldLayoutData);
 
-    // Class Name
-    form.createLabel(displayGroupComposite, "Class Type:");
-    myClassNameCombo = new Combo(displayGroupComposite, SWT.POP_UP);
-    GridData classNameFieldLayoutData = new GridData(SWT.FILL, SWT.FILL, true,
-        false);
-    myNameText.setLayoutData(classNameFieldLayoutData);
+		// Class Name
+		form.createLabel(displayGroupComposite, "Class Type:");
+		myClassNameCombo = new Combo(displayGroupComposite, SWT.POP_UP);
+		GridData classNameFieldLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
+		myNameText.setLayoutData(classNameFieldLayoutData);
 
 		// Entity
 		form.createLabel(displayGroupComposite, "Entity:");
 		myEntityCombo = new Combo(displayGroupComposite, SWT.DROP_DOWN);
-		GridData entityFieldLayoutData = new GridData(SWT.FILL, SWT.FILL, true,
-				false);
+		GridData entityFieldLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		myEntityCombo.setLayoutData(entityFieldLayoutData);
-		
+
 		// Editing Context
 		form.createLabel(displayGroupComposite, "Editing Context:");
 		myEditingContextText = form.createText(displayGroupComposite, "", SWT.SINGLE);
-		GridData editingContextFieldLayoutData = new GridData(SWT.FILL, SWT.FILL, true,
-				false);
+		GridData editingContextFieldLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		myEditingContextText.setLayoutData(editingContextFieldLayoutData);
-
 
 		// HasDetail
 		createSpacer(form, displayGroupComposite, 1);
-		myHasDetailButton = form.createButton(displayGroupComposite,
-				"Has detail data source", SWT.CHECK);
-		GridData hasDetailLayoutData = new GridData(SWT.FILL, SWT.FILL, true,
-				false);
+		myHasDetailButton = form.createButton(displayGroupComposite, "Has detail data source", SWT.CHECK);
+		GridData hasDetailLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		hasDetailLayoutData.horizontalIndent = 5;
 		myHasDetailButton.setLayoutData(hasDetailLayoutData);
 
 		// Master/Detail Group
 		myMasterDetailGroup = new Group(displayGroupComposite, SWT.NONE);
-    myMasterDetailGroup.setBackground(displayGroupComposite.getBackground());
+		myMasterDetailGroup.setBackground(displayGroupComposite.getBackground());
 		myMasterDetailGroup.setText("Master / Detail");
 		GridLayout masterDetailLayout = new GridLayout();
 		masterDetailLayout.numColumns = 2;
 		myMasterDetailGroup.setEnabled(false);
 		myMasterDetailGroup.setLayout(masterDetailLayout);
 
-		GridData masterDetailLayoutData = new GridData(SWT.FILL, SWT.FILL,
-				true, false);
+		GridData masterDetailLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		masterDetailLayoutData.horizontalSpan = 2;
 		myMasterDetailGroup.setLayoutData(masterDetailLayoutData);
 
 		// Master Entity
 		form.createLabel(myMasterDetailGroup, "Master Entity:");
 		myMasterEntityCombo = new Combo(myMasterDetailGroup, SWT.DROP_DOWN);
-		GridData masterEntityFieldLayoutData = new GridData(SWT.FILL, SWT.FILL,
-				true, false);
+		GridData masterEntityFieldLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		myMasterEntityCombo.setLayoutData(masterEntityFieldLayoutData);
 		// XXX For debugging
 		myMasterEntityCombo.setData("myMasterEntityCombo");
@@ -467,8 +395,7 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 		Label label = form.createLabel(myMasterDetailGroup, "Detail Key:");
 		label.setAlignment(SWT.RIGHT);
 		myDetailKeyCombo = new Combo(myMasterDetailGroup, SWT.DROP_DOWN);
-		GridData detailKeyFieldLayoutData = new GridData(SWT.FILL, SWT.FILL,
-				true, false);
+		GridData detailKeyFieldLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		myDetailKeyCombo.setLayoutData(detailKeyFieldLayoutData);
 
 		// Entries per batch group (fixes layout of label and control)
@@ -477,8 +404,7 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 		GridLayout batchLayout = new GridLayout();
 		batchLayout.numColumns = 2;
 		batchGroupComposite.setLayout(batchLayout);
-		GridData batchGroupLayoutData = new GridData(SWT.FILL, SWT.FILL, true,
-				false);
+		GridData batchGroupLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		batchGroupLayoutData.horizontalSpan = 2;
 		batchGroupComposite.setLayoutData(batchGroupLayoutData);
 
@@ -486,55 +412,45 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 		form.createLabel(batchGroupComposite, "Entities per batch:");
 		myEntriesPerBatchSpinner = new Spinner(batchGroupComposite, SWT.NULL);
 		myEntriesPerBatchSpinner.setIncrement(5);
-		GridData entriesPerBatchLayoutData = new GridData(SWT.FILL, SWT.FILL,
-				false, false);
+		GridData entriesPerBatchLayoutData = new GridData(SWT.FILL, SWT.FILL, false, false);
 		myEntriesPerBatchSpinner.setLayoutData(entriesPerBatchLayoutData);
-		
+
 		// Selects first object
 		createSpacer(form, displayGroupComposite, 1);
-		mySelectsFirstObjectButton = form.createButton(displayGroupComposite,
-				"Selects first object on load", SWT.CHECK);
-		GridData selectsFirstObjectLayoutData = new GridData(SWT.FILL, SWT.FILL, 
-				true, false);
+		mySelectsFirstObjectButton = form.createButton(displayGroupComposite, "Selects first object on load", SWT.CHECK);
+		GridData selectsFirstObjectLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		selectsFirstObjectLayoutData.horizontalIndent = 5;
 		mySelectsFirstObjectButton.setLayoutData(selectsFirstObjectLayoutData);
 
 		// Fetches on load
 		createSpacer(form, displayGroupComposite, 1);
-		myFetchOnLoadButton = form.createButton(displayGroupComposite,
-				"Fetches on load", SWT.CHECK);
-		GridData fetchOnLoadLayoutData = new GridData(SWT.FILL, SWT.FILL, true,
-				false);
+		myFetchOnLoadButton = form.createButton(displayGroupComposite, "Fetches on load", SWT.CHECK);
+		GridData fetchOnLoadLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		fetchOnLoadLayoutData.horizontalIndent = 5;
 		myFetchOnLoadButton.setLayoutData(fetchOnLoadLayoutData);
 
 		// Qualification type
 		form.createLabel(displayGroupComposite, "Qualification:");
 		myQualificationCombo = new Combo(displayGroupComposite, SWT.POP_UP);
-		GridData qualificationFieldLayoutData = new GridData(SWT.FILL,
-				SWT.FILL, true, false);
+		GridData qualificationFieldLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		myQualificationCombo.setLayoutData(qualificationFieldLayoutData);
 
 		// Sorting attribute
 		form.createLabel(displayGroupComposite, "Sorting:");
 		mySortAttributeCombo = new Combo(displayGroupComposite, SWT.POP_UP);
-		GridData sortingFieldLayoutData = new GridData(SWT.FILL, SWT.FILL,
-				true, false);
+		GridData sortingFieldLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		mySortAttributeCombo.setLayoutData(sortingFieldLayoutData);
 
 		// Sort order radio group
 		createSpacer(form, displayGroupComposite, 1);
-		Composite radioGroupComposite = new Composite(displayGroupComposite,
-				SWT.NO_BACKGROUND);
+		Composite radioGroupComposite = new Composite(displayGroupComposite, SWT.NO_BACKGROUND);
 		radioGroupComposite.setLayout(new GridLayout());
 
 		// Sort order radio buttons
 		mySortRadioGroup = new RadioGroup();
 		for (String s : DisplayGroup.SORT_OPTIONS) {
-			Button sortButton = form.createButton(radioGroupComposite, s,
-					SWT.RADIO);
-			GridData sortButtonLayoutData = new GridData(SWT.FILL, SWT.FILL,
-					true, false);
+			Button sortButton = form.createButton(radioGroupComposite, s, SWT.RADIO);
+			GridData sortButtonLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
 			sortButton.setLayoutData(sortButtonLayoutData);
 			mySortRadioGroup.add(sortButton);
 		}
@@ -542,16 +458,14 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 		// Fetch spec
 		form.createLabel(displayGroupComposite, "Fetch Spec:");
 		myFetchSpecCombo = new Combo(displayGroupComposite, SWT.POP_UP);
-		GridData fetchSpecFieldLayoutData = new GridData(SWT.FILL, SWT.FILL,
-				true, false);
+		GridData fetchSpecFieldLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
 		myFetchSpecCombo.setLayoutData(fetchSpecFieldLayoutData);
 
 		form.paintBordersFor(displayGroupSection);
 		displayGroupSection.setClient(displayGroupComposite);
 	}
 
-	private void createSpacer(final FormToolkit toolkit,
-			final Composite parent, final int span) {
+	private void createSpacer(final FormToolkit toolkit, final Composite parent, final int span) {
 		Label spacer = toolkit.createLabel(parent, "");
 		GridData gd = new GridData();
 		gd.horizontalSpan = span;
@@ -595,8 +509,7 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 	public void refresh() {
 	}
 
-	public void selectionChanged(final IFormPart part,
-			final ISelection selection) {
+	public void selectionChanged(final IFormPart part, final ISelection selection) {
 		disposeBindings();
 		IStructuredSelection ssel = (IStructuredSelection) selection;
 		if (ssel.size() > 0) {

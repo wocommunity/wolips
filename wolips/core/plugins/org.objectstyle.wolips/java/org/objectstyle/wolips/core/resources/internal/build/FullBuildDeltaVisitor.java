@@ -70,6 +70,9 @@ public class FullBuildDeltaVisitor extends AbstractBuildVisitor implements IReso
 		boolean visitChildren;
 		if (resource == null || isCanceled()) {
 			visitChildren = false;
+		}
+		else if (resource.isDerived()) {
+			visitChildren = false;
 		} else {
 			visitChildren = true;
 			Map buildCache = getBuildCache();
@@ -99,7 +102,7 @@ public class FullBuildDeltaVisitor extends AbstractBuildVisitor implements IReso
 		BuilderWrapper[] builderWrappers = getBuilderWrappers();
 		for (int i = 0; i < builderWrappers.length; i++) {
 			IBuilder builder = builderWrappers[i].getBuilder();
-			if (builder instanceof IFullBuilder) {
+			if (builder.isEnabled() && builder instanceof IFullBuilder) {
 				((IFullBuilder) builder).handleClasspath(resource, _progressMonitor, _buildCache);
 			}
 		}
@@ -109,7 +112,7 @@ public class FullBuildDeltaVisitor extends AbstractBuildVisitor implements IReso
 		BuilderWrapper[] builderWrappers = getBuilderWrappers();
 		for (int i = 0; i < builderWrappers.length; i++) {
 			IBuilder builder = builderWrappers[i].getBuilder();
-			if (builder instanceof IFullBuilder) {
+			if (builder.isEnabled() && builder instanceof IFullBuilder) {
 				((IFullBuilder) builder).handleClasses(resource, _progressMonitor, _buildCache);
 			}
 		}
@@ -119,7 +122,7 @@ public class FullBuildDeltaVisitor extends AbstractBuildVisitor implements IReso
 		BuilderWrapper[] builderWrappers = getBuilderWrappers();
 		for (int i = 0; i < builderWrappers.length; i++) {
 			IBuilder builder = builderWrappers[i].getBuilder();
-			if (builder instanceof IFullBuilder) {
+			if (builder.isEnabled() && builder instanceof IFullBuilder) {
 				((IFullBuilder) builder).handleSource(resource, _progressMonitor, _buildCache);
 			}
 		}
@@ -129,7 +132,7 @@ public class FullBuildDeltaVisitor extends AbstractBuildVisitor implements IReso
 		BuilderWrapper[] builderWrappers = getBuilderWrappers();
 		for (int i = 0; i < builderWrappers.length; i++) {
 			IBuilder builder = builderWrappers[i].getBuilder();
-			if (builder instanceof IFullBuilder) {
+			if (builder.isEnabled() && builder instanceof IFullBuilder) {
 				((IFullBuilder) builder).handleWoappResources(resource, _progressMonitor, _buildCache);
 			}
 		}
@@ -139,7 +142,7 @@ public class FullBuildDeltaVisitor extends AbstractBuildVisitor implements IReso
 		BuilderWrapper[] builderWrappers = getBuilderWrappers();
 		for (int i = 0; i < builderWrappers.length; i++) {
 			IBuilder builder = builderWrappers[i].getBuilder();
-			if (builder instanceof IFullBuilder) {
+			if (builder.isEnabled() && builder instanceof IFullBuilder) {
 				((IFullBuilder) builder).handleWebServerResources(resource, _progressMonitor, _buildCache);
 			}
 		}
@@ -149,7 +152,7 @@ public class FullBuildDeltaVisitor extends AbstractBuildVisitor implements IReso
 		BuilderWrapper[] builderWrappers = getBuilderWrappers();
 		for (int i = 0; i < builderWrappers.length; i++) {
 			IBuilder builder = builderWrappers[i].getBuilder();
-			if (builder instanceof IFullBuilder) {
+			if (builder.isEnabled() && builder instanceof IFullBuilder) {
 				((IFullBuilder) builder).handleOther(resource, _progressMonitor, _buildCache);
 			}
 		}

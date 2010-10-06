@@ -58,11 +58,8 @@ import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -74,6 +71,7 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
+import org.objectstyle.wolips.eomodeler.utils.FormUtils;
 
 public class EORelationshipAdvancedEditorSection extends AbstractPropertySection {
 	private EORelationship _relationship;
@@ -86,7 +84,7 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
 
 	private Button _clientClassPropertyButton;
 
-  private Button _commonClassPropertyButton;
+	private Button _commonClassPropertyButton;
 
 	private DataBindingContext _bindingContext;
 
@@ -102,40 +100,35 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
 		FormLayout formLayout = new FormLayout();
 		form.setLayout(formLayout);
 
-		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0, 5);
-		topFormData.left = new FormAttachment(0, 5);
-		topFormData.right = new FormAttachment(100, -5);
-		topForm.setLayoutData(topFormData);
-
-		GridLayout topFormLayout = new GridLayout();
-		topFormLayout.numColumns = 2;
-		topForm.setLayout(topFormLayout);
+		Composite topForm = FormUtils.createForm(getWidgetFactory(), form);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), SWT.NONE);
 		_numberOfToManyFaultsToBatchFetchText = new Text(topForm, SWT.BORDER);
 		GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_numberOfToManyFaultsToBatchFetchText.setLayoutData(nameFieldLayoutData);
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.OWNS_DESTINATION), SWT.NONE);
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		_ownsDestinationButton = new Button(topForm, SWT.CHECK);
+		_ownsDestinationButton.setText(Messages.getString("EORelationship." + EORelationship.OWNS_DESTINATION));
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.PROPAGATES_PRIMARY_KEY), SWT.NONE);
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		_propagatesPrimaryKeyButton = new Button(topForm, SWT.CHECK);
+		_propagatesPrimaryKeyButton.setText(Messages.getString("EORelationship." + EORelationship.PROPAGATES_PRIMARY_KEY));
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.CLIENT_CLASS_PROPERTY), SWT.NONE);
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		_clientClassPropertyButton = new Button(topForm, SWT.CHECK);
+		_clientClassPropertyButton.setText(Messages.getString("EORelationship." + EORelationship.CLIENT_CLASS_PROPERTY));
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.COMMON_CLASS_PROPERTY), SWT.NONE);
-    _commonClassPropertyButton = new Button(topForm, SWT.CHECK);
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
+		_commonClassPropertyButton = new Button(topForm, SWT.CHECK);
+		_commonClassPropertyButton.setText(Messages.getString("EORelationship." + EORelationship.COMMON_CLASS_PROPERTY));
 	}
 
 	public void setInput(IWorkbenchPart part, ISelection selection) {
 		if (ComparisonUtils.equals(selection, getSelection())) {
 			return;
 		}
-		
+
 		super.setInput(part, selection);
 		disposeBindings();
 
@@ -154,7 +147,7 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
 			_bindingContext.bindValue(SWTObservables.observeSelection(_ownsDestinationButton), BeansObservables.observeValue(_relationship, EORelationship.OWNS_DESTINATION), null, new BooleanUpdateValueStrategy());
 			_bindingContext.bindValue(SWTObservables.observeSelection(_propagatesPrimaryKeyButton), BeansObservables.observeValue(_relationship, EORelationship.PROPAGATES_PRIMARY_KEY), null, new BooleanUpdateValueStrategy());
 			_bindingContext.bindValue(SWTObservables.observeSelection(_clientClassPropertyButton), BeansObservables.observeValue(_relationship, EORelationship.CLIENT_CLASS_PROPERTY), null, new BooleanUpdateValueStrategy());
-      _bindingContext.bindValue(SWTObservables.observeSelection(_commonClassPropertyButton), BeansObservables.observeValue(_relationship, EORelationship.COMMON_CLASS_PROPERTY), null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(SWTObservables.observeSelection(_commonClassPropertyButton), BeansObservables.observeValue(_relationship, EORelationship.COMMON_CLASS_PROPERTY), null, new BooleanUpdateValueStrategy());
 			updateCardinalityEnabled();
 		}
 	}

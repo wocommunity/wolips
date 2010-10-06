@@ -66,6 +66,10 @@ public class EOGeneratorBuilder extends AbstractFullAndIncrementalBuilder {
 	public EOGeneratorBuilder() {
 		super();
 	}
+	
+	public boolean isEnabled() {
+		return Preferences.shouldAutoEOGeneratorOnBuild();
+	}
 
 	public boolean buildStarted(int kind, Map args, IProgressMonitor monitor, IProject project, Map buildCache) {
 		return false;
@@ -97,7 +101,7 @@ public class EOGeneratorBuilder extends AbstractFullAndIncrementalBuilder {
 
 	public void handleWoappResources(IResource resource, IProgressMonitor monitor, Map buildCache) {
 		try {
-			if (Preferences.shouldAutoEOGeneratorOnBuild() && resource instanceof IContainer && resource.getName().endsWith(".eomodeld")) {
+			if (resource instanceof IContainer && resource.getName().endsWith(".eomodeld")) {
 				EOModelReference modifiedModelReference = new EOModelReference(resource.getLocation());
 				DefaultLocateResult result = new DefaultLocateResult();
 				Locate locate = new Locate(new EOGenLocateScope(resource.getProject()), result);

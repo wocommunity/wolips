@@ -59,16 +59,23 @@ public class SingleWordRule implements IPredicateRule {
 	private char _unacceptablePrefixCharacter;
 	
 	private char _stopCharacter;
+	
+	private char _stopCharacter2;
 
   public SingleWordRule(IToken token, char[] acceptableCharacters, char stopCharacter) {
     this(token, (char)0, acceptableCharacters, stopCharacter);
   }
   
 	public SingleWordRule(IToken token, char unacceptablePrefixCharacter, char[] acceptableCharacters, char stopCharacter) {
+		this(token, unacceptablePrefixCharacter, acceptableCharacters, stopCharacter, (char)0);
+	}
+  
+	public SingleWordRule(IToken token, char unacceptablePrefixCharacter, char[] acceptableCharacters, char stopCharacter, char stopCharacter2) {
 		_token = token;
 		_unacceptablePrefixCharacter = unacceptablePrefixCharacter;
 		_acceptableCharacters = acceptableCharacters;
 		_stopCharacter = stopCharacter;
+		_stopCharacter2 = stopCharacter2;
 	}
 
 	public IToken getSuccessToken() {
@@ -113,17 +120,17 @@ public class SingleWordRule implements IPredicateRule {
 		if (acceptable) {
   		while ((ch = scanner.read()) != ICharacterScanner.EOF) {
   			unreadCount++;
-  			if (ch == _stopCharacter) {
+  			if (ch == _stopCharacter || (_stopCharacter2 != 0 && ch == _stopCharacter2)) {
   				token = _token;
   				scanner.unread();
   				break;
+  			} else if (Character.isWhitespace((char) ch)) {
+  				whitespaceCount++;
   			} else if (isAcceptableCharacter((char) ch, unreadCount - whitespaceCount)) {
-  				if ((wordCount == 0 || whitespaceCount > 0) && (++wordCount >= 2)) {
+  				if ((wordCount == 0 || whitespaceCount > 0) && (++wordCount >= 2) && !isMultiWordAllowed()) {
   					break;
   				}
   				whitespaceCount = 0;
-  			} else if (Character.isWhitespace((char) ch)) {
-  				whitespaceCount++;
   			} else {
   				break;
   			}
@@ -143,10 +150,14 @@ public class SingleWordRule implements IPredicateRule {
 		return token;
 	}
 
-	protected boolean isAcceptableCharacter(char _ch, int index) {
-		boolean acceptableCharacter = Character.isJavaIdentifierPart(_ch);
+	protected boolean isMultiWordAllowed() {
+		return false;
+	}
+	
+	protected boolean isAcceptableCharacter(char ch, int index) {
+		boolean acceptableCharacter = Character.isJavaIdentifierPart(ch);
 		for (int i = 0; !acceptableCharacter && i < _acceptableCharacters.length; i++) {
-			acceptableCharacter = (_acceptableCharacters[i] == _ch);
+			acceptableCharacter = (_acceptableCharacters[i] == ch);
 		}
 		return acceptableCharacter;
 	}

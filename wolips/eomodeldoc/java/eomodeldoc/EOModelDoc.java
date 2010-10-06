@@ -15,7 +15,8 @@ import org.objectstyle.wolips.eomodeler.factories.IDEAProjectEOModelGroupFactory
 import org.objectstyle.wolips.eomodeler.factories.SimpleManifestEOModelGroupFactory;
 
 public class EOModelDoc {
-  public static void main(String[] args) throws Exception {
+  @SuppressWarnings("deprecation")
+	public static void main(String[] args) throws Exception {
     System.setProperty("javax.xml.xpath.XPathFactory:http://java.sun.com/jaxp/xpath/dom", "com.sun.org.apache.xpath.internal.jaxp.XPathFactoryImpl");
     File modelGroupFolder = new File(".");
     File outputFolder = null;

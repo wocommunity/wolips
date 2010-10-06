@@ -105,9 +105,9 @@ public class RevealInFinderAction implements IObjectActionDelegate {
 	 */
 	public void run(IAction action) {
 		try {
-			NativeHelper.revealInFinder(this.actionResource());
+			NativeHelper.revealInFileBrowser(this.actionResource());
 		} catch (Throwable t) {
-			System.out.println("");
+			t.printStackTrace();
 		}
 	}
 

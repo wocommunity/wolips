@@ -61,7 +61,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 public interface IBuilder {
-
+	public abstract boolean isEnabled();
+	
 	/**
 	 * Called when a build is about to begin.
 	 * 

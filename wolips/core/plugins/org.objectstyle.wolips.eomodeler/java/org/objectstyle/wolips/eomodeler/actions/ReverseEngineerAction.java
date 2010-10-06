@@ -53,19 +53,14 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
 import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
@@ -75,43 +70,23 @@ import org.objectstyle.wolips.eomodeler.core.model.IEOClassLoaderFactory;
 import org.objectstyle.wolips.eomodeler.core.sql.IEOSQLReverseEngineer;
 import org.objectstyle.wolips.eomodeler.core.sql.IEOSQLReverseEngineerFactory;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
+import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
 import org.objectstyle.wolips.eomodeler.utils.StringLabelProvider;
 
-public class ReverseEngineerAction implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
-	private IWorkbenchWindow _window;
-
-	private ISelection _selection;
-
-	public void dispose() {
-		// DO NOTHING
-	}
-
-	public void init(IWorkbenchWindow window) {
-		_window = window;
-	}
-
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		_window = targetPart.getSite().getWorkbenchWindow();
-	}
-
-	public void selectionChanged(IAction action, ISelection selection) {
-		_selection = selection;
-	}
-
+public class ReverseEngineerAction extends EMAction {
 	public void run(IAction action) {
 		try {
-			Object obj = ((IStructuredSelection) _selection).getFirstElement();
-			EOModel model = EOModelUtils.getRelatedModel(obj);
+			Object selectedObject = getSelectedObject();
+			EOModel model = EOModelUtils.getRelatedModel(selectedObject);
 			if (model == null) {
-				MessageDialog.openError(_window.getShell(), "Select a Model", "Select a model to reverse engineer into.");
-			}
-			else {
+				MessageDialog.openError(getWindow().getShell(), "Select a Model", "Select a model to reverse engineer into.");
+			} else {
 				EODatabaseConfig activeDatabaseConfig = model.getActiveDatabaseConfig();
 				ClassLoader eomodelClassLoader = IEOClassLoaderFactory.Utility.createClassLoader(model);
 				IEOSQLReverseEngineer reverseEngineer = IEOSQLReverseEngineerFactory.Utility.reverseEngineerFactory().reverseEngineer(activeDatabaseConfig, eomodelClassLoader);
 				List<String> tableNames = reverseEngineer.reverseEngineerTableNames();
-	
-				ListSelectionDialog dlg = new ListSelectionDialog(_window.getShell(), tableNames, new StringContentProvider(), new StringLabelProvider(), "Select the tables to reverse engineer:");
+
+				ListSelectionDialog dlg = new ListSelectionDialog(getWindow().getShell(), tableNames, new StringContentProvider(), new StringLabelProvider(), "Select the tables to reverse engineer:");
 				dlg.setInitialSelections(tableNames.toArray());
 				dlg.setTitle("Reverse Engineer");
 				if (dlg.open() == Window.OK) {
@@ -120,11 +95,17 @@ public class ReverseEngineerAction implements IWorkbenchWindowActionDelegate, IO
 					System.arraycopy(selectedTableNameObjs, 0, selectedTableNames, 0, selectedTableNameObjs.length);
 					List<String> selectedTableNamesList = Arrays.asList(selectedTableNames);
 					File reverseEngineeredEOModelFolder = reverseEngineer.reverseEngineerWithTableNamesIntoModel(selectedTableNamesList);
-					model.importEntitiesFromModel(reverseEngineeredEOModelFolder.toURL(), new HashSet<EOModelVerificationFailure>());
+					Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
+					model.importEntitiesFromModel(reverseEngineeredEOModelFolder.toURL(), failures);
+					if (failures.size() > 0) {
+						EOModelErrorDialog dialog = new EOModelErrorDialog(getWindow().getShell(), failures);
+						dialog.open();
+					}
 					model.setReverseEngineered(true);
 				}
 			}
 		} catch (Throwable e) {
+			e.printStackTrace();
 			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);
 		}
 	}

@@ -29,9 +29,17 @@ public abstract class AbstractEOClassLoader implements IEOClassLoaderFactory {
 			fillInModelClasspath(model, classpathSet);
 			fillInDevelopmentClasspath(classpathSet);
 			Bundle bundle = InternalPlatform.getDefault().getBundle("org.objectstyle.wolips.eomodeler.core");
-			URL sqlJarUrl = bundle.getEntry("/lib/EntityModelerSQL.jar");
-			if (sqlJarUrl != null) {
-				classpathSet.add(sqlJarUrl);
+			URL wosqlJarUrl = bundle.getEntry("/lib/EOFSQLUtils.jar");
+			if (wosqlJarUrl != null) {
+				classpathSet.add(wosqlJarUrl);
+			}
+			URL wo53sqlJarUrl = bundle.getEntry("/lib/EOFSQLUtils53.jar");
+			if (wo53sqlJarUrl != null) {
+				classpathSet.add(wo53sqlJarUrl);
+			}
+			URL wo56sqlJarUrl = bundle.getEntry("/lib/EOFSQLUtils56.jar");
+			if (wo56sqlJarUrl != null) {
+				classpathSet.add(wo56sqlJarUrl);
 			}
 			StringBuffer webobjectsClasspath = new StringBuffer();
 			Iterator<URL> classpathIter = classpathSet.iterator();
@@ -41,6 +49,7 @@ public abstract class AbstractEOClassLoader implements IEOClassLoaderFactory {
 				webobjectsClasspath.append(classpathUrl.getPath());
 			}
 			System.setProperty("com.webobjects.classpath", webobjectsClasspath.toString());
+			System.setProperty("NSProjectBundleEnabled", "true");
 			ClassLoader eomodelClassLoader = createEOModelClassLoader(model, classpathSet);
 			return eomodelClassLoader;
 		} catch (Exception e) {

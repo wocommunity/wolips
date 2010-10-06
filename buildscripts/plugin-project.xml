@@ -17,11 +17,13 @@
 			<path refid="classpath" />
 			<fileset dir="${eclipse.home}">
 				<include name="**/plugins/**/*.jar" />
+				<include name="**/dropins/**/*.jar" />
 				<exclude name="**/org.objectstyle.*/**" />
 				<exclude name="**/org.eclipse.core.runtime/**" />
 			</fileset>
 			<fileset dir="${eclipse.plugin.home}">
 				<include name="**/plugins/**/*.jar" />
+				<include name="**/dropins/**/*.jar" />
 				<exclude name="**/org.objectstyle.*/**" />
 				<exclude name="**/org.eclipse.core.runtime/**" />
 			</fileset>
@@ -44,6 +46,7 @@
 			<path refid="classpath" />
 			<fileset dir="${eclipse.home}">
 				<include name="**/plugins/**/*.jar" />
+				<include name="**/dropins/**/*.jar" />
 				<exclude name="**/org.objectstyle.*/**" />
 				<exclude name="**/org.eclipse.core.runtime/**" />
 			</fileset>
@@ -128,9 +131,9 @@
 			<fileset dir="${param.plugin.dir}/java">
 				<include name="**/*.xml" />
 			</fileset>
-			<metainf dir="../../../../homepage/doc">
+			<!-- metainf dir="../../../../homepage/doc">
 				<include name="LICENSE*" />
-			</metainf>
+			</metainf -->
 		</jar>
 	</target>
 
@@ -158,9 +161,9 @@
 			</fileset>
 			<fileset dir="${param.project.dir}/resources">
 			</fileset>
-			<metainf dir="../../../../homepage/doc">
+			<!-- metainf dir="../../../../homepage/doc">
 				<include name="LICENSE*" />
-			</metainf>
+			</metainf -->
 		</jar>
 	</target>
 
@@ -200,7 +203,7 @@
 			<fileset dir="${param.plugin.dir}/java">
 				<exclude name="**/*.java" />
 			</fileset>
-			<zipfileset dir="../../../../homepage/doc" includes="LICENSE*" prefix="META-INF" />
+			<!-- zipfileset dir="../../../../homepage/doc" includes="LICENSE*" prefix="META-INF" / -->
 			<zipfileset dir="${param.build.dist.build.dir}/plugins/${param.plugin.name}_${build.version}/META-INF" prefix="META-INF" />
 		</zip>
 		<delete dir="${param.build.dist.build.dir}/plugins/${param.plugin.name}_${build.version}" />

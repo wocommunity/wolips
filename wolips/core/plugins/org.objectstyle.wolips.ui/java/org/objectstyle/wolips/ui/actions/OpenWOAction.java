@@ -62,7 +62,7 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
+import org.objectstyle.wolips.baseforuiplugins.utils.WorkbenchUtilities;
 import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResource;
 
 /**
@@ -90,15 +90,15 @@ public class OpenWOAction extends AbstractActionOnIResource {
 			fileName = fileName.substring(0, fileName.length() - OpenWOAction.woExtension.length());
 
 			List<IResource> list = new ArrayList<IResource>();
-			WorkbenchUtilitiesPlugin.findFilesInResourceByName(list, actionResource, fileName + OpenWOAction.htmlExtension);
+			WorkbenchUtilities.findFilesInResourceByName(list, actionResource, fileName + OpenWOAction.htmlExtension);
 			if (list.size() > 0) {
-				WorkbenchUtilitiesPlugin.open((IFile)list.get(0), "org.objectstyle.wolips.componenteditor.ComponentEditor");
+				WorkbenchUtilities.open((IFile)list.get(0), "org.objectstyle.wolips.componenteditor.ComponentEditor");
 				opened = true;
 			}
 			else {
-				WorkbenchUtilitiesPlugin.findFilesInResourceByName(list, actionResource, fileName + OpenWOAction.wodExtension);
+				WorkbenchUtilities.findFilesInResourceByName(list, actionResource, fileName + OpenWOAction.wodExtension);
 				if (list.size() > 0) {
-					WorkbenchUtilitiesPlugin.open(list);
+					WorkbenchUtilities.open(list);
 					opened = true;
 				}				
 			}

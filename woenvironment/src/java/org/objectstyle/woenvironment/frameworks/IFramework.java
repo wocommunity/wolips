@@ -56,11 +56,14 @@
 package org.objectstyle.woenvironment.frameworks;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IFramework extends Comparable<IFramework> {
 	public String getName();
+	
+	public Version getVersion();
 
-	public Root getRoot();
+	public Root<?> getRoot();
 
 	public int compareTo(IFramework o);
 
@@ -69,4 +72,22 @@ public interface IFramework extends Comparable<IFramework> {
 	public List<FrameworkLibrary> getFrameworkLibraries();
 
 	public boolean isResolved();
+	
+	public Map<String, Object> getInfoPlist();
+	
+	public static class Utility {
+		public static Version getInfoPListVersion(Map<String, Object> infoPList) {
+			Version version = null;
+			if (infoPList != null) {
+				String versionStr = (String) infoPList.get("CFBundleShortVersionString");
+				if (versionStr != null) {
+					version = new Version(versionStr);
+				}
+			}
+			else {
+				version = null;
+			}
+			return version;
+		}
+	}
 }

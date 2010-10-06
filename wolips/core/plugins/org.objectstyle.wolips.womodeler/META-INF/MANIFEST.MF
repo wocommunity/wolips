@@ -16,7 +16,6 @@ Require-Bundle: org.eclipse.ui.views.properties.tabbed,
  org.objectstyle.wolips.bindings,
  org.objectstyle.wolips.preferences,
  org.objectstyle.wolips.locate,
- org.objectstyle.wolips.datasets,
  org.objectstyle.wolips.componenteditor,
  org.objectstyle.wolips.workbenchutilities,
  org.objectstyle.wolips

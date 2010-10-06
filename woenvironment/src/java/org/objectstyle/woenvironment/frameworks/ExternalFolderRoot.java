@@ -56,10 +56,17 @@
 package org.objectstyle.woenvironment.frameworks;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ExternalFolderRoot extends AbstractFolderRoot<IFramework> {
 	public ExternalFolderRoot(String shortName, String name, File rootFolder, File frameworksFolder) {
 		super(shortName, name, rootFolder, frameworksFolder);
+	}
+	
+	@Override
+	public Set<IFramework> getApplications() {
+		return new HashSet<IFramework>();
 	}
 
 	@Override

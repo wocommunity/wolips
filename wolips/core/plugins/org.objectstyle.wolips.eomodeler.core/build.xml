@@ -19,10 +19,10 @@
 			<fileset dir="../../../../lib">
 				<include name="**/*.jar" />
 			</fileset>
-			<fileset dir="../../../3rdparty/plugins/org.objectstyle.wolips.thirdparty.commonscollections">
+			<fileset dir="../org.objectstyle.wolips.thirdparty.commonscollections">
 				<include name="**/*.jar" />
 			</fileset>
-			<fileset dir="../../../3rdparty/plugins/org.objectstyle.wolips.thirdparty.velocity/">
+			<fileset dir="../org.objectstyle.wolips.thirdparty.velocity/">
 				<include name="**/*.jar" />
 			</fileset>
 			<pathelement path="../../../../${build.output.java.dir}" />

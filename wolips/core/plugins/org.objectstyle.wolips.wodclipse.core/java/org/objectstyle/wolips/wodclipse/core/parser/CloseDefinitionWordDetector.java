@@ -57,6 +57,6 @@ public class CloseDefinitionWordDetector implements IWordDetector {
 	}
 
 	public boolean isWordPart(char _ch) {
-		return false;
+		return _ch == ';';
 	}
 }

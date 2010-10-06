@@ -50,6 +50,8 @@
 package org.objectstyle.wolips.eogenerator.ui.editors;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.ui.IEditorInput;
@@ -93,6 +95,7 @@ public class EOGeneratorEditor extends FormEditor {
 	public void doSave(IProgressMonitor _monitor) {
 		try {
 			FileEditorInput editorInput = (FileEditorInput) getEditorInput();
+			editorInput.getFile().deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
 			myModel.writeToFile(editorInput.getFile(), _monitor);
 			editorDirtyStateChanged();
 		} catch (Throwable e) {
