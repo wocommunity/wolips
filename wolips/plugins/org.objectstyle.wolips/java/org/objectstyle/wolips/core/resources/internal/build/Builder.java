@@ -74,7 +74,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.objectstyle.wolips.core.CorePlugin;
 import org.objectstyle.wolips.core.resources.builder.AbstractOldBuilder;
-import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IProductAdapter;
 import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
@@ -168,9 +167,6 @@ public abstract class Builder extends IncrementalProjectBuilder {
 				productAdapter.markAsDerivated(monitor);
 			}
 		} else {
-			// IGNORE FOR NOW
-		}
-		else {
 			// IGNORE FOR NOW
 		}
 		// IWoprojectAdapter woprojectAdapter =

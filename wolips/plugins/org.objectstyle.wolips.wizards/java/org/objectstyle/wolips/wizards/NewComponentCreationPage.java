@@ -1438,6 +1438,8 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 				}
 			} catch (JavaModelException e) {
 				// nothing to do, invalid type
+			} catch (NullPointerException e) {
+				// nothing to do, invalid type
 			}
 		}
 		if (requiresSuperclass) {
