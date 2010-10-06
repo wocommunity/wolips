@@ -49,8 +49,6 @@ import org.eclipse.jface.text.rules.IToken;
  * @author mike
  */
 public class BindingValueNamespaceRule extends SingleWordRule {
-	private IToken myToken;
-
 	public BindingValueNamespaceRule(IToken _token) {
 		super(_token, new char[0], ':');
 	}

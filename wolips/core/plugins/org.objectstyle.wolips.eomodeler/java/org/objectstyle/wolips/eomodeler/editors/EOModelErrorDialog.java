@@ -237,6 +237,10 @@ public class EOModelErrorDialog extends Dialog {
 			super.buttonPressed(buttonId);
 		}
 	}
+  
+public static void test() {
+  System.out.print("Test");
+}
 
 	protected static class FailureLabelProvider implements ILabelProvider {
 		public void addListener(ILabelProviderListener listener) {

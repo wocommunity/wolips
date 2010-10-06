@@ -16,8 +16,13 @@
 			<directory>src/main/components</directory>
 			<includes>
 				<include>**/*.html</include>
-				<include>**/*.wod</include>
+			</includes>
+		</fileSet>
+		<fileSet encoding="UTF-8">
+			<directory>src/main/components</directory>
+			<includes>
 				<include>**/*.woo</include>
+				<include>**/*.wod</include>
 				<include>**/*.api</include>
 			</includes>
 		</fileSet>

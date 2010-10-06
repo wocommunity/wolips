@@ -29,7 +29,7 @@
 		<!-- encoding properties -->
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+</properties>
 
 	<build>
 		<finalName>${dollar}{project.artifactId}</finalName>
@@ -37,25 +37,19 @@
 			<resource>
 				<targetPath>Resources</targetPath>
 				<directory>${dollar}{basedir}/src/main/resources</directory>
-				<!-- The archetype created project uses filtering in the Info.plist, you may wish to change this -->
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<targetPath>Resources</targetPath>
-				<directory>${dollar}{basedir}/src/main/components</directory>
-			</resource>
-			<resource>
-				<targetPath>WebServerResources</targetPath>
-				<directory>${dollar}{basedir}/src/main/webserver-resources
-				</directory>
 			</resource>
 		</resources>
 		<plugins>
 			<plugin>
+				<groupId>org.objectstyle.woproject.maven2</groupId>
+				<artifactId>maven-wolifecycle-plugin</artifactId>
+				<version>2.0.17</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<configuration>
 					<archiveClasses>true</archiveClasses>
-					<!-- The archetype created project uses filtering in the web.xml, you may wish to change this -->
 					<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
 				</configuration>
 			</plugin>
@@ -76,11 +70,6 @@
 			<artifactId>ERExtensions</artifactId>
 			<version>${dollar}{wonder.version}</version>
 			<classifier>${dollar}{wonder.classifier}</classifier>
-		</dependency>
-		<dependency>
-			<groupId>${dollar}{wonder.core.groupId}</groupId>
-			<artifactId>ERServlet</artifactId>
-			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>${dollar}{wonder.core.groupId}</groupId>
@@ -108,13 +97,6 @@
 			<artifactId>JavaWOJSPServlet</artifactId>
 			<version>${dollar}{webobjects.version}</version>
 		</dependency>
-#if( $WebObjectsVersion.contains( "5.3" ) )
-		<dependency>
-			<groupId>${dollar}{webobjects.groupId}</groupId>
-			<artifactId>JavaWOJSPServlet_client</artifactId>
-			<version>${dollar}{webobjects.version}</version>
-		</dependency>
-#end
 		<dependency>
 			<groupId>${dollar}{webobjects.groupId}</groupId>
 			<artifactId>JavaFoundation</artifactId>

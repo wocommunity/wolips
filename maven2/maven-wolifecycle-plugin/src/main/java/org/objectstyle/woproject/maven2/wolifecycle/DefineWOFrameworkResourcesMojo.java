@@ -14,53 +14,47 @@ import org.apache.maven.project.MavenProject;
  */
 public class DefineWOFrameworkResourcesMojo extends AbstractDefineResourcesMojo {
 
-    /**
-     * The maven project.
-     * 
-     * @parameter expression="${project}"
-     * @required
-     * @readonly
-     */
-    private MavenProject project;
+	/**
+	 * The maven project.
+	 * 
+	 * @parameter expression="${project}"
+	 * @required
+	 * @readonly
+	 */
+	private MavenProject project;
 
-    /**
-     * Read patternsets.
-     * 
-     * @parameter expression="readPatternsets"
-     */
-    private Boolean readPatternsets;
+	/**
+	 * Read patternsets.
+	 * 
+	 * @parameter expression="readPatternsets"
+	 */
+	private Boolean readPatternsets;
 
-    public DefineWOFrameworkResourcesMojo() {
-	super();
-    }
+	public DefineWOFrameworkResourcesMojo() {
+		super();
+	}
 
-    @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-	super.execute();
-    }
+	public void execute() throws MojoExecutionException, MojoFailureException {
+		super.execute();
+	}
 
-    @Override
-    public MavenProject getProject() {
-	return project;
-    }
+	public MavenProject getProject() {
+		return project;
+	}
 
-    @Override
-    public String getProductExtension() {
-	return "framework";
-    }
+	public String getProductExtension() {
+		return "framework";
+	}
 
-    @Override
-    public boolean hasContentsFolder() {
-	return false;
-    }
+	public boolean hasContentsFolder() {
+		return false;
+	}
 
-    @Override
-    protected Boolean readPatternsets() {
-	return readPatternsets;
-    }
+	protected Boolean readPatternsets() {
+		return readPatternsets;
+	}
 
-    @Override
-    public boolean includesVersionInArtifactName() {
-	return false;
-    }
+	public boolean includesVersionInArtifactName() {
+		return false;
+	}
 }

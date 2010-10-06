@@ -22,6 +22,11 @@
 			<directory>src/main/components</directory>
 			<includes>
 				<include>**/*.html</include>
+			</includes>
+		</fileSet>
+		<fileSet encoding="UTF-8">
+			<directory>src/main/components</directory>
+			<includes>
 				<include>**/*.woo</include>
 				<include>**/*.wod</include>
 				<include>**/*.api</include>
