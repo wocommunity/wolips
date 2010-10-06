@@ -129,8 +129,14 @@
        </factory>
        <factory class="org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapterFactory"
            adaptableType="org.eclipse.core.resources.IProject">
-           <adapter type="org.objectstyle.wolips.core.resources.types.project.IProjectAdapter"/>
+           <adapter type="org.objectstyle.wolips.core.resources.types.project.ProjectAdapter"/>
            <adapter type="org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets"/>
+       </factory>
+       <factory class="org.objectstyle.wolips.core.resources.WOLipsResourceAdapterFactory" adaptableType="org.eclipse.core.resources.IResource">
+           <adapter type="org.objectstyle.wolips.core.resources.IWOLipsResource"/>
+       </factory>
+       <factory class="org.objectstyle.wolips.core.resources.WOLipsResourceAdapterFactory" adaptableType="org.eclipse.jdt.core.ICompilationUnit">
+           <adapter type="org.objectstyle.wolips.core.resources.IWOLipsResource"/>
        </factory>
    </extension>
 

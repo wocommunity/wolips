@@ -59,7 +59,7 @@ package org.objectstyle.wolips.core.resources.internal.build;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 
 /**
  * @author mnolte
@@ -79,7 +79,7 @@ public class AntNature implements IProjectNature {
 	 * @see org.eclipse.core.resources.IProjectNature#configure()
 	 */
 	public void configure() throws CoreException {
-		IProjectAdapter project = (IProjectAdapter) (this.getProject()).getAdapter(IProjectAdapter.class);
+		ProjectAdapter project = (ProjectAdapter) (this.getProject()).getAdapter(ProjectAdapter.class);
 		project.installAntBuilder();
 	}
 
@@ -87,7 +87,7 @@ public class AntNature implements IProjectNature {
 	 * @see org.eclipse.core.resources.IProjectNature#deconfigure()
 	 */
 	public void deconfigure() throws CoreException {
-		IProjectAdapter project = (IProjectAdapter) (this.getProject()).getAdapter(IProjectAdapter.class);
+		ProjectAdapter project = (ProjectAdapter) (this.getProject()).getAdapter(ProjectAdapter.class);
 		project.removeAntBuilder();
 	}
 

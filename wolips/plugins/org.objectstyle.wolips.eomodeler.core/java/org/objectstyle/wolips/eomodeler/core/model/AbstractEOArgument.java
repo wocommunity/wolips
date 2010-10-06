@@ -562,7 +562,12 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		boolean usesClassNameProperty = !ComparisonUtils.equals(getJavaClassName(false), getClassName());
 		if (usesClassNameProperty) {
 			argumentMap.setString("className", _className, true);
-			argumentMap.remove("valueClassName");
+			String convertedValueClassName = _convertJavaClassNameToValueClassName(_className);
+			// MS: If we guess the same value class name as you have now, just go ahead and leave it. If they don't
+			// match, assume you typed in an explicit class name and let's toss the old value class name
+			if (!ComparisonUtils.equals(convertedValueClassName, myValueClassName)) {
+				argumentMap.remove("valueClassName");
+			}
 		} else {
 			argumentMap.remove("className");
 			argumentMap.setString("valueClassName", myValueClassName, true);

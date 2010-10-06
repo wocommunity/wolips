@@ -84,15 +84,15 @@ public class EOAttributeBasicEditorSection extends AbstractEOArgumentBasicEditor
 
 	@Override
 	protected void _addSettings(Composite settings) {
-		_primaryKeyButton = new Button(settings, SWT.TOGGLE);
+		_primaryKeyButton = new Button(settings, SWT.TOGGLE | SWT.FLAT);
 		_primaryKeyButton.setToolTipText(Messages.getString("EOAttribute." + EOAttribute.PRIMARY_KEY));
 		_primaryKeyButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.PRIMARY_KEY_ICON));
 
-		_classPropertyButton = new Button(settings, SWT.TOGGLE);
+		_classPropertyButton = new Button(settings, SWT.TOGGLE | SWT.FLAT);
 		_classPropertyButton.setToolTipText(Messages.getString("EOAttribute." + EOAttribute.CLASS_PROPERTY));
 		_classPropertyButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
 
-		_lockingButton = new Button(settings, SWT.TOGGLE);
+		_lockingButton = new Button(settings, SWT.TOGGLE | SWT.FLAT);
 		_lockingButton.setToolTipText(Messages.getString("EOAttribute." + EOAttribute.USED_FOR_LOCKING));
 		_lockingButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.LOCKING_ICON));
 	}

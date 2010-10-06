@@ -69,7 +69,12 @@ public class DataDataTypePanel extends Composite implements IDataTypePanel {
 	public DataDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
 		super(_parent, _style);
 		setBackground(_parent.getBackground());
-		setLayout(new GridLayout(2, false));
+		GridLayout layout = new GridLayout(2, false);
+		layout.verticalSpacing = 10;
+		layout.marginLeft = 7;
+		layout.marginRight = 7;
+		layout.marginBottom = 13;
+		setLayout(layout);
 		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.WIDTH), SWT.NONE);
 		myExternalWidthText = new Text(this, SWT.BORDER);
 		GridData externalWidthFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);

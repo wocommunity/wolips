@@ -57,8 +57,8 @@ package org.objectstyle.wolips.refactoring.actions;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.internal.corext.refactoring.RefactoringAvailabilityTester;
-import org.eclipse.jdt.internal.ui.refactoring.RefactoringSaveHelper;
 import org.eclipse.jdt.internal.ui.refactoring.actions.RefactoringStarter;
+import org.eclipse.jdt.ui.refactoring.RefactoringSaveHelper;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;

@@ -139,14 +139,14 @@ public class TypeNameCollector extends TypeNameRequestor {
 	}
 
 	@Override
-	public void acceptType(int _modifiers, char[] _packageName, char[] _simpleTypeName, char[][] _enclosingTypeNames, String _path) {
+	public void acceptType(int modifiers, char[] packageName, char[] simpleTypeName, char[][] enclosingTypeNames, String path) {
+		// System.out.println("TypeNameCollector.acceptType: " + System.currentTimeMillis() + " " + new String(simpleTypeName));
 		String className;
-		String simpleClassName = new String(_simpleTypeName);
-		if (_packageName == null || _packageName.length == 0) {
+		String simpleClassName = new String(simpleTypeName);
+		if (packageName == null || packageName.length == 0) {
 			className = simpleClassName;
 		} else {
-			String packageName = new String(_packageName);
-			className = packageName + "." + simpleClassName;
+			className = new String(packageName) + "." + simpleClassName;
 		}
 		try {
 			IType type = _project.findType(className);
@@ -162,7 +162,7 @@ public class TypeNameCollector extends TypeNameRequestor {
 //					ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type);
 //					if (_superclassType != null && typeHierarchy.contains(_superclassType)) {
 						_typeNames.add(className);
-						_typeNameToPath.put(className, _path);
+						_typeNameToPath.put(className, path);
 						_typeNameToType.put(className, type);
 //					}
 				}

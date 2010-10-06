@@ -8,6 +8,8 @@
 #if ($attribute.sqlGenerationCreateProperty)
 #if ($attribute.prototype.name == "longText")
 		${migrationTableName}.newLargeStringColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
+#elseif ($attribute.prototype.name == "ipAddress")
+		${migrationTableName}.newIpAddressColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "String" && $attribute.width)
 		${migrationTableName}.newStringColumn("${attribute.columnName}", ${attribute.width}, ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "String")

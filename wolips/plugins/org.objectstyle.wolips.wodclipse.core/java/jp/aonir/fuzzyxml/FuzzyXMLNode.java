@@ -21,5 +21,6 @@ public interface FuzzyXMLNode {
   public String toXMLString(RenderContext renderContext);
 
   public void toXMLString(RenderContext renderContext, StringBuffer xmlBuffer);
-
+  
+  public boolean isSynthetic();
 }

@@ -52,11 +52,14 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.StandardClasspathProvider;
 import org.objectstyle.wolips.jdt.classpath.model.EclipseDependency;
+import org.objectstyle.wolips.preferences.Preferences;
+import org.objectstyle.wolips.variables.BuildProperties;
 
 /**
  * @author hn3000
@@ -103,18 +106,24 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	 */
 	public IRuntimeClasspathEntry[] resolveClasspath(IRuntimeClasspathEntry[] entries, ILaunchConfiguration configuration) throws CoreException {
 		IRuntimeClasspathEntry[] resolvedEntries = superResolveClasspath(entries, configuration);
-
+		IRuntimeClasspathEntry[] orderedEntries;
+		
 		IProject project = JavaRuntime.getJavaProject(configuration).getProject();
-		List<EclipseDependency> unorderedDependencies = new ArrayList<EclipseDependency>(resolvedEntries.length);
-		for (IRuntimeClasspathEntry entry : resolvedEntries) {
-			unorderedDependencies.add(new EclipseDependency(project, entry));
+		boolean newNSBundle = ((BuildProperties) project.getAdapter(BuildProperties.class)).getWOVersion().isAtLeastVersion(5, 6) || !Preferences.mockBundleEnabled();
+		if (newNSBundle) {
+			orderedEntries = resolvedEntries;
 		}
-		List<EclipseDependency> orderedDependencies = new EclipseDependencyOrdering(project).orderDependencies(unorderedDependencies);
-
-		IRuntimeClasspathEntry[] orderedEntries = new IRuntimeClasspathEntry[orderedDependencies.size()];
-		int orderedEntryNum = 0;
-		for (EclipseDependency dependency : orderedDependencies) {
-			orderedEntries[orderedEntryNum++] = dependency.getClasspathEntry();
+		else {
+			List<EclipseDependency> unorderedDependencies = new ArrayList<EclipseDependency>(resolvedEntries.length);
+			for (IRuntimeClasspathEntry entry : resolvedEntries) {
+				unorderedDependencies.add(new EclipseDependency(project, entry));
+			}
+			List<EclipseDependency> orderedDependencies = new EclipseDependencyOrdering(project, newNSBundle).orderDependencies(unorderedDependencies);
+			orderedEntries = new IRuntimeClasspathEntry[orderedDependencies.size()];
+			int orderedEntryNum = 0;
+			for (EclipseDependency dependency : orderedDependencies) {
+				orderedEntries[orderedEntryNum++] = dependency.getClasspathEntry();
+			}
 		}
 		return orderedEntries;
 	}

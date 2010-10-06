@@ -208,6 +208,14 @@
 						#end
 					</td>
 				</tr>
+				
+				<tr>
+					<th>Delete Rule</th>
+					<td>
+						$relationship.deleteRule.name
+					</td>
+				</tr>
+				
 				#if (!$relationship.joins.empty)
 				<tr>
 					<th>Joins</th>

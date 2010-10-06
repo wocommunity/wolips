@@ -67,12 +67,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.objectstyle.wolips.baseforplugins.util.CharSetUtils;
-import org.objectstyle.wolips.datasets.adaptable.JavaProject;
-import org.objectstyle.wolips.datasets.adaptable.Project;
-import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.templateengine.ComponentEngine;
 
 /**
@@ -138,29 +136,34 @@ public class WOComponentCreator implements IRunnableWithProgress {
 		IFolder componentFolder = null;
 		IPath componentJavaPath = null;
 		IPath apiPath = null;
-		IFolder componentFolderToReveal = null;
+		IContainer componentFolderToReveal = null;
 		IJavaProject iJavaProject = JavaCore.create(this.parentResource.getProject());
-		JavaProject javaProject = (JavaProject) iJavaProject.getAdapter(JavaProject.class);
-		Project project = (Project) this.parentResource.getProject().getAdapter(Project.class);
+
 		switch (this.parentResource.getType()) {
 		case IResource.PROJECT:
-			componentFolder = ((IProject) this.parentResource).getFolder(this.componentName + "." + IWOLipsModel.EXT_COMPONENT);
-			componentFolderToReveal = (IFolder) javaProject.getProjectSourceFolder();
-			componentJavaPath = componentFolderToReveal.getLocation();
+			componentFolder = ((IProject) this.parentResource).getFolder(this.componentName + ".wo");
+			componentFolderToReveal = componentFolder.getParent();
 			apiPath = this.parentResource.getProject().getLocation();
 			break;
 		case IResource.FOLDER:
-			componentFolder = ((IFolder) this.parentResource).getFolder(this.componentName + "." + IWOLipsModel.EXT_COMPONENT);
-			componentFolderToReveal = javaProject.getSubprojectSourceFolder((IFolder) this.parentResource, true);
-			componentJavaPath = componentFolderToReveal.getLocation();
+			componentFolder = ((IFolder) this.parentResource).getFolder(this.componentName + ".wo");
+			componentFolderToReveal = componentFolder.getParent();
 			apiPath = componentFolder.getParent().getLocation();
-			IFolder pbFolder = project.getParentFolderWithPBProject((IFolder) this.parentResource);
-			if (pbFolder != null) {
-				apiPath = pbFolder.getLocation();
-			}
+//			IFolder pbFolder = project.getParentFolderWithPBProject((IFolder) this.parentResource);
+//			if (pbFolder != null) {
+//				apiPath = pbFolder.getLocation();
+//			}
 			break;
 		default:
 			throw new InvocationTargetException(new Exception("Wrong parent resource - check validation"));
+		}
+		
+		IPackageFragmentRoot[] roots= iJavaProject.getPackageFragmentRoots();
+		for (int i= 0; i < roots.length; i++) {
+			if (roots[i].getKind() == IPackageFragmentRoot.K_SOURCE) {
+				componentJavaPath = roots[i].getCorrespondingResource().getLocation();
+				break;
+			}
 		}
 		if (packageName != null && packageName.length() > 0) {
 			componentJavaPath = componentJavaPath.append(new Path(packageName.replace('.', '/')));
@@ -195,7 +198,7 @@ public class WOComponentCreator implements IRunnableWithProgress {
 		try {
 			componentEngine.run(new NullProgressMonitor());
 			this.parentResource.getProject().refreshLocal(IResource.DEPTH_INFINITE, monitor);
-			IResource[] resources = new IResource[] {componentFolderToReveal.findMember(this.componentName + "." + IWOLipsModel.EXT_JAVA), componentFolder.findMember(this.componentName + "." + IWOLipsModel.EXT_WOD)};
+			IResource[] resources = new IResource[] {componentFolderToReveal.findMember(this.componentName + ".java"), componentFolder.findMember(this.componentName + ".wod")};
 			page.setResourcesToReveal(resources);
 		} catch (Exception e) {
 			WizardsPlugin.getDefault().log(e);

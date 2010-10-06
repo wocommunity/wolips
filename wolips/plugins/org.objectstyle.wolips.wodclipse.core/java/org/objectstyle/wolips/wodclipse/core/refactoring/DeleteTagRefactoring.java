@@ -16,20 +16,21 @@ import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.TextEdit;
 import org.objectstyle.wolips.bindings.wod.HtmlElementName;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.variables.BuildProperties;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.util.WodDocumentUtils;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
 public class DeleteTagRefactoring implements IRunnableWithProgress {
-  private boolean _wo54;
+  private BuildProperties _buildProperties;
   private FuzzyXMLElement _element;
   private WodParserCache _cache;
   private boolean _unwrap;
 
-  public DeleteTagRefactoring(FuzzyXMLElement element, boolean unwrap, boolean wo54, WodParserCache cache) {
+  public DeleteTagRefactoring(FuzzyXMLElement element, boolean unwrap, BuildProperties buildProperties, WodParserCache cache) {
     _element = element;
     _unwrap = unwrap;
-    _wo54 = wo54;
+    _buildProperties = buildProperties;
     _cache = cache;
   }
 
@@ -38,15 +39,17 @@ public class DeleteTagRefactoring implements IRunnableWithProgress {
       int referenceCount = 0;
 
       if (WodHtmlUtils.isWOTag(_element) && !WodHtmlUtils.isInline(_element)) {
-        IWodElement wodElement = WodHtmlUtils.getWodElement(_element, _wo54, true, _cache);
-        String elementName = wodElement.getElementName();
-        List<HtmlElementName> htmlElementNames = _cache.getHtmlEntry().getHtmlElementCache().getHtmlElementNames(elementName);
-        if (htmlElementNames != null) {
-          referenceCount = htmlElementNames.size();
-        }
-        
-        if (referenceCount == 1) {
-          DeleteTagRefactoring.deleteWodElement(_cache, wodElement);
+        IWodElement wodElement = WodHtmlUtils.getWodElement(_element, _buildProperties, true, _cache);
+        if (wodElement != null) {
+	        String elementName = wodElement.getElementName();
+	        List<HtmlElementName> htmlElementNames = _cache.getHtmlEntry().getHtmlElementCache().getHtmlElementNames(elementName);
+	        if (htmlElementNames != null) {
+	          referenceCount = htmlElementNames.size();
+	        }
+	        
+	        if (referenceCount == 1) {
+	          DeleteTagRefactoring.deleteWodElement(_cache, wodElement);
+	        }
         }
       }
 
@@ -77,7 +80,7 @@ public class DeleteTagRefactoring implements IRunnableWithProgress {
     }
   }
 
-  public static void run(FuzzyXMLElement element, boolean unwrap, boolean wo54, WodParserCache cache, IProgressMonitor progressMonitor) throws CoreException, InvocationTargetException, InterruptedException {
-    TemplateRefactoring.processHtmlAndWod(new DeleteTagRefactoring(element, unwrap, wo54, cache), cache, progressMonitor);
+  public static void run(FuzzyXMLElement element, boolean unwrap, BuildProperties buildProperties, WodParserCache cache, IProgressMonitor progressMonitor) throws CoreException, InvocationTargetException, InterruptedException {
+    TemplateRefactoring.processHtmlAndWod(new DeleteTagRefactoring(element, unwrap, buildProperties, cache), cache, progressMonitor);
   }
 }

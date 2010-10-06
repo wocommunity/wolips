@@ -57,20 +57,20 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 import org.objectstyle.wolips.variables.BuildProperties;
 
 /**
  * @author mike
  */
 public class PrincipalClassChange extends Change {
-	private IProjectAdapter _projectAdapter;
+	private ProjectAdapter _projectAdapter;
 
 	private BuildProperties _buildProperties;
 
 	private String _newName;
 
-	public PrincipalClassChange(IProjectAdapter projectAdapter, String newName) {
+	public PrincipalClassChange(ProjectAdapter projectAdapter, String newName) {
 		_projectAdapter = projectAdapter;
 		_buildProperties = projectAdapter.getBuildProperties();
 		_newName = newName;

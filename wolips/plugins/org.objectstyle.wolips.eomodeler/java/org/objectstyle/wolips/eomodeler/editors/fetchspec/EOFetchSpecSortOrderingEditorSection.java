@@ -62,8 +62,8 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbenchPart;
@@ -79,6 +79,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOSortOrdering;
 import org.objectstyle.wolips.eomodeler.outline.EOEntityTreeViewUpdater;
 import org.objectstyle.wolips.eomodeler.outline.EOModelOutlineContentProvider;
 import org.objectstyle.wolips.eomodeler.utils.AddRemoveButtonGroup;
+import org.objectstyle.wolips.eomodeler.utils.FormUtils;
 import org.objectstyle.wolips.eomodeler.utils.StayEditingCellEditorListener;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
@@ -112,12 +113,11 @@ public class EOFetchSpecSortOrderingEditorSection extends AbstractPropertySectio
 	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
 		super.createControls(_parent, _tabbedPropertySheetPage);
 
-		Composite topForm = getWidgetFactory().createPlainComposite(_parent, SWT.NONE);
+		Composite form = getWidgetFactory().createPlainComposite(_parent, SWT.NONE);
+		FormLayout formLayout = new FormLayout();
+		form.setLayout(formLayout);
 
-		GridLayout topFormLayout = new GridLayout();
-		topFormLayout.marginWidth = 10;
-		topFormLayout.marginHeight = 10;
-		topForm.setLayout(topFormLayout);
+		Composite topForm = FormUtils.createForm(getWidgetFactory(), form, 1);
 
 		myModelTreeViewer = new TreeViewer(topForm);
 		GridData modelTreeLayoutData = new GridData(GridData.FILL_BOTH);

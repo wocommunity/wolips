@@ -61,8 +61,10 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.objectstyle.wolips.baseforplugins.util.WOLipsNatureUtils;
 import org.objectstyle.wolips.core.resources.tests.AbstractProjectTestCase;
 
 public class NatureTest extends AbstractProjectTestCase {
@@ -78,32 +80,32 @@ public class NatureTest extends AbstractProjectTestCase {
 			naturesList.add("org.eclipse.jdt.core.javanature");
 			description.setNatureIds(naturesList.toArray(new String[naturesList.size()]));
 			project.setDescription(description, monitor);
-			boolean success = Nature.addIncrementalFrameworkNatureToProject(project, monitor);
+			boolean success = WOLipsNatureUtils.addIncrementalFrameworkNatureToProject(project, monitor);
 			assertTrue(success);
-			success = Nature.addIncrementalFrameworkNatureToProject(project, monitor);
+			success = WOLipsNatureUtils.addIncrementalFrameworkNatureToProject(project, monitor);
 			assertTrue(success);
-			Nature nature = Nature.getNature(project);
-			assertTrue(nature.isFramework());
+			IProjectNature nature = WOLipsNatureUtils.getNature(project);
+			assertTrue(((Nature) nature).isFramework());
 		} catch (CoreException e) {
 			assertTrue(false);
 		}
 		CoreException exception = null;
 		try {
-			Nature.addIncrementalApplicationNatureToProject(project, monitor);
+			WOLipsNatureUtils.addIncrementalApplicationNatureToProject(project, monitor);
 		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 		exception = null;
 		try {
-			Nature.addAntApplicationNatureToProject(project, monitor);
+			WOLipsNatureUtils.addAntApplicationNatureToProject(project, monitor);
 		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 		exception = null;
 		try {
-			Nature.addAntFrameworkNatureToProject(project, monitor);
+			WOLipsNatureUtils.addAntFrameworkNatureToProject(project, monitor);
 		} catch (CoreException e) {
 			exception = e;
 		}
@@ -121,32 +123,32 @@ public class NatureTest extends AbstractProjectTestCase {
 			naturesList.add("org.eclipse.jdt.core.javanature");
 			description.setNatureIds(naturesList.toArray(new String[naturesList.size()]));
 			project.setDescription(description, monitor);
-			boolean success = Nature.addIncrementalApplicationNatureToProject(project, monitor);
+			boolean success = WOLipsNatureUtils.addIncrementalApplicationNatureToProject(project, monitor);
 			assertTrue(success);
-			success = Nature.addIncrementalApplicationNatureToProject(project, monitor);
+			success = WOLipsNatureUtils.addIncrementalApplicationNatureToProject(project, monitor);
 			assertTrue(success);
-			Nature nature = Nature.getNature(project);
-			assertFalse(nature.isFramework());
+			IProjectNature nature = WOLipsNatureUtils.getNature(project);
+			assertFalse(((Nature) nature).isFramework());
 		} catch (CoreException e) {
 			assertTrue(false);
 		}
 		CoreException exception = null;
 		try {
-			Nature.addIncrementalFrameworkNatureToProject(project, monitor);
+			WOLipsNatureUtils.addIncrementalFrameworkNatureToProject(project, monitor);
 		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 		exception = null;
 		try {
-			Nature.addAntApplicationNatureToProject(project, monitor);
+			WOLipsNatureUtils.addAntApplicationNatureToProject(project, monitor);
 		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 		exception = null;
 		try {
-			Nature.addAntFrameworkNatureToProject(project, monitor);
+			WOLipsNatureUtils.addAntFrameworkNatureToProject(project, monitor);
 		} catch (CoreException e) {
 			exception = e;
 		}
@@ -164,32 +166,32 @@ public class NatureTest extends AbstractProjectTestCase {
 			naturesList.add("org.eclipse.jdt.core.javanature");
 			description.setNatureIds(naturesList.toArray(new String[naturesList.size()]));
 			project.setDescription(description, monitor);
-			boolean success = Nature.addAntFrameworkNatureToProject(project, monitor);
+			boolean success = WOLipsNatureUtils.addAntFrameworkNatureToProject(project, monitor);
 			assertTrue(success);
-			success = Nature.addAntFrameworkNatureToProject(project, monitor);
+			success = WOLipsNatureUtils.addAntFrameworkNatureToProject(project, monitor);
 			assertTrue(success);
-			Nature nature = Nature.getNature(project);
-			assertTrue(nature.isFramework());
+			IProjectNature nature = WOLipsNatureUtils.getNature(project);
+			assertTrue(((Nature) nature).isFramework());
 		} catch (CoreException e) {
 			assertTrue(false);
 		}
 		CoreException exception = null;
 		try {
-			Nature.addAntApplicationNatureToProject(project, monitor);
+			WOLipsNatureUtils.addAntApplicationNatureToProject(project, monitor);
 		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 		exception = null;
 		try {
-			Nature.addIncrementalFrameworkNatureToProject(project, monitor);
+			WOLipsNatureUtils.addIncrementalFrameworkNatureToProject(project, monitor);
 		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 		exception = null;
 		try {
-			Nature.addIncrementalApplicationNatureToProject(project, monitor);
+			WOLipsNatureUtils.addIncrementalApplicationNatureToProject(project, monitor);
 		} catch (CoreException e) {
 			exception = e;
 		}
@@ -207,32 +209,32 @@ public class NatureTest extends AbstractProjectTestCase {
 			naturesList.add("org.eclipse.jdt.core.javanature");
 			description.setNatureIds(naturesList.toArray(new String[naturesList.size()]));
 			project.setDescription(description, monitor);
-			boolean success = Nature.addAntApplicationNatureToProject(project, monitor);
+			boolean success = WOLipsNatureUtils.addAntApplicationNatureToProject(project, monitor);
 			assertTrue(success);
-			success = Nature.addAntApplicationNatureToProject(project, monitor);
+			success = WOLipsNatureUtils.addAntApplicationNatureToProject(project, monitor);
 			assertTrue(success);
-			Nature nature = Nature.getNature(project);
-			assertFalse(nature.isFramework());
+			IProjectNature nature = WOLipsNatureUtils.getNature(project);
+			assertFalse(((Nature) nature).isFramework());
 		} catch (CoreException e) {
 			assertTrue(false);
 		}
 		CoreException exception = null;
 		try {
-			Nature.addAntFrameworkNatureToProject(project, monitor);
+			WOLipsNatureUtils.addAntFrameworkNatureToProject(project, monitor);
 		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 		exception = null;
 		try {
-			Nature.addIncrementalApplicationNatureToProject(project, monitor);
+			WOLipsNatureUtils.addIncrementalApplicationNatureToProject(project, monitor);
 		} catch (CoreException e) {
 			exception = e;
 		}
 		assertNotNull(exception);
 		exception = null;
 		try {
-			Nature.addIncrementalFrameworkNatureToProject(project, monitor);
+			WOLipsNatureUtils.addIncrementalFrameworkNatureToProject(project, monitor);
 		} catch (CoreException e) {
 			exception = e;
 		}

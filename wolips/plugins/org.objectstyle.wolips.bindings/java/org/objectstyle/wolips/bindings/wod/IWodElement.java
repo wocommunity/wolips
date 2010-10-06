@@ -62,6 +62,8 @@ import org.objectstyle.wolips.bindings.api.Wo;
  * @author mschrag
  */
 public interface IWodElement extends IWodUnit {
+	public boolean isInherited();
+	
   public String getElementName();
 
   public String getElementType();

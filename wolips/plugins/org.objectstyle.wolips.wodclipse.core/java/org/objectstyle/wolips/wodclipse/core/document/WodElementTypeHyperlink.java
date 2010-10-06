@@ -9,6 +9,7 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
+import org.objectstyle.wolips.baseforuiplugins.utils.WorkbenchUtilities;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
@@ -16,7 +17,6 @@ import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 public class WodElementTypeHyperlink implements IHyperlink {
   private IJavaProject _javaProject;
@@ -54,7 +54,7 @@ public class WodElementTypeHyperlink implements IHyperlink {
           if (componentsLocateResults != null) {
             IFile wodFile = componentsLocateResults.getFirstWodFile();
             if (wodFile != null) {
-              WorkbenchUtilitiesPlugin.open(wodFile, "org.objectstyle.wolips.componenteditor.ComponentEditor");
+            	WorkbenchUtilities.open(wodFile, "org.objectstyle.wolips.componenteditor.ComponentEditor");
             }
           }
         }

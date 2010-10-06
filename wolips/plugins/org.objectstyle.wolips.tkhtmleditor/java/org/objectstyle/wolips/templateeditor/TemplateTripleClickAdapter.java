@@ -1,18 +1,13 @@
 package org.objectstyle.wolips.templateeditor;
 
-import jp.aonir.fuzzyxml.FuzzyXMLElement;
-
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.ui.part.FileEditorInput;
-import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 
 public class TemplateTripleClickAdapter extends MouseAdapter implements MouseMoveListener {
   private TemplateEditor _editor;
-  private Point _tripleClickPoint;
+  private Point _clickPoint;
   private int _clickCount;
 
   public TemplateTripleClickAdapter(TemplateEditor editor) {
@@ -25,14 +20,22 @@ public class TemplateTripleClickAdapter extends MouseAdapter implements MouseMov
       _clickCount = 0;
     }
     if (_clickCount == 0) {
-      _tripleClickPoint = new Point(e.x, e.y);
+      _clickPoint = new Point(e.x, e.y);
     }
   }
 
   @Override
   public void mouseUp(MouseEvent event) {
     _clickCount++;
-    if (_clickCount == 3) {
+    /*
+    if (_clickCount == 2) {
+      StyledText textWidget = _editor.getSourceEditor().getViewer().getTextWidget();
+      int offset = textWidget.getOffsetAtLocation(_clickPoint);
+      _editor.selectionChangedToOffset(offset);
+    }
+    */
+    /*
+    else if (_clickCount == 3) {
       StyledText textWidget = _editor.getSourceEditor().getViewer().getTextWidget();
       FileEditorInput input = (FileEditorInput) _editor.getEditorInput();
       try {
@@ -50,12 +53,13 @@ public class TemplateTripleClickAdapter extends MouseAdapter implements MouseMov
         e.printStackTrace();
       }
     }
+    */
   }
 
   public void mouseMove(MouseEvent e) {
     if (_clickCount > 0) {
       _clickCount = 0;
-      _tripleClickPoint = null;
+      _clickPoint = null;
     }
   }
 }

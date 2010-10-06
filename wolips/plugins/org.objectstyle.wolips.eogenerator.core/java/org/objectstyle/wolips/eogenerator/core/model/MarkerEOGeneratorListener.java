@@ -8,15 +8,18 @@ import org.objectstyle.wolips.eogenerator.core.Activator;
 
 public class MarkerEOGeneratorListener implements IEOGeneratorListener {
 	public void eogeneratorFailed(IFile eogenFile, String results) {
+		/*
 		try {
 			eogenFile.deleteMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
 			IMarker error = eogenFile.createMarker(IMarker.PROBLEM);
+			error.setAttribute(IMarker.TRANSIENT, true);
 			error.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 			error.setAttribute(IMarker.MESSAGE, "EOGenerator Failed (Run manually for details)");
 		} catch (CoreException e) {
       e.printStackTrace();
 			Activator.getDefault().log(e);
 		}
+		*/
 	}
 
 	public void eogeneratorFinished() {

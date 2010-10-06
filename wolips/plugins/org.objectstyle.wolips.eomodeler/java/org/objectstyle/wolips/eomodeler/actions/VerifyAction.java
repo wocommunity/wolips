@@ -53,47 +53,22 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
 
-public class VerifyAction implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
-	private IWorkbenchWindow _window;
-
-	private EOModel _model;
-
-	public void dispose() {
-		// DO NOTHING
-	}
-
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		_window = targetPart.getSite().getWorkbenchWindow();
-	}
-
-	public void init(IWorkbenchWindow window) {
-		_window = window;
-	}
-
-	public void selectionChanged(IAction action, ISelection selection) {
-		_model = null;
-		if (selection instanceof IStructuredSelection) {
-			Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
-			_model = EOModelUtils.getRelatedModel(selectedObject);
-		}
-	}
-
+public class VerifyAction extends EMAction {
 	public void run(IAction action) {
-		if (_model != null) {
+		EOModel model = null;
+		Object selectedObject = getSelectedObject();
+		if (selectedObject != null) {
+			model = EOModelUtils.getRelatedModel(selectedObject);
+		}
+		if (model != null) {
 			Set<EOModelVerificationFailure> verifyFailures = new HashSet<EOModelVerificationFailure>();
-			_model.verify(verifyFailures);
-			EOModelErrorDialog dialog = new EOModelErrorDialog(_window.getShell(), verifyFailures);
+			model.verify(verifyFailures);
+			EOModelErrorDialog dialog = new EOModelErrorDialog(getWindow().getShell(), verifyFailures);
 			dialog.open();
 		}
 	}

@@ -19,7 +19,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.bindings.Activator;
-import org.objectstyle.wolips.locate.LocatePlugin;
 
 public class WodParserCacheInvalidator implements IResourceChangeListener, IResourceDeltaVisitor {
   public void resourceChanged(IResourceChangeEvent event) {
@@ -36,7 +35,10 @@ public class WodParserCacheInvalidator implements IResourceChangeListener, IReso
 
   public boolean visit(IResourceDelta delta) {
     IResource resource = delta.getResource();
-    if (!resource.isDerived() && resource instanceof IFile) {
+    if (resource.isDerived()) {
+    	return false;
+    }
+    else if (resource instanceof IFile) {
       IFile file = (IFile) resource;
       String name = file.getName().toLowerCase();
       if (name.endsWith(".java")) {
@@ -93,7 +95,10 @@ public class WodParserCacheInvalidator implements IResourceChangeListener, IReso
             Display.getDefault().asyncExec(new Runnable() {
               public void run() {
                 try {
-                  oldFile.move(newPath, false, null);
+                	// one last check before it throws an exception ...
+                	if (!newPath.toFile().exists()) {
+                		oldFile.move(newPath, false, null);
+                	}
                 } catch (CoreException e) {
                   e.printStackTrace();
                 }

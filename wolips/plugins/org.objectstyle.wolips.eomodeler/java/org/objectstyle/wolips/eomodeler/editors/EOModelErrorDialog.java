@@ -178,6 +178,7 @@ public class EOModelErrorDialog extends Dialog {
 					public void widgetSelected(SelectionEvent e) {
 						EOModelVerificationFailure selectedFailure = (EOModelVerificationFailure) ((Widget) e.getSource()).getData();
 						if (selectedFailure != null && _editor != null && selectedFailure.getFailedObject() != null) {
+							_editor.getContentOutlinePage().showModelGroup();
 							_editor.setSelection(new StructuredSelection(selectedFailure.getFailedObject()));
 							EOModelErrorDialog.this.close();
 						}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="java"/>
+	<classpathentry kind="src" path="wojava"/>
+	<classpathentry kind="src" path="wojava56"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="lib" path="/Users/Shared/Developer/WebObjects56/javaeoaccess.jar"/>
+	<classpathentry kind="lib" path="/Users/Shared/Developer/WebObjects56/javafoundation.jar"/>
+	<classpathentry kind="lib" path="/Users/Shared/Developer/WebObjects56/javajdbcadaptor.jar"/>
+	<classpathentry kind="lib" path="/Users/Shared/Developer/WebObjects56/javaeocontrol.jar"/>
+	<classpathentry kind="lib" path="/Users/Shared/Developer/WebObjects56/log4j-1.2.15.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

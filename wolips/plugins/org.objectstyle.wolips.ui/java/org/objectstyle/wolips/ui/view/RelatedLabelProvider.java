@@ -12,6 +12,7 @@ import org.eclipse.jdt.ui.JavaElementLabels;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.PlatformUI;
+import org.objectstyle.wolips.baseforplugins.util.ResourceUtilities;
 
 public class RelatedLabelProvider extends AppearanceAwareLabelProvider implements ITableLabelProvider {
 	private Set<IResource> duplicateResourceSet;
@@ -46,7 +47,7 @@ public class RelatedLabelProvider extends AppearanceAwareLabelProvider implement
 			IResource resource = (IResource) _element;
 			String ext = resource.getFileExtension();
 			String name = resource.getName();
-			if (_columnIndex == 0) {
+			if (_columnIndex == 0) { // display of resource type (HTML/WOD/WOO/API/WO/...)
 				if (ext != null) {
 					if ("java".equalsIgnoreCase(ext)) {
 						text = "Java";
@@ -54,22 +55,31 @@ public class RelatedLabelProvider extends AppearanceAwareLabelProvider implement
 					if ("groovy".equalsIgnoreCase(ext)) {
 						text = "Groovy";
 					} else
-					if (!ext.matches("^wod|wo|woo|html|api$")) {
+					if ("eomodeld".equalsIgnoreCase(ext)) {
+						text = "EOM";
+					} else
+					if (ext.matches("^wod|wo|woo|html|api$")) {
 						text = ext.toUpperCase();
-						if (resource.getParent() != null && resource.getParent().getFileExtension() != null && resource.getParent().getFileExtension().equals("lproj")) {
-							text = resource.getParent().getName().replaceAll("\\.lproj", "");
+					}
+					else {
+						// display language name if object is in a lproj-folder
+						text = ResourceUtilities.getLocalizationName(resource);
+						if (text == null) { // otherwise display extension 
+							text = ext.toUpperCase();
 						}
-						else if (text.equals("EOMODELD")) {
-							text = "EOM";
-						}
-					} else {
-						text = ext.toUpperCase();
 					}					
 				}
-			} else {
+			} else { // display of resource name, project and language
 				text = name;
 				if (duplicateResourceSet.contains(resource)) {
-					text += " (" + resource.getProject().getName() + ")";
+					final StringBuilder sb = new StringBuilder(text);
+					sb.append(" (");
+					final String languageName = ResourceUtilities.getLocalizationName(resource);
+					if (languageName != null) {
+						sb.append(languageName).append(", ");
+					}
+					sb.append(resource.getProject().getName()).append(")");
+					text = sb.toString();
 				}
 			}
 		}

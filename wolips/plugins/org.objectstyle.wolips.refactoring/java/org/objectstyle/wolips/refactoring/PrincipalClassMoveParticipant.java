@@ -60,7 +60,7 @@ import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.MoveParticipant;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 
 /**
  * Changes the package name of a WOLips project's Principal Class when it gets
@@ -69,7 +69,7 @@ import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
  * @author mschrag
  */
 public class PrincipalClassMoveParticipant extends MoveParticipant {
-	private IProjectAdapter myProject;
+	private ProjectAdapter myProject;
 
 	private String myName;
 
@@ -127,12 +127,12 @@ public class PrincipalClassMoveParticipant extends MoveParticipant {
 		return change;
 	}
 
-	public static IProjectAdapter getInitializedProject(Object _element) {
-		IProjectAdapter initializedProject = null;
+	public static ProjectAdapter getInitializedProject(Object _element) {
+		ProjectAdapter initializedProject = null;
 		try {
 			if (_element instanceof IType) {
 				IType sourceType = (IType) _element;
-				IProjectAdapter project = (IProjectAdapter) sourceType.getJavaProject().getProject().getAdapter(IProjectAdapter.class);
+				ProjectAdapter project = (ProjectAdapter) sourceType.getJavaProject().getProject().getAdapter(ProjectAdapter.class);
 				String principalClass = project.getBuildProperties().getPrincipalClass(true);
 				String fullyQualifiedName = sourceType.getFullyQualifiedName();
 				if (principalClass != null && principalClass.equals(fullyQualifiedName)) {
@@ -140,7 +140,7 @@ public class PrincipalClassMoveParticipant extends MoveParticipant {
 				}
 			} else if (_element instanceof IPackageFragment) {
 				IPackageFragment packageFragment = (IPackageFragment) _element;
-				IProjectAdapter project = (IProjectAdapter) packageFragment.getJavaProject().getProject().getAdapter(IProjectAdapter.class);
+				ProjectAdapter project = (ProjectAdapter) packageFragment.getJavaProject().getProject().getAdapter(ProjectAdapter.class);
 				String principalClass = project.getBuildProperties().getPrincipalClass(true);
 				if (principalClass != null) {
 					int dotIndex = principalClass.lastIndexOf('.');

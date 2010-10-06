@@ -61,11 +61,8 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -77,6 +74,7 @@ import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.utils.NamingConvention;
+import org.objectstyle.wolips.eomodeler.utils.FormUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringLabelProvider;
 
 public class EOModelAdvancedEditorSection extends AbstractPropertySection implements ModifyListener, ISelectionChangedListener, SelectionListener {
@@ -110,16 +108,7 @@ public class EOModelAdvancedEditorSection extends AbstractPropertySection implem
 		FormLayout formLayout = new FormLayout();
 		form.setLayout(formLayout);
 
-		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0, 5);
-		topFormData.left = new FormAttachment(0, 5);
-		topFormData.right = new FormAttachment(100, -5);
-		topForm.setLayoutData(topFormData);
-
-		GridLayout topFormLayout = new GridLayout();
-		topFormLayout.numColumns = 2;
-		topForm.setLayout(topFormLayout);
+		Composite topForm = FormUtils.createForm(getWidgetFactory(), form);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + EOModel.ATTRIBUTE_NAMING_CONVENTION + ".prefix"), SWT.NONE);
 		_attributePrefix = new Text(topForm, SWT.BORDER);
@@ -169,6 +158,7 @@ public class EOModelAdvancedEditorSection extends AbstractPropertySection implem
 		_entitySeparator.setInput(NamingConvention.Separator.values());
 		entitySeparatorCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		_reverseEngineered = getWidgetFactory().createButton(topForm, "Reverse Engineered", SWT.CHECK);
 		_reverseEngineered.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 	}

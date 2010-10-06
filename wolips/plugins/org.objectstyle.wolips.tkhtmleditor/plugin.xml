@@ -68,7 +68,7 @@
       <editor
             class="org.objectstyle.wolips.templateeditor.TemplateEditor"
             contributorClass="org.objectstyle.wolips.templateeditor.TemplateEditorContributor"
-            default="true"
+            default="false"
             extensions="html,xhtml"
             icon="icons/ComponentHTML.png"
             id="org.objectstyle.wolips.TemplateEditor"

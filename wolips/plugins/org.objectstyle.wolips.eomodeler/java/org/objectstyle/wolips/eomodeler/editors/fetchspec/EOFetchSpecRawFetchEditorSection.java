@@ -60,8 +60,6 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -78,6 +76,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.outline.EOEntityTreeViewUpdater;
 import org.objectstyle.wolips.eomodeler.outline.EOModelOutlineContentProvider;
 import org.objectstyle.wolips.eomodeler.utils.AddRemoveButtonGroup;
+import org.objectstyle.wolips.eomodeler.utils.FormUtils;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
@@ -111,22 +110,12 @@ public class EOFetchSpecRawFetchEditorSection extends AbstractPropertySection im
 
 	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
 		super.createControls(_parent, _tabbedPropertySheetPage);
-		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-		((FormLayout)form.getLayout()).marginWidth = 10;
-		((FormLayout)form.getLayout()).marginHeight = 10;
 
-		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0);
-		topFormData.left = new FormAttachment(0);
-		topFormData.right = new FormAttachment(100);
-		topFormData.bottom = new FormAttachment(100);
-		topForm.setLayoutData(topFormData);
+		Composite form = getWidgetFactory().createPlainComposite(_parent, SWT.NONE);
+		FormLayout formLayout = new FormLayout();
+		form.setLayout(formLayout);
 
-		GridLayout topFormLayout = new GridLayout();
-		topFormLayout.marginWidth = 0;
-		topFormLayout.marginHeight = 0;
-		topForm.setLayout(topFormLayout);
+		Composite topForm = FormUtils.createForm(getWidgetFactory(), form, 1);
 
 		Composite fetchStyleComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
 		GridLayout fetchStyleLayout = new GridLayout();

@@ -67,8 +67,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapter;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 import org.objectstyle.wolips.jdt.ProjectFrameworkAdapter;
 import org.objectstyle.wolips.variables.BuildProperties;
 
@@ -88,7 +87,7 @@ public abstract class WOLipsPropertyPage extends PropertyPage implements IAdapta
 			}
 		}
 		if (buildProperties == null) {
-			buildProperties = new BuildProperties(getProject());
+			buildProperties = (BuildProperties) getProject().getAdapter(BuildProperties.class);
 		}
 		return buildProperties;
 	}
@@ -214,7 +213,7 @@ public abstract class WOLipsPropertyPage extends PropertyPage implements IAdapta
 		IProject project = getProject();
 		ProjectAdapter projectAdapter = null;
 		if (project != null) {
-			projectAdapter = (ProjectAdapter) project.getAdapter(IProjectAdapter.class);
+			projectAdapter = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
 		}
 		return projectAdapter;
 	}

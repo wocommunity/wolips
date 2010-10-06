@@ -53,7 +53,7 @@ package org.objectstyle.wolips.builder.internal;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets;
 
 /**
  * @author uli
@@ -61,7 +61,7 @@ import org.objectstyle.wolips.datasets.adaptable.Project;
 final class BuildResourceValidator extends DefaultDeltaVisitor {
 	private boolean buildRequired = false;
 
-	private Project project;
+	private IProjectPatternsets projectPatternsets;
 
 	/**
 	 * Constructor for ProjectFileResourceValidator.
@@ -105,15 +105,20 @@ final class BuildResourceValidator extends DefaultDeltaVisitor {
 			return false;
 		}
 		// see bugreport #708385
-		if (!resource.isAccessible() && kindOfChange != IResourceDelta.REMOVED)
+		if (!resource.isAccessible() && kindOfChange != IResourceDelta.REMOVED) {
 			return false;
+		}
+		if (resource.isDerived()) {
+			return false;
+		}
+			
 		// reset project file to update
 		switch (resource.getType()) {
 		case IResource.ROOT:
 			// further investigation of resource delta needed
 			return true;
 		case IResource.PROJECT:
-			this.project = (Project) resource.getAdapter(Project.class);
+			this.projectPatternsets = (IProjectPatternsets) resource.getAdapter(IProjectPatternsets.class);
 			return true;
 		case IResource.FOLDER:
 			String extension = resource.getFileExtension();
@@ -132,7 +137,7 @@ final class BuildResourceValidator extends DefaultDeltaVisitor {
 			if (resource.getName().endsWith("~")) {
 				return false;
 			}
-			if (this.project.matchesResourcesPattern(resource) || this.project.matchesWOAppResourcesPattern(resource) || this.project.matchesClassesPattern(resource)) {
+			if (this.projectPatternsets.matchesResourcesPattern(resource) || this.projectPatternsets.matchesWOAppResourcesPattern(resource) || this.projectPatternsets.matchesClassesPattern(resource)) {
 				this.buildRequired = true;
 				return false;
 			}
@@ -142,7 +147,13 @@ final class BuildResourceValidator extends DefaultDeltaVisitor {
 			if (needsUpdate(kindOfChange)) {
 				if (".project".equals(resource.getName()) || "PB.project".equals(resource.getName()) || ".classpath".equals(resource.getName()) || "Makefile".equals(resource.getName()) || resource.getName().startsWith("ant.")) {
 					return false;
-				} else if (resource.getName().endsWith(".java") || this.project.matchesResourcesPattern(resource) || this.project.matchesWOAppResourcesPattern(resource) || this.project.matchesClassesPattern(resource)) {
+				} else if (resource.getName().equals("build.properties")) {
+					this.buildRequired = true;
+					return false;
+				} else if (resource.getName().equals("pom.xml")) {
+					this.buildRequired = true;
+					return false;
+				} else if (resource.getName().endsWith(".java") || this.projectPatternsets.matchesResourcesPattern(resource) || this.projectPatternsets.matchesWOAppResourcesPattern(resource) || this.projectPatternsets.matchesClassesPattern(resource)) {
 					this.buildRequired = true;
 					return false;
 				}

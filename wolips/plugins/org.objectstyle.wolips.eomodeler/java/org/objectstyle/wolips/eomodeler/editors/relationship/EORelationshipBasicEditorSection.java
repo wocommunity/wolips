@@ -62,12 +62,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -89,6 +86,7 @@ import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityLabelProvider;
 import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityListContentProvider;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
+import org.objectstyle.wolips.eomodeler.utils.FormUtils;
 
 public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 	private EORelationship _relationship;
@@ -141,23 +139,10 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 	public void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
 		super.createControls(parent, tabbedPropertySheetPage);
 		Composite form = getWidgetFactory().createFlatFormComposite(parent);
-		((FormLayout)form.getLayout()).marginWidth = 10;
-		((FormLayout)form.getLayout()).marginHeight = 10;
+		FormLayout formLayout = new FormLayout();
+		form.setLayout(formLayout);
 
-		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-		topForm.setBackgroundMode(SWT.INHERIT_DEFAULT);
-		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0);
-		topFormData.left = new FormAttachment(0);
-		topFormData.right = new FormAttachment(100);
-		topFormData.bottom = new FormAttachment(100);
-		topForm.setLayoutData(topFormData);
-
-		GridLayout topFormLayout = new GridLayout();
-		topFormLayout.numColumns = 2;
-		topFormLayout.marginWidth = 0;
-		topFormLayout.marginHeight = 0;
-		topForm.setLayout(topFormLayout);
+		Composite topForm = FormUtils.createForm(getWidgetFactory(), form);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.NAME), SWT.NONE);
 		_nameText = new Text(topForm, SWT.BORDER);
@@ -172,17 +157,23 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.settings"), SWT.NONE);
 		
 		Composite settingsComposite = new Composite(topForm, SWT.NONE);
-		settingsComposite.setLayout(new RowLayout(SWT.HORIZONTAL));
+		settingsComposite.setBackground(topForm.getBackground());
+		FillLayout settingsLayout = new FillLayout(SWT.HORIZONTAL);
+		settingsLayout.spacing = 10;
+		settingsComposite.setLayout(settingsLayout);
+		GridData settingsLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		settingsLayoutData.heightHint = 25;
+		settingsComposite.setLayoutData(settingsLayoutData);
 
-		_toManyButton = new Button(settingsComposite, SWT.TOGGLE);
+		_toManyButton = new Button(settingsComposite, SWT.TOGGLE | SWT.FLAT);
 		_toManyButton.setToolTipText(Messages.getString("EORelationship." + EORelationship.TO_MANY));
 		_toManyButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.TO_MANY_ICON));
 
-		_classPropertyButton = new Button(settingsComposite, SWT.TOGGLE);
+		_classPropertyButton = new Button(settingsComposite, SWT.TOGGLE | SWT.FLAT);
 		_classPropertyButton.setToolTipText(Messages.getString("EORelationship." + EORelationship.CLASS_PROPERTY));
 		_classPropertyButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
 
-		_optionalButton = new Button(settingsComposite, SWT.TOGGLE);
+		_optionalButton = new Button(settingsComposite, SWT.TOGGLE | SWT.FLAT);
 		_optionalButton.setToolTipText(Messages.getString("EORelationship." + EORelationship.OPTIONAL));
 		_optionalButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.ALLOW_NULL_ICON));
 

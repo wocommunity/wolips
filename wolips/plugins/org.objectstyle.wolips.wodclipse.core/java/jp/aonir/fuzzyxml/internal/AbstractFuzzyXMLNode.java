@@ -65,14 +65,14 @@ public abstract class AbstractFuzzyXMLNode implements FuzzyXMLNode {
   }
 
   /**
-   * ƒcƒŠ[‚ÌXVƒCƒxƒ“ƒg‚ğ”­‰Î‚µ‚Ü‚·B
+   * ï¿½cï¿½ï¿½ï¿½[ï¿½ÌXï¿½Vï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½ğ”­‰Î‚ï¿½ï¿½Ü‚ï¿½ï¿½B
    * 
    * @param newText
    * @param offset
    * @param length
    */
   protected void fireModifyEvent(String newText, int offset, int length) {
-    // ‚Ü‚¾ƒm[ƒh‚ªƒcƒŠ[‚É’Ç‰Á‚³‚ê‚Ä‚¢‚È‚¢ê‡‚Í‚È‚É‚à‚µ‚È‚¢
+    // ï¿½Ü‚ï¿½ï¿½mï¿½[ï¿½hï¿½ï¿½ï¿½cï¿½ï¿½ï¿½[ï¿½É’Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½Í‚È‚É‚ï¿½ï¿½ï¿½ï¿½È‚ï¿½
     FuzzyXMLDocumentImpl doc = getDocument();
     if (doc == null) {
       return;
@@ -81,14 +81,14 @@ public abstract class AbstractFuzzyXMLNode implements FuzzyXMLNode {
   }
 
   /**
-   * ƒm[ƒh‚ÌˆÊ’uî•ñ‚ğXV‚µ‚Ü‚·BƒcƒŠ[‚Ì•ÏX‘O‚ÉŒÄ‚Ño‚µ‚Ü‚·B
+   * ï¿½mï¿½[ï¿½hï¿½ÌˆÊ’uï¿½ï¿½ï¿½ï¿½ï¿½Xï¿½Vï¿½ï¿½ï¿½Ü‚ï¿½ï¿½Bï¿½cï¿½ï¿½ï¿½[ï¿½Ì•ÏXï¿½Oï¿½ÉŒÄ‚Ñoï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
    * 
    * @param parent
    * @param offset
    * @param append
    */
   protected void appendOffset(FuzzyXMLElement parent, int offset, int append) {
-    // ‚Ü‚¾ƒm[ƒh‚ªƒcƒŠ[‚É’Ç‰Á‚³‚ê‚Ä‚¢‚È‚¢ê‡‚Í‚È‚É‚à‚µ‚È‚¢
+    // ï¿½Ü‚ï¿½ï¿½mï¿½[ï¿½hï¿½ï¿½ï¿½cï¿½ï¿½ï¿½[ï¿½É’Ç‰ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½Í‚È‚É‚ï¿½ï¿½ï¿½ï¿½È‚ï¿½
     FuzzyXMLDocumentImpl doc = getDocument();
     if (doc == null) {
       return;
@@ -129,5 +129,9 @@ public abstract class AbstractFuzzyXMLNode implements FuzzyXMLNode {
 
   public boolean hasLineBreaks() {
     return true;
+  }
+  
+  public boolean isSynthetic() {
+  	return false;
   }
 }

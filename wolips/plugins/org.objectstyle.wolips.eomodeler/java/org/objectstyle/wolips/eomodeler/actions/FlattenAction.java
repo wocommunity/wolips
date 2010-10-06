@@ -52,55 +52,29 @@ package org.objectstyle.wolips.eomodeler.actions;
 import org.eclipse.core.commands.operations.IOperationHistory;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractEOAttributePath;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 
-public class FlattenAction implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
-	private IWorkbenchWindow _window;
-
-	private AbstractEOAttributePath _attributePath;
-
-	public void dispose() {
-		// DO NOTHING
-	}
-
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		_window = targetPart.getSite().getWorkbenchWindow();
-	}
-
-	public void init(IWorkbenchWindow window) {
-		_window = window;
-	}
-
-	public void selectionChanged(IAction action, ISelection selection) {
-		_attributePath = null;
-		if (selection instanceof IStructuredSelection) {
-			Object selectedObject = ((IStructuredSelection) selection).getFirstElement();
-			if (selectedObject instanceof AbstractEOAttributePath) {
-				_attributePath = (AbstractEOAttributePath) selectedObject;
-			}
-		}
-	}
-
+public class FlattenAction extends EMAction {
 	public void run(IAction action) {
 		try {
-			if (_attributePath != null) {
-				FlattenOperation operation = new FlattenOperation(_attributePath);
-				operation.addContext(EOModelUtils.getUndoContext(_attributePath));
+			AbstractEOAttributePath attributePath = null;
+			Object selectedObject = getSelectedObject();
+			if (selectedObject instanceof AbstractEOAttributePath) {
+				attributePath = (AbstractEOAttributePath) selectedObject;
+			}
+
+			if (attributePath != null) {
+				FlattenOperation operation = new FlattenOperation(attributePath);
+				operation.addContext(EOModelUtils.getUndoContext(attributePath));
 				IOperationHistory operationHistory = PlatformUI.getWorkbench().getOperationSupport().getOperationHistory();
 				operationHistory.execute(operation, null, null);
 			} else {
-				MessageDialog.openError(_window.getShell(), Messages.getString("EORelationship.noRelationshipOrAttributeSelectedTitle"), Messages.getString("EORelationship.noRelationshipOrAttributeSelectedMessage"));//$NON-NLS-1$
+				MessageDialog.openError(getWindow().getShell(), Messages.getString("EORelationship.noRelationshipOrAttributeSelectedTitle"), Messages.getString("EORelationship.noRelationshipOrAttributeSelectedMessage"));//$NON-NLS-1$
 			}
 		} catch (Throwable e) {
 			ErrorUtils.openErrorDialog(Display.getDefault().getActiveShell(), e);

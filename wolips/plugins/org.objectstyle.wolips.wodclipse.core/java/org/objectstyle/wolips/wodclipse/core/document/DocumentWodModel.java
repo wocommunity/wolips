@@ -44,6 +44,8 @@
 package org.objectstyle.wolips.wodclipse.core.document;
 
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.text.BadLocationException;
@@ -53,10 +55,14 @@ import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.objectstyle.wolips.bindings.wod.AbstractWodModel;
 import org.objectstyle.wolips.bindings.wod.IWodBinding;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
+import org.objectstyle.wolips.bindings.wod.IWodModel;
 import org.objectstyle.wolips.bindings.wod.IWodUnit;
+import org.objectstyle.wolips.bindings.wod.SimpleWodElement;
 import org.objectstyle.wolips.bindings.wod.WodElementProblem;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
 import org.objectstyle.wolips.wodclipse.core.Activator;
+import org.objectstyle.wolips.wodclipse.core.completion.WodCacheEntry;
+import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.parser.AssignmentOperatorWordDetector;
 import org.objectstyle.wolips.wodclipse.core.parser.BindingNameRule;
 import org.objectstyle.wolips.wodclipse.core.parser.BindingValueNamespaceRule;
@@ -109,6 +115,7 @@ public class DocumentWodModel extends AbstractWodModel {
     }
   }
 
+  // MS: all these savedRulePositions should be switched to instead use the rulePositions stack ...
   protected synchronized void parse() {
     clear();
 
@@ -120,6 +127,7 @@ public class DocumentWodModel extends AbstractWodModel {
     RulePosition savedRulePosition2 = null;
     RulePosition savedRulePosition3 = null;
     RulePosition lastRulePosition = null;
+    ForgivingStack<RulePosition> rulePositions = new ForgivingStack<RulePosition>();
     // boolean stringLiteralIsABindingName = false;
     RulePosition rulePosition;
     while ((rulePosition = scanner.nextRulePosition()) != null) {
@@ -131,17 +139,34 @@ public class DocumentWodModel extends AbstractWodModel {
       else if (RulePosition.isRulePositionOfType(rulePosition, ICommentRule.class)) {
         comment = true;
         if (lastBinding != null) {
-          try {
-            String commentText = rulePosition.getText();
-            if (commentText.startsWith("//")) {
-              commentText = commentText.substring(2).trim();
-              if ("VALID".equalsIgnoreCase(commentText)) {
-                lastBinding.setValidate(false);
-              }
+          String commentText = rulePosition._getTextWithoutException();
+          if (commentText != null && commentText.startsWith("//")) {
+            commentText = commentText.substring(2).trim();
+            if ("VALID".equalsIgnoreCase(commentText)) {
+              lastBinding.setValidate(false);
             }
           }
-          catch (BadLocationException e) {
-            e.printStackTrace();
+        }
+        else {
+          String commentText = rulePosition._getTextWithoutException();
+          if (commentText != null && commentText.startsWith("//")) {
+            commentText = commentText.substring(2).trim();
+            if (commentText.toLowerCase().startsWith("inherit ")) {
+            	String componentName = commentText.substring("inherit ".length()).trim();
+            	try {
+            		WodParserCache inheritCache = WodParserCache.parser(_wodFile.getProject(), componentName);
+            		WodCacheEntry wodCacheEntry = inheritCache.getWodEntry();
+            		IWodModel parentWodModel = wodCacheEntry.getModel();
+            		for (IWodElement parentWodElement : parentWodModel.getElements()) {
+            			SimpleWodElement inheritedWodElement = new SimpleWodElement(parentWodElement);
+            			inheritedWodElement.setInherited(true);
+            			addElement(inheritedWodElement);
+            		}
+            	}
+            	catch (Throwable t) {
+                addParseProblem(element, "WOD inheritance of '" + componentName + "' failed: " + t.getMessage() + ".", rulePosition, false);
+            	}
+            }
           }
         }
       }
@@ -155,7 +180,7 @@ public class DocumentWodModel extends AbstractWodModel {
         }
         else {
           if (lastRulePosition != null && !RulePosition.isOperatorOfType(lastRulePosition, CloseDefinitionWordDetector.class)) {
-            addParseProblem(element, "The element name '" + rulePosition._getTextWithoutException() + "' can only appear at the beginning of the document or after a '}'", rulePosition, false);
+            addParseProblem(element, "The element name '" + rulePosition._getTextWithoutException() + "' must start a WOD declaration", rulePosition, false);
           }
           savedRulePosition = rulePosition;
           element = null;
@@ -168,7 +193,7 @@ public class DocumentWodModel extends AbstractWodModel {
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, ElementTypeRule.class)) {
         if (tentativeElementName != null) {
-          addParseProblem(element, "The element name '" + tentativeElementName._getTextWithoutException() + "' can only appear at the beginning of the document or after a '}'", tentativeElementName, false);
+       		addParseProblem(element, "The element name ' " + tentativeElementName._getTextWithoutException() + "' must start a WOD declaration", tentativeElementName, false);
           tentativeElementName = null;
           savedRulePosition = null;
         }
@@ -176,6 +201,7 @@ public class DocumentWodModel extends AbstractWodModel {
           addParseProblem(element, "The element type '" + rulePosition._getTextWithoutException() + "' can only appear after a ':'", rulePosition, false);
         }
         else {
+        	rulePositions.clear();
           element = new DocumentWodElement(savedRulePosition, rulePosition);
           addElement(element);
           savedRulePosition = null;
@@ -205,7 +231,7 @@ public class DocumentWodModel extends AbstractWodModel {
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, StringLiteralRule.class)) {
         boolean literalIsValue = RulePosition.isOperatorOfType(lastRulePosition, AssignmentOperatorWordDetector.class);
-        boolean literalIsName = !literalIsValue && (RulePosition.isOperatorOfType(lastRulePosition, EndAssignmentWordDetector.class) || RulePosition.isOperatorOfType(lastRulePosition, OpenDefinitionWordDetector.class));
+        boolean literalIsName = !literalIsValue && (RulePosition.isOperatorOfType(rulePositions.peek(), EndAssignmentWordDetector.class) || RulePosition.isOperatorOfType(rulePositions.peek(), OpenDefinitionWordDetector.class));
         if (!literalIsValue && !literalIsName) {
           addParseProblem(element, "The string literal '" + rulePosition._getTextWithoutException() + "' can only appear after a '{', '=', or ';'.", rulePosition, false);
           savedRulePosition = null;
@@ -261,7 +287,7 @@ public class DocumentWodModel extends AbstractWodModel {
         if (element != null) {
           element.setEndOffset(rulePosition.getTokenOffset() + 1);
         }
-        if (!RulePosition.isOperatorOfType(lastRulePosition, OpenDefinitionWordDetector.class) && !RulePosition.isOperatorOfType(lastRulePosition, EndAssignmentWordDetector.class)) {
+        if (!RulePosition.isOperatorOfType(lastRulePosition, OpenDefinitionWordDetector.class) && !RulePosition.isOperatorOfType(lastRulePosition, EndAssignmentWordDetector.class) && !RulePosition.isRulePositionOfType(lastRulePosition, BindingValueRule.class) && !RulePosition.isRulePositionOfType(lastRulePosition, StringLiteralRule.class) && !RulePosition.isRulePositionOfType(lastRulePosition, WOOGNLRule.class)) {
           addParseProblem(element, "A '}' can only appear after a ';' or a '{'", rulePosition, false);
         }
         else {
@@ -275,6 +301,7 @@ public class DocumentWodModel extends AbstractWodModel {
 
       if (!whitespace && !comment) {
         lastRulePosition = rulePosition;
+      	rulePositions.push(rulePosition);
       }
     }
 
@@ -357,4 +384,31 @@ public class DocumentWodModel extends AbstractWodModel {
     return index >= wodUnit.getStartOffset() && index <= wodUnit.getEndOffset();
   }
 
+  protected static class ForgivingStack<T> {
+  	private List<T> _contents;
+  	
+  	public ForgivingStack() {
+  		_contents = new LinkedList<T>();
+  	}
+  	
+  	public void push(T obj) {
+  		_contents.add(0, obj);
+  	}
+  	
+  	public void clear() {
+  		_contents.clear();
+  	}
+  	
+  	public T peek() {
+  		return peek(0);
+  	}
+  	
+  	public T peek(int offset) {
+  		T obj = null;
+  		if (_contents.size() > offset) {
+  			obj = _contents.get(offset);
+  		}
+  		return obj;
+  	}
+  }
 }

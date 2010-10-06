@@ -1,17 +1,16 @@
 package org.objectstyle.wolips.eomodeler.editors.userInfo;
 
 import org.eclipse.core.databinding.observable.Diffs;
-import org.eclipse.jface.internal.databinding.provisional.swt.AbstractSWTObservableValue;
+import org.eclipse.core.databinding.observable.value.AbstractObservableValue;
 import org.eclipse.swt.browser.Browser;
 
-public class BrowserTextObservableValue extends AbstractSWTObservableValue {
+public class BrowserTextObservableValue extends AbstractObservableValue {
 	private final Browser _browser;
 
 	private String _text;
 	private String _defaultStyle;
 
 	public BrowserTextObservableValue(Browser browser, String defaultStyle) {
-		super(browser);
 		_browser = browser;
 		_defaultStyle = defaultStyle;
 	}

@@ -199,7 +199,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 					if (AbstractEOArgument.NAME != propertyName && AbstractEOArgument.COLUMN_NAME != propertyName) {
 						Object currentValue = EOAttribute.getPropertyKey(propertyName).getValue(this);
 						Object prototypeValue = EOAttribute.getPropertyKey(propertyName).getValue(prototypeAttribute);
-						if (prototypeValue != null && !ComparisonUtils.equals(currentValue, prototypeValue)) {
+						if (prototypeValue != null && !prototypeValueEquals(propertyName, currentValue, prototypeValue)) {
 							// MS: These are some commonly wrong values that
 							// occur when you reverse engineer a database. We
 							// want to be kind of lenient about these when we're
@@ -238,6 +238,13 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		return Boolean.FALSE;
 	}
 
+	protected boolean prototypeValueEquals(String propertyName, Object value1, Object value2) {
+		if (AbstractEOArgument.VALUE_TYPE.equals(propertyName)) {
+			return ComparisonUtils.equals(value1, value2);
+		}
+		return ComparisonUtils.equalsIgnoreCaseIfStrings(value1, value2);
+	}
+	
 	public boolean isPrototyped(String _property) {
 		boolean prototyped = false;
 		if (myPrototypeName != null) {
@@ -247,7 +254,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 				Object value = key.getValue(this);
 				if (value != null) {
 					Object prototypeValue = key.getValue(prototype);
-					prototyped = value.equals(prototypeValue);
+					prototyped = prototypeValueEquals(_property, value, prototypeValue);
 				}
 			}
 		}
@@ -338,9 +345,9 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		Map<String, Object> oldValues = new HashMap<String, Object>();
 		for (int propertyNum = 0; propertyNum < PROTOTYPED_PROPERTIES.length; propertyNum++) {
 			String propertyName = PROTOTYPED_PROPERTIES[propertyNum];
-			Object oldValue = EOAttribute.getPropertyKey(propertyName).getValue(this);
-			oldValues.put(propertyName, oldValue);
+			oldValues.put(propertyName, EOAttribute.getPropertyKey(propertyName).getValue(this));
 		}
+		
 		myCachedPrototype = _prototype;
 		if (_prototype == null) {
 			myPrototypeName = null;
@@ -352,11 +359,19 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 			for (int propertyNum = 0; propertyNum < PROTOTYPED_PROPERTIES.length; propertyNum++) {
 				String propertyName = PROTOTYPED_PROPERTIES[propertyNum];
 				IKey propertyKey = EOAttribute.getPropertyKey(propertyName);
-				Object newValue = propertyKey.getValue(this);
 				Object oldValue = oldValues.get(propertyName);
-				if (AbstractEOArgument.NAME.equals(propertyName) && newValue == null) {
+				Object newPrototypeValue = propertyKey.getValue(_prototype);
+				Object newValue;
+				if (AbstractEOArgument.NAME.equals(propertyName)) {
 					newValue = oldValue;
 				}
+				else if (AbstractEOArgument.COLUMN_NAME.equals(propertyName) && oldValue != null) {
+					newValue = oldValue;
+				}
+				else {
+					newValue = newPrototypeValue;
+				}
+				//System.out.println("EOAttribute.setPrototype: " + propertyName + "," + newValue + "," + oldValue + " (" + wasPrototyped + ")");
 				propertyKey.setValue(this, newValue);
 				firePropertyChange(propertyName, oldValue, newValue);
 			}
@@ -374,12 +389,12 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		}
 		return value;
 	}
-
+	
 	protected Object _nullIfPrototyped(String _property, Object _value) {
 		Object value = _value;
 		if (value != null && myPrototypeName != null) {
 			EOAttribute prototype = getPrototype();
-			if (prototype != null && value.equals(EOAttribute.getPropertyKey(_property).getValue(prototype))) {
+			if (prototype != null && prototypeValueEquals(_property, value, EOAttribute.getPropertyKey(_property).getValue(prototype))) {
 				value = null;
 			}
 		}
@@ -413,6 +428,12 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 					attribute.updateDefinitionBecauseAttributeNameChanged(this);
 				}
 			}
+			for (EOEntityIndex index : getReferencingEntityIndexes()) {
+				index.getEntity().setEntityDirty(true);
+			}
+			for (EORelationship relationship : getReferencingRelationships(true, new VerificationContext(getEntity().getModel().getModelGroup()))) {
+				relationship.getEntity().setEntityDirty(true);
+			}
 		}
 		if (_fireEvents) {
 			synchronizeNameChange(oldName, newName);
@@ -421,6 +442,10 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 
 	public String getName() {
 		return (String) _prototypeValueIfNull(AbstractEOArgument.NAME, super.getName());
+	}
+
+	public String getUppercaseName() {
+		return getName().toUpperCase();
 	}
 
 	public String getUppercaseUnderscoreName() {
@@ -1045,7 +1070,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 			if (!isFlattened()) {
 				String columnName = getColumnName();
 				if (columnName == null || columnName.trim().length() == 0) {
-					if (getDefinition() == null) {
+					if (getDefinition() == null && !getEntity().isAbstractEntity()) {
 						_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + " does not have a column name set.", true));
 					}
 				} else if (columnName.indexOf(' ') != -1) {
@@ -1053,14 +1078,14 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 				} else {
 					if (getDefinition() == null) {
 						for (EOAttribute attribute : myEntity.getAttributes()) {
-							if (attribute != this && columnName.equals(attribute.getColumnName())) {
+							if (attribute != this && prototypeValueEquals(AbstractEOArgument.COLUMN_NAME, columnName, attribute.getColumnName())) {
 								_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + "'s column name is the same as " + attribute.getName() + "'s.", true));
 							}
 						}
 					}
 				}
 
-				if (getValueClassName() == null && getClassName() == null) {
+				if (getValueClassName() == null && getClassName() == null && !getEntity().isAbstractEntity()) {
 					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + " does not have a value class name or a class name.", true));
 				}
 

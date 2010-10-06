@@ -6,9 +6,9 @@ Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.eomodeler.core.Activator
 Require-Bundle: org.eclipse.ui.views.properties.tabbed,
  org.objectstyle.wolips.baseforuiplugins,
- org.objectstyle.wolips.thirdparty.commonscollections;bundle-version="1.0.6",
- org.objectstyle.wolips.thirdparty.velocity;bundle-version="1.0.6",
- org.objectstyle.wolips.woproject;bundle-version="1.0.6"
+ org.objectstyle.wolips.thirdparty.commonscollections,
+ org.objectstyle.wolips.thirdparty.velocity,
+ org.objectstyle.wolips.woproject
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: objectstyle.org
 Export-Package: org.objectstyle.wolips.eomodeler.core,
@@ -19,5 +19,7 @@ Export-Package: org.objectstyle.wolips.eomodeler.core,
  org.objectstyle.wolips.eomodeler.core.sql,
  org.objectstyle.wolips.eomodeler.core.utils
 Bundle-ClassPath: .,
- lib/EntityModelerSQL.jar
+ lib/EOFSQLUtils.jar,
+ lib/EOFSQLUtils53.jar,
+ lib/EOFSQLUtils56.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

@@ -15,7 +15,7 @@ Require-Bundle: org.eclipse.jdt.debug.ui,
  org.eclipse.jdt.core,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,
- com.jprofiler.integrations.eclipse;bundle-version="5.1.2"
+ com.jprofiler.integrations.eclipse
 Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.jprofiler.launching
 

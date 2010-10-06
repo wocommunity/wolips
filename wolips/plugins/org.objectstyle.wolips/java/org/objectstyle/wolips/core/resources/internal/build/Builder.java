@@ -70,12 +70,14 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.objectstyle.wolips.core.CorePlugin;
 import org.objectstyle.wolips.core.resources.builder.AbstractOldBuilder;
 import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IProductAdapter;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 
 public abstract class Builder extends IncrementalProjectBuilder {
 
@@ -94,18 +96,21 @@ public abstract class Builder extends IncrementalProjectBuilder {
 
 	protected void clean(IProgressMonitor monitor) throws CoreException {
 		IProject project = this.getProject();
-		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
-		IBuildAdapter buildAdapter = projectAdapter.getBuildAdapter();
-		if (buildAdapter != null) {
-			buildAdapter.clean(monitor);
+		ProjectAdapter projectAdapter = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
+		if (projectAdapter != null) {
+			IBuildAdapter buildAdapter = projectAdapter.getBuildAdapter();
+			if (buildAdapter != null) {
+				buildAdapter.clean(monitor);
+			}
 		}
 	}
 
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
 		IProject project = this.getProject();
-		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
+		ProjectAdapter projectAdapter = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
+
 		IBuildAdapter buildAdapter = null;
-		if ( projectAdapter != null ) {
+		if (projectAdapter != null) {
 			buildAdapter = projectAdapter.getBuildAdapter();
 		}
 
@@ -123,8 +128,19 @@ public abstract class Builder extends IncrementalProjectBuilder {
 		}
 
 		IResourceDelta projectDelta = getDelta(project);
-		this.invokeOldBuilder(kind, args, monitor, projectDelta);
-		this.notifyBuilderBuildStarted(kind, args, monitor, buildCache);
+		try {
+			this.invokeOldBuilder(kind, args, monitor, projectDelta);
+		} catch (CoreException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new CoreException(new Status(IStatus.ERROR, CorePlugin.PLUGIN_ID, e.getMessage(), e));
+		}
+		boolean fullBuild = this.notifyBuilderBuildStarted(kind, args, monitor, buildCache);
+		if (fullBuild && kind != IncrementalProjectBuilder.FULL_BUILD && kind != IncrementalProjectBuilder.CLEAN_BUILD) {
+			System.out.println("Builder.build: this should trigger a full build at some point");
+			project.build(IncrementalBuilder.FULL_BUILD, null);
+			// hmmm
+		}
 		try {
 			if (fullBuildDeltaVisitor != null) {
 				fullBuildDeltaVisitor.buildStarted(project);
@@ -151,6 +167,8 @@ public abstract class Builder extends IncrementalProjectBuilder {
 			if (productAdapter != null) {
 				productAdapter.markAsDerivated(monitor);
 			}
+		} else {
+			// IGNORE FOR NOW
 		}
 		else {
 			// IGNORE FOR NOW
@@ -163,11 +181,14 @@ public abstract class Builder extends IncrementalProjectBuilder {
 		final IProject workspaceRunnableProject = project;
 		IWorkspaceRunnable workspaceRunnable = new IWorkspaceRunnable() {
 			public void run(IProgressMonitor runInWorkspaceMonitor) throws CoreException {
-				workspaceRunnableProject.refreshLocal(IResource.DEPTH_INFINITE, runInWorkspaceMonitor);
+				// workspaceRunnableProject.refreshLocal(IResource.DEPTH_INFINITE,
+				// runInWorkspaceMonitor);
 				// MS: touch a build/.version file to notify rapid turnaround of
 				// changes
+				workspaceRunnableProject.refreshLocal(IResource.DEPTH_ONE, runInWorkspaceMonitor);
 				IFolder buildFolder = workspaceRunnableProject.getFolder(IBuildAdapter.FILE_NAME_BUILD);
 				if (buildFolder.exists()) {
+					buildFolder.refreshLocal(IResource.DEPTH_ONE, runInWorkspaceMonitor);
 					try {
 						IFile buildVersion = buildFolder.getFile(".version");
 						InputStream versionInputStream = new ByteArrayInputStream(String.valueOf(System.currentTimeMillis()).getBytes());
@@ -187,26 +208,34 @@ public abstract class Builder extends IncrementalProjectBuilder {
 		return null;
 	}
 
-	private void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor, IResourceDelta delta) throws CoreException {
+	private void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor, IResourceDelta delta) throws Exception {
 		for (int i = 0; i < builderWrappers.length; i++) {
-			boolean isOldBuilder = builderWrappers[i].isOldBuilder();
-			if (isOldBuilder) {
-				AbstractOldBuilder abstractOldBuilder = (AbstractOldBuilder) builderWrappers[i].getBuilder();
-				abstractOldBuilder.setProject(this.getProject());
-				abstractOldBuilder.invokeOldBuilder(kind, args, monitor, delta);
+			if (builderWrappers[i].getBuilder().isEnabled()) {
+				boolean isOldBuilder = builderWrappers[i].isOldBuilder();
+				if (isOldBuilder) {
+					AbstractOldBuilder abstractOldBuilder = (AbstractOldBuilder) builderWrappers[i].getBuilder();
+					abstractOldBuilder.setProject(this.getProject());
+					abstractOldBuilder.invokeOldBuilder(kind, args, monitor, delta);
+				}
 			}
 		}
 	}
 
-	private void notifyBuilderBuildStarted(int kind, Map args, IProgressMonitor monitor, Map buildCache) {
+	private boolean notifyBuilderBuildStarted(int kind, Map args, IProgressMonitor monitor, Map buildCache) {
+		boolean fullBuild = false;
 		for (int i = 0; i < builderWrappers.length; i++) {
-			builderWrappers[i].getBuilder().buildStarted(kind, args, monitor, this.getProject(), buildCache);
+			if (builderWrappers[i].getBuilder().isEnabled()) {
+				fullBuild |= builderWrappers[i].getBuilder().buildStarted(kind, args, monitor, this.getProject(), buildCache);
+			}
 		}
+		return fullBuild;
 	}
 
 	private void notifyBuildPreparationDone(int kind, Map args, IProgressMonitor monitor, Map buildCache) {
 		for (int i = 0; i < builderWrappers.length; i++) {
-			builderWrappers[i].getBuilder().buildPreparationDone(kind, args, monitor, this.getProject(), buildCache);
+			if (builderWrappers[i].getBuilder().isEnabled()) {
+				builderWrappers[i].getBuilder().buildPreparationDone(kind, args, monitor, this.getProject(), buildCache);
+			}
 		}
 	}
 }

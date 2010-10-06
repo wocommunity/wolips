@@ -27,6 +27,7 @@ import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.bindings.wod.IWodModel;
 import org.objectstyle.wolips.bindings.wod.TagShortcut;
+import org.objectstyle.wolips.variables.BuildProperties;
 import org.objectstyle.wolips.wodclipse.core.completion.WodCompletionProposal;
 import org.objectstyle.wolips.wodclipse.core.completion.WodCompletionUtils;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
@@ -47,10 +48,10 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
   //private ClassNameAssistProcessor classNameProcessor = new ClassNameAssistProcessor();
   private IFile _file;
   private IEditorPart _editorPart;
-  private boolean _wo54;
+  private BuildProperties _buildProperties;
 
-  public TemplateAssistProcessor(IEditorPart editorPart, WodParserCache wodParserCache, boolean wo54) {
-    _wo54 = wo54;
+  public TemplateAssistProcessor(IEditorPart editorPart, WodParserCache wodParserCache, BuildProperties buildProperties) {
+    _buildProperties = buildProperties;
     _editorPart = editorPart;
     _cache = wodParserCache;
     _tagList = new ArrayList<TagInfo>(TagDefinition.getTagInfoAsList());
@@ -155,16 +156,14 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
         String bindingValue = value;
         String prefix = "$";
         String suffix = "";
-        if (value.startsWith("$")) {
-          bindingValue = value.substring(1);
-          prefix = "$";
-        }
-        else if (_wo54 && value.startsWith("[")) {
-          prefix = "[";
-          bindingValue = value.substring(1);
-          if (value.endsWith("]")) {
-            bindingValue = value.substring(0, bindingValue.length() - 1);
-            suffix = "]";
+        String inlineBindingPrefix = _buildProperties.getInlineBindingPrefix();
+        String inlineBindingSuffix = _buildProperties.getInlineBindingSuffix();
+        if (value.startsWith(inlineBindingPrefix)) {
+          prefix = inlineBindingPrefix;
+          bindingValue = value.substring(inlineBindingPrefix.length());
+          if (inlineBindingSuffix.length() > 0 && value.endsWith(inlineBindingSuffix)) {
+            bindingValue = bindingValue.substring(0, bindingValue.length() - inlineBindingSuffix.length());
+            suffix = inlineBindingSuffix;
           }
         }
         else if (value.startsWith("~")) {

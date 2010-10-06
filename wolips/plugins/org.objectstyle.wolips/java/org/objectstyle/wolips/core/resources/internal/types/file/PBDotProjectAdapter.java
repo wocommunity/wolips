@@ -68,7 +68,7 @@ import org.objectstyle.wolips.core.CorePlugin;
 import org.objectstyle.wolips.core.resources.types.ILocalizedPath;
 import org.objectstyle.wolips.core.resources.types.file.IPBDotProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotSubprojAdapter;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 
 public class PBDotProjectAdapter extends AbstractFileAdapter implements IPBDotProjectAdapter {
 	// local framework search for PB.project
@@ -105,14 +105,14 @@ public class PBDotProjectAdapter extends AbstractFileAdapter implements IPBDotPr
 		}
 	}
 
-	private IProjectAdapter getProjectAdapter() {
+	private ProjectAdapter getProjectAdapter() {
 		IProject project = this.getUnderlyingFile().getProject();
-		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
+		ProjectAdapter projectAdapter = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
 		return projectAdapter;
 	}
 
 	private void initPBProject() {
-		IProjectAdapter projectAdapter = this.getProjectAdapter();
+		ProjectAdapter projectAdapter = this.getProjectAdapter();
 		try {
 			this.pbProject = new PBProject(this.getUnderlyingFile().getLocation().toOSString(), projectAdapter.isFramework());
 			this.pbProject.update();

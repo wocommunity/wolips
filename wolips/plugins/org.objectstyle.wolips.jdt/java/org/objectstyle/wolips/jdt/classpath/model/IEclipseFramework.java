@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.jdt.classpath.model;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -63,8 +64,10 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.objectstyle.woenvironment.frameworks.FrameworkModel;
 import org.objectstyle.woenvironment.frameworks.IFramework;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.woenvironment.frameworks.Root;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 import org.objectstyle.wolips.jdt.JdtPlugin;
 import org.objectstyle.wolips.jdt.classpath.WOFrameworkClasspathContainer;
 
@@ -113,12 +116,12 @@ public interface IEclipseFramework extends IFramework {
 			}
 		}
 
-		public static boolean addProjectToProject(IProject referencedProject, IJavaProject javaProject, List<IClasspathEntry> existingEntries) throws JavaModelException {
+		public static boolean addProjectToProject(IProject referencedProject, IJavaProject javaProject, List<IClasspathEntry> existingEntries) {
 			boolean addedProject = false;
 			
 			boolean referencedProjectIsFramework = false;
 			
-			IProjectAdapter referencedProjectAdaptor = (IProjectAdapter) referencedProject.getAdapter(IProjectAdapter.class);
+			ProjectAdapter referencedProjectAdaptor = (ProjectAdapter) referencedProject.getAdapter(ProjectAdapter.class);
 			if (referencedProjectAdaptor != null) {
 				IEclipseFramework framework = JdtPlugin.getDefault().getFrameworkModel(javaProject.getProject()).getFrameworkWithName(referencedProjectAdaptor.getBundleName());
 				if (framework != null) {
@@ -138,7 +141,7 @@ public interface IEclipseFramework extends IFramework {
 			return addedProject;
 		}
 		
-		public static boolean addFrameworkToProject(IEclipseFramework frameworkToAdd, IJavaProject javaProject, List<IClasspathEntry> existingEntries) throws JavaModelException {
+		public static boolean addFrameworkToProject(IEclipseFramework frameworkToAdd, IJavaProject javaProject, List<IClasspathEntry> existingEntries) {
 			boolean addFramework = true;
 			String name = frameworkToAdd.getName();
 			for (IClasspathEntry existingEntry : existingEntries) {
@@ -201,7 +204,7 @@ public interface IEclipseFramework extends IFramework {
 			}
 		}
 
-		public static boolean removeFrameworkFromProject(IEclipseFramework frameworkToRemove, IJavaProject javaProject, List<IClasspathEntry> existingEntries) throws JavaModelException {
+		public static boolean removeFrameworkFromProject(IEclipseFramework frameworkToRemove, IJavaProject javaProject, List<IClasspathEntry> existingEntries) {
 			IClasspathEntry removeEntry = null;
 			String name = frameworkToRemove.getName();
 			for (IClasspathEntry existingEntry : existingEntries) {
@@ -222,6 +225,7 @@ public interface IEclipseFramework extends IFramework {
 		}
 
 		public static List<IEclipseFramework> getFrameworks(IJavaProject javaProject) throws JavaModelException {
+			FrameworkModel<IEclipseFramework> frameworkModel = JdtPlugin.getDefault().getFrameworkModel(javaProject.getProject());
 			List<IEclipseFramework> frameworks = new LinkedList<IEclipseFramework>();
 			IClasspathEntry[] classpathEntries = javaProject.getRawClasspath();
 			for (IClasspathEntry classpathEntry : classpathEntries) {
@@ -229,6 +233,16 @@ public interface IEclipseFramework extends IFramework {
 				if (frameworkContainer != null) {
 					IEclipseFramework framework = frameworkContainer.getFramework();
 					frameworks.add(framework);
+				}
+				else if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
+					IClasspathEntry resolvedClasspathEntry = JavaCore.getResolvedClasspathEntry(classpathEntry);
+					File classpathFile = resolvedClasspathEntry.getPath().toFile();
+					if (classpathFile.exists() && classpathFile.getName().toLowerCase().endsWith(".jar")) {
+						EclipseJarFramework jarFramework = new EclipseJarFramework(frameworkModel.getRootWithShortName(Root.PROJECT_LOCAL_ROOT), classpathFile);
+						if (jarFramework.isValid()) {
+							frameworks.add(jarFramework);
+						}
+					}
 				}
 			}
 			return frameworks;

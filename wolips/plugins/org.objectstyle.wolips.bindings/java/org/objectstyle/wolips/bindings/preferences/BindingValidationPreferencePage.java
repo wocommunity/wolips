@@ -44,8 +44,9 @@
 package org.objectstyle.wolips.bindings.preferences;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.objectstyle.wolips.bindings.Activator;
@@ -54,34 +55,44 @@ import org.objectstyle.wolips.bindings.Activator;
  * @author mike
  */
 public class BindingValidationPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
-  public BindingValidationPreferencePage() {
-    super(GRID);
-    setPreferenceStore(Activator.getDefault().getPreferenceStore());
-    setDescription("Binding Validation");
-  }
+	
+	public BindingValidationPreferencePage() {
+		super(GRID);
+		setPreferenceStore(Activator.getDefault().getPreferenceStore());
+		setDescription("The following settings control various aspects of the component validation system.");
+	}
 
-  @Override
-  public void createFieldEditors() {
-    addField(new BooleanFieldEditor(PreferenceConstants.AUTO_INSERT_ON_COMPLETION, "Auto-Insert {'s, :'s, and ='s", getFieldEditorParent()));
-    addField(new StringFieldEditor(PreferenceConstants.ALLOWED_BINDING_CHARACTERS, "Allowed Binding Characters", 15, getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.ERROR_ON_HTML_ERRORS_KEY, "Show HTML Template Errors", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.VALIDATE_TEMPLATES_KEY, "Validate WOD / Inline Bindings", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.VALIDATE_BINDING_VALUES, "Validate Binding Values", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_MISSING_COLLECTION_KEY, "... Warn if Missing Key on NSDictionary/NSArray", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.ERROR_ON_MISSING_COMPONENT_KEY, "... Error if Missing Key on 'extends WOComponent'", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_MISSING_COMPONENT_KEY, "... Warn if Missing Key on 'extends WOComponent'", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.ERROR_ON_MISSING_NSKVC_KEY, "... Error if Missing Key on 'implements NSKeyValueCoding'", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_MISSING_NSKVC_KEY, "... Warn if Missing Key on 'implements NSKeyValueCoding'", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_AMBIGUOUS_KEY, "... Warn on Ambiguous Key Paths", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_OPERATOR_KEY, "... Warn on @Operator", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.WARN_ON_HELPER_FUNCTION_KEY, "... Warn on Helper Functions", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.VALIDATE_OGNL_KEY, "... Validate OGNL", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.WO54_KEY, "WO 5.4", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.USE_INLINE_BINDINGS_KEY, "Use Inline Bindings", getFieldEditorParent()));
-    addField(new BooleanFieldEditor(PreferenceConstants.THREADED_VALIDATION_KEY, "Threaded Validation (experimental)", getFieldEditorParent()));
-  }
+	@Override
+	public void createFieldEditors() {
+		addField(new BooleanFieldEditor(PreferenceConstants.VALIDATE_TEMPLATES_KEY, "Component Validation", getFieldEditorParent()));
+		addField(new BooleanFieldEditor(PreferenceConstants.VALIDATE_TEMPLATES_ON_BUILD_KEY, "Validate on Build", getFieldEditorParent()));
+		addField(new BooleanFieldEditor(PreferenceConstants.USE_INLINE_BINDINGS_KEY, "Inline Bindings Allowed", getFieldEditorParent()));
+		addField(new BooleanFieldEditor(PreferenceConstants.VALIDATE_BINDING_VALUES, "Binding Value Validation (Slow)", getFieldEditorParent()));
+		addField(new BooleanFieldEditor(PreferenceConstants.VALIDATE_WOO_ENCODINGS_KEY, "WOO Encoding Validation", getFieldEditorParent()));
+		addField(new BooleanFieldEditor(PreferenceConstants.THREADED_VALIDATION_KEY, "Threaded Validation", getFieldEditorParent()));
 
-  public void init(IWorkbench workbench) {
-	  // DO NOTHING
-  }
+		addField(new ComboFieldEditor(PreferenceConstants.HTML_ERRORS_SEVERITY_KEY, "Invalid HTML", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
+		addField(new ComboFieldEditor(PreferenceConstants.WOD_MISSING_COMPONENT_SEVERITY_KEY, "Missing Component", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
+		addField(new ComboFieldEditor(PreferenceConstants.WOD_API_PROBLEMS_SEVERITY_KEY, "WOD API Problems", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
+		addField(new ComboFieldEditor(PreferenceConstants.UNUSED_WOD_ELEMENT_SEVERITY_KEY, "Unused WOD Elements", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
+		addField(new ComboFieldEditor(PreferenceConstants.WOD_ERRORS_IN_HTML_SEVERITY_KEY, "WOD Errors in Template", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
+		addField(new ComboFieldEditor(PreferenceConstants.MISSING_COLLECTION_SEVERITY_KEY, "Missing Key on NSDictionary/NSArray", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
+		addField(new ComboFieldEditor(PreferenceConstants.MISSING_COMPONENT_SEVERITY_KEY, "Missing Key on 'extends WOComponent'", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
+		addField(new ComboFieldEditor(PreferenceConstants.MISSING_NSKVC_SEVERITY_KEY, "Missing Key on 'implements NSKeyValueCoding'", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
+		addField(new ComboFieldEditor(PreferenceConstants.AMBIGUOUS_SEVERITY_KEY, "Ambiguous Key Paths", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
+		addField(new ComboFieldEditor(PreferenceConstants.AT_OPERATOR_SEVERITY_KEY, "@Operator KVC Paths", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
+		addField(new ComboFieldEditor(PreferenceConstants.HELPER_FUNCTION_SEVERITY_KEY, "Helper Functions", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
+		addField(new ComboFieldEditor(PreferenceConstants.INVALID_OGNL_SEVERITY_KEY, "Invalid OGNL", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
+
+		addField(new ComboFieldEditor(PreferenceConstants.WELL_FORMED_TEMPLATE_KEY, "Require well-formed HTML Template", PreferenceConstants.DEFAULT_YES_NO, getFieldEditorParent()));
+	}
+	
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		super.propertyChange(event);
+	}
+
+	public void init(IWorkbench workbench) {
+		// DO NOTHING
+	}
 }

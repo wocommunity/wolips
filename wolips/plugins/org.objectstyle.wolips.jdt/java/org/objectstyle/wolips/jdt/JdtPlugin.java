@@ -55,15 +55,15 @@
  */
 package org.objectstyle.wolips.jdt;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.woenvironment.frameworks.FrameworkModel;
 import org.objectstyle.wolips.baseforplugins.logging.PluginLogger;
 import org.objectstyle.wolips.jdt.classpath.model.EclipseFrameworkModel;
-import org.objectstyle.wolips.jdt.classpath.model.IEclipseFramework;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -80,7 +80,7 @@ public class JdtPlugin extends AbstractUIPlugin {
 
 	private PluginLogger pluginLogger = null;
 
-	private FrameworkModel<IEclipseFramework> frameworkModel;
+	private Map<IProject, EclipseFrameworkModel> frameworkModels;
 
 	/**
 	 * The constructor.
@@ -88,6 +88,7 @@ public class JdtPlugin extends AbstractUIPlugin {
 	public JdtPlugin() {
 		super();
 		plugin = this;
+		this.frameworkModels = new HashMap<IProject, EclipseFrameworkModel>();
 		try {
 			this.resourceBundle = ResourceBundle.getBundle("org.objectstyle.wolips.jdt.JdtPluginResources");
 		} catch (MissingResourceException x) {
@@ -126,7 +127,9 @@ public class JdtPlugin extends AbstractUIPlugin {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+	 * @see
+	 * org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext
+	 * )
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
@@ -136,11 +139,12 @@ public class JdtPlugin extends AbstractUIPlugin {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	 * @see
+	 * org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
-		this.frameworkModel = null;
+		this.frameworkModels = null;
 		this.pluginLogger = null;
 	}
 
@@ -151,12 +155,22 @@ public class JdtPlugin extends AbstractUIPlugin {
 		return this.pluginLogger;
 	}
 
+	public synchronized void invalidateFrameworkModel() {
+		//System.out.println("JdtPlugin.invalidateFrameworkModel: invalidating");
+		EclipseFrameworkModel.invalidateProjectRootCache();
+		this.frameworkModels.clear();
+	}
+	
 	/**
 	 * @return Returns the classpathModel.
 	 */
-	public FrameworkModel<IEclipseFramework> getFrameworkModel(IProject project) {
-		this.frameworkModel = new EclipseFrameworkModel(project);
-		return this.frameworkModel;
+	public synchronized EclipseFrameworkModel getFrameworkModel(IProject project) {
+		EclipseFrameworkModel frameworkModel = this.frameworkModels.get(project);
+		if (frameworkModel == null || frameworkModel.shouldReload()) {
+			frameworkModel = new EclipseFrameworkModel(project);
+			this.frameworkModels.put(project, frameworkModel);
+		}
+		return frameworkModel;
 	}
 
 	/**

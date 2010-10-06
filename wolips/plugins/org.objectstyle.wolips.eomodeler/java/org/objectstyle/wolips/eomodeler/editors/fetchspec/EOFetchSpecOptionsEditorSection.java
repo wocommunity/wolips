@@ -55,11 +55,8 @@ import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -70,6 +67,7 @@ import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
+import org.objectstyle.wolips.eomodeler.utils.FormUtils;
 
 public class EOFetchSpecOptionsEditorSection extends AbstractPropertySection {
 	private EOFetchSpecification _fetchSpecification;
@@ -100,39 +98,36 @@ public class EOFetchSpecOptionsEditorSection extends AbstractPropertySection {
 		FormLayout formLayout = new FormLayout();
 		form.setLayout(formLayout);
 
-		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0, 5);
-		topFormData.left = new FormAttachment(0, 5);
-		topFormData.right = new FormAttachment(100, -5);
-		topForm.setLayoutData(topFormData);
-
-		GridLayout topFormLayout = new GridLayout();
-		topFormLayout.numColumns = 2;
-		topForm.setLayout(topFormLayout);
+		Composite topForm = FormUtils.createForm(getWidgetFactory(), form);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.FETCH_LIMIT), SWT.NONE);
 		_fetchLimitText = new Text(topForm, SWT.BORDER);
 		GridData fetchLimitLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_fetchLimitText.setLayoutData(fetchLimitLayoutData);
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.PROMPTS_AFTER_FETCH_LIMIT), SWT.NONE);
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		_promptsAfterFetchLimitButton = new Button(topForm, SWT.CHECK);
+		_promptsAfterFetchLimitButton.setText(Messages.getString("EOFetchSpecification." + EOFetchSpecification.PROMPTS_AFTER_FETCH_LIMIT));
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.DEEP), SWT.NONE);
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		_deepButton = new Button(topForm, SWT.CHECK);
+		_deepButton.setText(Messages.getString("EOFetchSpecification." + EOFetchSpecification.DEEP));
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.USES_DISTINCT), SWT.NONE);
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		_usesDistinctButton = new Button(topForm, SWT.CHECK);
+		_usesDistinctButton.setText(Messages.getString("EOFetchSpecification." + EOFetchSpecification.USES_DISTINCT));
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.LOCKS_OBJECTS), SWT.NONE);
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		_lockObjectsButton = new Button(topForm, SWT.CHECK);
+		_lockObjectsButton.setText(Messages.getString("EOFetchSpecification." + EOFetchSpecification.LOCKS_OBJECTS));
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.REFRESHES_REFETCHED_OBJECTS), SWT.NONE);
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		_refreshesRefetchedObjectsButton = new Button(topForm, SWT.CHECK);
+		_refreshesRefetchedObjectsButton.setText(Messages.getString("EOFetchSpecification." + EOFetchSpecification.REFRESHES_REFETCHED_OBJECTS));
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES), SWT.NONE);
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		_requiresAllQualifierBindingVariablesButton = new Button(topForm, SWT.CHECK);
+		_requiresAllQualifierBindingVariablesButton.setText(Messages.getString("EOFetchSpecification." + EOFetchSpecification.REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES));
 
 	}
 

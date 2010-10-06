@@ -62,7 +62,7 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
+import org.objectstyle.wolips.baseforuiplugins.utils.WorkbenchUtilities;
 import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResource;
 
 /**
@@ -78,11 +78,11 @@ public class OpenComponentAction extends AbstractActionOnIResource {
 			String fileName = getActionResource().getName();
 			fileName = fileName.substring(0, fileName.length() - 5);
 			List<IResource> list = new ArrayList<IResource>();
-			WorkbenchUtilitiesPlugin.findFilesInResourceByName(list, getIProject(), fileName + ".wod");
+			WorkbenchUtilities.findFilesInResourceByName(list, getIProject(), fileName + ".wod");
 			for (int i = 0; i < list.size(); i++) {
 				IResource resource = list.get(i);
 				if ((resource != null) && (resource.getType() == IResource.FILE))
-					WorkbenchUtilitiesPlugin.open((IFile) resource);
+					WorkbenchUtilities.open((IFile) resource);
 			}
 		}
 	}

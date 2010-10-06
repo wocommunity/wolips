@@ -25,6 +25,8 @@
 		<fail message="The properties 'wo.system.frameworks' and 'wo.local.frameworks' must be set. Check that your ${wolips.properties} is correct." if="wo.properties.check.failed" />
 
 		<property name="wo.install.root" value="${wo.local.frameworks}" />
+		<property name="build.framework.name" value="${project.name}" />
+		<property name="build.framework.name.lowercase" value="${project.name.lowercase}" />
 	</target>
 
 	<!-- basic initializations  -->
@@ -39,11 +41,11 @@
 	</target>
 
   <target name="package">
-    <tar destfile="${dest.dir}/${project.name}.tar.gz"
+    <tar destfile="${dest.dir}/${build.framework.name}.tar.gz"
         compression="gzip"
         longfile="gnu">
       <tarfileset dir="${dest.dir}">
-        <include name="${project.name}.framework/**"/>
+        <include name="${build.framework.name}.framework/**"/>
       </tarfileset>
     </tar>
 	</target>
@@ -52,7 +54,7 @@
 	<target name="build.woframework" depends="compile">
 		<taskdef name="woframework" classname="org.objectstyle.woproject.ant.WOFramework"/>
 
-		<woframework name="${project.name}" destDir="${dest.dir}" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" eoAdaptorClassName="${eoAdaptorClassName}" javaVersion="${javaVersion}" cfbundleversion="${cfBundleVersion}" cfbundleshortversion="${cfBundleShortVersion}" cfbundleID="${cfBundleID}">
+		<woframework name="${build.framework.name}" destDir="${dest.dir}" customInfoPListContent="${customInfoPListContent}" principalClass="${principalClass}" eoAdaptorClassName="${eoAdaptorClassName}" javaVersion="${javaVersion}" cfbundleversion="${cfBundleVersion}" cfbundleshortversion="${cfBundleShortVersion}" cfbundleID="${cfBundleID}">
 			<classes dir="${classes.dir}">
 				<includesfile name="woproject/classes.include.patternset" />
 				<excludesfile name="woproject/classes.exclude.patternset" />
@@ -77,8 +79,8 @@
 	</target>
 	
 	<target name="javaclient" if="javaClient" depends="build.woframework">
-		<mkdir dir="${dest.dir}/${project.name}.framework/WebServerResources/Java" />
-		<jar basedir="${classes.dir}" excludes="**/server/**/*.*, **/server/**/" jarfile="${dest.dir}/${project.name}.framework/WebServerResources/Java/${project.name}.jar"/>
+		<mkdir dir="${dest.dir}/${build.framework.name}.framework/WebServerResources/Java" />
+		<jar basedir="${classes.dir}" excludes="**/server/**/*.*, **/server/**/" jarfile="${dest.dir}/${build.framework.name}.framework/WebServerResources/Java/${build.framework.name}.jar"/>
 	</target>
 
 	<target name="compile" depends="init.build">

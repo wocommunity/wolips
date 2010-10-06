@@ -74,7 +74,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.objectstyle.woenvironment.plist.WOLPropertyListSerialization;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 
 /**
  * @author uwe
@@ -179,7 +179,7 @@ public class TargetBuilderNature implements IProjectNature {
 		// Add nature-specific information
 		// for the project, such as adding a builder
 		// to a project's build spec.*/
-		Project project = (Project) (this.getProject()).getAdapter(Project.class);
+		ProjectAdapter project = (ProjectAdapter) (this.getProject()).getAdapter(ProjectAdapter.class);
 		int position = project.removeJavaBuilder();
 		this.synchronizeWithFile();
 		project.installTargetBuilder(position);
@@ -191,7 +191,7 @@ public class TargetBuilderNature implements IProjectNature {
 	 * @see org.eclipse.core.resources.IProjectNature#deconfigure()
 	 */
 	public void deconfigure() throws CoreException {
-		Project project = (Project) (this.getProject()).getAdapter(Project.class);
+		ProjectAdapter project = (ProjectAdapter) (this.getProject()).getAdapter(ProjectAdapter.class);
 		int position = project.removeTargetBuilder();
 		project.installJavaBuilder(position);
 	}

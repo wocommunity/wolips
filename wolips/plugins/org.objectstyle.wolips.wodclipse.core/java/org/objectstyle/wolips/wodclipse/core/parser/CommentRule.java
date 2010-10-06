@@ -66,7 +66,7 @@ public class CommentRule implements ICommentRule {
 	}
 
 	public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
-		int startColumn = _scanner.getColumn();
+		//int startColumn = _scanner.getColumn();
 		IToken token = Token.UNDEFINED;
 		int ch = 0;
 		int unreadCount = 0;

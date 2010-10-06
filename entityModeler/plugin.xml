@@ -18,21 +18,24 @@
             application="EntityModeler.EntityModeler"
             name="Entity Modeler">
          <property
-               name="startupProgressRect"
-               value="47,319,251,16"/>
-         <property
-               name="aboutImage"
-               value="icons/EntityModelerSmall.png"/>
-         <property
-               name="windowImages"
-               value="icons/EntityModeler16.png,icons/EntityModeler32.png,icons/EntityModeler48.png,icons/EntityModeler64.png,icons/EntityModeler128.png"/>
-         <property
                name="appName"
                value="Entity Modeler">
          </property>
          <property
                name="preferenceCustomization"
                value="plugin_customization.ini">
+         </property>
+         <property
+               name="aboutImage"
+               value="icons/EntityModelerSmall.png">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/EntityModeler16.png,icons/EntityModeler32.png,icons/EntityModeler48.png,icons/EntityModeler64.png,icons/EntityModeler128.png">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="47,319,251,16">
          </property>
       </product>
    </extension>

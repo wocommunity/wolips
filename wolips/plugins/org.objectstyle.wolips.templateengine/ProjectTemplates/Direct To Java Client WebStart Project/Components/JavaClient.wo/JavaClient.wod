@@ -1,0 +1,8 @@
+JavaClientComponent: WOJavaClientComponent {
+    applicationClassName = "com.webobjects.eogeneration.EODynamicApplication";
+    applicationName = "${WOLipsContext.getProjectName()}";
+    applicationDescription = "Application Description Here";
+    downloadClientClasses = "noDownloadClientClasses";
+    vendor = "Vendor Name Here";
+}
+

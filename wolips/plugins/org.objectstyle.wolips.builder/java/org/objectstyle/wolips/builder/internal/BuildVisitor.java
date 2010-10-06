@@ -60,6 +60,7 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
@@ -67,7 +68,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
 import org.objectstyle.wolips.builder.BuilderPlugin;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets;
 
 /**
  * @author Harald Niesche
@@ -91,7 +92,7 @@ public class BuildVisitor extends BuildHelper {
 		super();
 	}
 
-	public void reinitForNextBuild(Project project) {
+	public void reinitForNextBuild(IProject project) {
 		super.reinitForNextBuild(project);
 		try {
 			IJavaProject jp = this.getJavaProject();
@@ -186,7 +187,8 @@ public class BuildVisitor extends BuildHelper {
 		}
 		boolean handled = false;
 		if (!ignore) {
-			if (this.getProject().matchesResourcesPattern(res)) {
+			IProjectPatternsets patternsets = (IProjectPatternsets)this.getProject().getAdapter(IProjectPatternsets.class);
+			if (patternsets.matchesResourcesPattern(res)) {
 				IPath dest = this.asResourcePath(res.getFullPath(), res);
 				if (_checkResource(res, delta, dest)) {
 					handled = _handleResource(res, delta, dest);
@@ -201,7 +203,7 @@ public class BuildVisitor extends BuildHelper {
 			} else if (res.toString().indexOf("/Resources/") != -1) {
 				// _getLogger().debug("ignoring probable resource! "+res);
 			}
-			if (this.getProject().matchesWOAppResourcesPattern(res)) {
+			if (patternsets.matchesWOAppResourcesPattern(res)) {
 				IPath dest = this.asWebResourcePath(res.getFullPath(), res);
 				if (_checkResource(res, delta, dest)) {
 					handled = _handleResource(res, delta, dest);
@@ -230,6 +232,7 @@ public class BuildVisitor extends BuildHelper {
 	 * @throws CoreException
 	 */
 	public boolean _handleResource(IResource res, IResourceDelta delta, IPath copyToPath) {
+		//System.out.println("BuildVisitor._handleResource: " + res + ", " + copyToPath);
 		if (null == copyToPath)
 			return false;
 

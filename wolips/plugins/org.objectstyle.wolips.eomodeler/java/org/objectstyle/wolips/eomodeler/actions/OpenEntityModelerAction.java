@@ -59,12 +59,19 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IPartListener;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -156,6 +163,35 @@ public class OpenEntityModelerAction implements IObjectActionDelegate {
 					try {
 						IWorkbenchWindow window = workbench.openWorkbenchWindow(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, null);
 						window.getActivePage().openEditor(new FileEditorInput(editorFile), EOModelEditor.EOMODEL_EDITOR_ID);
+						// MS: This is super hacky, but having a console open in the entity modeler perspective is fucking annoying.
+						// So we're just going to forcefully close the thing.
+						window.getPartService().addPartListener(new IPartListener() {
+							public void partOpened(final IWorkbenchPart part) {
+								if ("org.eclipse.ui.console.ConsoleView".equals(part.getSite().getId())) {
+									Display.getDefault().asyncExec(new Runnable() {
+										public void run() {
+											part.getSite().getPage().hideView((IViewPart)part);
+										}
+									});
+								}
+							}
+							
+							public void partDeactivated(IWorkbenchPart part) {
+								// IGNORE
+							}
+							
+							public void partClosed(IWorkbenchPart part) {
+								// IGNORE
+							}
+							
+							public void partBroughtToTop(IWorkbenchPart part) {
+								// IGNORE
+							}
+							
+							public void partActivated(IWorkbenchPart part) {
+								// IGNORE
+							}
+						});
 						opened = true;
 					} catch (WorkbenchException e) {
 						Activator.getDefault().log(e);

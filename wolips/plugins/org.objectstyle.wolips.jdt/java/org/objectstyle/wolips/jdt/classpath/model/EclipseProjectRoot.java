@@ -61,28 +61,58 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.objectstyle.woenvironment.frameworks.Root;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 
 public class EclipseProjectRoot extends Root<IEclipseFramework> {
 	private IWorkspaceRoot workspaceRoot;
-
+	private Set<IEclipseFramework> cachedFrameworks;
+	private Set<IEclipseFramework> cachedApplications;
+	
 	public EclipseProjectRoot(String shortName, String name, IWorkspaceRoot workspaceRoot) {
 		super(shortName, name);
 		this.workspaceRoot = workspaceRoot;
 	}
 
 	@Override
-	public Set<IEclipseFramework> getFrameworks() {
-		Set<IEclipseFramework> frameworks = new HashSet<IEclipseFramework>();
-		IProject[] projects = this.workspaceRoot.getProjects();
-		for (IProject project : projects) {
-			if (project.isAccessible()) {
-				IProjectAdapter woProjectAdaptor = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
-				if (woProjectAdaptor != null && woProjectAdaptor.isFramework()) {
-					frameworks.add(new EclipseProjectFramework(this, project));
+	public synchronized Set<IEclipseFramework> getFrameworks() {
+		Set<IEclipseFramework> frameworks = this.cachedFrameworks;
+		if (frameworks == null) {
+			frameworks = new HashSet<IEclipseFramework>();
+			IProject[] projects = this.workspaceRoot.getProjects();
+			for (IProject project : projects) {
+				if (project.isAccessible()) {
+					ProjectAdapter woProjectAdaptor = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
+					if (woProjectAdaptor != null && woProjectAdaptor.isFramework()) {
+						frameworks.add(new EclipseProjectFramework(this, project));
+					}
 				}
 			}
+			this.cachedFrameworks = frameworks;
 		}
 		return frameworks;
+	}
+
+	@Override
+	public synchronized Set<IEclipseFramework> getApplications() {
+		Set<IEclipseFramework> applications = this.cachedApplications;
+		if (applications == null) {
+			applications = new HashSet<IEclipseFramework>();
+			IProject[] projects = this.workspaceRoot.getProjects();
+			for (IProject project : projects) {
+				if (project.isAccessible()) {
+					ProjectAdapter woProjectAdaptor = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
+					if (woProjectAdaptor != null && woProjectAdaptor.isApplication()) {
+						applications.add(new EclipseProjectFramework(this, project));
+					}
+				}
+			}
+			this.cachedApplications = applications;
+		}
+		return applications;
+	}
+	
+	@Override
+	public String toString() {
+		return "[EclipseProjectRoot]";
 	}
 }

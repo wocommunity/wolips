@@ -44,41 +44,63 @@
 package org.objectstyle.wolips.bindings.preferences;
 
 public class PreferenceConstants {
-	public static final String ALLOWED_BINDING_CHARACTERS = "AllowedBindingCharacters";
-
 	public static final String VALIDATE_BINDING_VALUES = "CheckBindingValues";
 
-	public static final String AUTO_INSERT_ON_COMPLETION = "AutoInsertOnCompletion";
+	public static final String MISSING_COLLECTION_SEVERITY_KEY = "MissingCollectionSeverityKey";
 
-	public static final String WARN_ON_MISSING_COLLECTION_KEY = "WarnOnMissingCollectionKey";
+	public static final String MISSING_COMPONENT_SEVERITY_KEY = "MissingComponentSeverityKey";
 
-  public static final String WARN_ON_MISSING_COMPONENT_KEY = "WarnOnMissingComponentKey";
+	public static final String MISSING_NSKVC_SEVERITY_KEY = "MissingNSKVCSeverityKey";
 
-  public static final String ERROR_ON_MISSING_COMPONENT_KEY = "ErrorOnMissingComponentKey";
+	public static final String INVALID_OGNL_SEVERITY_KEY = "InvalidOGNLSeverityKey";
 
-	public static final String ERROR_ON_MISSING_NSKVC_KEY = "ErrorOnMissingNSKVCKey";
+	public static final String AMBIGUOUS_SEVERITY_KEY = "AmbiguousSeverityKey";
 
-	public static final String WARN_ON_MISSING_NSKVC_KEY = "WarnOnMissingNSKVCKey";
+	public static final String HTML_ERRORS_SEVERITY_KEY = "HtmlErrorsSeverityKey";
 
-	public static final String VALIDATE_OGNL_KEY = "ValidateOGNLKey";
+	public static final String WOD_API_PROBLEMS_SEVERITY_KEY = "WodApiProblemsSeverityKey";
 
-	public static final String WARN_ON_AMBIGUOUS_KEY = "WarnOnAmbiguousKey";
+	public static final String WOD_MISSING_COMPONENT_SEVERITY_KEY = "WodProblemsSeverityKey";
 
-	public static final String ERROR_ON_HTML_ERRORS_KEY = "ErrorOnHtmlErrorsKey";
+	public static final String WOD_ERRORS_IN_HTML_SEVERITY_KEY = "WodErrorsInHtmlSeverityKey";
 
-	public static final String WARN_ON_OPERATOR_KEY = "WarnOnOperatorKey";
+	public static final String UNUSED_WOD_ELEMENT_SEVERITY_KEY = "UnusedWodElementSeverityKey";
 
-	public static final String WARN_ON_HELPER_FUNCTION_KEY = "WarnOnHelperFunctionKey";
+	public static final String AT_OPERATOR_SEVERITY_KEY = "AtOperatorSeverityKey";
+
+	public static final String HELPER_FUNCTION_SEVERITY_KEY = "HelperFunctionSeverityKey";
 
 	public static final String VALIDATE_TEMPLATES_KEY = "ValidateTemplatesKey";
+
+	public static final String VALIDATE_TEMPLATES_ON_BUILD_KEY = "ValidateTemplatesOnBuildKey";
+
+	public static final String VALIDATE_WOO_ENCODINGS_KEY = "ValidateWooEncodingsKey";
 
 	public static final String TAG_SHORTCUTS_KEY = "TagShortcuts";
 
 	public static final String BINDING_VALIDATION_RULES_KEY = "BindingValidationRules";
 
-	public static final String WO54_KEY = "WO 5.4";
+	// public static final String WO54_KEY = "WO 5.4";
 
-  public static final String USE_INLINE_BINDINGS_KEY = "UseInlineBindings";
+	public static final String USE_INLINE_BINDINGS_KEY = "UseInlineBindings";
 
-  public static final String THREADED_VALIDATION_KEY = "ThreadedValidation";
+	public static final String THREADED_VALIDATION_KEY = "ThreadedValidation";
+
+	public static final String WELL_FORMED_TEMPLATE_KEY = "WellFormedTemplate";
+
+	public static final String ERROR = "error";
+
+	public static final String WARNING = "warning";
+
+	public static final String IGNORE = "ignore";
+
+	public static final String DEFAULT = "default";
+
+	public static final String NO = "no";
+
+	public static final String YES = "yes";
+
+	public static String[][] IGNORE_WARNING_ERROR = new String[][] { new String[] { "Ignore", PreferenceConstants.IGNORE }, new String[] { "Warning", PreferenceConstants.WARNING }, new String[] { "Error", PreferenceConstants.ERROR } };
+	
+	public static String[][] DEFAULT_YES_NO = new String[][] { new String[] { "Default", PreferenceConstants.DEFAULT }, new String[] { "Yes", PreferenceConstants.YES }, new String[] { "No", PreferenceConstants.NO } };
 }

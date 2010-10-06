@@ -44,7 +44,11 @@ public abstract class TableViewerSupport {
 		
 		viewer = new TableViewer(control, SWT.MULTI|SWT.FULL_SELECTION|SWT.BORDER|SWT.H_SCROLL|SWT.V_SCROLL);
 		Table table = viewer.getTable();
-		table.setLayoutData(new GridData(GridData.FILL_BOTH));
+		
+		GridData tableLayoutData = new GridData(GridData.FILL_BOTH);
+		tableLayoutData.heightHint = 200;
+		table.setLayoutData(tableLayoutData);
+
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		table.addSelectionListener(new SelectionAdapter(){

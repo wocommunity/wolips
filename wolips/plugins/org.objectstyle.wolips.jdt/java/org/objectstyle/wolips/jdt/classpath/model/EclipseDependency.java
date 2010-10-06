@@ -5,8 +5,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.objectstyle.woenvironment.frameworks.Dependency;
-import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapter;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 import org.objectstyle.wolips.variables.ProjectVariables;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
@@ -60,7 +59,11 @@ public class EclipseDependency extends Dependency {
 
 	@Override
 	public String getSystemRoot() {
-		return _variables.getSystemRoot().toString();
+		IPath systemRoot = _variables.getSystemRoot();
+		if (systemRoot == null) {
+			throw new IllegalArgumentException("You do not have a 'wo.system.root' property set in your wolips.properties file.");
+		}
+		return systemRoot.toString();
 	}
 
 	public IPath getWOJavaArchive() {
@@ -68,7 +71,7 @@ public class EclipseDependency extends Dependency {
 			IPath woJavaArchivePath = null;
 			if (isProject()) {
 				IProject project = (IProject) _classpathEntry.getResource();
-				IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
+				ProjectAdapter projectAdapter = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
 				if (projectAdapter != null) {
 					woJavaArchivePath = projectAdapter.getWOJavaArchive();
 				} else {

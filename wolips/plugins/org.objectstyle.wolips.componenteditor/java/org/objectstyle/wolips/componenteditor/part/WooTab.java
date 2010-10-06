@@ -90,9 +90,11 @@ public class WooTab extends ComponentEditorTab {
 	public void close(boolean save) {
 		wooEditor.close(save);
 	}
-	
+
+	@Override
 	public void dispose() {
 		wooEditor.dispose();
+		super.dispose();
 	}
 	
 	public IEditorInput getActiveEditorInput() {

@@ -66,6 +66,8 @@ public abstract class AbstractWodModel implements IWodModel {
   private List<IWodElement> _elements;
 
   private List<WodProblem> _parseProblems;
+  
+  private boolean _hasInheritedElements;
 
   public AbstractWodModel() {
     _elements = new LinkedList<IWodElement>();
@@ -92,6 +94,15 @@ public abstract class AbstractWodModel implements IWodModel {
   }
 
   public synchronized void addElement(IWodElement _element) {
+  	if (_hasInheritedElements) {
+  		IWodElement existingElement = getElementNamed(_element.getElementName());
+  		if (existingElement != null && existingElement.isInherited()) {
+  			_elements.remove(existingElement);
+  		}
+  	}
+  	else if (_element.isInherited()) {
+  		_hasInheritedElements = true;
+  	}
     _elements.add(_element);
   }
 

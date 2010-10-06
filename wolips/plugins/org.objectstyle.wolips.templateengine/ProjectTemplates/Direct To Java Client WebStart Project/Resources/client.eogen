@@ -1,0 +1,1 @@
+ -destination Sources -extension java -javaclient -javaTemplate _EntityClient -packagedirs -subclassDestination Sources -subclassJavaTemplate EntityClient -templatedir Resources -verbose -loadModelGroup -define-EOGenericRecord ${clientSideEOFPackage}.MyGenericRecord

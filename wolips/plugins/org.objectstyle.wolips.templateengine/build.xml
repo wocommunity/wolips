@@ -13,9 +13,6 @@
 	<!-- ========================================== -->
 	<target name="java">
 		<path id="classpath">
-			<fileset dir="../../../3rdparty">
-				<include name="**/*.jar" />
-			</fileset>
 			<fileset dir="../../">
 				<include name="**/*.jar" />
 			</fileset>

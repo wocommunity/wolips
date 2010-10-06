@@ -66,7 +66,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class WOnderD2WApplicationWizard extends NewWOProjectWizard {
   public WOnderD2WApplicationWizard() {
-    super("Wonder D2W Application");
+    super("Modern D2W Application");
   }
 
   @Override

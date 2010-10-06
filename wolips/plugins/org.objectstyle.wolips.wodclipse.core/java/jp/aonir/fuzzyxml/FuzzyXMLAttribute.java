@@ -38,4 +38,8 @@ public interface FuzzyXMLAttribute extends FuzzyXMLNode {
 	public void setEscape(boolean escape);
 	
 	public boolean isEscape();
+	
+	public void setHasNestedTag(boolean hasNestedTag);
+	
+	public boolean hasNestedTag();
 }

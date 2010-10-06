@@ -34,6 +34,7 @@
 	<target name="jar">
 		<patternset id="param.classes.patternset.refid">
 			<include name="**/org/objectstyle/wolips/variables/**" />
+			<include name="**/er/extensions/foundation/**" />
 		</patternset>
 
 		<ant dir="." antfile="../../../../${project.buildscripts.dir}/plugin-project.xml" target="jar.no.unpack">

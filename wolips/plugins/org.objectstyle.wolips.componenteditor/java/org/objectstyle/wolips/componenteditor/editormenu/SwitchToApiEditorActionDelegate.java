@@ -44,10 +44,10 @@
 package org.objectstyle.wolips.componenteditor.editormenu;
 
 import org.eclipse.jface.action.IAction;
+import org.objectstyle.wolips.baseforuiplugins.utils.WorkbenchUtilities;
 import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
 import org.objectstyle.wolips.editors.EditorsPlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 public class SwitchToApiEditorActionDelegate extends AbstractSwitchToActionDelegate {
 
@@ -67,7 +67,7 @@ public class SwitchToApiEditorActionDelegate extends AbstractSwitchToActionDeleg
 			if (localizedComponentsLocateResult.getDotApi() == null) {
 				return;
 			}
-			WorkbenchUtilitiesPlugin.open(localizedComponentsLocateResult.getDotApi(), EditorsPlugin.ComponentEditorID);
+			WorkbenchUtilities.open(localizedComponentsLocateResult.getDotApi(), EditorsPlugin.ComponentEditorID);
 		}
 
 	}

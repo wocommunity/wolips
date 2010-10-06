@@ -83,7 +83,6 @@ import org.objectstyle.wolips.core.resources.builder.IFullBuilder;
 import org.objectstyle.wolips.core.resources.builder.IIncrementalBuilder;
 import org.objectstyle.wolips.core.resources.internal.build.BuilderWrapper;
 import org.objectstyle.wolips.core.resources.internal.build.FullBuildDeltaVisitor;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.jdt.ProjectFrameworkAdapter;
 import org.objectstyle.wolips.preferences.Preferences;
 
@@ -103,6 +102,10 @@ public class DotXcodeBuilder implements IIncrementalBuilder, IFullBuilder {
 
 	public DotXcodeBuilder() {
 		super();
+	}
+	
+	public boolean isEnabled() {
+		return Preferences.shouldWriteXcodeOnBuild();
 	}
 
 	private XcodeProject getXcodeProject(IProject project, boolean create) {

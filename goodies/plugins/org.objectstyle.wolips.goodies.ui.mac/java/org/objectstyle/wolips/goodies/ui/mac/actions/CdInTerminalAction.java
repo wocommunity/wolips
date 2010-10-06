@@ -104,9 +104,9 @@ public class CdInTerminalAction implements IObjectActionDelegate {
 	 */
 	public void run(IAction action) {
 		try {
-			NativeHelper.cdInTerminal(this.actionResource());
+			NativeHelper.cdInShell(this.actionResource());
 		} catch (Throwable t) {
-			System.out.println("");
+			t.printStackTrace();
 		}
 	}
 

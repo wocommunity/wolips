@@ -74,7 +74,13 @@ public class RESTConnectionDictionarySection extends Composite implements IConne
 
 	public RESTConnectionDictionarySection(Composite parent, int style, TabbedPropertySheetWidgetFactory widgetFactory) {
 		super(parent, style);
-		setLayout(new GridLayout(2, false));
+		GridLayout layout = new GridLayout(2, false);
+		layout.verticalSpacing = 10;
+		layout.marginLeft = 0;
+		layout.marginRight = 0;
+		layout.marginBottom = 0;
+		layout.marginWidth = 0;
+		setLayout(layout);
 		setBackground(parent.getBackground());
 
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.URL), SWT.NONE);

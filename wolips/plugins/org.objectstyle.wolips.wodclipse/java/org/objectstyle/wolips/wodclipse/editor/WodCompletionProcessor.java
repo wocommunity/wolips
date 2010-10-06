@@ -253,17 +253,19 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 					IType elementType = findNearestElementType(javaProject, document, scanner, tokenOffset, typeCache);
 					WodCompletionUtils.fillInBindingNameCompletionProposals(javaProject, elementType, token, tokenOffset, offset, completionProposalsSet, guessed, typeCache);
 				} else if (tokenType == PreferenceConstants.BINDING_VALUE) {
-					String elementTypeName = path.removeFileExtension().lastSegment();
-					IType elementType = BindingReflectionUtils.findElementType(javaProject, elementTypeName, true, typeCache);
-					boolean checkBindingValue = WodCompletionUtils.fillInBindingValueCompletionProposals(javaProject, elementType, token, tokenOffset, offset, completionProposalsSet, typeCache);
+					// MS: We've probably already found the type for our current component. Just get the parser cache entry
+					// and pull the type off of it.
+					IType elementType = _editor.getComponentsLocateResults().getDotJavaType();
+					boolean checkBindingValue = false;
+					if (elementType != null) {
+						checkBindingValue = WodCompletionUtils.fillInBindingValueCompletionProposals(javaProject, elementType, token, tokenOffset, offset, completionProposalsSet, typeCache);
+					}
 					if (checkBindingValue) {
 						try {
 							// We might (probably do) have a syntactically
-							// invalid wod file
-							// at this point, so we need to
+							// invalid wod file at this point, so we need to
 							// hunt for the name of the binding that this value
-							// corresponds
-							// to ...
+							// corresponds to ...
 							int equalsIndex = WodCompletionProcessor.scanBackFor(document, offset, new char[] { '=' }, false);
 							int noSpaceIndex = WodCompletionProcessor.scanBackFor(document, equalsIndex - 1, new char[] { ' ', '\t', '\n', '\r' }, true);
 							int spaceIndex = WodCompletionProcessor.scanBackFor(document, noSpaceIndex, new char[] { ' ', '\t', '\n', '\r' }, false);

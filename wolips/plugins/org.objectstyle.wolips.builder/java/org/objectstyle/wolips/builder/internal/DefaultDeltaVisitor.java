@@ -53,7 +53,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
-import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 
 /**
  * @author ulrich
@@ -70,7 +69,7 @@ public abstract class DefaultDeltaVisitor implements IResourceDeltaVisitor {
 		// if (!resource.exists() || !resource.isAccessible())
 		// return false;
 		if (resource.getType() == IResource.FOLDER) {
-			if (IWOLipsModel.EXT_FRAMEWORK.equals(resource.getFileExtension()) || IWOLipsModel.EXT_WOA.equals(resource.getFileExtension()) || "build".equals(resource.getName()) || "dist".equals(resource.getName())) {
+			if ("framework".equals(resource.getFileExtension()) || "woa".equals(resource.getFileExtension()) || "build".equals(resource.getName()) || "dist".equals(resource.getName())) {
 				return false;
 			}
 		}

@@ -1,9 +1,12 @@
 package org.objectstyle.wolips.eomodeler.doc;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.HashSet;
 
 import org.apache.velocity.Template;
@@ -121,13 +124,13 @@ public class EOModelDocGenerator {
 
 	public static void writeTemplate(VelocityEngine engine, VelocityContext context, String templateName, File outputFile) throws Exception {
 		try {
-			Template template = engine.getTemplate(templateName);
+			Template template = engine.getTemplate(templateName, "UTF-8");
 			if (!outputFile.getParentFile().exists()) {
 				if (!outputFile.getParentFile().mkdirs()) {
 					throw new IOException("Unable to create the folder " + outputFile.getParentFile() + ".");
 				}
 			}
-			FileWriter outputWriter = new FileWriter(outputFile);
+			Writer outputWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8"));
 			try {
 				template.merge(context, outputWriter);
 			} finally {

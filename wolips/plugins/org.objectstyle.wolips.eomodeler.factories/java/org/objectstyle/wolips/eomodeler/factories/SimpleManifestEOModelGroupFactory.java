@@ -17,8 +17,10 @@ public class SimpleManifestEOModelGroupFactory extends AbstractManifestEOModelGr
 		fillInSearchFolders(new File(selectedModelFolder, "EntityModeler.modelpath"), searchFolders);
 		fillInSearchFolders(new File(selectedModelFolder, ".EntityModeler.modelpath"), searchFolders);
 		if (selectedModelFolder != null) {
-			fillInSearchFolders(new File(selectedModelFolder.getParentFile(), "EntityModeler.modelpath"), searchFolders);
-			fillInSearchFolders(new File(selectedModelFolder.getParentFile(), ".EntityModeler.modelpath"), searchFolders);
+			for (File modelFolder = selectedModelFolder.getParentFile(); modelFolder != null; modelFolder = modelFolder.getParentFile()) {
+				fillInSearchFolders(new File(modelFolder, "EntityModeler.modelpath"), searchFolders);
+				fillInSearchFolders(new File(modelFolder, ".EntityModeler.modelpath"), searchFolders);
+			}
 		}
 		fillInSearchFolders(new File(System.getProperty("user.home"), "EntityModeler.modelpath"), searchFolders);
 		fillInSearchFolders(new File(System.getProperty("user.home"), ".EntityModeler.modelpath"), searchFolders);
@@ -28,16 +30,32 @@ public class SimpleManifestEOModelGroupFactory extends AbstractManifestEOModelGr
 		fillInSearchFolders(new File(System.getProperty("user.home") + "/Library/Preferences", ".EntityModeler.modelpath"), searchFolders);
 		return searchFolders;
 	}
-
-	protected void fillInSearchFolders(File manifestFile, List<ManifestSearchFolder> searchFolders) throws IOException {
+	
+	protected int fillInSearchFolders(File baseFolder, String searchFolderPath, final List<ManifestSearchFolder> searchFolders) throws IOException {
+		int count = SimpleManifestUtilities.fillInSearchFolders(baseFolder, searchFolderPath, new SimpleManifestUtilities.SearchFolderDelegate() {
+			public void fileMatched(File file) throws IOException {
+				searchFolders.add(new ManifestSearchFolder(file.getAbsoluteFile()));
+			}
+		});
+		return count;
+	}
+	
+	protected void fillInSearchFolders(File manifestFile, final List<ManifestSearchFolder> searchFolders) throws IOException {
 		if (manifestFile.exists()) {
 			BufferedReader manifestReader = new BufferedReader(new FileReader(manifestFile));
 			try {
 				String searchFolderPath;
 				while ((searchFolderPath = manifestReader.readLine()) != null) {
-					File searchFolder = new File(searchFolderPath).getAbsoluteFile();
-					if (searchFolder != null && searchFolder.exists()) {
-						searchFolders.add(new ManifestSearchFolder(searchFolder));
+					if (searchFolderPath.contains(",")) {
+						for (String possibleFolderPath : searchFolderPath.split(",")) {
+							int count = fillInSearchFolders(manifestFile.getParentFile(), possibleFolderPath, searchFolders);
+							if (count > 0) {
+								break;
+							}
+						}
+					}
+					else {
+						fillInSearchFolders(manifestFile.getParentFile(), searchFolderPath, searchFolders);
 					}
 				}
 			} finally {

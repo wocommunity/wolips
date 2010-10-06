@@ -6,6 +6,10 @@
          name="Entity Modeler EOModelGroup Factories"
          point="org.objectstyle.wolips.eomodeler.eomodelGroupFactory">
       <modelGroupFactory
+            class="org.objectstyle.wolips.eomodeler.factories.BundleEOModelGroupFactory"
+            id="entitymodeler.BundleEOModelGroupFactory"
+            name="Bundle EOModelGroup Factory"/>
+      <modelGroupFactory
             class="org.objectstyle.wolips.eomodeler.factories.SimpleManifestEOModelGroupFactory"
             id="entitymodeler.SimpleManifestEOModelGroupFactory"
             name="Simple Manifest EOModelGroup Factory"/>

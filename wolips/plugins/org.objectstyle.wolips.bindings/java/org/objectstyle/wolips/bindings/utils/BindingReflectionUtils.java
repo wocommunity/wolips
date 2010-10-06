@@ -1,5 +1,6 @@
 package org.objectstyle.wolips.bindings.utils;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.Flags;
@@ -22,7 +24,6 @@ import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.IJavaSearchScope;
 import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchPattern;
-import org.eclipse.jdt.internal.core.DefaultWorkingCopyOwner;
 import org.eclipse.jdt.internal.ui.search.JavaSearchScopeFactory;
 import org.objectstyle.wolips.bindings.wod.BindingValueKey;
 import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
@@ -72,8 +73,9 @@ public class BindingReflectionUtils {
       else {
         SearchEngine searchEngine = new SearchEngine();
         IJavaSearchScope searchScope = JavaSearchScopeFactory.getInstance().createJavaProjectSearchScope(javaProject, JavaSearchScopeFactory.ALL);
+      	NullProgressMonitor progressMonitor = new NullProgressMonitor();
         TypeNameCollector typeNameCollector = new TypeNameCollector(javaProject, false);
-        searchEngine.searchAllTypeNames(null, SearchPattern.R_EXACT_MATCH, shortClassName.toCharArray(), IJavaSearchConstants.TYPE, IJavaSearchConstants.TYPE, searchScope, typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, new NullProgressMonitor());
+        searchEngine.searchAllTypeNames(null, SearchPattern.R_EXACT_MATCH, shortClassName.toCharArray(), IJavaSearchConstants.TYPE, IJavaSearchConstants.TYPE, searchScope, typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, progressMonitor);
         Set<String> typeNames = typeNameCollector.getTypeNames();
         if (typeNames.size() == 1) {
           expandedClassName = typeNames.iterator().next();
@@ -109,8 +111,12 @@ public class BindingReflectionUtils {
       type = javaProject.findType(typeName);
     }
     else {
+      //long a = System.currentTimeMillis();
+    	NullProgressMonitor progressMonitor = new NullProgressMonitor();
       TypeNameCollector typeNameCollector = new TypeNameCollector(javaProject, requireTypeInProject);
-      BindingReflectionUtils.findMatchingElementClassNames(elementTypeName, SearchPattern.R_EXACT_MATCH, typeNameCollector, null);
+      //System.out.println("BindingReflectionUtils.findElementType: start " + System.currentTimeMillis());
+      BindingReflectionUtils.findMatchingElementClassNames(elementTypeName, SearchPattern.R_EXACT_MATCH, typeNameCollector, progressMonitor);
+      //System.out.println("BindingReflectionUtils.findElementType: " + (System.currentTimeMillis() - a));
       if (typeNameCollector.isExactMatch()) {
         String matchingElementClassName = typeNameCollector.firstTypeName();
         type = typeNameCollector.getTypeForClassName(matchingElementClassName);
@@ -130,7 +136,8 @@ public class BindingReflectionUtils {
   public static void findMatchingElementClassNames(String elementTypeName, int matchType, TypeNameCollector typeNameCollector, IProgressMonitor progressMonitor) throws JavaModelException {
     if (elementTypeName != null) {
       SearchEngine searchEngine = new SearchEngine();
-      IJavaSearchScope searchScope = new WOHierarchyScope(typeNameCollector.getSuperclassType(), typeNameCollector.getProject());
+      //IJavaSearchScope searchScope = new WOHierarchyScope(typeNameCollector.getSuperclassType(), typeNameCollector.getProject());
+      IJavaSearchScope searchScope = WOHierarchyScope.hierarchyScope(typeNameCollector.getSuperclassType(), typeNameCollector.getProject().getProject());
       int lastDotIndex = elementTypeName.lastIndexOf('.');
       char[] packageName;
       char[] typeName;
@@ -296,29 +303,43 @@ public class BindingReflectionUtils {
     return declaringTypePackageName == null || declaringTypePackageName.length() == 0;
   }
 
+  protected static enum Visibility {
+  	Hidden,
+  	Visible,
+  	MaybeVisible
+  }
+  
   public static BindingValueKey getBindingKeyIfMatches(IJavaProject javaProject, IType type, IMember member, String nameStartingWith, String prefix, boolean requireExactNameMatch, int accessorsOrMutators, TypeCache cache) throws JavaModelException {
     //System.out.println("BindingReflectionUtils.getBindingKeyIfMatches: " + member.getElementName() + " starts with " + nameStartingWith);
     BindingValueKey bindingKey = null;
 
     int flags = member.getFlags();
-    boolean visible = false;
+    Visibility visible = Visibility.Hidden;
+    
     // Private is never an option
     if (Flags.isPrivate(flags)) {
-      visible = false;
+      visible = Visibility.Hidden;
     }
     // Don't show static methods and fields
     else if (Flags.isStatic(flags)) {
-      visible = false;
+      visible = Visibility.Hidden;
     }
     // Public bindings are always visible
-    else if (Flags.isPublic(flags)) {
-      visible = true;
+    else if (Flags.isPublic(flags) || type.isInterface()) {
+      visible = Visibility.Visible;
     }
     // Components that are not in a package can have bindings to protected fields
-    else if ((Flags.isProtected(flags) || Flags.isPackageDefault(flags)) && BindingReflectionUtils.isDefaultPackage(member)) {
-      visible = true;
+    //else if ((Flags.isProtected(flags) || Flags.isPackageDefault(flags)) && BindingReflectionUtils.isDefaultPackage(member)) {
+    else if (Flags.isProtected(flags) || Flags.isPackageDefault(flags)) {
+    	if (BindingReflectionUtils.isDefaultPackage(member)) {
+    		visible = Visibility.Visible;
+    	}
+    	else {
+    		visible = Visibility.MaybeVisible;
+    	}
     }
-    if (visible) {
+    
+    if (visible != Visibility.Hidden) {
       boolean memberSignatureMatches;
       if (member instanceof IMethod) {
         IMethod method = (IMethod) member;
@@ -355,7 +376,18 @@ public class BindingReflectionUtils {
           String bindingName = BindingReflectionUtils.toLowercaseFirstLetter(memberName.substring(prefixLength));
           //System.out.println("BindingReflectionUtils.getBindingKeyIfMatches:   bindingName = " + bindingName);
           if (nameStartingWith.length() > 0 || !bindingName.startsWith("_")) {
-            bindingKey = new BindingValueKey(bindingName, type, member, javaProject, cache);
+          	if (visible == Visibility.MaybeVisible) {
+          		String packageName = type.getPackageFragment().getElementName();
+          		String kvcProtectedAccessorClassName = packageName.length() == 0 ? "KeyValueCodingProtectedAccessor" : (packageName + ".KeyValueCodingProtectedAccessor");
+              IType kvcProtectedAccessor = type.getJavaProject().findType(kvcProtectedAccessorClassName);
+          		if (kvcProtectedAccessor != null) {
+          			visible = Visibility.Visible;
+          		}
+          	}
+          	
+          	if (visible == Visibility.Visible) {
+          		bindingKey = new BindingValueKey(bindingName, type, member, javaProject, cache);
+          	}
           }
         }
       }

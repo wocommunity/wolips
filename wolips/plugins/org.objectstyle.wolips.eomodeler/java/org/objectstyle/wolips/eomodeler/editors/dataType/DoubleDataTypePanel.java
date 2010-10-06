@@ -58,7 +58,12 @@ public class DoubleDataTypePanel extends Composite implements IDataTypePanel {
 	public DoubleDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
 		super(_parent, _style);
 		setBackground(_parent.getBackground());
-		setLayout(new GridLayout(2, false));
+		GridLayout layout = new GridLayout(2, false);
+		layout.verticalSpacing = 10;
+		layout.marginLeft = 7;
+		layout.marginRight = 7;
+		layout.marginBottom = 13;
+		setLayout(layout);
 	}
 
 	public void setArgument(AbstractEOArgument _argument) {

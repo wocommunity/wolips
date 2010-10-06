@@ -49,8 +49,6 @@ import org.eclipse.jface.text.rules.IToken;
  * @author mike
  */
 public class ElementTypeRule extends SingleWordRule {
-	private IToken myToken;
-
 	public ElementTypeRule(IToken _token) {
 		super(_token, new char[] { '.' }, '{');
 	}

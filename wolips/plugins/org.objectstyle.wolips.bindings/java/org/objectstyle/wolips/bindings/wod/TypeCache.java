@@ -7,10 +7,13 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jdt.core.IImportDeclaration;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.Signature;
 import org.eclipse.jdt.internal.corext.util.JavaModelUtil;
 import org.objectstyle.wolips.bindings.api.ApiCache;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
@@ -150,7 +153,7 @@ public class TypeCache {
 
     public TypeCacheEntry(IType type) throws JavaModelException {
       _type = type;
-      _resource = _type.getUnderlyingResource();
+      //_resource = _type.getUnderlyingResource();
       _nextTypeCache = new HashMap<String, IType>();
       _bindingValueAccessorKeys = new HashMap<String, List<BindingValueKey>>();
       _bindingValueMutatorKeys = new HashMap<String, List<BindingValueKey>>();
@@ -207,7 +210,129 @@ public class TypeCache {
       }
     }
 
+  	/**
+  	 * Resolves a type name in the context of the declaring type.
+  	 *
+  	 * @param refTypeSig the type name in signature notation (for example 'QVector') this can also be an array type, but dimensions will be ignored.
+  	 * @param declaringType the context for resolving (type where the reference was made in)
+  	 * @return returns the fully qualified type name or build-in-type name. if a unresolved type couldn't be resolved null is returned
+  	 * @throws JavaModelException thrown when the type can not be accessed
+  	 */
+  	public IType resolveType(String refTypeSig, IType declaringType) throws JavaModelException {
+			IJavaProject javaProject = declaringType.getJavaProject();
+
+			int arrayCount= Signature.getArrayCount(refTypeSig);
+  		char type= refTypeSig.charAt(arrayCount);
+  		if (type == Signature.C_UNRESOLVED) {
+  			String name= ""; //$NON-NLS-1$
+  			int bracket= refTypeSig.indexOf(Signature.C_GENERIC_START, arrayCount + 1);
+  			if (bracket > 0)
+  				name= refTypeSig.substring(arrayCount + 1, bracket);
+  			else {
+  				int semi= refTypeSig.indexOf(Signature.C_SEMICOLON, arrayCount + 1);
+  				if (semi == -1) {
+  					throw new IllegalArgumentException();
+  				}
+  				name= refTypeSig.substring(arrayCount + 1, semi);
+  			}
+  			
+    		String dotTypeName = "." + name;
+    		String dotBaseTypeName = null;
+    		String dotExtensionTypeName = null;
+    		int dotIndex = name.indexOf('.');
+  			if (dotIndex != -1) {
+    			// We might get a fully qualified type name -- Qcom.apple.jingle.eo.MZProgramNodeType;
+  				IType resolvedType = javaProject.findType(name);
+  				if (resolvedType != null) {
+  					return resolvedType;
+  				}
+  				// If not, then this might be a nested type reference on another type, so let's split it to look for that in our imports later
+  				dotBaseTypeName = "." + name.substring(0, dotIndex);
+  				dotExtensionTypeName = name.substring(dotIndex);
+  			}
+  			
+    		IImportDeclaration[] importDeclarations = declaringType.getCompilationUnit().getImports();
+    		// Loop over the imports and look for the import of our symbol
+    		for (IImportDeclaration declaration : importDeclarations) {
+    			String importName = declaration.getElementName();
+    			// If it's a .* import, then pop off the package name and lookup the type
+    			if (declaration.isOnDemand()) {
+    				String packageName = importName.substring(0, importName.lastIndexOf('.'));
+    				String possibleTypeName = packageName + dotTypeName;
+    				IType onDemandPackageType = javaProject.findType(possibleTypeName);
+    				if (onDemandPackageType != null) {
+    					return onDemandPackageType;
+    				}
+    			}
+    			// If it's not a .* import, then does the import end with our type name?
+    			else if (importName.endsWith(dotTypeName)) {
+    				IType importType = javaProject.findType(importName);
+    				if (importType != null) {
+    					return importType;
+    				}
+    			}
+    			// If it doesn't, check to see if we were a dotted type ("Outer.Inner") and check to see if Outer is imported
+    			else if (dotBaseTypeName != null && importName.endsWith(dotBaseTypeName)) {
+    				// ... then look for Outer.Inner
+    				IType importNestedType = javaProject.findType(importName + dotExtensionTypeName);
+    				if (importNestedType != null) {
+    					return importNestedType;
+    				}
+    			}
+    		}
+
+    		// Is this a java.lang.Xxx class that we get for free?
+    		String javaLangTypeName = "java.lang" + dotTypeName;
+    		IType javaLangType = javaProject.findType(javaLangTypeName);
+    		if (javaLangType != null) {
+    			return javaLangType;
+    		}
+    		
+    		// What about an inner type of our own class?
+    		String innerTypeName = declaringType.getFullyQualifiedName('.') + dotTypeName;
+    		IType innerType = javaProject.findType(innerTypeName); 
+    		if (innerType != null) {
+    			return innerType;
+    		}
+
+    		// Are we declared in a package?
+    		IPackageFragment declaringTypePackageFragment = declaringType.getPackageFragment();
+    		if (declaringTypePackageFragment != null) {
+    			// ... if so, is this name in our package, so it didn't need an import?
+    			String samePackageTypeName = declaringTypePackageFragment.getElementName() + dotTypeName;
+    			IType samePackageType = javaProject.findType(samePackageTypeName);
+    			if (samePackageType != null) {
+    				return samePackageType;
+    			}
+    		}
+    		else {
+    			// If we were in the default package, is that class in the default package too?
+    			IType defaultPackageType = javaProject.findType(name);
+    			if (defaultPackageType != null) {
+    				return defaultPackageType;
+    			}
+    		}
+    		
+    		String slowResolvedTypeName = JavaModelUtil.getResolvedTypeName(refTypeSig, _type);
+    		if (slowResolvedTypeName != null) {
+    			IType slowResolvedType = javaProject.findType(slowResolvedTypeName);
+    			if (slowResolvedType != null) {
+    				return slowResolvedType;
+    			}
+    		}
+    		
+  			return null;
+  		}
+  		else {
+  			// We were given an Lxxx; signature ... just look it up
+  			String resolvedTypeName = Signature.toString(refTypeSig.substring(arrayCount));
+  			IType resolvedType = javaProject.findType(resolvedTypeName);
+  			return resolvedType;
+  		}
+  	}
+
     public IType getTypeForName(String typeName) throws JavaModelException {
+    	//long a = System.currentTimeMillis();
       IType type;
       if ("void".equals(typeName) || (typeName != null && typeName.length() == 1)) {
         // ignore primitives
@@ -223,27 +348,28 @@ public class TypeCache {
           // majority of time is spent during component validation.  It's also
           // unfortunately completely necessary, but caching should focus on 
           // this in the future.
-          String resolvedNextTypeName = JavaModelUtil.getResolvedTypeName(typeName, _type);
-          if (resolvedNextTypeName == null) {
-            System.out.println("TypeCacheEntry.getTypeForName: Failed to resolve type name " + typeName + " in component " + _type.getElementName());
-          }
-          else if (BindingReflectionUtils.isPrimitive(resolvedNextTypeName)) {
-            // ignore primitives if we get this far
+          //String resolvedNextTypeName = JavaModelUtil.getResolvedTypeName(typeName, _type);
+        	type = resolveType(typeName, _type);
+          if (type == null) {
+          	// We are going to hit KVCProtectedAccessor a LOT, and in most cases, it's just not going to exist, so let's save us all some trouble and skip it ...
+          	if (!"QKeyValueCodingProtectedAccessor;".equals(typeName)) {
+          		System.out.println("TypeCacheEntry.getTypeForName: Failed to resolve type name " + typeName + " in component " + _type.getElementName());
+          	}
+            else if (BindingReflectionUtils.isPrimitive(typeName)) {
+              // ignore primitives if we get this far
+            }
           }
           else {
-            type = _type.getJavaProject().findType(resolvedNextTypeName);
-            if (type != null) {
-              synchronized (_nextTypeCache) {
-                _nextTypeCache.put(typeName, type);
-              }
-            }
-            else {
-              System.out.println("TypeCacheEntry.getTypeForName: couldn't resolve " + resolvedNextTypeName);
+            synchronized (_nextTypeCache) {
+              _nextTypeCache.put(typeName, type);
             }
           }
         }
         // System.out.println("TypeCacheEntry.getTypeForName:   " + typeName + " => " + (System.currentTimeMillis() - t) + " => " + type);
       }
+      //if (System.currentTimeMillis() -a > 0) {
+      //	System.out.println("TypeCache.TypeCacheEntry.getTypeForName: " + type.getElementName() + " " + (System.currentTimeMillis() - a));
+      //}
       return type;
     }
 

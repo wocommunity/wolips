@@ -67,6 +67,7 @@ import org.objectstyle.wolips.bindings.api.Binding;
 import org.objectstyle.wolips.bindings.api.IApiBinding;
 import org.objectstyle.wolips.bindings.api.Validation;
 import org.objectstyle.wolips.bindings.api.Wo;
+import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 
 /**
@@ -78,10 +79,20 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
   private boolean _inline;
 
   private String _tagName;
+  
+  private boolean _inherited;
 
   public AbstractWodElement() {
     _bindings = new LinkedList<IWodBinding>();
   }
+  
+  public void setInherited(boolean inherited) {
+		_inherited = inherited;
+	}
+  
+  public boolean isInherited() {
+		return _inherited;
+	}
 
   public boolean isInline() {
     return _inline;
@@ -257,36 +268,43 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
 
     String elementName = getElementName();
     int lineNumber = getLineNumber();
-    if (!_inline && !htmlCache.containsElementNamed(elementName)) {
-      problems.add(new WodElementProblem(this, "There is no element named '" + elementName + "' in your component HTML file", getElementNamePosition(), lineNumber, true));
+  	String wodMissingComponentSeverity = Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.WOD_MISSING_COMPONENT_SEVERITY_KEY);
+  	String unusedWodElementSeverity = Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.UNUSED_WOD_ELEMENT_SEVERITY_KEY);
+    if (!PreferenceConstants.IGNORE.equals(unusedWodElementSeverity) && !_inline && !htmlCache.containsElementNamed(elementName)) {
+      problems.add(new WodElementProblem(this, "There is no element named '" + elementName + "' in your component HTML file", getElementNamePosition(), lineNumber, PreferenceConstants.WARNING.equals(unusedWodElementSeverity)));
     }
 
     Wo wo = null;
-    IType elementType = BindingReflectionUtils.findElementType(javaProject, elementTypeName, false, typeCache);
-    if (elementType == null || (!elementType.getElementName().equals(elementTypeName) && !elementType.getFullyQualifiedName().equals(elementTypeName))) {
-      problems.add(new WodElementProblem(this, "The class for '" + elementTypeName + "' is either missing or does not extend WOElement.", getElementTypePosition(), lineNumber, false));
-    }
-    else {
-      try {
-        wo = ApiUtils.findApiModelWo(elementType, typeCache.getApiCache(javaProject));
-        if (wo != null) {
-          Map<String, String> bindingsMap = getBindingsMap();
-          List<Binding> bindings = wo.getBindings();
-          for (Binding binding : bindings) {
-            String bindingName = binding.getName();
-            if (binding.isExplicitlyRequired() && !bindingsMap.containsKey(bindingName)) {
-              problems.add(new ApiBindingValidationProblem(this, binding, getElementNamePosition(), lineNumber, false));
-            }
-          }
-          List<Validation> failedValidations = wo.getFailedValidations(bindingsMap);
-          for (Validation failedValidation : failedValidations) {
-            problems.add(new ApiElementValidationProblem(this, failedValidation, getElementNamePosition(), lineNumber, false));
-          }
-        }
-      }
-      catch (Throwable e) {
-        Activator.getDefault().log(e);
-      }
+    if (!PreferenceConstants.IGNORE.equals(wodMissingComponentSeverity)) {
+    	IType elementType = BindingReflectionUtils.findElementType(javaProject, elementTypeName, false, typeCache);
+	    if (elementType == null || (!elementType.getElementName().equals(elementTypeName) && !elementType.getFullyQualifiedName().equals(elementTypeName))) {
+	      problems.add(new WodElementProblem(this, "The class for '" + elementTypeName + "' is either missing or does not extend WOElement.", getElementTypePosition(), lineNumber, PreferenceConstants.WARNING.equals(wodMissingComponentSeverity)));
+	    }
+	    else {
+	    	String wodApiProblemSeverity = Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.WOD_API_PROBLEMS_SEVERITY_KEY);
+	    	if (!PreferenceConstants.IGNORE.equals(wodApiProblemSeverity)) {
+		      try {
+		        wo = ApiUtils.findApiModelWo(elementType, typeCache.getApiCache(javaProject));
+		        if (wo != null) {
+		          Map<String, String> bindingsMap = getBindingsMap();
+		          List<Binding> bindings = wo.getBindings();
+		          for (Binding binding : bindings) {
+		            String bindingName = binding.getName();
+		            if (binding.isExplicitlyRequired() && !bindingsMap.containsKey(bindingName)) {
+		              problems.add(new ApiBindingValidationProblem(this, binding, getElementNamePosition(), lineNumber, PreferenceConstants.WARNING.equals(wodApiProblemSeverity)));
+		            }
+		          }
+		          List<Validation> failedValidations = wo.getFailedValidations(bindingsMap);
+		          for (Validation failedValidation : failedValidations) {
+		            problems.add(new ApiElementValidationProblem(this, failedValidation, getElementNamePosition(), lineNumber, PreferenceConstants.WARNING.equals(wodApiProblemSeverity)));
+		          }
+		        }
+		      }
+		      catch (Throwable e) {
+		        Activator.getDefault().log(e);
+		      }
+	    	}
+	    }
     }
 
     Set<String> bindingNames = new HashSet<String>();

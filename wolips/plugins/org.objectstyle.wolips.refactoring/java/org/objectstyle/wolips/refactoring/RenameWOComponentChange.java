@@ -164,7 +164,7 @@ public final class RenameWOComponentChange extends CompositeChange {
 	
 	public Change perform(final IProgressMonitor pm) throws CoreException {
 		try {
-			pm.beginTask(RefactoringCoreMessages.RenameResourceChange_rename_resource, 1);
+			pm.beginTask("Renaming WO Component", 1);
 			IPath newPath = renamedResourcePath(_resourcePath, _newName);
 			String oldName = _resourcePath.lastSegment();
 			super.perform(pm);

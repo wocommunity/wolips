@@ -4,53 +4,28 @@
       WOLips feature list
    </description>
    <feature url="features/org.objectstyle.wolips.feature_1.0.6.jar" id="org.objectstyle.wolips.feature" version="1.0.6">
-      <category name="Standard Install"/>
-   </feature>
-   <feature url="features/org.objectstyle.wolips.tptp.feature_1.0.6.jar" id="org.objectstyle.wolips.tptp.feature" version="1.0.6">
-      <category name="Profiling Support"/>
-   </feature>
-   <feature url="features/org.objectstyle.wolips.goodies.mac.feature_1.0.6.jar" id="org.objectstyle.wolips.goodies.mac.feature" version="1.0.6" os="macosx">
-      <category name="Standard Install"/>
-   </feature>
-   <feature url="features/org.objectstyle.wolips.goodies.win.feature_1.0.6.jar" id="org.objectstyle.wolips.goodies.win.feature" version="1.0.6" os="win32">
-      <category name="Standard Install"/>
-   </feature>
-   <feature url="features/org.objectstyle.wolips.maven_1.0.6.jar" id="org.objectstyle.wolips.maven" version="1.0.6">
-      <category name="Maven Support"/>
-   </feature>
-   <feature url="features/org.objectstyle.wolips.base.feature_1.0.6.jar" id="org.objectstyle.wolips.base.feature" version="1.0.6">
-      <category name="Standard Install"/>
-   </feature>
-   <feature url="features/org.objectstyle.wolips.thirdparty.feature_1.0.6.jar" id="org.objectstyle.wolips.thirdparty.feature" version="1.0.6">
-      <category name="Standard Install"/>
+      <category name="Required"/>
    </feature>
    <feature url="features/org.objectstyle.wolips.jprofiler.feature_1.0.6.jar" id="org.objectstyle.wolips.jprofiler.feature" version="1.0.6">
-      <category name="Profiling Support"/>
+      <category name="Optional"/>
    </feature>
    <feature url="features/org.objectstyle.wolips.groovy.feature_1.0.6.jar" id="org.objectstyle.wolips.groovy.feature" version="1.0.6">
-      <category name="Scripting Support"/>
+      <category name="Optional"/>
    </feature>
-   <feature url="features/org.objectstyle.wolips.apple.mavenintegration.feature_1.0.6.jar" id="org.objectstyle.wolips.apple.mavenintegration.feature" version="1.0.6">
-      <category name="Maven Support"/>
+   <feature url="features/org.objectstyle.wolips.goodies.feature_1.0.6.jar" id="org.objectstyle.wolips.goodies.feature" version="1.0.6" os="macosx,win32">
+      <category name="Optional"/>
    </feature>
-   <category-def name="Standard Install" label="Standard Install">
+   <feature url="features/org.objectstyle.wolips.jrebel.feature_1.0.6.jar" id="org.objectstyle.wolips.jrebel.feature" version="1.0.6">
+      <category name="Optional"/>
+   </feature>
+   <category-def name="Required" label="WOLips">
       <description>
-         WOLips supports the development of WebObjects Applications and Frameworks.
+         Required plugins to use the WOLips tool chain.
       </description>
    </category-def>
-   <category-def name="Profiling Support" label="Profiling Support">
+   <category-def name="Optional" label="WOLips (Optional)">
       <description>
-         Profiling support for WOLips.
-      </description>
-   </category-def>
-   <category-def name="Maven Support" label="Maven Support">
-      <description>
-         WOLips extensions to support the WebObjects project development using Maven 1 and Maven 2.
-      </description>
-   </category-def>
-   <category-def name="Scripting Support" label="Scripting Support">
-      <description>
-         Scripting language support for WOLips
+         Optional plugins that can extend the capabilities of the WOLips tool chain.
       </description>
    </category-def>
 </site>

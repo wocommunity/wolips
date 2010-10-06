@@ -68,8 +68,8 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 import org.objectstyle.wolips.ui.UIPlugin;
 
 /**
@@ -101,7 +101,7 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 		if (element instanceof IResource && !(element instanceof IProject)) {
 			IResource resource = (IResource) element;
 			IProject project = resource.getProject();
-			IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
+			ProjectAdapter projectAdapter = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
 			// make sure it's a wo project
 			if (projectAdapter != null) {
 				IProjectPatternsets projectPatternsets = (IProjectPatternsets) project.getAdapter(IProjectPatternsets.class);

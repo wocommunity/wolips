@@ -56,11 +56,8 @@ import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
@@ -74,6 +71,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
+import org.objectstyle.wolips.eomodeler.utils.FormUtils;
 
 public class EOEntityBasicEditorSection extends AbstractPropertySection {
 	private EOEntity myEntity;
@@ -100,16 +98,7 @@ public class EOEntityBasicEditorSection extends AbstractPropertySection {
 		FormLayout formLayout = new FormLayout();
 		form.setLayout(formLayout);
 
-		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0, 5);
-		topFormData.left = new FormAttachment(0, 5);
-		topFormData.right = new FormAttachment(100, -5);
-		topForm.setLayoutData(topFormData);
-
-		GridLayout topFormLayout = new GridLayout();
-		topFormLayout.numColumns = 2;
-		topForm.setLayout(topFormLayout);
+		Composite topForm = FormUtils.createForm(getWidgetFactory(), form);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.NAME), SWT.NONE);
 		myNameText = new Text(topForm, SWT.BORDER);
@@ -139,8 +128,9 @@ public class EOEntityBasicEditorSection extends AbstractPropertySection {
 		GridData restrictingQualifierFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		myRestrictingQualifierText.setLayoutData(restrictingQualifierFieldLayoutData);
 
-		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.ABSTRACT_ENTITY), SWT.NONE);
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		myAbstractButton = new Button(topForm, SWT.CHECK);
+		myAbstractButton.setText(Messages.getString("EOEntity." + EOEntity.ABSTRACT_ENTITY));
 	}
 
 	public void setInput(IWorkbenchPart part, ISelection selection) {

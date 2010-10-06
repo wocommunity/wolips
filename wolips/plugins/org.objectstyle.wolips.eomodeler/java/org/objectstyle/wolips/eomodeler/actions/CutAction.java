@@ -52,70 +52,36 @@ package org.objectstyle.wolips.eomodeler.actions;
 import java.util.Set;
 
 import org.eclipse.core.commands.operations.IOperationHistory;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IViewActionDelegate;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelReferenceFailure;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
 
-public class CutAction extends Action implements IWorkbenchWindowActionDelegate, IViewActionDelegate {
-	private ISelection _selection;
-
-	public CutAction() {
-		// DO NOTHING
-	}
-
-	public void dispose() {
-		// DO NOTHING
-	}
-
-	public void init(IWorkbenchWindow window) {
-		// DO NOTHING
-	}
-	
-	public void init(IViewPart view) {
-		// DO NOTHING
-	}
-
-	public void selectionChanged(IAction action, ISelection selection) {
-		_selection = selection;
-	}
-
+public class CutAction extends EMAction {
 	public void run() {
 		try {
 			Control focusControl = Display.getCurrent().getFocusControl();
 			// Is this a copy for the viewer? styled text? or regular text?
 			if (focusControl instanceof Text) {
-				( (Text) focusControl ).cut();
+				((Text) focusControl).cut();
 				return;
 			} else if (focusControl instanceof StyledText) {
-				( (StyledText) focusControl ).cut();
+				((StyledText) focusControl).cut();
 				return;
-			}		
-			
-			Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-			Object[] selectedObjects = null;
-			if (_selection instanceof IStructuredSelection) {
-				selectedObjects = ((IStructuredSelection) _selection).toArray();
 			}
+
+			Object[] selectedObjects = getSelectedObjects();
 			if (selectedObjects != null) {
 				Set<EOModelReferenceFailure> referenceFailures = EOModelUtils.getReferenceFailures(selectedObjects);
 				if (!referenceFailures.isEmpty()) {
-					new EOModelErrorDialog(activeShell, referenceFailures).open();
+					new EOModelErrorDialog(getWindow().getShell(), referenceFailures).open();
 				} else {
 					CutOperation operation = new CutOperation(selectedObjects);
 					operation.addContext(EOModelUtils.getUndoContext(selectedObjects));

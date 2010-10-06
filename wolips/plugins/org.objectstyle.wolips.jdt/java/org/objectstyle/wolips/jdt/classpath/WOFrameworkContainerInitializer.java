@@ -60,7 +60,6 @@
  */
 package org.objectstyle.wolips.jdt.classpath;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -70,13 +69,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspaceRunnable;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -90,23 +83,17 @@ import org.eclipse.jdt.internal.ui.actions.WorkbenchRunnableAdapter;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.woenvironment.frameworks.FrameworkModel;
-import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapter;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.jdt.JdtPlugin;
+import org.objectstyle.wolips.jdt.ProjectFrameworkAdapter;
 import org.objectstyle.wolips.jdt.classpath.model.IEclipseFramework;
-import org.objectstyle.wolips.variables.BuildProperties;
 
 /**
  * @author mschrag
  */
-public class WOFrameworkContainerInitializer extends ClasspathContainerInitializer implements IResourceChangeListener {
+public class WOFrameworkContainerInitializer extends ClasspathContainerInitializer {
 	public static final String OLD_OLD_WOLIPS_CLASSPATH_CONTAINER_ID = "org.objectstyle.wolips.WO_CLASSPATH";
 
 	public static final String OLD_WOLIPS_CLASSPATH_CONTAINER_ID = "org.objectstyle.wolips.ContainerInitializer";
-
-	public WOFrameworkContainerInitializer() {
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
-	}
 
 	@Override
 	public String getDescription(IPath containerPath, IJavaProject project) {
@@ -134,6 +121,8 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 
 	@Override
 	public void initialize(IPath containerPath, IJavaProject javaProject) throws CoreException {
+		//new Exception(javaProject.getProject().getName()).printStackTrace(System.out);
+		//System.out.println("WOFrameworkContainerInitializer.initialize: " + containerPath + " in " + javaProject.getProject().getName());
 		String containerID = containerPath.segment(0);
 		if (WOFrameworkContainerInitializer.OLD_OLD_WOLIPS_CLASSPATH_CONTAINER_ID.equals(containerID)) {
 			convertOldOldClasspathContainer(javaProject);
@@ -234,7 +223,7 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 		return added;
 	}
 
-	protected void convertProjectReferencesToFrameworkReferences(@SuppressWarnings("unused") IJavaProject project, List<IClasspathEntry> newClasspathEntries, FrameworkModel<IEclipseFramework> frameworkModel, Set<String> frameworkNames) {
+	protected void convertProjectReferencesToFrameworkReferences(IJavaProject project, List<IClasspathEntry> newClasspathEntries, FrameworkModel<IEclipseFramework> frameworkModel, Set<String> frameworkNames) {
 		for (int classpathEntryNum = newClasspathEntries.size() - 1; classpathEntryNum >= 0; classpathEntryNum--) {
 			IClasspathEntry newClasspathEntry = newClasspathEntries.get(classpathEntryNum);
 			if (newClasspathEntry.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
@@ -247,41 +236,11 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 				}
 			}
 		}
-		ProjectAdapter projectAdapter = (ProjectAdapter) project.getProject().getAdapter(IProjectAdapter.class);
-		if (projectAdapter != null) {
-			BuildProperties buildProperties = projectAdapter.getBuildProperties();
-			buildProperties.setFramework(projectAdapter.isFramework());
-			String projectName = buildProperties.getName();
-			if (projectAdapter.isFramework()) {
-				if (projectName == null) {
-					String frameworkName = buildProperties.get("framework.name");
-					if (frameworkName == null) {
-						buildProperties.setName(project.getProject().getName());
-					} else {
-						buildProperties.setName(frameworkName);
-					}
-				} else {
-					// reset it so we update the dependent properties
-					buildProperties.setName(projectName);
-				}
-				buildProperties.remove("framework.name");
-			} else {
-				if (projectName == null) {
-					buildProperties.setName(project.getProject().getName());
-				} else {
-					// reset it so we update the dependent properties
-					buildProperties.setName(projectName);
-				}
-			}
-			try {
-				buildProperties.save();
-			} catch (CoreException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 
+		ProjectFrameworkAdapter projectFrameworkAdapter = (ProjectFrameworkAdapter) project.getProject().getAdapter(ProjectFrameworkAdapter.class);
+		if (projectFrameworkAdapter != null) {
+			projectFrameworkAdapter.initializeProject();
+		}
 	}
 
 	protected void updateRawClasspath(final IJavaProject javaProject, final List<IClasspathEntry> newClasspathEntries) {
@@ -305,30 +264,6 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 		});
 	}
 
-	protected synchronized void woFrameworkChanged(String frameworkName) throws CoreException {
-		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		for (IProject project : projects) {
-			if (project.isAccessible()) {
-				IProjectAdapter woProjectAdaptor = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
-				if (woProjectAdaptor != null) {
-					IJavaProject javaProject = JavaCore.create(project);
-					if (javaProject != null) {
-						IClasspathEntry[] classpathEntries = javaProject.getRawClasspath();
-						for (IClasspathEntry classpathEntry : classpathEntries) {
-							if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
-								IPath entryPath = classpathEntry.getPath();
-								if (entryPath.segmentCount() >= 2 && entryPath.segment(0).equals(WOFrameworkClasspathContainer.ID) && entryPath.segment(1).equals(frameworkName)) {
-									IClasspathContainer classpathContainer = JavaCore.getClasspathContainer(entryPath, javaProject);
-									requestClasspathContainerUpdate(entryPath, javaProject, classpathContainer);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
 	protected Map<String, String> paramsForClasspathPath(IPath path) {
 		Map<String, String> params = new HashMap<String, String>();
 		for (int segmentNum = 2; segmentNum < path.segmentCount(); segmentNum++) {
@@ -345,50 +280,5 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 
 	protected String frameworkNameForClasspathPath(IPath path) {
 		return path.segment(1);
-	}
-
-	protected String frameworkNameForProject(IProject project) {
-		return project.getName();
-	}
-
-	public void resourceChanged(IResourceChangeEvent event) {
-		// don't bother looking at delta if selection not applicable
-		IResourceDelta delta = event.getDelta();
-		if (delta != null) {
-			IResourceDelta[] resourceDeltas = delta.getAffectedChildren(IResourceDelta.CHANGED | IResourceDelta.ADDED | IResourceDelta.REMOVED);
-			for (int i = 0; i < resourceDeltas.length; ++i) {
-				IResourceDelta resourceDelta = resourceDeltas[i];
-				// System.out.println("WOFrameworkContainerInitializer.resourceChanged:
-				// " + resourceDelta);
-				IResource resource = resourceDelta.getResource();
-				if (resource instanceof IProject) {
-					if ((resourceDelta.getFlags() & IResourceDelta.OPEN) != 0) {
-						IProject project = (IProject) resource;
-						//System.out.println("WOFrameworkContainerInitializer.resourceChanged: opened or closed " + project);
-						try {
-							woFrameworkChanged(frameworkNameForProject(project));
-						} catch (CoreException e) {
-							e.printStackTrace();
-						}
-					} else if (resourceDelta.getKind() == IResourceDelta.REMOVED) {
-						IProject project = (IProject) resource;
-						//System.out.println("WOFrameworkContainerInitializer.resourceChanged: removed " + project);
-						try {
-							woFrameworkChanged(frameworkNameForProject(project));
-						} catch (CoreException e) {
-							e.printStackTrace();
-						}
-					} else if (resourceDelta.getKind() == IResourceDelta.ADDED) {
-						IProject project = (IProject) resource;
-						//System.out.println("WOFrameworkContainerInitializer.resourceChanged: added " + project);
-						try {
-							woFrameworkChanged(frameworkNameForProject(project));
-						} catch (CoreException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			}
-		}
 	}
 }

@@ -194,7 +194,7 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 			 * make a writer, and merge the template 'against' the context
 			 */
 			String templateName = templateDefinition.getTemplateName();
-			Template template = this.velocityEngine.getTemplate(templateName);
+			Template template = this.velocityEngine.getTemplate(templateName, "UTF-8");
 			file = new File(templateDefinition.getDestinationPath());
 			File parentDir = file.getParentFile();
 			if (!parentDir.exists()) {

@@ -10,15 +10,13 @@
 	<!-- Build all.                                 -->
 	<!-- ========================================== -->
 	<target name="all">
-		<ant dir="org.objectstyle.wolips.goodies.mac.feature" target="all" />
-		<ant dir="org.objectstyle.wolips.goodies.win.feature" target="all" />
+		<ant dir="org.objectstyle.wolips.goodies.feature" target="all" />
 	</target>
 	<!-- ========================================== -->
 	<!-- Build dist.                                -->
 	<!-- ========================================== -->
 	<target name="dist">
-		<ant dir="org.objectstyle.wolips.goodies.mac.feature" target="dist" />
-		<ant dir="org.objectstyle.wolips.goodies.win.feature" target="dist" />
+		<ant dir="org.objectstyle.wolips.goodies.feature" target="dist" />
 	</target>
 
 </project>

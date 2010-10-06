@@ -47,7 +47,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.widgets.Composite;
@@ -61,7 +60,6 @@ import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PartInitException;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.components.input.ComponentEditorFileEditorInput;
-import org.objectstyle.wolips.components.input.ComponentEditorInput;
 import org.objectstyle.wolips.templateeditor.TemplateEditor;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.core.Activator;
@@ -80,11 +78,9 @@ public class HtmlWodTab extends ComponentEditorTab {
 
 	private IEditorInput wodInput;
 
-	private SashForm htmlSashForm;
+	private Composite _templateContainer;
 
-	private SashForm wodSashForm;
-
-	private Composite wodContainer;
+	private Composite _wodContainer;
 
 	private Label nonEmptyWodWarning;
 
@@ -100,12 +96,8 @@ public class HtmlWodTab extends ComponentEditorTab {
 		}
 		return wodEditor;
 	}
-
+	
 	public void createTab() {
-		this.htmlSashForm = new SashForm(this.getParentSashForm(), SWT.VERTICAL);
-		this.wodSashForm = new SashForm(this.getParentSashForm(), SWT.VERTICAL);
-		this.wodSashForm.setBackground(getDisplay().getSystemColor(SWT.COLOR_WHITE));
-
 		templateEditor = new TemplateEditor();
 		IEditorSite htmlSite = this.getComponentEditorPart().publicCreateSite(templateEditor);
 		try {
@@ -113,7 +105,7 @@ public class HtmlWodTab extends ComponentEditorTab {
 		} catch (PartInitException e) {
 			ComponenteditorPlugin.getDefault().log(e);
 		}
-		createInnerPartControl(htmlSashForm, templateEditor);
+		_templateContainer = createInnerPartControl(getParentSashForm(), templateEditor);
 		templateEditor.addPropertyListener(new IPropertyListener() {
 			public void propertyChanged(Object source, int propertyId) {
 				HtmlWodTab.this.getComponentEditorPart().publicHandlePropertyChange(propertyId);
@@ -127,7 +119,8 @@ public class HtmlWodTab extends ComponentEditorTab {
 			} catch (PartInitException e) {
 				ComponenteditorPlugin.getDefault().log(e);
 			}
-			this.wodContainer = createInnerPartControl(wodSashForm, wodEditor);
+			_wodContainer = createInnerPartControl(getParentSashForm(), wodEditor);
+			_wodContainer.setBackground(_wodContainer.getDisplay().getSystemColor(SWT.COLOR_WHITE));
 			wodEditor.addPropertyListener(new IPropertyListener() {
 				public void propertyChanged(Object source, int propertyId) {
 					HtmlWodTab.this.getComponentEditorPart().publicHandlePropertyChange(propertyId);
@@ -139,14 +132,14 @@ public class HtmlWodTab extends ComponentEditorTab {
 				}
 			});
 			WodclipsePlugin.getDefault().updateWebObjectsTagNames(wodEditor);
-			htmlSashForm.addListener(SWT.Activate, new Listener() {
+			_templateContainer.addListener(SWT.Activate, new Listener() {
 				public void handleEvent(Event event) {
 					setHtmlActive(true);
 					HtmlWodTab.this.getComponentEditorPart().pageChange(HtmlWodTab.this.getTabIndex());
 					HtmlWodTab.this.getComponentEditorPart().updateOutline();
 				}
 			});
-			wodSashForm.addListener(SWT.Activate, new Listener() {
+			_wodContainer.addListener(SWT.Activate, new Listener() {
 				public void handleEvent(Event event) {
 					setHtmlActive(false);
 					HtmlWodTab.this.getComponentEditorPart().pageChange(HtmlWodTab.this.getTabIndex());
@@ -158,7 +151,7 @@ public class HtmlWodTab extends ComponentEditorTab {
 		restoreSashWeights();
 		hideWodIfNecessary();
 
-		htmlSashForm.addControlListener(new ControlListener() {
+		_templateContainer.addControlListener(new ControlListener() {
 			public void controlMoved(ControlEvent e) {
 				// DO NOTHING
 			}
@@ -186,7 +179,7 @@ public class HtmlWodTab extends ComponentEditorTab {
 	}
 
 	protected void hideWodIfNecessary() {
-		if (this.wodContainer == null) {
+		if (this._wodContainer == null) {
 			int[] weights = new int[] { 100, 0};
 			getParentSashForm().setWeights(weights);
 			return;
@@ -194,22 +187,28 @@ public class HtmlWodTab extends ComponentEditorTab {
 		
 		int[] weights = getParentSashForm().getWeights();
 		if (weights.length >= 2 && weights[1] < 132) {
-			this.wodContainer.setVisible(false);
 			if (this.nonEmptyWodWarning == null) {
-				String wodContents = this.wodEditor.getWodEditDocument().get();
-				if (wodContents != null && wodContents.trim().length() > 0) {
-					this.nonEmptyWodWarning = new Label(this.wodSashForm, SWT.CENTER);
-					this.nonEmptyWodWarning.setBackground(this.wodSashForm.getBackground());
-					this.nonEmptyWodWarning.setForeground(this.wodSashForm.getDisplay().getSystemColor(SWT.COLOR_GRAY));
+				this._wodContainer.getChildren()[0].setVisible(false);
+				this.nonEmptyWodWarning = new Label(this._wodContainer, SWT.CENTER);
+				this.nonEmptyWodWarning.setBackground(this._wodContainer.getBackground());
+				this.nonEmptyWodWarning.setForeground(this._wodContainer.getDisplay().getSystemColor(SWT.COLOR_GRAY));
+				if (this.wodEditor.getWodEditDocument().getLength() > 0) {
 					this.nonEmptyWodWarning.setText("wod file is not empty");
 				}
+				else {
+					this.nonEmptyWodWarning.setText("");
+				}
+				this.nonEmptyWodWarning.moveAbove(this._wodContainer.getChildren()[0]);
+
+				// MS: If the wod shrinks, force focus to the template
+				if (!isHtmlActive()) {
+					_templateContainer.forceFocus();
+				}
 			}
-		} else {
-			this.wodContainer.setVisible(true);
-			if (this.nonEmptyWodWarning != null) {
-				this.nonEmptyWodWarning.dispose();
-				this.nonEmptyWodWarning = null;
-			}
+		} else if (this.nonEmptyWodWarning != null) {
+			this.nonEmptyWodWarning.dispose();
+			this.nonEmptyWodWarning = null;
+			this._wodContainer.getChildren()[0].setVisible(true);
 		}
 	}
 
@@ -272,11 +271,13 @@ public class HtmlWodTab extends ComponentEditorTab {
 		// templateEditor.close(save);
 	}
 
+	@Override
 	public void dispose() {
 		if (wodEditor != null) {
 			wodEditor.dispose();
 		}
 		templateEditor.dispose();
+		super.dispose();
 	}
 
 	public boolean isDirty() {

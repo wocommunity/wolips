@@ -12,8 +12,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -29,12 +27,17 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityLabelProvider;
 import org.objectstyle.wolips.eomodeler.editors.entity.EOPrototypeEntityListContentProvider;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
+import org.objectstyle.wolips.eomodeler.utils.FormUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringLabelProvider;
 
 public class DatabaseConfigSection extends AbstractPropertySection {
 	private DataBindingContext _bindingContext;
 
 	private Text _nameText;
+
+	private Text _priorityText;
+
+	private Text _deploymentProfileText;
 
 	private ComboViewer _prototypeComboViewer;
 
@@ -71,20 +74,19 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 		FormLayout formLayout = new FormLayout();
 		_form.setLayout(formLayout);
 
-		Composite topForm = getWidgetFactory().createPlainComposite(_form, SWT.NONE);
-		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0, 5);
-		topFormData.left = new FormAttachment(0, 5);
-		topFormData.right = new FormAttachment(100, -5);
-		topForm.setLayoutData(topFormData);
-
-		GridLayout topFormLayout = new GridLayout();
-		topFormLayout.numColumns = 2;
-		topForm.setLayout(topFormLayout);
+		Composite topForm = FormUtils.createForm(getWidgetFactory(), _form);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EODatabaseConfig." + EODatabaseConfig.NAME), SWT.NONE);
 		_nameText = new Text(topForm, SWT.BORDER);
 		_nameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EODatabaseConfig." + EODatabaseConfig.DEPLOYMENT_PROFILE), SWT.NONE);
+		_deploymentProfileText = new Text(topForm, SWT.BORDER);
+		_deploymentProfileText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+		getWidgetFactory().createCLabel(topForm, Messages.getString("EODatabaseConfig." + EODatabaseConfig.PRIORITY), SWT.NONE);
+		_priorityText = new Text(topForm, SWT.BORDER);
+		_priorityText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EODatabaseConfig." + EODatabaseConfig.PROTOTYPE), SWT.NONE);
 		_prototypeComboViewer = new ComboViewer(topForm, SWT.READ_ONLY);
@@ -101,6 +103,12 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 		_connectionDictionaryContainer = new Composite(topForm, SWT.NONE);
 		_connectionDictionaryContainer.setBackground(topForm.getBackground());
 		GridLayout connectionDictionaryLayout = new GridLayout();
+		connectionDictionaryLayout.marginLeft = 0;
+		connectionDictionaryLayout.marginWidth = 0;
+		connectionDictionaryLayout.marginRight = 0;
+		connectionDictionaryLayout.marginHeight = 0;
+		connectionDictionaryLayout.marginTop = 0;
+		connectionDictionaryLayout.marginBottom = 0;
 		_connectionDictionaryContainer.setLayout(connectionDictionaryLayout);
 
 		GridData connectionDictionaryData = new GridData(GridData.FILL_HORIZONTAL);
@@ -207,6 +215,8 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 
 	protected void addBindings() {
 		_bindingContext.bindValue(SWTObservables.observeText(_nameText, SWT.Modify), BeansObservables.observeValue(getDatabaseConfig(), EODatabaseConfig.NAME), null, null);
+		_bindingContext.bindValue(SWTObservables.observeText(_priorityText, SWT.Modify), BeansObservables.observeValue(getDatabaseConfig(), EODatabaseConfig.PRIORITY), null, null);
+		_bindingContext.bindValue(SWTObservables.observeText(_deploymentProfileText, SWT.Modify), BeansObservables.observeValue(getDatabaseConfig(), EODatabaseConfig.DEPLOYMENT_PROFILE), null, null);
 		_prototypeComboViewer.setInput(getDatabaseConfig());
 		_prototypeBinding = new ComboViewerBinding(_prototypeComboViewer, getDatabaseConfig(), EODatabaseConfig.PROTOTYPE, null, null, EOPrototypeEntityListContentProvider.BLANK_ENTITY);
 		_adaptorNameComboViewer.setInput(getDatabaseConfig());

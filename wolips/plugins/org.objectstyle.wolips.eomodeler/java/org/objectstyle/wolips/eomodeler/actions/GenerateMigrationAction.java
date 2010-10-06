@@ -54,46 +54,22 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 
-public class GenerateMigrationAction implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
-	private IWorkbenchWindow _window;
-
-	private ISelection _selection;
-
-	public void dispose() {
-		// DO NOTHING
-	}
-
-	public void init(IWorkbenchWindow window) {
-		_window = window;
-	}
-
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		_window = targetPart.getSite().getWorkbenchWindow();
-	}
-
-	public void selectionChanged(IAction action, ISelection selection) {
-		_selection = selection;
-	}
-
+public class GenerateMigrationAction extends EMAction {
 	public void run(IAction action) {
 		try {
-			if (_selection instanceof IStructuredSelection) {
+			IStructuredSelection selection = getSelection();
+			if (selection != null) {
 				EOModel model = null;
 				boolean modelSelected = false;
 				List<EOEntity> entities = new LinkedList<EOEntity>();
-				Iterator selectionIter = ((IStructuredSelection) _selection).iterator();
+				Iterator selectionIter = selection.iterator();
 				while (!modelSelected && selectionIter.hasNext()) {
 					Object obj = selectionIter.next();
 					EOEntity entity = EOModelUtils.getRelatedEntity(obj);
@@ -113,7 +89,7 @@ public class GenerateMigrationAction implements IWorkbenchWindowActionDelegate, 
 				}
 
 				if (model != null) {
-					GenerateMigrationDialog dialog = new GenerateMigrationDialog(_window.getShell(), model, entities);
+					GenerateMigrationDialog dialog = new GenerateMigrationDialog(getWindow().getShell(), model, entities);
 					dialog.open();
 				}
 			}

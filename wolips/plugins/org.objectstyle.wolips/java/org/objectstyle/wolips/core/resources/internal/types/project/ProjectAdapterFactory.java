@@ -59,13 +59,12 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.objectstyle.wolips.core.CorePlugin;
+import org.objectstyle.wolips.baseforplugins.util.WOLipsNatureUtils;
 import org.objectstyle.wolips.core.resources.internal.build.Nature;
 import org.objectstyle.wolips.core.resources.internal.types.AbstractResourceAdapterFactory;
 import org.objectstyle.wolips.core.resources.types.IResourceType;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 
 /**
  * @author ulrich To change the template for this generated type comment go to
@@ -73,12 +72,12 @@ import org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets;
  */
 public class ProjectAdapterFactory extends AbstractResourceAdapterFactory {
 	private static Map<Object, ProjectPatternsets> _projectPatternSets;
-	
+
 	static {
 		_projectPatternSets = new WeakHashMap<Object, ProjectPatternsets>();
 	}
-	
-	private Class[] adapterList = new Class[] { IProjectAdapter.class };
+
+	private Class[] adapterList = new Class[] { ProjectAdapter.class };
 
 	public Class[] getAdapterList() {
 		return this.adapterList;
@@ -88,7 +87,7 @@ public class ProjectAdapterFactory extends AbstractResourceAdapterFactory {
 		if (!(adaptableObject instanceof IProject)) {
 			return false;
 		}
-		if (adapterType == IProjectAdapter.class) {
+		if (adapterType == ProjectAdapter.class) {
 			return true;
 		}
 		if (adapterType == IProjectPatternsets.class) {
@@ -99,20 +98,13 @@ public class ProjectAdapterFactory extends AbstractResourceAdapterFactory {
 
 	public IResourceType createAdapter(Object adaptableObject, Class adapterType) {
 		IProject project = (IProject) adaptableObject;
-		Nature nature = null;
-		try {
-			nature = Nature.getNature(project);
-		} catch (CoreException e) {
-			CorePlugin.getDefault().debug("Error while resolving nature for project: " + project.getName(), e);
-		}
+		Nature nature = (Nature) WOLipsNatureUtils.getNature(project);
 		if (nature == null) {
 			return null;
-		}
-		if (adapterType == IProjectAdapter.class) {
+		} else if (adapterType == ProjectAdapter.class) {
 			return new ProjectAdapter(project, nature.isFramework());
-		}
-		if (adapterType == IProjectPatternsets.class) {
-			ProjectPatternsets projectPatternSets =  _projectPatternSets.get(adaptableObject);
+		} else if (adapterType == IProjectPatternsets.class) {
+			ProjectPatternsets projectPatternSets = _projectPatternSets.get(adaptableObject);
 			if (projectPatternSets == null) {
 				projectPatternSets = new ProjectPatternsets(project);
 				_projectPatternSets.put(adaptableObject, projectPatternSets);

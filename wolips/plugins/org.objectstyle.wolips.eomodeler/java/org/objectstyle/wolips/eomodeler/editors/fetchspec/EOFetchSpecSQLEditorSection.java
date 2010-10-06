@@ -65,11 +65,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -83,6 +80,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.editors.storedProcedures.EOStoredProceduresConstants;
 import org.objectstyle.wolips.eomodeler.editors.storedProcedures.EOStoredProceduresContentProvider;
+import org.objectstyle.wolips.eomodeler.utils.FormUtils;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
@@ -122,16 +120,7 @@ public class EOFetchSpecSQLEditorSection extends AbstractPropertySection impleme
 		FormLayout formLayout = new FormLayout();
 		form.setLayout(formLayout);
 
-		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0, 5);
-		topFormData.left = new FormAttachment(0, 5);
-		topFormData.right = new FormAttachment(100, -5);
-		topFormData.bottom = new FormAttachment(100, -5);
-		topForm.setLayoutData(topFormData);
-
-		GridLayout topFormLayout = new GridLayout();
-		topForm.setLayout(topFormLayout);
+		Composite topForm = FormUtils.createForm(getWidgetFactory(), form, 1);
 
 		_useQualifierButton = new Button(topForm, SWT.RADIO);
 		_useQualifierButton.setText(Messages.getString("EOFetchSpecSQLEditorSection.useQualifier")); //$NON-NLS-1$

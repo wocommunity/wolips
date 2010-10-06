@@ -256,31 +256,31 @@ public class EOModelContentOutlinePage extends ContentOutlinePage implements Pro
 	}
 	
 	public class ToggleModelGroupAction extends Action {
-		private boolean _showModelGroup;
+		private boolean _showModel;
 
 		public ToggleModelGroupAction() {
-			_showModelGroup = true;
+			_showModel = true;
 			refreshUI();
 			setImageDescriptor(Activator.getDefault().getImageRegistry().getDescriptor(Activator.EOMODEL_ICON));
 		}
 
 		public void toggleChanged() {
-			_showModelGroup = !_showModelGroup;
+			_showModel = !_showModel;
 			refreshUI();
 		}
 
 		public void showModelGroup() {
-			_showModelGroup = true;
+			_showModel = false;
 			refreshUI();
 		}
 
 		public void showModel() {
-			_showModelGroup = false;
+			_showModel = true;
 			refreshUI();
 		}
 		
 		public void refreshUI() {
-			if (_showModelGroup) {
+			if (_showModel) {
 				getUpdater().showModel();
 				setToolTipText("Show ModelGroup");
 				setChecked(false);

@@ -52,7 +52,6 @@ package org.objectstyle.wolips.eomodeler.actions;
 import java.util.Arrays;
 
 import org.eclipse.core.commands.operations.IOperationHistory;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
@@ -62,56 +61,30 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 
-public class PasteAction extends Action implements IWorkbenchWindowActionDelegate, IObjectActionDelegate {
-	private ISelection _sSelection;
-
-	public void dispose() {
-		// DO NOTHING
-	}
-
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		// DO NOTHING
-	}
-
-	public void init(IWorkbenchWindow window) {
-		// DO NOTHING
-	}
-
-	public void selectionChanged(IAction action, ISelection selection) {
-		_sSelection = selection;
-	}
-
+public class PasteAction extends EMAction {
 	public void run() {
 		try {
 			Control focusControl = Display.getCurrent().getFocusControl();
 			// Is this a copy for the viewer? styled text? or regular text?
 			if (focusControl instanceof Text) {
-				( (Text) focusControl ).paste();
+				((Text) focusControl).paste();
 				return;
 			} else if (focusControl instanceof StyledText) {
-				( (StyledText) focusControl ).paste();
+				((StyledText) focusControl).paste();
 				return;
-			}		
-			
-			
-			EOModelObject selectedObject = null;
-			if (_sSelection instanceof IStructuredSelection) {
-				selectedObject = (EOModelObject) ((IStructuredSelection) _sSelection).getFirstElement();
 			}
+
+			EOModelObject selectedObject = (EOModelObject) getSelectedObject();
 			ISelection pastedSelection = LocalSelectionTransfer.getTransfer().getSelection();
 			if (pastedSelection != null) {
 				Object[] clipboardObjects = ((IStructuredSelection) pastedSelection).toArray();
 				Arrays.sort(clipboardObjects, new PasteOrderComparator());
-	
+
 				SimpleCompositeOperation pasteOperation = new SimpleCompositeOperation(EOModelUtils.getOperationLabel("Paste", Arrays.asList(clipboardObjects)));
 				for (Object clipboardObject : clipboardObjects) {
 					if (clipboardObject instanceof EOModelObject) {
@@ -124,7 +97,7 @@ public class PasteAction extends Action implements IWorkbenchWindowActionDelegat
 						}
 					}
 				}
-	
+
 				pasteOperation.addContext(EOModelUtils.getUndoContext(selectedObject));
 				IOperationHistory operationHistory = PlatformUI.getWorkbench().getOperationSupport().getOperationHistory();
 				operationHistory.execute(pasteOperation, null, null);

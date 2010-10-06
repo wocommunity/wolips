@@ -55,8 +55,17 @@
  */
 package org.objectstyle.wolips.jdt.classpath.model;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
@@ -67,9 +76,19 @@ import org.objectstyle.woenvironment.frameworks.Framework;
 import org.objectstyle.woenvironment.frameworks.FrameworkLibrary;
 import org.objectstyle.woenvironment.frameworks.IFramework;
 import org.objectstyle.woenvironment.frameworks.Root;
+import org.objectstyle.woenvironment.frameworks.Version;
+import org.objectstyle.woenvironment.plist.SimpleParserDataStructureFactory;
+import org.objectstyle.woenvironment.plist.WOLXMLPropertyListSerialization;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
+import org.objectstyle.wolips.jdt.JdtPlugin;
+import org.objectstyle.wolips.variables.BuildProperties;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class EclipseProjectFramework extends Framework implements IEclipseFramework {
 	private IProject project;
+	private List<IClasspathEntry> cachedClasspathEntries;
 
 	public EclipseProjectFramework(Root root, IProject project) {
 		super(root, EclipseProjectFramework.frameworkNameForProject(project));
@@ -94,13 +113,88 @@ public class EclipseProjectFramework extends Framework implements IEclipseFramew
 		return true;
 	}
 
-	public List<IClasspathEntry> getClasspathEntries() {
-		List<IClasspathEntry> classpathEntries = new LinkedList<IClasspathEntry>();
-		classpathEntries.add(JavaCore.newProjectEntry(this.project.getFullPath()));
+	public synchronized List<IClasspathEntry> getClasspathEntries() {
+		List<IClasspathEntry> classpathEntries = cachedClasspathEntries;
+		if (cachedClasspathEntries == null) {
+			classpathEntries = new LinkedList<IClasspathEntry>();
+			classpathEntries.add(JavaCore.newProjectEntry(this.project.getFullPath()));
+			cachedClasspathEntries = classpathEntries;
+		}
 		return classpathEntries;
+	}
+	
+	public Version getVersion() {
+		Version version = null;
+		File pomFile = project.getLocation().append("pom.xml").toFile();
+		if (pomFile.exists()) {
+			try {
+				Document pomDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(pomFile);
+				pomDocument.normalize();
+				NodeList versionNodes = (NodeList) XPathFactory.newInstance().newXPath().compile("//project/version").evaluate(pomDocument, XPathConstants.NODESET);
+				if (versionNodes.getLength() == 0) {
+					versionNodes = (NodeList) XPathFactory.newInstance().newXPath().compile("//parent/version").evaluate(pomDocument, XPathConstants.NODESET);
+				}
+				if (versionNodes.getLength() > 0) {
+					String versionStr = versionNodes.item(0).getFirstChild().getNodeValue();
+					if (versionStr != null) {
+						version = new Version(versionStr);
+					}
+				}
+			} catch (Throwable t) {
+				JdtPlugin.getDefault().getPluginLogger().log(t);
+			}
+		}
+		else {
+			BuildProperties buildProperties = (BuildProperties)this.project.getAdapter(BuildProperties.class);
+			if (buildProperties != null) {
+				version = buildProperties.getVersion();
+			}
+			if (version == null) {
+				version = super.getVersion();
+			}
+		}
+		return version;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getInfoPlist() {
+		ProjectAdapter projectAdapter = (ProjectAdapter) this.project.getAdapter(ProjectAdapter.class);
+		Map<String, Object> propertyList = null;
+		if (projectAdapter != null) {
+			try {
+				File infoPlist;
+				BuildProperties buildProperties = (BuildProperties)project.getAdapter(BuildProperties.class);
+				if (buildProperties.getWOVersion().isAtLeastVersion(5, 6)) {
+					infoPlist = this.project.getLocation().append("Info.plist").toFile();
+				}
+				else {
+					infoPlist = projectAdapter.getWOJavaArchive().removeLastSegments(1).append("Info.plist").toFile();
+				}
+				if (infoPlist.exists()) {
+					propertyList = (Map<String, Object>) WOLXMLPropertyListSerialization.propertyListWithContentsOfFile(infoPlist, new SimpleParserDataStructureFactory());
+				}
+			} catch (Throwable t) {
+				JdtPlugin.getDefault().getPluginLogger().log(t);
+				propertyList = null;
+			}
+		}
+		return propertyList;
 	}
 
 	public static String frameworkNameForProject(IProject project) {
 		return project.getName();
+	}
+	
+	public static void main(String[] args) throws SAXException, IOException, ParserConfigurationException, XPathExpressionException {
+		File pomFile = new File("/Volumes/WebObjects56/JavaFoundation/pom.xml");
+		Document pomDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(pomFile);
+		pomDocument.normalize();
+		NodeList versionNodes = (NodeList) XPathFactory.newInstance().newXPath().compile("//parent/version").evaluate(pomDocument, XPathConstants.NODESET);
+		if (versionNodes.getLength() > 0) {
+			String version = versionNodes.item(0).getFirstChild().getNodeValue();
+			System.out.println("EclipseProjectFramework.main: " + version);
+		}
+		System.out.println("EclipseProjectFramework.main: " + versionNodes.getLength());
+
 	}
 }

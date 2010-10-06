@@ -83,6 +83,7 @@ import org.objectstyle.wolips.eogenerator.core.model.EOModelReference;
 import org.objectstyle.wolips.eogenerator.jdt.EOGeneratorCreator;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
+import org.objectstyle.wolips.jdt.ProjectFrameworkAdapter;
 
 /**
  * This is a sample new wizard. Its role is to create a new file resource in the
@@ -212,6 +213,17 @@ public class EOGeneratorWizard extends Wizard implements INewWizard {
 			for (EOModelReference modelReference : modelReferences) {
 				eogenModel.addRefModel(modelReference);
 			}
+		}
+		
+		// MS: If you link to ERExtensions and you didn't set your default template names, guess that you want the Wonder versions
+		try {
+			if (eogenModel.getDefaultJavaTemplate() == null && ((ProjectFrameworkAdapter)parentResource.getProject().getAdapter(ProjectFrameworkAdapter.class)).isLinkedToFrameworkNamed("ERExtensions")) {
+				eogenModel.setJavaTemplate("_WonderEntity.java");
+				eogenModel.setSubclassJavaTemplate("WonderEntity.java");
+			}
+		}
+		catch (Throwable t) {
+			t.printStackTrace();
 		}
 		return eogenModel;
 	}

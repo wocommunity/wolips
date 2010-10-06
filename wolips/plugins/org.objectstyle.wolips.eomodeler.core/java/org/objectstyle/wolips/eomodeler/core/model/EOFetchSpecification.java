@@ -54,6 +54,8 @@ import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -157,12 +159,22 @@ public class EOFetchSpecification extends UserInfoableEOModelObject<EOEntity> im
 
 	public Set<EOQualifierBinding> getDistinctBindings() {
 		Map<String, EOQualifierBinding> bindings = new HashMap<String, EOQualifierBinding>();
-		for (EOQualifierBinding binding : EOQualifierFactory.getQualifierBindingsFromQualifier(getEntity(), getQualifier())) {
+		for (EOQualifierBinding binding : getAllBindings()) {
 			if (!bindings.containsKey(binding.getName())) {
 				bindings.put(binding.getName(), binding);
 			}
 		}
 		return new PropertyListSet<EOQualifierBinding>(bindings.values());
+	}
+
+	public Set<EOQualifierBinding> getQualifierOrderDistinctBindings() {
+		LinkedHashMap<String, EOQualifierBinding> bindings = new LinkedHashMap<String, EOQualifierBinding>();
+		for (EOQualifierBinding binding : getAllBindings()) {
+			if (!bindings.containsKey(binding.getName())) {
+				bindings.put(binding.getName(), binding);
+			}
+		}
+		return new LinkedHashSet<EOQualifierBinding>(bindings.values());
 	}
 
 	public Set getReferenceFailures() {

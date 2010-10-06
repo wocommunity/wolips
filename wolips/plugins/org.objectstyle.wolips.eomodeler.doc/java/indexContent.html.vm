@@ -2,7 +2,7 @@
 <head>
 	<title>Models Overview</title>
 	<link href = "eomodeldoc.css" rel = "stylesheet" type = "text/css">
-	<script src = "prototype.js"/>
+	<script src = "prototype.js"></script>
 </head>
 <body>
 <h1>EOModelDoc</h1>

@@ -25,32 +25,27 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.ProgressMonitorWrapper;
 import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.Signature;
-import org.eclipse.jdt.internal.corext.refactoring.reorg.JavaDeleteProcessor;
-import org.eclipse.jdt.internal.corext.refactoring.reorg.NullReorgQueries;
-import org.eclipse.jdt.internal.ui.refactoring.RefactoringExecutionHelper;
-import org.eclipse.jdt.internal.ui.refactoring.RefactoringSaveHelper;
-import org.eclipse.jdt.ui.refactoring.RenameSupport;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jface.operation.IRunnableContext;
-import org.eclipse.ltk.core.refactoring.RefactoringCore;
-import org.eclipse.ltk.core.refactoring.participants.DeleteRefactoring;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.objectstyle.woenvironment.plist.PropertyListParserException;
 import org.objectstyle.woenvironment.plist.WOLPropertyListSerialization;
 import org.objectstyle.wolips.baseforplugins.util.CharSetUtils;
+import org.objectstyle.wolips.bindings.Activator;
+import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 import org.objectstyle.wolips.bindings.wod.BindingValueKeyPath;
 import org.objectstyle.wolips.bindings.wod.TypeCache;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
+import org.objectstyle.wolips.core.resources.types.TypeNameCollector;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelMap;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelParserDataStructureFactory;
@@ -263,9 +258,8 @@ public class WooModel {
           String className = entryMap.getString("class", true);
           //XXX This should support subclasses of WODisplayGroup
           try {
-            TypeCache typeCache = WodParserCache.getTypeCache();
-            IType classType = BindingReflectionUtils.findElementType(JavaCore.create(_file.getProject()), className, false, typeCache);
-            if (classType != null && BindingReflectionUtils.isType(classType, new String[] {"com.webobjects.appserver.WODisplayGroup"}, typeCache)) {
+            IType classType = findDisplayGroupClass(className);
+            if (classType != null) {
               DisplayGroup displayGroup = new DisplayGroup(this);
               displayGroup.setName(entry.getKey());
               displayGroup.setClassName(className);
@@ -278,9 +272,11 @@ public class WooModel {
             // TODO Auto-generated catch block
             e.printStackTrace();
           }
-          if ("WODisplayGroup".equals(className)) {
+          /* Fall through just in case the project classpath is broken */
+          if ("WODisplayGroup".equals(className) || "ERXDisplayGroup".equals(className)) {
             DisplayGroup displayGroup = new DisplayGroup(this);
             displayGroup.setName(entry.getKey());
+            displayGroup.setClassName(className);
             displayGroup.loadFromMap(entryMap, failures);
             _displayGroups.add(displayGroup);
             displayGroup.addPropertyChangeListener(_displayGroupListener);
@@ -292,6 +288,28 @@ public class WooModel {
     }
 
     _isDirty = false;
+  }
+
+	private IType findDisplayGroupClass(String className)
+      throws JavaModelException {
+		IType classType = null;
+	  TypeCache typeCache = WodParserCache.getTypeCache();
+	  IJavaProject javaProject = JavaCore.create(_file.getProject());
+	  String typeName = typeCache.getApiCache(javaProject).getElementTypeNamed(className);
+	  if (typeName != null) {
+	  	classType = javaProject.findType(typeName);
+	  } else {
+	  	TypeNameCollector typeNameCollector = new TypeNameCollector("com.webobjects.appserver.WODisplayGroup", javaProject, true);
+	  	BindingReflectionUtils.findMatchingElementClassNames(className, SearchPattern.R_EXACT_MATCH, typeNameCollector, null);
+	  	if (!typeNameCollector.isEmpty()) {
+	  		String matchingElementClassName = typeNameCollector.firstTypeName();
+	  		classType = typeNameCollector.getTypeForClassName(matchingElementClassName);
+	  	}
+	    if (classType != null) {
+	      typeCache.getApiCache(javaProject).setElementTypeForName(classType, className);
+	    }
+	  }
+	  return classType;
   }
 
   /**
@@ -316,9 +334,9 @@ public class WooModel {
             info.setCreateMutatorMethod(false);
             
             // Populate generic types if required
-            IType classType = BindingReflectionUtils.findElementType(JavaCore.create(_file.getProject()), displayGroup.getClassName(), false, WodParserCache.getTypeCache());
+            IType classType = findDisplayGroupClass(displayGroup.getClassName());
             String newParameterType = "";
-            if (classType.getTypeParameters().length > 0) {
+            if (classType !=null && classType.getTypeParameters().length > 0) {
               newParameterType = displayGroup.getEntityName();
               info.setParameterTypeName(newParameterType);
             }
@@ -504,28 +522,32 @@ public class WooModel {
     if (_file == null) {
     	return problems;
     }
-    try {
-      String componentCharset = _file.getParent().getDefaultCharset();
-      String encoding = CharSetUtils.encodingNameFromObjectiveC(this.getEncoding());
-      if (!(encoding.equals(componentCharset))) {
-        problems.add(new WodProblem("WOO Encoding type " + encoding + " doesn't match component " + componentCharset, null, 0, true));
-      }
-
-      if (_file.getParent().exists()) {
-        for (IResource element : _file.getParent().members()) {
-          if (element.getType() == IResource.FILE) {
-            IFile file = (IFile) element;
-            if (file.getFileExtension().matches("(xml|html|xhtml|wod)") && !file.getCharset().equals(encoding)) {
-              problems.add(new WodProblem("WOO Encoding type " + encoding + " doesn't match " + file.getName() + " of " + file.getCharset(), null, 0, true));
-            }
-          }
-        }
-      }
-
-    }
-    catch (CoreException e1) {
-      // TODO Auto-generated catch block
-      e1.printStackTrace();
+    boolean validateWooEncodings = Activator.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.VALIDATE_WOO_ENCODINGS_KEY);
+    if (validateWooEncodings) {
+	    try {
+	      String componentCharset = _file.getParent().getDefaultCharset();
+	      String encoding = CharSetUtils.encodingNameFromObjectiveC(this.getEncoding());
+	      if (!(encoding.equals(componentCharset))) {
+	        problems.add(new WodProblem("WOO Encoding type " + encoding + " doesn't match component " + componentCharset, null, 0, true));
+	      }
+	
+	      if (_file.getParent().exists()) {
+	        for (IResource element : _file.getParent().members()) {
+	          if (element.getType() == IResource.FILE) {
+	            IFile file = (IFile) element;
+	            String fileExtension = file.getFileExtension();
+	            if (fileExtension != null && file.getFileExtension().matches("(xml|html|xhtml|wod)") && !file.getCharset().equals(encoding)) {
+	              problems.add(new WodProblem("WOO Encoding type " + encoding + " doesn't match " + file.getName() + " of " + file.getCharset(), null, 0, true));
+	            }
+	          }
+	        }
+	      }
+	
+	    }
+	    catch (CoreException e1) {
+	      // TODO Auto-generated catch block
+	      e1.printStackTrace();
+	    }
     }
 
     if (type == null) {

@@ -14,13 +14,13 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.objectstyle.wolips.baseforuiplugins.utils.WorkbenchUtilities;
 import org.objectstyle.wolips.locate.Locate;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.locate.scope.ComponentLocateScope;
 import org.objectstyle.wolips.wodclipse.core.parser.ElementTypeRule;
 import org.objectstyle.wolips.wodclipse.core.parser.RulePosition;
 import org.objectstyle.wolips.wodclipse.core.parser.WodScanner;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 public class OpenDeclarationAction extends Action implements IEditorActionDelegate {
 	private IEditorPart _activeEditor;
@@ -55,7 +55,7 @@ public class OpenDeclarationAction extends Action implements IEditorActionDelega
 
 					IFile wodFile = localizedComponentsLocateResult.getFirstWodFile();
 					if (wodFile != null) {
-						WorkbenchUtilitiesPlugin.open(wodFile, "org.objectstyle.wolips.componenteditor.ComponentEditor");
+						WorkbenchUtilities.open(wodFile, "org.objectstyle.wolips.componenteditor.ComponentEditor");
 					}
 				}
 			} catch (Throwable e) {

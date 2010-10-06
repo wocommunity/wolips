@@ -56,16 +56,35 @@
 package org.objectstyle.wolips.jdt.classpath.model;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.objectstyle.woenvironment.frameworks.AbstractFolderRoot;
 
 public class EclipseFolderRoot extends AbstractFolderRoot<IEclipseFramework> {
+	private static Map<File, IEclipseFramework> _frameworks = new HashMap<File, IEclipseFramework>();
+	
 	public EclipseFolderRoot(String shortName, String name, File rootFolder, File frameworkFolder) {
 		super(shortName, name, rootFolder, frameworkFolder);
+	}
+	
+	@Override
+	public Set<IEclipseFramework> getApplications() {
+		return new HashSet<IEclipseFramework>();
 	}
 
 	@Override
 	protected IEclipseFramework createFramework(File frameworkFolder) {
-		return new EclipsePathFramework(this, frameworkFolder);
+		IEclipseFramework framework;
+		synchronized (_frameworks) {
+			framework = _frameworks.get(frameworkFolder);
+			if (framework == null || !frameworkFolder.exists()) {
+				framework = new EclipsePathFramework(this, frameworkFolder);
+				_frameworks.put(frameworkFolder, framework);
+			}
+		}
+		return framework;
 	}
 }

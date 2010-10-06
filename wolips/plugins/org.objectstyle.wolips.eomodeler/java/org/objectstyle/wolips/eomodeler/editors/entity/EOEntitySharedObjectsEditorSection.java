@@ -61,8 +61,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -79,6 +77,7 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.DuplicateFetchSpecNameException;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
+import org.objectstyle.wolips.eomodeler.utils.FormUtils;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
@@ -111,17 +110,8 @@ public class EOEntitySharedObjectsEditorSection extends AbstractPropertySection 
 		super.createControls(_parent, _tabbedPropertySheetPage);
 		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
 
-		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0, 5);
-		topFormData.left = new FormAttachment(0, 5);
-		topFormData.right = new FormAttachment(100, -5);
-		topFormData.bottom = new FormAttachment(100, -5);
-		topForm.setLayoutData(topFormData);
-
-		GridLayout topFormLayout = new GridLayout();
-		topFormLayout.numColumns = 1;
-		topForm.setLayout(topFormLayout);
+		Composite topForm = FormUtils.createForm(getWidgetFactory(), form, 1);
+		((GridLayout)topForm.getLayout()).verticalSpacing = 1;
 
 		myShareNoObjectsButton = new Button(topForm, SWT.RADIO);
 		myShareNoObjectsButton.setText(Messages.getString("EOEntity.shareNoObjects"));
@@ -147,6 +137,7 @@ public class EOEntitySharedObjectsEditorSection extends AbstractPropertySection 
 		myFetchSpecsViewer.setCellModifier(new TablePropertyCellModifier(myFetchSpecsViewer));
 		myFetchSpecsViewer.setCellEditors(cellEditors);
 		GridData fetchSpecsLayoutData = new GridData(GridData.FILL_BOTH);
+		fetchSpecsLayoutData.verticalIndent = 10;
 		//fetchSpecsLayoutData.heightHint = 100;
 		myFetchSpecsViewer.getTable().setLayoutData(fetchSpecsLayoutData);
 	}

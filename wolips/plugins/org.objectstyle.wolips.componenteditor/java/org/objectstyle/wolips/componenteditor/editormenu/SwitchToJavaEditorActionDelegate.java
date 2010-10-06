@@ -44,8 +44,8 @@
 package org.objectstyle.wolips.componenteditor.editormenu;
 
 import org.eclipse.jface.action.IAction;
+import org.objectstyle.wolips.baseforuiplugins.utils.WorkbenchUtilities;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 public class SwitchToJavaEditorActionDelegate extends AbstractSwitchToActionDelegate {
 
@@ -59,10 +59,10 @@ public class SwitchToJavaEditorActionDelegate extends AbstractSwitchToActionDele
 			return;
 		}
 		if (localizedComponentsLocateResult.getDotJava() != null) {
-			WorkbenchUtilitiesPlugin.open(localizedComponentsLocateResult.getDotJava());
+			WorkbenchUtilities.open(localizedComponentsLocateResult.getDotJava());
 		}
 		if (localizedComponentsLocateResult.getDotGroovy() != null) {
-			WorkbenchUtilitiesPlugin.open(localizedComponentsLocateResult.getDotGroovy());
+			WorkbenchUtilities.open(localizedComponentsLocateResult.getDotGroovy());
 		}
 		
 	}

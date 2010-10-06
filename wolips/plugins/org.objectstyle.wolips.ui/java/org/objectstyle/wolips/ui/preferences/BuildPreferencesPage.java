@@ -75,12 +75,13 @@ public class BuildPreferencesPage extends FieldEditorPreferencePage implements I
 	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
 	 */
 	public void createFieldEditors() {
-		addField(new StringFieldEditor(Preferences.PREF_WOLIPS_PROPERTIES_FILE, PreferencesMessages.getString("Preferences.wolipsPropertiesFile.Label"), getFieldEditorParent()));
+		//addField(new StringFieldEditor(Preferences.PREF_WOLIPS_PROPERTIES_FILE, PreferencesMessages.getString("Preferences.wolipsPropertiesFile.Label"), getFieldEditorParent()));
 		addField(new BooleanFieldEditor(Preferences.PREF_CAPTURE_ANT_OUTPUT, PreferencesMessages.getString("Preferences.CaptureAntOutput.Label"), getFieldEditorParent()));
-		addField(new BooleanFieldEditor(Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD, PreferencesMessages.getString("Preferences.WritePBDotProjectOnBuild.Label"), getFieldEditorParent()));
-		addField(new BooleanFieldEditor(Preferences.PREF_WRITE_XCODE_ON_BUILD, PreferencesMessages.getString("Preferences.WriteXcodeOnBuild.Label"), getFieldEditorParent()));
-		addField(new BooleanFieldEditor(Preferences.PREF_WRITE_XCODE21_ON_BUILD, PreferencesMessages.getString("Preferences.WriteXcode21OnBuild.Label"), getFieldEditorParent()));
-		addField(new BooleanFieldEditor(Preferences.PREF_AUTOEOGENERATE_ON_BUILD, PreferencesMessages.getString("Preferences.AutoEOGenerateOnBuild.Label"), getFieldEditorParent()));
+		addField(new BooleanFieldEditor(Preferences.PREF_MOCK_BUNDLE_ENABLED, "Generate bundles", getFieldEditorParent()));
+		addField(new BooleanFieldEditor(Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD, "Generate PB.project", getFieldEditorParent()));
+		addField(new BooleanFieldEditor(Preferences.PREF_WRITE_XCODE_ON_BUILD, "Generate project.xcode", getFieldEditorParent()));
+		addField(new BooleanFieldEditor(Preferences.PREF_WRITE_XCODE21_ON_BUILD, "Generate project.xcodeproj", getFieldEditorParent()));
+		addField(new BooleanFieldEditor(Preferences.PREF_AUTOEOGENERATE_ON_BUILD, "Automatically run EOGenerator", getFieldEditorParent()));
 	}
 
 	/**

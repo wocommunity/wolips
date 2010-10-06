@@ -52,7 +52,6 @@ public class TagShortcut {
   public void setAttributesAsString(String attributesStr) {
     _attributes.clear();
     String[] attributesSplit = attributesStr.split(",");
-    Map<String, String> attributes = new HashMap<String, String>();
     for (int attributeNum = 0; attributeNum < attributesSplit.length; attributeNum++) {
       String[] kvPair = attributesSplit[attributeNum].split("=");
       if (kvPair.length == 2) {

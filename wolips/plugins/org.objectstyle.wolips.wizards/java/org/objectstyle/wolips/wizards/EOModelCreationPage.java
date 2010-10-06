@@ -55,10 +55,12 @@
  */
 package org.objectstyle.wolips.wizards;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -72,6 +74,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
+import org.objectstyle.wolips.baseforuiplugins.utils.ErrorUtils;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 import org.objectstyle.wolips.jdt.ProjectFrameworkAdapter;
 
 /**
@@ -117,6 +121,15 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 	public void createControl(Composite parent) {
 		// inherit default container and name specification widgets
 		super.createControl(parent);
+		
+		ProjectAdapter projectAdapter = (ProjectAdapter) getProject().getAdapter(ProjectAdapter.class);
+		if (projectAdapter != null) {
+			IContainer resource = (IContainer)ResourcesPlugin.getWorkspace().getRoot().findMember(getContainerFullPath());
+			if (!projectAdapter.isResourceContainer(resource)) {
+				setContainerFullPath(projectAdapter.getDefaultResourcesFolder().getFullPath());
+			}
+		}
+
 		Composite composite = (Composite) getControl();
 		// WorkbenchHelp.setHelp(composite,
 		// IReadmeConstants.CREATION_WIZARD_PAGE_CONTEXT);
@@ -213,7 +226,11 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 	}
 
 	public IProject getProject() {
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(getContainerFullPath().segment(0));
+		IPath containerFullPath = getContainerFullPath();
+		if (containerFullPath == null) {
+			ErrorUtils.openErrorDialog(getShell(), "No Folder Selectd", "You must select a folder to create a new EOModel.");
+		}
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(containerFullPath.segment(0));
 		return project;
 	}
 }

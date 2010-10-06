@@ -449,4 +449,20 @@
          </adapter>
       </factory>
    </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="org.objectstyle.wolips.jdt.JdtPluginStartup">
+      </startup>
+   </extension>
+   <extension
+         id="id1"
+         name="name"
+         point="org.objectstyle.wolips.variables.buildPropertiesInitializer">
+      <buildPropertiesInitializer
+            class="org.objectstyle.wolips.jdt.WOBuildPropertiesInitializer"
+            id="org.objectstyle.wolips.jdt.buildPropertiesInitializer"
+            name="WO Build Properties Initializer">
+      </buildPropertiesInitializer>
+   </extension>
 </plugin>

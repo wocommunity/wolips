@@ -66,7 +66,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
+import org.objectstyle.wolips.baseforuiplugins.utils.WorkbenchUtilities;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -237,9 +237,9 @@ public class WizardsPlugin extends AbstractBaseUIActivator {
 
 	public static void selectAndReveal(IResource newResource) {
 		if (newResource != null) {
-			BasicNewResourceWizard.selectAndReveal(newResource, WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow());
+			BasicNewResourceWizard.selectAndReveal(newResource, WorkbenchUtilities.getActiveWorkbenchWindow());
 			if (newResource.getType() == IResource.FILE)
-				WorkbenchUtilitiesPlugin.open((IFile) newResource);
+				WorkbenchUtilities.open((IFile) newResource);
 		}
 	}
 }

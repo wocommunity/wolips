@@ -69,7 +69,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.objectstyle.wolips.core.resources.types.folder.IDotSubprojAdapter;
-import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 
@@ -145,7 +144,7 @@ public class WOSubprojectCreator implements IRunnableWithProgress {
 		subprojectFolder.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 
 		IFolder sourceFolder;
-		sourceFolder = subprojectFolder.getFolder(IWOLipsModel.EXT_SRC);
+		sourceFolder = subprojectFolder.getFolder("src"); // BUG: totally wrong
 		if (!sourceFolder.exists()) {
 			// create source folder
 			try {

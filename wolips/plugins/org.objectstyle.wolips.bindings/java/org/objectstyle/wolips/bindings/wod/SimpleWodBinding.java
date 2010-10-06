@@ -84,7 +84,7 @@ public class SimpleWodBinding extends AbstractWodBinding {
   }
 
   public void setValue(String value) {
-    String oldValue = _value;
+    //String oldValue = _value;
     _value = value;
     if (_valuePosition != null && _value != null) {
       setValuePosition(new Position(_valuePosition.getOffset(), _value.length()));

@@ -2,7 +2,7 @@
 <head>
 	<title>${storedProcedure.model.name}, ${storedProcedure.name}</title>
 	<link href = "../../eomodeldoc.css" rel = "stylesheet" type = "text/css">
-	<script src = "../../prototype.js"/>
+	<script src = "../../prototype.js"></script>
 </head>
 <body>
 <h1>${storedProcedure.model.name}</h1>

@@ -57,11 +57,8 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
@@ -70,6 +67,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
+import org.objectstyle.wolips.eomodeler.utils.FormUtils;
 
 public class EOStoredProcedureBasicEditorSection extends AbstractPropertySection implements ISelectionChangedListener {
 	private EOStoredProcedure _storedProcedure;
@@ -90,17 +88,8 @@ public class EOStoredProcedureBasicEditorSection extends AbstractPropertySection
 		FormLayout formLayout = new FormLayout();
 		form.setLayout(formLayout);
 
-		Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-		FormData topFormData = new FormData();
-		topFormData.top = new FormAttachment(0, 5);
-		topFormData.left = new FormAttachment(0, 5);
-		topFormData.right = new FormAttachment(100, -5);
-		topForm.setLayoutData(topFormData);
-
-		GridLayout topFormLayout = new GridLayout();
-		topFormLayout.numColumns = 2;
-		topForm.setLayout(topFormLayout);
-
+		Composite topForm = FormUtils.createForm(getWidgetFactory(), form);
+		
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOStoredProcedure." + EOStoredProcedure.NAME), SWT.NONE);
 		_nameText = new Text(topForm, SWT.BORDER);
 		GridData nameLayoutData = new GridData(GridData.FILL_HORIZONTAL);

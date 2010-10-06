@@ -120,7 +120,7 @@ import org.objectstyle.wolips.core.resources.types.IPBDotProjectOwner;
 import org.objectstyle.wolips.core.resources.types.file.IPBDotProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotSubprojAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotWoAdapter;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 
 public class DotSubprojAdapterTest extends AbstractProjectTestCase {
 
@@ -128,7 +128,7 @@ public class DotSubprojAdapterTest extends AbstractProjectTestCase {
 		IProject project = this.getProject("testDotSubProjectAdapter");
 		NullProgressMonitor monitor = new NullProgressMonitor();
 		this.initIncrementalApplicationProject(project, monitor);
-		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
+		ProjectAdapter projectAdapter = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
 		assertNotNull(projectAdapter);
 		IPBDotProjectAdapter pbDotProjectAdapter = projectAdapter.getPBDotProjectAdapter();
 		assertNotNull(pbDotProjectAdapter);

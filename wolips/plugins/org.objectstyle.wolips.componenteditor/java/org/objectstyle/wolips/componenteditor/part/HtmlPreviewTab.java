@@ -86,8 +86,10 @@ public class HtmlPreviewTab extends ComponentEditorTab {
 		// do nothing
 	}
 	
+	@Override
 	public void dispose() {
 		htmlPreviewEditor.dispose();
+		super.dispose();
 	}
 	
 

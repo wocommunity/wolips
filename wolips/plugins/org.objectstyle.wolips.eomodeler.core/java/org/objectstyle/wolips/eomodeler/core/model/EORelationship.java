@@ -504,6 +504,10 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 		return myName;
 	}
 
+	public String getUppercaseName() {
+		return getName().toUpperCase();
+	}
+	
 	public String getUppercaseUnderscoreName() {
 		return StringUtils.camelCaseToUnderscore(getName()).toUpperCase();
 	}

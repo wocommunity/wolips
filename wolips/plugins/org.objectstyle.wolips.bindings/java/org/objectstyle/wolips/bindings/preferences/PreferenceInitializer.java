@@ -137,24 +137,27 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     validationRules.add(new BindingValidationRule(".*", "^nonCachingContext\\..*"));
     prefs.setDefault(PreferenceConstants.BINDING_VALIDATION_RULES_KEY, BindingValidationRule.toPreferenceString(validationRules));
 
-    prefs.setDefault(PreferenceConstants.WO54_KEY, false);
     prefs.setDefault(PreferenceConstants.USE_INLINE_BINDINGS_KEY, false);
 
-    prefs.setDefault(PreferenceConstants.ALLOWED_BINDING_CHARACTERS, ".^-@,|():");
     prefs.setDefault(PreferenceConstants.VALIDATE_TEMPLATES_KEY, true);
+    prefs.setDefault(PreferenceConstants.VALIDATE_TEMPLATES_ON_BUILD_KEY, true);
     prefs.setDefault(PreferenceConstants.VALIDATE_BINDING_VALUES, true);
-    prefs.setDefault(PreferenceConstants.VALIDATE_OGNL_KEY, true);
-    prefs.setDefault(PreferenceConstants.AUTO_INSERT_ON_COMPLETION, true);
-    prefs.setDefault(PreferenceConstants.WARN_ON_MISSING_COLLECTION_KEY, true);
-    prefs.setDefault(PreferenceConstants.ERROR_ON_MISSING_COMPONENT_KEY, true);
-    prefs.setDefault(PreferenceConstants.WARN_ON_MISSING_COMPONENT_KEY, false);
-    prefs.setDefault(PreferenceConstants.ERROR_ON_MISSING_NSKVC_KEY, true);
-    prefs.setDefault(PreferenceConstants.WARN_ON_MISSING_NSKVC_KEY, false);
-    prefs.setDefault(PreferenceConstants.WARN_ON_AMBIGUOUS_KEY, true);
-    prefs.setDefault(PreferenceConstants.ERROR_ON_HTML_ERRORS_KEY, true);
-    prefs.setDefault(PreferenceConstants.WARN_ON_OPERATOR_KEY, true);
-    prefs.setDefault(PreferenceConstants.WARN_ON_HELPER_FUNCTION_KEY, true);
+    prefs.setDefault(PreferenceConstants.VALIDATE_WOO_ENCODINGS_KEY, true);
 
-    prefs.setDefault(PreferenceConstants.THREADED_VALIDATION_KEY, false);
+    prefs.setDefault(PreferenceConstants.INVALID_OGNL_SEVERITY_KEY, PreferenceConstants.WARNING);
+    prefs.setDefault(PreferenceConstants.MISSING_COLLECTION_SEVERITY_KEY, PreferenceConstants.WARNING);
+    prefs.setDefault(PreferenceConstants.MISSING_COMPONENT_SEVERITY_KEY, PreferenceConstants.ERROR);
+    prefs.setDefault(PreferenceConstants.MISSING_NSKVC_SEVERITY_KEY, PreferenceConstants.ERROR);
+    prefs.setDefault(PreferenceConstants.AMBIGUOUS_SEVERITY_KEY, PreferenceConstants.WARNING);
+    prefs.setDefault(PreferenceConstants.HTML_ERRORS_SEVERITY_KEY, PreferenceConstants.ERROR);
+    prefs.setDefault(PreferenceConstants.WOD_ERRORS_IN_HTML_SEVERITY_KEY, PreferenceConstants.ERROR);
+    prefs.setDefault(PreferenceConstants.UNUSED_WOD_ELEMENT_SEVERITY_KEY, PreferenceConstants.WARNING);
+    prefs.setDefault(PreferenceConstants.WOD_MISSING_COMPONENT_SEVERITY_KEY, PreferenceConstants.ERROR);
+    prefs.setDefault(PreferenceConstants.WOD_API_PROBLEMS_SEVERITY_KEY, PreferenceConstants.ERROR);
+    prefs.setDefault(PreferenceConstants.AT_OPERATOR_SEVERITY_KEY, PreferenceConstants.WARNING);
+    prefs.setDefault(PreferenceConstants.HELPER_FUNCTION_SEVERITY_KEY, PreferenceConstants.WARNING);
+    prefs.setDefault(PreferenceConstants.WELL_FORMED_TEMPLATE_KEY, PreferenceConstants.DEFAULT);
+
+    prefs.setDefault(PreferenceConstants.THREADED_VALIDATION_KEY, true);
   }
 }

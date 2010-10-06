@@ -62,6 +62,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -97,9 +98,8 @@ import org.eclipse.ui.actions.OpenWithMenu;
 import org.eclipse.ui.part.IContributedContentsView;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.navigator.ShowInNavigatorAction;
-import org.objectstyle.wolips.datasets.project.WOLipsCore;
-import org.objectstyle.wolips.datasets.resources.IWOLipsResource;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
+import org.objectstyle.wolips.baseforuiplugins.utils.WorkbenchUtilities;
+import org.objectstyle.wolips.core.resources.IWOLipsResource;
 
 /**
  * @author ulrich
@@ -151,19 +151,13 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 				List list = ((IStructuredSelection) selection).toList();
 				for (int i = 0; i < list.size(); i++) {
 					Object object = list.get(i);
-					IWOLipsResource wolipsResource = null;
-					if (object != null) {
-						if (object instanceof IResource) {
-							IResource resource = (IResource) object;
-							wolipsResource = WOLipsCore.getWOLipsModel().getWOLipsResource((IResource) object);
-							if (wolipsResource != null) {
-								wolipsResource.open();
-							} else if (resource.getType() == IResource.FILE) {
-								WorkbenchUtilitiesPlugin.open((IFile) resource);
-							}
-						} else if (object instanceof ICompilationUnit) {
-							wolipsResource = WOLipsCore.getWOLipsModel().getWOLipsCompilationUnit((ICompilationUnit) object);
+					if (object instanceof IAdaptable) {
+						IWOLipsResource wolipsResource = (IWOLipsResource)((IAdaptable) object).getAdapter(IWOLipsResource.class);
+						if (wolipsResource != null) {
 							wolipsResource.open();
+						}
+						else if (object instanceof IFile) {
+							WorkbenchUtilities.open((IFile) object);
 						}
 					}
 				}

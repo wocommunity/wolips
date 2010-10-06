@@ -57,9 +57,7 @@ package org.objectstyle.wolips.core.resources.internal.types.file;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.objectstyle.wolips.core.CorePlugin;
-import org.objectstyle.wolips.core.resources.internal.build.Nature;
+import org.objectstyle.wolips.baseforplugins.util.WOLipsNatureUtils;
 import org.objectstyle.wolips.core.resources.internal.types.AbstractResourceAdapterFactory;
 import org.objectstyle.wolips.core.resources.types.IResourceType;
 import org.objectstyle.wolips.core.resources.types.file.IPBDotProjectAdapter;
@@ -92,16 +90,7 @@ public class FileAdapterFactory extends AbstractResourceAdapterFactory {
 	public IResourceType createAdapter(Object adaptableObject, Class adapterType) {
 		IFile file = (IFile) adaptableObject;
 		IProject project = file.getProject();
-		Nature nature = null;
-		try {
-			nature = Nature.getNature(project);
-		} catch (CoreException e) {
-			CorePlugin.getDefault().debug("Error while resolving nature for project: " + project.getName(), e);
-		}
-		if (nature == null) {
-			return null;
-		}
-		if (adapterType == IPBDotProjectAdapter.class) {
+		if (WOLipsNatureUtils.isWOLipsNature(project) && adapterType == IPBDotProjectAdapter.class) {
 			return new PBDotProjectAdapter(file);
 		}
 		return null;

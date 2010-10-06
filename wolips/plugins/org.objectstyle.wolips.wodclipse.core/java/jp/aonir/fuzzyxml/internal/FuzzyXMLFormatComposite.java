@@ -332,4 +332,9 @@ public class FuzzyXMLFormatComposite implements FuzzyXMLNode, FuzzyXMLFormat {
     }
     return false;
   }
+
+	public boolean isSynthetic() {
+    FuzzyXMLNode _node = unwrap(delegate); 
+    return _node.isSynthetic();
+	}
 }

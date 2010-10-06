@@ -58,7 +58,7 @@ public class Activator extends AbstractBaseUIActivator {
     Activator.getDefault().getPreferenceStore().setValue(PreferenceConstants.USE_INLINE_BINDINGS_KEY, useInlineBindings);
   }
   
-  public boolean isWO54(IProject project) {
-    return Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.WO54_KEY);
-  }
+//  public boolean isWO54(IProject project) {
+//    return Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.WO54_KEY);
+//  }
 }

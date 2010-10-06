@@ -14,8 +14,9 @@ public class EclipseDependencyOrdering extends DependencyOrdering<EclipseDepende
 	private Set<IPath> _allProjectArchiveEntries;
 
 	private IProject _project;
-
-	public EclipseDependencyOrdering(IProject project) {
+	  
+	public EclipseDependencyOrdering(IProject project, boolean includeProjectDependency) {
+		super(includeProjectDependency);
 		_project = project;
 	}
 

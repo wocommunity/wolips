@@ -51,19 +51,17 @@ package org.objectstyle.wolips.eomodeler.actions;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 import org.objectstyle.wolips.eomodeler.editors.entity.CreateRelationshipDialog;
 
-public class NewRelationshipAction extends AbstractObjectAction {
+public class NewRelationshipAction extends EMAction {
 	public void run(IAction action) {
 		EOEntity entity1 = null;
 		EOEntity entity2 = null;
-		IStructuredSelection selection = getSelection();
-		if (selection != null) {
-			Object[] selectedObjects = selection.toArray();
+		Object[] selectedObjects = getSelectedObjects();
+		if (selectedObjects != null) {
 			if (selectedObjects.length == 1) {
 				entity1 = EOModelUtils.getRelatedEntity(selectedObjects[0]);
 			} else if (selectedObjects.length == 2) {

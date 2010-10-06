@@ -91,19 +91,26 @@ public class VariablesPlugin extends AbstractBaseActivator {
 	}
 
 	public ProjectVariables getGlobalVariables() {
-		return new ProjectVariables(getWOVariables(null));
+		return new ProjectVariables(getWOVariables(null, null));
+	}
+
+	public ProjectVariables getGlobalVariables(String wolipsPropertiesFile) {
+		return new ProjectVariables(getWOVariables(null, wolipsPropertiesFile));
 	}
 
 	public ProjectVariables getProjectVariables(IProject project) {
-		return new ProjectVariables(getWOVariables(project));
+		return new ProjectVariables(getWOVariables(project, null));
 	}
 
-	private WOVariables getWOVariables(IProject project) {
+	private WOVariables getWOVariables(IProject project, String wolipsPropertiesFile) {
 		//if (this.woEnvironment == null) {
 		//	this.woEnvironment = new WOEnvironment(null);
 		//}
 		Properties defaultProperties = new Properties();
-		String defaultPropertiesFile = Preferences.getString(Preferences.PREF_WOLIPS_PROPERTIES_FILE);
+		String defaultPropertiesFile = wolipsPropertiesFile;
+		if (defaultPropertiesFile == null || defaultPropertiesFile.length() == 0) {
+			defaultPropertiesFile = Preferences.getString(Preferences.PREF_WOLIPS_PROPERTIES_FILE);
+		}
 		if (defaultPropertiesFile != null && defaultPropertiesFile.length() > 0) {
 			defaultProperties.put(WOVariables.WOLIPS_PROPERTIES, defaultPropertiesFile);
 		}

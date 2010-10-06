@@ -49,14 +49,27 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.attribute;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.objectstyle.wolips.eomodeler.core.model.EODataType;
 
 public class EODataTypeContentProvider implements IStructuredContentProvider {
-	public Object[] getElements(Object _inputElement) {
+    public Object[] getElements(Object _inputElement) {
 		EODataType[] dataTypes = (EODataType[]) _inputElement;
-		return dataTypes;
+		List<EODataType> dataTypesList = new LinkedList<EODataType>();
+		for (EODataType dataType : dataTypes) {
+			dataTypesList.add(dataType);
+		}
+		dataTypesList.remove(EODataType.CUSTOM);
+		Collections.sort(dataTypesList);
+
+		dataTypesList.add(EODataType.CUSTOM);
+		
+		return dataTypesList.toArray();
 	}
 
 	public void dispose() {

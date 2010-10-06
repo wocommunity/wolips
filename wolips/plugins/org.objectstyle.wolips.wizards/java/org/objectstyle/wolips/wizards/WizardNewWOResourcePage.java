@@ -69,7 +69,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
+import org.objectstyle.wolips.baseforuiplugins.utils.WorkbenchUtilities;
 
 /**
  * @author mnolte
@@ -113,7 +113,7 @@ public abstract class WizardNewWOResourcePage extends WizardNewFileCreationPage 
 			new ProgressMonitorDialog(getShell()).run(false, false, creationOperation);
 			// getContainer().run(false, false, creationOperation);
 		} catch (InvocationTargetException e) {
-			WorkbenchUtilitiesPlugin.errorDialog(getShell(), "Error", "Error while creating resource", e.getTargetException());
+			WorkbenchUtilities.errorDialog(getShell(), "Error", "Error while creating resource", e.getTargetException());
 			return false;
 		} catch (InterruptedException e) {
 			// canceling is disabled

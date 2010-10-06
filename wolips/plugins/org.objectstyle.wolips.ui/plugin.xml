@@ -309,7 +309,7 @@
          point="org.eclipse.ui.preferencePages">
       <page
             name="WOLips"
-            class="org.objectstyle.wolips.ui.preferences.PreferencesPage"
+            class="org.objectstyle.wolips.ui.preferences.WOLipsPropertiesPreferencesPage"
             id="org.objectstyle.wolips.preferences.PreferencesPage">
       </page>
       <page

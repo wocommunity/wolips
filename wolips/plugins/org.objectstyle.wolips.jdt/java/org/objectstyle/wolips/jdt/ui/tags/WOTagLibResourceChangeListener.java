@@ -56,7 +56,7 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 import org.objectstyle.wolips.jdt.JdtPlugin;
 
 /**
@@ -94,7 +94,7 @@ public abstract class WOTagLibResourceChangeListener implements IResourceChangeL
 			// further investigation of resource delta needed
 			return true;
 		case IResource.PROJECT:
-			IProjectAdapter project = (IProjectAdapter) resource.getAdapter(IProjectAdapter.class);
+			ProjectAdapter project = (ProjectAdapter) resource.getAdapter(ProjectAdapter.class);
 			if (project == null) {
 				return false;
 			}

@@ -8,6 +8,8 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.Position;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.bindings.Activator;
+import org.objectstyle.wolips.bindings.preferences.PreferenceConstants;
 import org.objectstyle.wolips.bindings.wod.HtmlElementCache;
 import org.objectstyle.wolips.bindings.wod.HtmlElementName;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
@@ -41,20 +43,23 @@ public class WodCacheEntry extends AbstractCacheEntry<IWodModel> {
         for (WodProblem wodProblem : wodProblems) {
           WodModelUtils.createMarker(wodFile, wodProblem);
 
-          // We create HTML markers for WOD problems so that you can have the
-          // wod view closed and still see errors
-          if (createHtmlMarkers && wodProblem instanceof IWodElementProblem) {
-            IWodElement element = ((IWodElementProblem) wodProblem).getElement();
-            if (element != null) {
-              List<HtmlElementName> htmlElementNames = htmlElementCache.getHtmlElementNames(element.getElementName());
-              if (htmlElementNames != null) {
-                for (HtmlElementName htmlElementName : htmlElementNames) {
-                  int lineNumber = WodHtmlUtils.getLineAtOffset(cache.getHtmlEntry().getContents(), htmlElementName.getStartOffset());
-                  WodElementProblem htmlProblem = new WodElementProblem(element, "In the WOD, " + wodProblem.getMessage(), new Position(htmlElementName.getStartOffset(), htmlElementName.getEndOffset() - htmlElementName.getStartOffset() + 1), lineNumber, wodProblem.isWarning());
-                  WodModelUtils.createMarker(htmlFile, htmlProblem);
-                }
-              }
-            }
+          String wodErrorsInHtmlSeverity = Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.WOD_ERRORS_IN_HTML_SEVERITY_KEY);
+          if (!PreferenceConstants.IGNORE.equals(wodErrorsInHtmlSeverity)) {
+	          // We create HTML markers for WOD problems so that you can have the
+	          // wod view closed and still see errors
+	          if (createHtmlMarkers && wodProblem instanceof IWodElementProblem) {
+	            IWodElement element = ((IWodElementProblem) wodProblem).getElement();
+	            if (element != null) {
+	              List<HtmlElementName> htmlElementNames = htmlElementCache.getHtmlElementNames(element.getElementName());
+	              if (htmlElementNames != null) {
+	                for (HtmlElementName htmlElementName : htmlElementNames) {
+	                  int lineNumber = WodHtmlUtils.getLineAtOffset(cache.getHtmlEntry().getContents(), htmlElementName.getStartOffset());
+	                  WodElementProblem htmlProblem = new WodElementProblem(element, "In the WOD, " + wodProblem.getMessage(), new Position(htmlElementName.getStartOffset(), htmlElementName.getEndOffset() - htmlElementName.getStartOffset() + 1), lineNumber, wodProblem.isWarning() || PreferenceConstants.WARNING.equals(wodErrorsInHtmlSeverity));
+	                  WodModelUtils.createMarker(htmlFile, htmlProblem);
+	                }
+	              }
+	            }
+	          }
           }
         }
       }
