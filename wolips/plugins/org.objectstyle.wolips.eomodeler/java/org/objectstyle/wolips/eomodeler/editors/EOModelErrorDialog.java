@@ -238,10 +238,6 @@ public class EOModelErrorDialog extends Dialog {
 		}
 	}
   
-public static void test() {
-  System.out.print("Test");
-}
-
 	protected static class FailureLabelProvider implements ILabelProvider {
 		public void addListener(ILabelProviderListener listener) {
 			// DO NOTHING
