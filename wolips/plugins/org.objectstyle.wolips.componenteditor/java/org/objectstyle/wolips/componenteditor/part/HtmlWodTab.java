@@ -307,11 +307,11 @@ public class HtmlWodTab extends ComponentEditorTab {
 	}
 
 	public void setHtmlActive() {
-		this.htmlActive = true;
+		setHtmlActive(true);
 	}
 
 	public void setWodActive() {
-		this.htmlActive = false;
+		setHtmlActive(false);
 	}
 
 	public IEditorInput getActiveEditorInput() {
