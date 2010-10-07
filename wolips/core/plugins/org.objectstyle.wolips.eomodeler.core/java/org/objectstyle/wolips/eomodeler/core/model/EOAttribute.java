@@ -1070,7 +1070,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 			if (!isFlattened()) {
 				String columnName = getColumnName();
 				if (columnName == null || columnName.trim().length() == 0) {
-					if (getDefinition() == null && !getEntity().isAbstractEntity()) {
+					if (getDefinition() == null && !BooleanUtils.isTrue(getEntity().isAbstractEntity())) {
 						_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + " does not have a column name set.", true));
 					}
 				} else if (columnName.indexOf(' ') != -1) {
@@ -1085,7 +1085,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 					}
 				}
 
-				if (getValueClassName() == null && getClassName() == null && !getEntity().isAbstractEntity()) {
+				if (getValueClassName() == null && getClassName() == null && !BooleanUtils.isTrue(getEntity().isAbstractEntity())) {
 					_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + " does not have a value class name or a class name.", true));
 				}
 
