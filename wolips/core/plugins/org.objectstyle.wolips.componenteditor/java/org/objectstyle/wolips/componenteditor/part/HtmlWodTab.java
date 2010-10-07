@@ -180,7 +180,7 @@ public class HtmlWodTab extends ComponentEditorTab {
 
 	protected void hideWodIfNecessary() {
 		if (this._wodContainer == null) {
-			int[] weights = new int[] { 100, 0};
+			int[] weights = new int[] { 100 };
 			getParentSashForm().setWeights(weights);
 			return;
 		}
