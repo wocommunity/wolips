@@ -2,6 +2,7 @@ package org.objectstyle.wolips.goodies.core.mac;
 
 import static org.objectstyle.wolips.goodies.core.mac.jna.CoreServices.kFSEventStreamCreateFlagNoDefer;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,7 @@ public class MacRefreshMonitor extends Job implements IRefreshMonitor {
 	public void monitor(IResource resource, IRefreshResult refreshResult) {
 		if (resource != null && refreshResult != null) {
 			MonitoredResource monitoredResource = new MonitoredResource(resource, refreshResult);
-			_resources.put(resource.getLocation(), monitoredResource);
+			_resources.put(MacRefreshMonitor.canonicalPath(resource.getLocation()), monitoredResource);
 			schedule();
 		}
 	}
@@ -140,11 +141,25 @@ public class MacRefreshMonitor extends Job implements IRefreshMonitor {
         dispose();
     }
     
+	public static IPath canonicalPath(IPath path) {
+		if (path == null)
+			return null;
+		try {
+			final String pathString = path.toOSString();
+			final String canonicalPath = new java.io.File(pathString).getCanonicalPath();
+			//only create a new path if necessary
+			if (canonicalPath.equals(pathString))
+				return path;
+			return new Path(canonicalPath);
+		} catch (IOException e) {
+			return path;
+		}
+	}
 
 	MonitoredResource monitoredResourceForPath(IPath path) {
 		IPath aPath = path;
 		MonitoredResource resource = _resources.get(aPath);
-		while (resource == null && !path.isRoot()) {
+		while (resource == null && !path.isRoot() && !"/".equals(aPath.toPortableString())) {
 			aPath = aPath.removeLastSegments(1);
 			resource = _resources.get(aPath);
 		}
@@ -158,7 +173,7 @@ public class MacRefreshMonitor extends Job implements IRefreshMonitor {
 	            Pointer[] myPaths = eventPaths.getPointerArray(0, numEvents);
 	            long[] myEvents = eventIds.getLongArray(0, numEvents);
 	            for (int i = 0; i < numEvents; i++) {
-	                IPath path = new Path(myPaths[i].getString(0));
+	                IPath path = MacRefreshMonitor.canonicalPath(new Path(myPaths[i].getString(0)));
 	                MonitoredResource resource = monitoredResourceForPath(path);
 	                if (resource != null) {
 	                	resource.pathChanged(path);
