@@ -22,7 +22,7 @@ import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 public class FuzzyXMLElementImpl extends AbstractFuzzyXMLNode implements FuzzyXMLElement {
 
   private static final Set<String> FORBIDDEN_SELF_CLOSING = new HashSet<String>(
-      Arrays.asList("a", "div", "span", "script", "pre"));
+      Arrays.asList("a", "div", "span", "script", "pre", "td"));
   private static final Set<String> FORBIDDEN_CLOSE_TAG = new HashSet<String>(
       Arrays.asList("meta", "link", "base", "basefont", "br", "frame", "hr", 
           "area", "img", "param", "input", "isindex", "col"));
