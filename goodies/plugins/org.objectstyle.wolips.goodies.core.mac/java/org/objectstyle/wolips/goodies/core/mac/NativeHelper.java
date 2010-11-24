@@ -72,7 +72,7 @@ import org.eclipse.core.resources.IResource;
 public class NativeHelper {
 	public static void revealInFileBrowser(IResource resource) {
 		try {
-			String resourcePath = getParentOfResource(resource).replaceAll(" ", "\\ ");
+			String resourcePath = resource.getLocation().toOSString().replaceAll(" ", "\\ ");
 			String openInFinder = "tell application \"Finder\"\n reveal POSIX file \"" + resourcePath + "\"\n activate\nend tell";
 			executeAppleScript(openInFinder);
 		} catch (Throwable t) {
