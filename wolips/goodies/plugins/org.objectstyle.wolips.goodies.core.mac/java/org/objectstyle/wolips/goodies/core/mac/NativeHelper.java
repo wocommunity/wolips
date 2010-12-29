@@ -83,7 +83,7 @@ public class NativeHelper {
 	public static void cdInShell(IResource resource) {
 		try {
 	        String containerPath = getParentOfResource(resource).replaceAll(" ", "\\ ");
-			String openInTerminalString = "tell application \"Terminal\"\n do script \"cd " + containerPath + "\"\n activate\nend tell";
+			String openInTerminalString = "tell application \"Terminal\"\n do script \"cd \\\"" + containerPath + "\\\"\"\n activate\nend tell";
 			executeAppleScript(openInTerminalString);
 		} catch (Throwable t) {
 			t.printStackTrace();
