@@ -55,7 +55,6 @@ import org.eclipse.debug.core.ILaunchManager;
 import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
 
 import com.jprofiler.integrations.eclipse.internal.ProfilingSession;
-import com.jprofiler.integrations.eclipse.internal.RemoteProfilingSession;
 
 /**
  * Launches a local VM.
@@ -65,7 +64,7 @@ public class JProfilerWOJavaLocalApplicationLaunchConfigurationDelegate extends
 
 	public final static String JProfilerWOJavaLocalApplicationID = "org.objectstyle.wolips.jprofiler.launching.JProfilerWOLocalJavaApplication";
 	
-	private RemoteProfilingSession profilingSession;
+	private ProfilingSession profilingSession;
 
 	
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
