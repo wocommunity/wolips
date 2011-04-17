@@ -74,7 +74,11 @@ public class CustomDataTypePanel extends Composite implements IDataTypePanel {
 
 	private Text myValueTypeText;
 
+	private Text myFactoryClassText;
+
 	private Text myFactoryMethodText;
+
+	private Text myConversionClassText;
 
 	private Text myConversionMethodText;
 
@@ -108,10 +112,20 @@ public class CustomDataTypePanel extends Composite implements IDataTypePanel {
 		GridData valueTypeFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		myValueTypeText.setLayoutData(valueTypeFieldLayoutData);
 
+		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.VALUE_FACTORY_CLASS_NAME), SWT.NONE);
+		myFactoryClassText = new Text(this, SWT.BORDER);
+		GridData factoryClassFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myFactoryClassText.setLayoutData(factoryClassFieldLayoutData);
+
 		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.VALUE_FACTORY_METHOD_NAME), SWT.NONE);
 		myFactoryMethodText = new Text(this, SWT.BORDER);
 		GridData factoryMethodFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		myFactoryMethodText.setLayoutData(factoryMethodFieldLayoutData);
+
+		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_CLASS_NAME), SWT.NONE);
+		myConversionClassText = new Text(this, SWT.BORDER);
+		GridData conversionClassFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+		myConversionClassText.setLayoutData(conversionClassFieldLayoutData);
 
 		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME), SWT.NONE);
 		myConversionMethodText = new Text(this, SWT.BORDER);
@@ -140,7 +154,9 @@ public class CustomDataTypePanel extends Composite implements IDataTypePanel {
 			myBindingContext.bindValue(SWTObservables.observeText(myExternalWidthText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.WIDTH), null, null);
 			myBindingContext.bindValue(SWTObservables.observeText(myValueClassNameText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.VALUE_CLASS_NAME), null, null);
 			myBindingContext.bindValue(SWTObservables.observeText(myValueTypeText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.VALUE_TYPE), null, null);
+			myBindingContext.bindValue(SWTObservables.observeText(myFactoryClassText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.VALUE_FACTORY_CLASS_NAME), null, null);
 			myBindingContext.bindValue(SWTObservables.observeText(myFactoryMethodText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.VALUE_FACTORY_METHOD_NAME), null, null);
+			myBindingContext.bindValue(SWTObservables.observeText(myConversionClassText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_CLASS_NAME), null, null);
 			myBindingContext.bindValue(SWTObservables.observeText(myConversionMethodText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME), null, null);
 			myArgumentTypeBinding = new ComboViewerBinding(myArgumentTypeComboViewer, _argument, AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE, null, null, EOFactoryMethodArgumentTypeContentProvider.BLANK_ARGUMENT_TYPE);
 		}

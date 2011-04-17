@@ -61,6 +61,8 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 
 	public static final String COLUMN_NAME = "columnName";
 
+	public static final String ADAPTOR_VALUE_CONVERSION_CLASS_NAME = "adaptorValueConversionClassName";
+
 	public static final String ADAPTOR_VALUE_CONVERSION_METHOD_NAME = "adaptorValueConversionMethodName";
 
 	public static final String EXTERNAL_TYPE = "externalType";
@@ -74,6 +76,8 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 	public static final String CLASS_NAME = "className";
 
 	public static final String VALUE_CLASS_NAME = "valueClassName";
+
+	public static final String VALUE_FACTORY_CLASS_NAME = "valueFactoryClassName";
 
 	public static final String VALUE_FACTORY_METHOD_NAME = "valueFactoryMethodName";
 
@@ -103,9 +107,13 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 	
 	protected boolean _inferredValueClassName;
 
+	private String myValueFactoryClassName;
+
 	private String myValueFactoryMethodName;
 
 	private EOFactoryMethodArgumentType myFactoryMethodArgumentType;
+
+	private String myAdaptorValueConversionClassName;
 
 	private String myAdaptorValueConversionMethodName;
 
@@ -162,8 +170,10 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		argument.myValueType = myValueType;
 		argument.myValueClassName = myValueClassName;
 		argument._className = _className;
+		argument.myValueFactoryClassName = myValueFactoryClassName;
 		argument.myValueFactoryMethodName = myValueFactoryMethodName;
 		argument.myFactoryMethodArgumentType = myFactoryMethodArgumentType;
+		argument.myAdaptorValueConversionClassName = myAdaptorValueConversionClassName;
 		argument.myAdaptorValueConversionMethodName = myAdaptorValueConversionMethodName;
 		argument.myScale = myScale;
 		argument.myPrecision = myPrecision;
@@ -228,6 +238,16 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		String oldColumnName = getColumnName();
 		myColumnName = _columnName;
 		firePropertyChange(AbstractEOArgument.COLUMN_NAME, oldColumnName, getColumnName());
+	}
+
+	public String getAdaptorValueConversionClassName() {
+		return myAdaptorValueConversionClassName;
+	}
+
+	public void setAdaptorValueConversionClassName(String _adaptorValueConversionClassName) {
+		String oldAdaptorValueConversionClassName = getAdaptorValueConversionClassName();
+		myAdaptorValueConversionClassName = _adaptorValueConversionClassName;
+		firePropertyChange(AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_CLASS_NAME, oldAdaptorValueConversionClassName, getAdaptorValueConversionClassName());
 	}
 
 	public String getAdaptorValueConversionMethodName() {
@@ -443,6 +463,16 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 		}
 	}
 
+	public String getValueFactoryClassName() {
+		return myValueFactoryClassName;
+	}
+
+	public void setValueFactoryClassName(String _valueFactoryClassName) {
+		String oldValueFactoryClassName = getValueFactoryClassName();
+		myValueFactoryClassName = _valueFactoryClassName;
+		firePropertyChange(AbstractEOArgument.VALUE_FACTORY_CLASS_NAME, oldValueFactoryClassName, getValueFactoryClassName());
+	}
+
 	public String getValueFactoryMethodName() {
 		return myValueFactoryMethodName;
 	}
@@ -530,8 +560,10 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 			_className = getJavaClassName(false);
 			_inferredClassName = true;
 		}
+		myValueFactoryClassName = _argumentMap.getString("valueFactoryClassName", true);
 		myValueFactoryMethodName = _argumentMap.getString("valueFactoryMethodName", true);
 		myFactoryMethodArgumentType = EOFactoryMethodArgumentType.getFactoryMethodArgumentTypeByID(_argumentMap.getString("factoryMethodArgumentType", true));
+		myAdaptorValueConversionClassName = _argumentMap.getString("adaptorValueConversionClassName", true);
 		myAdaptorValueConversionMethodName = _argumentMap.getString("adaptorValueConversionMethodName", true);
 		myServerTimeZone = _argumentMap.getString("serverTimeZone", true);
 		myAllowsNull = _argumentMap.getBoolean("allowsNull");
@@ -572,12 +604,14 @@ public abstract class AbstractEOArgument<T extends EOModelObject> extends UserIn
 			argumentMap.remove("className");
 			argumentMap.setString("valueClassName", myValueClassName, true);
 		}
+		argumentMap.setString("valueFactoryClassName", myValueFactoryClassName, true);
 		argumentMap.setString("valueFactoryMethodName", myValueFactoryMethodName, true);
 		if (myFactoryMethodArgumentType != null) {
 			argumentMap.setString("factoryMethodArgumentType", myFactoryMethodArgumentType.getID(), true);
 		} else {
 			argumentMap.remove("factoryMethodArgumentType");
 		}
+		argumentMap.setString("adaptorValueConversionClassName", myAdaptorValueConversionClassName, true);
 		argumentMap.setString("adaptorValueConversionMethodName", myAdaptorValueConversionMethodName, true);
 
 		if (isPrototyped()) {
