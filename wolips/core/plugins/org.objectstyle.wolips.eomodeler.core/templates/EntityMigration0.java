@@ -10,6 +10,14 @@
 		${migrationTableName}.newLargeStringColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.prototype.name == "ipAddress")
 		${migrationTableName}.newIpAddressColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
+#elseif ($attribute.factoryMethodArgumentType.ID == "EOFactoryMethodArgumentIsDate")
+#if ($attribute.valueType == "D" || $attribute.valueType == "M")
+		${migrationTableName}.newDateColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
+#elseif ($attribute.valueType == "t")
+		${migrationTableName}.newTimeColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
+#else
+		${migrationTableName}.newTimestampColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
+#end
 #elseif ($attribute.javaClassName == "String" && $attribute.width)
 		${migrationTableName}.newStringColumn("${attribute.columnName}", ${attribute.width}, ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "String")
