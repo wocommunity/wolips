@@ -250,7 +250,8 @@ public class Request implements Runnable {
       _queryParameters = new HashMap<String, String>();
       _path = _pathAndQueryString.substring(0, queryStringIndex);
       _queryString = _pathAndQueryString.substring(queryStringIndex + 1);
-      String[] nvPairs = _queryString.split("&amp;");
+      _queryString = _queryString.replace("&amp;", "&");
+      String[] nvPairs = _queryString.split("&");
       for (int i = 0; i < nvPairs.length; i++) {
         int equalsIndex = nvPairs[i].indexOf('=');
         if (equalsIndex == -1) {
