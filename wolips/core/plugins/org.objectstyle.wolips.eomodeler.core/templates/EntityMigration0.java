@@ -59,6 +59,15 @@
 #end
 #end
 #end
+
+#foreach ($entityIndex in $entity.entityIndexes)
+#if ($entityIndex.constraint.externalName == "distinct")
+		${migrationTableName}.addUniqueIndex("${entityIndex.name}"#foreach($attribute in $entityIndex.attributes), ${migrationTableName}.existingColumnNamed("${attribute.columnName}")#end);
+#elseif ($entityIndex.constraint.externalName == "fulltext")
+		${migrationTableName}.addIndex("${entityIndex.name}"#foreach($attribute in $entityIndex.attributes), ${migrationTableName}.existingColumnNamed("${attribute.columnName}")#end);
+#end
+#end
+
 #if (!$entity.singleTableInheritance)
 		${migrationTableName}.create();
 	 	${migrationTableName}.setPrimaryKey(${entity.sqlGenerationPrimaryKeyColumnNames});
