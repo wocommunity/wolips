@@ -25,7 +25,7 @@
 #elseif ($attribute.javaClassName == "Long")
 		${migrationTableName}.newBigIntegerColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "Double")
-		${migrationTableName}.newDoubleColumn("${attribute.columnName}", ${attribute.precision}, ${attribute.scale}, ${attribute.sqlGenerationAllowsNull});
+		${migrationTableName}.newDoubleColumn("${attribute.columnName}", 0, 0, ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "Float")
 		${migrationTableName}.newFloatColumn("${attribute.columnName}", ${attribute.precision}, ${attribute.scale}, ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "Boolean" && $attribute.width == 5)
