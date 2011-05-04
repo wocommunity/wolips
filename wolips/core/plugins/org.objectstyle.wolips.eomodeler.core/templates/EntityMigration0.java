@@ -63,7 +63,7 @@
 #foreach ($entityIndex in $entity.entityIndexes)
 #if ($entityIndex.constraint.externalName == "distinct")
 		${migrationTableName}.addUniqueIndex("${entityIndex.name}"#foreach($attribute in $entityIndex.attributes), ${migrationTableName}.existingColumnNamed("${attribute.columnName}")#end);
-#elseif ($entityIndex.constraint.externalName == "fulltext")
+#elseif ($entityIndex.constraint.externalName == "none")
 		${migrationTableName}.addIndex("${entityIndex.name}"#foreach($attribute in $entityIndex.attributes), ${migrationTableName}.existingColumnNamed("${attribute.columnName}")#end);
 #end
 #end
