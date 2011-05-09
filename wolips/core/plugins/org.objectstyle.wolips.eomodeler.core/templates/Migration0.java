@@ -1,7 +1,9 @@
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.foundation.NSArray;
 
+import er.extensions.jdbc.ERXSQLHelper.ColumnIndex;
 import er.extensions.migration.ERXMigrationDatabase;
+import er.extensions.migration.ERXMigrationIndex;
 import er.extensions.migration.ERXMigrationTable;
 import er.extensions.migration.ERXModelVersion;
 
