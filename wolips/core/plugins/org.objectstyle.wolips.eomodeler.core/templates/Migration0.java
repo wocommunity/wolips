@@ -6,6 +6,11 @@ import er.extensions.migration.ERXMigrationTable;
 import er.extensions.migration.ERXModelVersion;
 
 public class ${model.name}0 extends ERXMigrationDatabase.Migration {
+#if ($model.userInfo.ERXLanguages)
+	public ${model.name}0 {
+		super(ERXProperties.arrayForKey("${model.name}0.languages"));
+	}
+#end
 	@Override
 	public NSArray<ERXModelVersion> modelDependencies() {
 		return null;

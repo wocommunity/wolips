@@ -6,9 +6,7 @@
 #end
 #foreach ($attribute in $entity.sortedAttributes)
 #if ($attribute.sqlGenerationCreateProperty)
-#if ($attribute.prototype.name == "longText")
-		${migrationTableName}.newLargeStringColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
-#elseif ($attribute.prototype.name == "ipAddress")
+#if ($attribute.prototype.name == "ipAddress")
 		${migrationTableName}.newIpAddressColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.factoryMethodArgumentType.ID == "EOFactoryMethodArgumentIsDate")
 #if ($attribute.valueType == "D" || $attribute.valueType == "M")
@@ -18,10 +16,30 @@
 #else
 		${migrationTableName}.newTimestampColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
 #end
-#elseif ($attribute.javaClassName == "String" && $attribute.width)
-		${migrationTableName}.newStringColumn("${attribute.columnName}", ${attribute.width}, ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "String")
+#if ($attribute.width)
+#if ($attribute.userInfo.ERXLanguages)
+#set ($langs = $attribute.userInfo.ERXLanguages)
+#if ($langs.size() > 0)
+		${migrationTableName}.newLocalizedStringColumns("${attribute.columnName}", ${attribute.width}, ${attribute.sqlGenerationAllowsNull}, new NSArray<String>(new String[]{#foreach($lang in $langs)"$lang",#end}));
+#else
+		${migrationTableName}.newLocalizedStringColumns("${attribute.columnName}", ${attribute.width}, ${attribute.sqlGenerationAllowsNull});
+#end
+#else
+		${migrationTableName}.newStringColumn("${attribute.columnName}", ${attribute.width}, ${attribute.sqlGenerationAllowsNull});
+#end
+#else
+#if ($attribute.userInfo.ERXLanguages)
+#set ($langs = $attribute.userInfo.ERXLanguages)
+#if ($langs.size() > 0)
+		${migrationTableName}.newLocalizedClobColumns("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull}, new NSArray<String>(new String[]{#foreach($lang in $langs)"$lang",#end}));
+#else
+		${migrationTableName}.newLocalizedClobColumns("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
+#end
+#else
 		${migrationTableName}.newStringColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
+#end
+#end
 #elseif ($attribute.javaClassName == "BigDecimal" || $attribute.javaClassName == "java.math.BigDecimal")
 		${migrationTableName}.newBigDecimalColumn("${attribute.columnName}", ${attribute.precision}, ${attribute.scale}, ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "Integer" && $attribute.precision)
