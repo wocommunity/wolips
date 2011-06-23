@@ -1,11 +1,20 @@
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.foundation.NSArray;
 
+#if ($model.userInfo.ERXLanguages)
+import er.extensions.foundation.ERXProperties;
+#end
 import er.extensions.migration.ERXMigrationDatabase;
 import er.extensions.migration.ERXMigrationTable;
 import er.extensions.migration.ERXModelVersion;
 
 public class ${model.name}0 extends ERXMigrationDatabase.Migration {
+#if ($model.userInfo.ERXLanguages)
+	public ${model.name}0() {
+		super(ERXProperties.arrayForKey("${model.name}0.languages"));
+	}
+	
+#end
 	@Override
 	public NSArray<ERXModelVersion> modelDependencies() {
 		return null;
