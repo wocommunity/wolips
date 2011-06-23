@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.Map;
 
 import org.eclipse.core.internal.resources.ProjectDescription;
+import org.eclipse.core.resources.IBuildConfiguration;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
@@ -21,7 +22,8 @@ public class FilesystemProject extends FilesystemFolder implements IProject {
 		super(file);
 	}
 
-	public void build(int kind, String builderName, Map args, IProgressMonitor monitor) throws CoreException {
+
+	public void build(int kind, String builderName, Map<String, String> args, IProgressMonitor monitor) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -110,6 +112,30 @@ public class FilesystemProject extends FilesystemFolder implements IProject {
 	}
 
 	public void setDescription(IProjectDescription description, int updateFlags, IProgressMonitor monitor) throws CoreException {
+		throw new UnsupportedOperationException();
+	}
+
+	public void build(IBuildConfiguration config, int kind, IProgressMonitor monitor) throws CoreException {
+		throw new UnsupportedOperationException();
+	}
+
+	public IBuildConfiguration getActiveBuildConfig() throws CoreException {
+		throw new UnsupportedOperationException();
+	}
+
+	public IBuildConfiguration getBuildConfig(String configName) throws CoreException {
+		throw new UnsupportedOperationException();
+	}
+
+	public IBuildConfiguration[] getBuildConfigs() throws CoreException {
+		throw new UnsupportedOperationException();
+	}
+
+	public IBuildConfiguration[] getReferencedBuildConfigs(String configName, boolean includeMissing) throws CoreException {
+		throw new UnsupportedOperationException();
+	}
+
+	public boolean hasBuildConfig(String configName) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
 }
