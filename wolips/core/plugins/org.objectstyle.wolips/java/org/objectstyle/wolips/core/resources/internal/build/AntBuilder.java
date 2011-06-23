@@ -63,7 +63,7 @@ public class AntBuilder extends Builder {
 		super();
 	}
 
-	public String getContext() {
+	public String getContextName() {
 		return CONTEXT;
 	}
 

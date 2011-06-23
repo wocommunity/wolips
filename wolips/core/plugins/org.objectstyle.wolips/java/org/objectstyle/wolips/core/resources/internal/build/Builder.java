@@ -88,10 +88,10 @@ public abstract class Builder extends IncrementalProjectBuilder {
 
 	public Builder() {
 		super();
-		this.builderWrappers = CorePlugin.getDefault().getBuilderWrapper(this.getContext());
+		this.builderWrappers = CorePlugin.getDefault().getBuilderWrapper(this.getContextName());
 	}
 
-	public abstract String getContext();
+	public abstract String getContextName();
 
 	protected void clean(IProgressMonitor monitor) throws CoreException {
 		IProject project = this.getProject();
@@ -137,7 +137,7 @@ public abstract class Builder extends IncrementalProjectBuilder {
 		boolean fullBuild = this.notifyBuilderBuildStarted(kind, args, monitor, buildCache);
 		if (fullBuild && kind != IncrementalProjectBuilder.FULL_BUILD && kind != IncrementalProjectBuilder.CLEAN_BUILD) {
 			System.out.println("Builder.build: this should trigger a full build at some point");
-			project.build(IncrementalBuilder.FULL_BUILD, null);
+			project.build(IncrementalProjectBuilder.FULL_BUILD, null);
 			// hmmm
 		}
 		try {
