@@ -71,10 +71,11 @@ public class EODataType implements Comparable<EODataType> {
 	public static final EODataType DATE = new EODataType("NSCalendarDate", "com.webobjects.foundation.NSTimestamp", new String[] { "D" }, Messages.getString("EODataType.date"));
 	public static final EODataType TIME = new EODataType("NSCalendarDate", "com.webobjects.foundation.NSTimestamp", "t", Messages.getString("EODataType.time"));
 	public static final EODataType TIMESTAMP = new EODataType("NSCalendarDate", "com.webobjects.foundation.NSTimestamp", "T", Messages.getString("EODataType.timestamp"));
+	public static final EODataType TIMESTAMP_MILLIS = new EODataType("NSCalendarDate", "com.webobjects.foundation.NSTimestamp", "m", Messages.getString("EODataType.timestampMillis"));
 	public static final EODataType DATE_MSSQL = new EODataType("NSCalendarDate", "com.webobjects.foundation.NSTimestamp", "M", Messages.getString("EODataType.dateMSSQL"));
 	public static final EODataType DATA = new EODataType("NSData", "com.webobjects.foundation.NSData", (String) null, Messages.getString("EODataType.data"));
 	public static final EODataType CUSTOM = new EODataType(null, "Custom", (String) null, Messages.getString("EODataType.custom"));
-	public static final EODataType[] DATA_TYPES = new EODataType[] { EODataType.STRING/*, EODataType.STRING_SET*/, EODataType.STRING_CHAR, EODataType.STRING_UTF, EODataType.STRING_RTRIM, EODataType.BYTE, EODataType.SHORT, EODataType.INTEGER, EODataType.LONG, EODataType.FLOAT, EODataType.DOUBLE, EODataType.BIGDECIMAL, EODataType.DECIMAL_NUMBER, EODataType.BOOLEAN, EODataType.DATE_OBJ, EODataType.DATE, EODataType.TIME, EODataType.TIMESTAMP, EODataType.DATE_MSSQL, EODataType.DATA, EODataType.CUSTOM };
+	public static final EODataType[] DATA_TYPES = new EODataType[] { EODataType.STRING/*, EODataType.STRING_SET*/, EODataType.STRING_CHAR, EODataType.STRING_UTF, EODataType.STRING_RTRIM, EODataType.BYTE, EODataType.SHORT, EODataType.INTEGER, EODataType.LONG, EODataType.FLOAT, EODataType.DOUBLE, EODataType.BIGDECIMAL, EODataType.DECIMAL_NUMBER, EODataType.BOOLEAN, EODataType.DATE_OBJ, EODataType.DATE, EODataType.TIME, EODataType.TIMESTAMP, TIMESTAMP_MILLIS, EODataType.DATE_MSSQL, EODataType.DATA, EODataType.CUSTOM };
 
 	private String myValueClass;
 
