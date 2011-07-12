@@ -56,6 +56,7 @@ public class WodParserCache implements ITypeOwner {
   private boolean _validating;
 
   private Object _validationLock = new Object();
+  private Object _parserLock = new Object();
 
   static {
     WodParserCache._typeCache = new TypeCache();
@@ -277,20 +278,22 @@ public class WodParserCache implements ITypeOwner {
   }
 
   public void parse() throws Exception {
-    if (_htmlEntry.shouldParse()) {
-      // System.out.println("WodParserCache.parse: html");
-      _htmlEntry.parse();
-    }
+	  synchronized (_parserLock) {
+		  if (_htmlEntry.shouldParse()) {
+			  // System.out.println("WodParserCache.parse: html");
+			  _htmlEntry.parse();
+		  }
 
-    if (_wodEntry.shouldParse()) {
-      // System.out.println("WodParserCache.parse: wod");
-      _wodEntry.parse();
-    }
+		  if (_wodEntry.shouldParse()) {
+			  // System.out.println("WodParserCache.parse: wod");
+			  _wodEntry.parse();
+		  }
 
-    if (_wooEntry.shouldParse()) {
-      // System.out.println("WodParserCache.parse: woo");
-      _wooEntry.parse();
-    }
+		  if (_wooEntry.shouldParse()) {
+			  // System.out.println("WodParserCache.parse: woo");
+			  _wooEntry.parse();
+		  }
+	  }
   }
 
   public void scheduleValidate(final boolean force, final boolean threaded) {
