@@ -1,5 +1,6 @@
 package org.objectstyle.wolips.bindings.api;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -25,9 +26,9 @@ public class ApiCache {
   }
   
   public synchronized void clearCache() {
-    _elementNameToTypeCache = new LimitedLRUCache<String, String>(100);
-    _elementTypeToApiCache = new LimitedLRUCache<String, Wo>(100);
-    _elementTypeToApiMissingCache = new LimitedLRUCache<String, Boolean>(100);
+    _elementNameToTypeCache = Collections.synchronizedMap(new LimitedLRUCache<String, String>(100));
+    _elementTypeToApiCache = Collections.synchronizedMap(new LimitedLRUCache<String, Wo>(100));
+    _elementTypeToApiMissingCache = Collections.synchronizedMap(new LimitedLRUCache<String, Boolean>(100));
   }
 
   public synchronized void clearCacheForElementNamed(String elementName) {
