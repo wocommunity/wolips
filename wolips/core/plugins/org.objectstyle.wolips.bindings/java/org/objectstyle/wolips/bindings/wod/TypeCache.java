@@ -197,7 +197,7 @@ public class TypeCache {
           // hang around, but I think the answer is "a lot" and "for a long time".  However, it's a huge performance win.
 
           // Q: Don't cache results from types with generic type parameters
-          if (_type.getTypeParameters().length == 0 || bindingValueMutatorKeys.size() == 0) {
+          if (_type.getTypeParameters().length == 0 && bindingValueMutatorKeys.size() > 0) {
             _bindingValueMutatorKeys.put(name, bindingValueMutatorKeys);
           } else {
             //System.out.println("TypeCacheEntry.getBindingValueMutatorKeys: not caching " + _type.getElementName() + ": " + name);
@@ -351,13 +351,12 @@ public class TypeCache {
           //String resolvedNextTypeName = JavaModelUtil.getResolvedTypeName(typeName, _type);
         	type = resolveType(typeName, _type);
           if (type == null) {
-          	// We are going to hit KVCProtectedAccessor a LOT, and in most cases, it's just not going to exist, so let's save us all some trouble and skip it ...
-          	if (!"QKeyValueCodingProtectedAccessor;".equals(typeName)) {
-          		System.out.println("TypeCacheEntry.getTypeForName: Failed to resolve type name " + typeName + " in component " + _type.getElementName());
+        	if (BindingReflectionUtils.isPrimitive(typeName)) {
+        	  // ignore primitives if we get this far
+        	} // We are going to hit KVCProtectedAccessor a LOT, and in most cases, it's just not going to exist, so let's save us all some trouble and skip it ...
+        	else if (!"QKeyValueCodingProtectedAccessor;".equals(typeName)) {
+          		//System.out.println("TypeCacheEntry.getTypeForName: Failed to resolve type name " + typeName + " in component " + _type.getElementName());
           	}
-            else if (BindingReflectionUtils.isPrimitive(typeName)) {
-              // ignore primitives if we get this far
-            }
           }
           else {
             synchronized (_nextTypeCache) {
