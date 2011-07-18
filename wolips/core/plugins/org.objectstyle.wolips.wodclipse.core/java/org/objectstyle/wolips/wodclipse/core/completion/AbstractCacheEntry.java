@@ -52,18 +52,17 @@ public abstract class AbstractCacheEntry<T> {
   }
   
   public T getModel() throws Exception {
-    T model = _getModel();
-    if (model == null) {
-      WodParserCache cache = getCache();
-      synchronized (cache) {
-    	getCache().parse();
-    	getCache().validate(false, true);
+    synchronized (getCache()) {
+      T model = _getModel();
+      if (model == null) {
+        getCache().parse();
+        getCache().validate(false, true);
+        model = _getModel();
       }
-      model = _getModel();
+      return model;
     }
-    return model;
   }
-
+  
   public T _getModel() {
     return _model;
   }
