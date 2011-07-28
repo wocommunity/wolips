@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project veogen">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+      <property name="ECLIPSE_HOME" value="/Volumes/Development/Developer/Applications/eclipse.37"/>
+
+        <jar destfile="veogen.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="veogen.Veogen"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="bin"/>
+            <fileset dir="../core/plugins/org.objectstyle.wolips.eogenerator.core/bin"/>
+            <fileset dir="../core/plugins/org.objectstyle.wolips.eogenerator.core" includes="templates/*"/>
+            <fileset dir="../core/plugins/org.objectstyle.wolips.eomodeler.core/bin"/>
+            <fileset dir="../core/plugins/org.objectstyle.wolips.eomodeler.eclipse/bin"/>
+            <fileset dir="../core/plugins/org.objectstyle.wolips.baseforplugins/bin"/>
+            <fileset dir="../core/plugins/org.objectstyle.wolips.eomodeler.doc/bin"/>
+            <fileset dir="../core/plugins/org.objectstyle.wolips.eomodeler.factories/bin"/>
+            <fileset dir="../core/plugins/org.objectstyle.wolips.thirdparty.velocity/bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.core.resources_3.7.100.v20110510-0712.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime_3.7.0.v20110110.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.osgi_3.7.0.v20110613.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.common_3.6.0.v20110523.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.core.jobs_3.5.100.v20110404.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="../core/plugins/org.objectstyle.wolips.woproject/lib/woproject.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="../core/plugins/org.objectstyle.wolips.thirdparty.velocity/lib/velocity-1.5.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="../core/plugins/org.objectstyle.wolips.thirdparty.velocity/lib/velocity-tools-generic-1.4.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="../core/plugins/org.objectstyle.wolips.thirdparty.velocity/lib/commons-lang-2.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="../core/plugins/org.objectstyle.wolips.thirdparty.commonscollections/lib/commons-collections-3.1.jar"/>
+        </jar>
+    </target>
+</project>
