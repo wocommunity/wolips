@@ -49,11 +49,21 @@
  */
 package org.objectstyle.wolips.eogenerator.core.model;
 
+import java.io.File;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 public class PathUtils {
+	public static String getAbsolutePath(String path, File baseDir) {
+		File absoluteFile = new File(path);
+		if (!absoluteFile.isAbsolute() && baseDir != null) {
+			absoluteFile = new File(baseDir, path);
+		}
+		return absoluteFile.getAbsolutePath();
+	}
+	
 	public static String getRelativePath(IResource projectContext, IPath path) {
 		IPath projectPath;
 		if (projectContext == null) {

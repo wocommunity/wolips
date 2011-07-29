@@ -205,6 +205,8 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	private EOLastModified _lastModified;
 	
 	private EOLastModified _fspecLastModified;
+	
+	private String _cardinality;
 
 	public EOEntity() {
 		myAttributes = new HashSet<EOAttribute>();
@@ -221,6 +223,10 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	public EOEntity(String _name) {
 		this();
 		myName = _name;
+	}
+	
+	public EOModelMap _getEntityMap() {
+		return myEntityMap;
 	}
 	
 	public void setEntityDirty(boolean entityDirty) {
@@ -243,6 +249,15 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	
 	public boolean isFetchSpecsDirty() {
 		return _fetchSpecsDirty;
+	}
+	
+	public void setCardinality(String cardinality) {
+		_cardinality = cardinality;
+		setEntityDirty(true);
+	}
+	
+	public String getCardinality() {
+		return _cardinality;
 	}
 
 	public AbstractEOAttributePath resolveKeyPath(String _keyPath) {
@@ -2070,6 +2085,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		}
 		myExternalQuery = _entityMap.getString("externalQuery", true);
 		myMaxNumberOfInstancesToBatchFetch = _entityMap.getInteger("maxNumberOfInstancesToBatchFetch");
+		_cardinality = _entityMap.getString("cardinality", true);
 		loadUserInfo(_entityMap);
 
 		Set<Map> attributeList = _entityMap.getSet("attributes");
@@ -2167,6 +2183,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		entityMap.remove("mappingQualifier");
 		entityMap.setString("externalQuery", myExternalQuery, true);
 		entityMap.setInteger("maxNumberOfInstancesToBatchFetch", myMaxNumberOfInstancesToBatchFetch);
+		entityMap.setString("cardinality", _cardinality, true);
 
 		if (myFetchSpecs == null || myFetchSpecs.size() == 0) {
 			entityMap.put("fetchSpecificationDictionary", new HashMap());
