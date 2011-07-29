@@ -3,6 +3,7 @@ package veogen;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,64 +11,73 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.objectstyle.wolips.eogenerator.core.model.CommandLineTokenizer;
 import org.objectstyle.wolips.eogenerator.core.model.EOGeneratorModel;
 import org.objectstyle.wolips.eogenerator.core.model.EOModelReference;
+import org.objectstyle.wolips.eogenerator.core.model.PathUtils;
 import org.objectstyle.wolips.eogenerator.core.runner.VelocityEOGeneratorRunner;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
+import org.objectstyle.wolips.eomodeler.factories.BundleEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.factories.EclipseProjectEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.factories.IDEAProjectEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.factories.SimpleManifestEOModelGroupFactory;
 
 public class Veogen {
-	protected static String path(String workingDir, String path) {
+	protected static String path(File workingDir, String path) {
 		String finalPath;
 		if (workingDir == null || new File(path).isAbsolute()) {
 			finalPath = path;
 		}
 		else {
-			finalPath = new File(workingDir, path).getPath();
+			try {
+        finalPath = new File(workingDir, path).getCanonicalPath();
+      } catch (IOException e) {
+        finalPath = new File(workingDir, path).getPath();
+      }
 		}
 		return finalPath;
+	}
+	
+	protected static File workingDir(List<String> argsList) {
+	    File workingDir = null;
+        for (int argNum = 0; argNum < argsList.size(); argNum++) {
+            String arg = argsList.get(argNum);
+            if ("-workingDir".equals(arg)) {
+                workingDir = new File(argsList.get(++argNum));
+                break;
+            }
+        }
+        return workingDir;
 	}
 	
 	public static void main(String[] args2) throws Exception {
 		EOGeneratorModel eogeneratorModel = new EOGeneratorModel();
 		eogeneratorModel.setPackageDirs(Boolean.TRUE);
 		eogeneratorModel.setExtension("java");
-
+		
 		List<String> argsList = new LinkedList<String>();
 		for (String arg : args2) {
 			argsList.add(arg);
 		}
-		
+
+        File workingDir = workingDir(argsList);
 		if (argsList.size() >= 2 && "-config".equals(argsList.get(0))) {
-			File configFile = new File(argsList.get(1));
-			BufferedReader br = new BufferedReader(new FileReader(configFile));
+			BufferedReader br = new BufferedReader(new FileReader(PathUtils.getAbsolutePath(argsList.get(1), workingDir)));
 			try {
 				String configLine = br.readLine();
-				CommandLineTokenizer tokenizer = new CommandLineTokenizer(configLine);
-				while (tokenizer.hasMoreTokens()) {
-					argsList.add(tokenizer.nextToken());
-				}
+				eogeneratorModel.readFromString(configLine, workingDir);
 			}
 			finally {
 				br.close();
 			}
 		}
 
-		String workingDir = null;
-		for (int argNum = 0; argNum < argsList.size(); argNum++) {
-			String arg = argsList.get(argNum);
-			if ("-workingDir".equals(arg)) {
-				workingDir = argsList.get(++argNum);
-				break;
-			}
+		if (workingDir == null) {
+		    workingDir = workingDir(argsList);
 		}
 		
 		boolean loadModelGroup = false;
-		File modelGroupFolder = workingDir == null ? new File(".") : new File(workingDir);
+		File modelGroupFolder = workingDir == null ? new File(".") : workingDir;
 		List<String> modelPaths = new LinkedList<String>();
 		for (int argNum = 0; argNum < argsList.size(); argNum++) {
 			String arg = argsList.get(argNum);
@@ -87,6 +97,12 @@ public class Veogen {
 			else if ("-subclassTemplate".equalsIgnoreCase(arg)) {
 				eogeneratorModel.setSubclassJavaTemplate(argsList.get(++argNum));
 			}
+            else if ("-javaTemplate".equalsIgnoreCase(arg)) {
+                eogeneratorModel.setJavaTemplate(argsList.get(++argNum));
+            }
+            else if ("-subclassJavaTemplate".equalsIgnoreCase(arg)) {
+                eogeneratorModel.setSubclassJavaTemplate(argsList.get(++argNum));
+            }
 			else if ("-extension".equalsIgnoreCase(arg)) {
 				eogeneratorModel.setExtension(argsList.get(++argNum));
 			}
@@ -186,6 +202,7 @@ public class Veogen {
 		EOModelGroup modelGroup = new EOModelGroup();
 		Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 		if (loadModelGroup || modelPaths.size() == 0) {
+            new BundleEOModelGroupFactory().loadModelGroup(modelGroupFolder, modelGroup, failures, loadModelGroup, new NullProgressMonitor());
 			new SimpleManifestEOModelGroupFactory().loadModelGroup(modelGroupFolder, modelGroup, failures, true, new NullProgressMonitor());
 			new IDEAProjectEOModelGroupFactory().loadModelGroup(modelGroupFolder, modelGroup, failures, true, new NullProgressMonitor());
 			new EclipseProjectEOModelGroupFactory().loadModelGroup(modelGroupFolder, modelGroup, failures, true, new NullProgressMonitor());
@@ -196,9 +213,17 @@ public class Veogen {
 
 		modelGroup.resolve(failures);
 		modelGroup.verify(failures);
-
-		VelocityEOGeneratorRunner eogenRunner = new VelocityEOGeneratorRunner(false);
-		StringBuffer results = new StringBuffer();
-		eogenRunner.generate(eogeneratorModel, results, modelGroup, VeogenResourceLoader.class, new NullProgressMonitor());
+		boolean hasFailures = false;
+		for (EOModelVerificationFailure failure : failures) {
+		    if (!failure.isWarning()) {
+		        System.out.println("Failure: " + failure.getMessage());
+		        hasFailures = true;
+		    }
+		}
+		if (!hasFailures) {
+    		VelocityEOGeneratorRunner eogenRunner = new VelocityEOGeneratorRunner(false);
+    		StringBuffer results = new StringBuffer();
+    		eogenRunner.generate(eogeneratorModel, results, modelGroup, VeogenResourceLoader.class, new NullProgressMonitor());
+		}
 	}
 }

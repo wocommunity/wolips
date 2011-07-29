@@ -148,7 +148,7 @@ public class BundleEOModelGroupFactory extends AbstractManifestEOModelGroupFacto
 				while ((frameworkPath = frameworkPathsManifestReader.readLine()) != null) {
 					File frameworkFolder = new File(frameworkPath);
 					if (!frameworkFolder.isAbsolute()) {
-						frameworkFolder = new File(frameworkPathsManifestFile.getParentFile(), frameworkPath);
+						frameworkFolder = new File(frameworkPathsManifestFile.getCanonicalFile().getParentFile(), frameworkPath);
 					}
 					if (frameworkFolder.exists()) {
 						frameworkSearchFolders.add(frameworkFolder);
