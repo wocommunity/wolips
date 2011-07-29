@@ -3,6 +3,7 @@ package org.objectstyle.wolips.mechanic;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -14,7 +15,8 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 import com.google.eclipse.mechanic.DirectoryIteratingTaskScanner;
-import com.google.eclipse.mechanic.SuffixFileFilter;
+import com.google.eclipse.mechanic.IResourceTaskProvider;
+import com.google.eclipse.mechanic.IResourceTaskReference;
 import com.google.eclipse.mechanic.TaskCollector;
 
 public class ImportProjectTaskScanner extends DirectoryIteratingTaskScanner {
@@ -24,13 +26,12 @@ public class ImportProjectTaskScanner extends DirectoryIteratingTaskScanner {
   }
 
   @Override
-  protected void scan(File dir, TaskCollector collector) {
-    File[] projectFiles = dir.listFiles(new SuffixFileFilter(".proj"));
-    if (projectFiles == null) {
-      return;
-    }
+  public void scan(IResourceTaskProvider source, TaskCollector collector) {
     Pattern variablePattern = Pattern.compile("^#\\s*@(\\S+)\\s+(.*)");
-    for (File projectFile : projectFiles) {
+    
+    for (Iterator<IResourceTaskReference> iterator = source.getTaskReferences(".proj").iterator(); iterator.hasNext();) {
+      IResourceTaskReference ref = iterator.next();
+   	  File projectFile = ref.asFile();
       try {
         BufferedReader br = new BufferedReader(new FileReader(projectFile));
         try {
