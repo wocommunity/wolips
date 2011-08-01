@@ -51,7 +51,7 @@
 #elseif ($attribute.javaClassName == "Long")
 		${migrationTableName}.newBigIntegerColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "Double")
-		${migrationTableName}.newDoubleColumn("${attribute.columnName}", ${attribute.precision}, ${attribute.scale}, ${attribute.sqlGenerationAllowsNull});
+		${migrationTableName}.newDoubleColumn("${attribute.columnName}", 0, 0, ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "Float")
 		${migrationTableName}.newFloatColumn("${attribute.columnName}", ${attribute.precision}, ${attribute.scale}, ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.javaClassName == "Boolean" && $attribute.width == 5)
@@ -78,7 +78,7 @@
 #end
 #end
 
-#foreach ($entityIndex in $entity.entityIndexes)
+#foreach ($entityIndex in $entity.sortedEntityIndexes)
 #if ($entityIndex.constraint.externalName == "distinct")
 		${migrationTableName}.addUniqueIndex("${entityIndex.name}"#foreach($attribute in $entityIndex.attributes), ${migrationTableName}.existingColumnNamed("${attribute.columnName}")#end);
 #elseif ($entityIndex.constraint.externalName == "none")
