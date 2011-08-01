@@ -343,6 +343,10 @@ public class EOGeneratorModel {
 	}
 
 	public void readFromString(String str) throws ParseException {
+		readFromString(str, null);
+	}
+	
+	public void readFromString(String str, File workingDir) throws ParseException {
 		_models.clear();
 		_refModels.clear();
 		_defines.clear();
@@ -354,7 +358,7 @@ public class EOGeneratorModel {
 				_eogeneratorPath = token;
 			} else if (token.startsWith("-")) {
 				if ("-destination".equalsIgnoreCase(token)) {
-					_destination = nextTokenValue(token, tokenizer);
+					_destination = PathUtils.getAbsolutePath(nextTokenValue(token, tokenizer), workingDir);
 				} else if ("-extension".equalsIgnoreCase(token)) {
 					_extension = nextTokenValue(token, tokenizer);
 				} else if ("-filenameTemplate".equalsIgnoreCase(token)) {
@@ -368,21 +372,21 @@ public class EOGeneratorModel {
 				} else if ("-javaTemplate".equalsIgnoreCase(token)) {
 					_javaTemplate = nextTokenValue(token, tokenizer);
 				} else if ("-model".equalsIgnoreCase(token)) {
-					String modelPath = nextTokenValue(token, tokenizer);
+					String modelPath = PathUtils.getAbsolutePath(nextTokenValue(token, tokenizer), workingDir);
 					_models.add(new EOModelReference(new Path(modelPath)));
 				} else if ("-packagedirs".equalsIgnoreCase(token)) {
 					_packageDirs = Boolean.TRUE;
 				} else if ("-prefix".equalsIgnoreCase(token)) {
 					_prefix = nextTokenValue(token, tokenizer);
 				} else if ("-refmodel".equalsIgnoreCase(token)) {
-					String refModelPath = nextTokenValue(token, tokenizer);
+					String refModelPath = PathUtils.getAbsolutePath(nextTokenValue(token, tokenizer), workingDir);
 					_refModels.add(new EOModelReference(new Path(refModelPath)));
 				} else if ("-subclassDestination".equalsIgnoreCase(token)) {
-					_subclassDestination = nextTokenValue(token, tokenizer);
+					_subclassDestination = PathUtils.getAbsolutePath(nextTokenValue(token, tokenizer), workingDir);
 				} else if ("-subclassJavaTemplate".equalsIgnoreCase(token)) {
 					_subclassJavaTemplate = nextTokenValue(token, tokenizer);
 				} else if ("-templatedir".equalsIgnoreCase(token)) {
-					_templateDir = nextTokenValue(token, tokenizer);
+					_templateDir = PathUtils.getAbsolutePath(nextTokenValue(token, tokenizer), workingDir);
 				} else if ("-verbose".equalsIgnoreCase(token)) {
 					_verbose = Boolean.TRUE;
 				} else if ("-loadModelGroup".equalsIgnoreCase(token)) {

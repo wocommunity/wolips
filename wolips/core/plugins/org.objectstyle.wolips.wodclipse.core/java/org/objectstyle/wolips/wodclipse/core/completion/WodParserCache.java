@@ -203,7 +203,7 @@ public class WodParserCache implements ITypeOwner {
   }
 
   public void clearLocateResultsCache() throws CoreException, LocateException {
-    if (_woFolder != null && _woFolder.exists()) {
+    if (_woFolder != null && _woFolder.exists() && LocatePlugin.getDefault() != null) {
       _componentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(_woFolder);
       _project = _woFolder.getProject();
       _javaProject = JavaCore.create(_project);
@@ -276,21 +276,21 @@ public class WodParserCache implements ITypeOwner {
     return ApiUtils.findApiModelWo(type, getApiCache());
   }
 
-  public void parse() throws Exception {
-    if (_htmlEntry.shouldParse()) {
-      // System.out.println("WodParserCache.parse: html");
-      _htmlEntry.parse();
-    }
+  public synchronized void parse() throws Exception {
+	  if (_htmlEntry.shouldParse()) {
+		  // System.out.println("WodParserCache.parse: html");
+		  _htmlEntry.parse();
+	  }
 
-    if (_wodEntry.shouldParse()) {
-      // System.out.println("WodParserCache.parse: wod");
-      _wodEntry.parse();
-    }
+	  if (_wodEntry.shouldParse()) {
+		  // System.out.println("WodParserCache.parse: wod");
+		  _wodEntry.parse();
+	  }
 
-    if (_wooEntry.shouldParse()) {
-      // System.out.println("WodParserCache.parse: woo");
-      _wooEntry.parse();
-    }
+	  if (_wooEntry.shouldParse()) {
+		  // System.out.println("WodParserCache.parse: woo");
+		  _wooEntry.parse();
+	  }
   }
 
   public void scheduleValidate(final boolean force, final boolean threaded) {
