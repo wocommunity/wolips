@@ -343,7 +343,7 @@ public class EOGeneratorModel {
 	}
 
 	public void readFromString(String str) throws ParseException {
-		readFromString(str, null);
+		readFromString(str, _projectPath.toFile());
 	}
 	
 	public void readFromString(String str, File workingDir) throws ParseException {
