@@ -319,7 +319,7 @@ public class WOVariables {
 	 * @return String
 	 */
 	public String externalBuildRoot() {
-		return _wolipsProperties.getProperty(WOVariables.EXTERNAL_BUILD_ROOT);
+		return resolvedPath(_wolipsProperties.getProperty(WOVariables.EXTERNAL_BUILD_ROOT));
 	}
 
 	public String externalBuildFrameworkPath() {
@@ -330,11 +330,11 @@ public class WOVariables {
 				externalBuildFrameworkPath = new File(new File(externalBuildRoot, "Library"), "Frameworks").toString();
 			}
 		}
-		return externalBuildFrameworkPath;
+		return resolvedPath(externalBuildFrameworkPath);
 	}
 
 	public String localRoot() {
-		return _wolipsProperties.getProperty(WOVariables.LOCAL_ROOT);
+		return resolvedPath(_wolipsProperties.getProperty(WOVariables.LOCAL_ROOT));
 	}
 
 	public String localFrameworkPath() {
@@ -345,11 +345,11 @@ public class WOVariables {
 				localFrameworkPath = new File(new File(localRoot, "Library"), "Frameworks").toString();
 			}
 		}
-		return localFrameworkPath;
+		return resolvedPath(localFrameworkPath);
 	}
 
 	public String systemRoot() {
-		return _wolipsProperties.getProperty(WOVariables.SYSTEM_ROOT);
+		return resolvedPath(_wolipsProperties.getProperty(WOVariables.SYSTEM_ROOT));
 	}
 
 	public String systemFrameworkPath() {
@@ -360,11 +360,11 @@ public class WOVariables {
 				systemFrameworkPath = new File(new File(systemRoot, "Library"), "Frameworks").toString();
 			}
 		}
-		return systemFrameworkPath;
+		return resolvedPath(systemFrameworkPath);
 	}
 
 	public String networkRoot() {
-		return _wolipsProperties.getProperty(WOVariables.NETWORK_ROOT);
+		return resolvedPath(_wolipsProperties.getProperty(WOVariables.NETWORK_ROOT));
 	}
 
 	public String networkFrameworkPath() {
@@ -375,15 +375,15 @@ public class WOVariables {
 				networkFrameworkPath = new File(new File(networkRoot, "Library"), "Frameworks").toString();
 			}
 		}
-		return networkFrameworkPath;
+		return resolvedPath(networkFrameworkPath);
 	}
 
 	public String appsRoot() {
-		return _wolipsProperties.getProperty(WOVariables.APPS_ROOT);
+		return resolvedPath(_wolipsProperties.getProperty(WOVariables.APPS_ROOT));
 	}
 
 	public String boostrapJar() {
-		return _wolipsProperties.getProperty(WOVariables.BOOTSTRAP_JAR_KEY);
+		return resolvedPath(_wolipsProperties.getProperty(WOVariables.BOOTSTRAP_JAR_KEY));
 	}
 
 	/**
@@ -393,7 +393,7 @@ public class WOVariables {
 	 * @return String
 	 */
 	public String referenceApi() {
-		return _wolipsProperties.getProperty(WOVariables.API_ROOT_KEY);
+		return resolvedPath(_wolipsProperties.getProperty(WOVariables.API_ROOT_KEY));
 	}
 
 	/**
@@ -418,7 +418,7 @@ public class WOVariables {
 	 * @return String
 	 */
 	public String userRoot() {
-		return _wolipsProperties.getProperty(WOVariables.USER_ROOT);
+		return resolvedPath(_wolipsProperties.getProperty(WOVariables.USER_ROOT));
 	}
 
 	/**
@@ -427,7 +427,7 @@ public class WOVariables {
 	 * @return String
 	 */
 	public String userFrameworkPath() {
-		return _wolipsProperties.getProperty(WOVariables.USER_FRAMEWORKS);
+		return resolvedPath(_wolipsProperties.getProperty(WOVariables.USER_FRAMEWORKS));
 	}
 
 	/**
@@ -536,7 +536,18 @@ public class WOVariables {
 		return FileStringScanner.replace(path, "\\", "/");
 	}
 
-	public String getProperty(String aKey) {
+	private String resolvedPath(String path) {
+		if (path == null || path.length() == 0) {
+			return null;
+		}
+    	File filepath = new File(path);
+    	if (!filepath.isAbsolute()) {
+      		filepath = new File(_wolipsPropertiesFile.getParentFile(), path);
+    	}
+    return filepath.toString();
+  }
+
+  public String getProperty(String aKey) {
 		String value = (_wolipsProperties != null ? _wolipsProperties.getProperty(aKey) : null);
 		if (value == null) {
 			value = getDefault(aKey);
