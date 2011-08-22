@@ -1056,9 +1056,10 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 			if (name.indexOf(' ') != -1 && !name.startsWith("[") && !name.endsWith("]")) {
 				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + "'s name has a space in it.", false));
 			}
-			if (!getEntity().isPrototype() && !StringUtils.isLowercaseFirstLetter(name)) {
-				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + "'s name is capitalized, but should not be.", true));
-			}
+			// Q: Disabling this check for now because it can cause pain for some names. 
+			//if (!getEntity().isPrototype() && !StringUtils.isLowercaseFirstLetter(name)) {
+			//	_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + "'s name is capitalized, but should not be.", true));
+			//}
 			if (name.equals("entityName")) {
 				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + " is named 'entityName', which is a method in EOEnterpriseObject.", true));
 			}
