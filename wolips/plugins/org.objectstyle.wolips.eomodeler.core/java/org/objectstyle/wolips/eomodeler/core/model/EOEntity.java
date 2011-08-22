@@ -56,6 +56,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -209,10 +210,10 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	private String _cardinality;
 
 	public EOEntity() {
-		myAttributes = new HashSet<EOAttribute>();
-		myRelationships = new HashSet<EORelationship>();
-		myFetchSpecs = new HashSet<EOFetchSpecification>();
-		myEntityIndexes = new HashSet<EOEntityIndex>();
+		myAttributes = new LinkedHashSet<EOAttribute>();
+		myRelationships = new LinkedHashSet<EORelationship>();
+		myFetchSpecs = new LinkedHashSet<EOFetchSpecification>();
+		myEntityIndexes = new LinkedHashSet<EOEntityIndex>();
 		myEntityMap = new EOModelMap();
 		myFetchSpecsMap = new EOModelMap();
 		myGenerateSource = true;
@@ -1201,7 +1202,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 	
 	public Set<EORelationship> getReferencingRelationships() {
-		Set<EORelationship> referencingRelationships = new HashSet<EORelationship>();
+		Set<EORelationship> referencingRelationships = new LinkedHashSet<EORelationship>();
 		for (EOModel model : getModel().getModelGroup().getModels()) {
 			for (EOEntity entity : model.getEntities()) {
 				if (!entity.equals(this)) {
@@ -1368,7 +1369,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	public Set<String> getRestrictingQualifierKeys() {
 		Set<String> restrictingQualifierKeys;
 		if (myRestrictingQualifier == null) {
-			restrictingQualifierKeys = new HashSet<String>();
+			restrictingQualifierKeys = new LinkedHashSet<String>();
 		} else {
 			restrictingQualifierKeys = EOQualifierFactory.getQualifierKeysFromQualifierString(myRestrictingQualifier);
 		}
@@ -1382,7 +1383,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EOAttribute> getPrimaryKeyAttributes() {
-		Set<EOAttribute> primaryKeyAttributes = new HashSet<EOAttribute>();
+		Set<EOAttribute> primaryKeyAttributes = new LinkedHashSet<EOAttribute>();
 		for (EOAttribute attribute : myAttributes) {
 			Boolean primaryKey = attribute.isPrimaryKey();
 			if (BooleanUtils.isTrue(primaryKey)) {
@@ -1398,7 +1399,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EOAttribute> getClientClassAttributes() {
-		Set<EOAttribute> clientClassAttributes = new HashSet<EOAttribute>();
+		Set<EOAttribute> clientClassAttributes = new LinkedHashSet<EOAttribute>();
 		for (EOAttribute attribute : getAttributes()) {
 			if (attribute.isClientClassProperty() != null && attribute.isClientClassProperty().booleanValue()) {
 				clientClassAttributes.add(attribute);
@@ -1412,7 +1413,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EOAttribute> getCommonClassAttributes() {
-		Set<EOAttribute> commonClassAttributes = new HashSet<EOAttribute>();
+		Set<EOAttribute> commonClassAttributes = new LinkedHashSet<EOAttribute>();
 		for (EOAttribute attribute : getAttributes()) {
 			if (attribute.isCommonClassProperty() != null && attribute.isCommonClassProperty().booleanValue()) {
 				commonClassAttributes.add(attribute);
@@ -1426,7 +1427,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EOAttribute> getClassAttributes() {
-		Set<EOAttribute> classAttributes = new HashSet<EOAttribute>();
+		Set<EOAttribute> classAttributes = new LinkedHashSet<EOAttribute>();
 		for (EOAttribute attribute : getAttributes()) {
 			if (attribute.isClassProperty() != null && attribute.isClassProperty().booleanValue()) {
 				classAttributes.add(attribute);
@@ -1440,7 +1441,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EOAttribute> getNonClassAttributes() {
-		Set<EOAttribute> nonClassAttributes = new HashSet<EOAttribute>();
+		Set<EOAttribute> nonClassAttributes = new LinkedHashSet<EOAttribute>();
 		for (EOAttribute attribute : getAttributes()) {
 			if (attribute.isClassProperty() == null || !attribute.isClassProperty().booleanValue()) {
 				nonClassAttributes.add(attribute);
@@ -1450,7 +1451,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EOAttribute> getInheritedAttributes() {
-		Set<EOAttribute> inheritedAttributes = new HashSet<EOAttribute>();
+		Set<EOAttribute> inheritedAttributes = new LinkedHashSet<EOAttribute>();
 		for (EOAttribute attribute : getAttributes()) {
 			if (attribute.isInherited()) {
 				inheritedAttributes.add(attribute);
@@ -1480,7 +1481,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EORelationship> getClientClassRelationships() {
-		Set<EORelationship> clientClassRelationships = new HashSet<EORelationship>();
+		Set<EORelationship> clientClassRelationships = new LinkedHashSet<EORelationship>();
 		for (EORelationship relationship : getRelationships()) {
 			if (relationship.isClientClassProperty() != null && relationship.isClientClassProperty().booleanValue()) {
 				clientClassRelationships.add(relationship);
@@ -1494,7 +1495,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EORelationship> getCommonClassRelationships() {
-		Set<EORelationship> commonClassRelationships = new HashSet<EORelationship>();
+		Set<EORelationship> commonClassRelationships = new LinkedHashSet<EORelationship>();
 		for (EORelationship relationship : getRelationships()) {
 			if (relationship.isCommonClassProperty() != null && relationship.isCommonClassProperty().booleanValue()) {
 				commonClassRelationships.add(relationship);
@@ -1508,7 +1509,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EORelationship> getClassRelationships() {
-		Set<EORelationship> classRelationships = new HashSet<EORelationship>();
+		Set<EORelationship> classRelationships = new LinkedHashSet<EORelationship>();
 		for (EORelationship relationship : getRelationships()) {
 			if (relationship.isClassProperty() != null && relationship.isClassProperty().booleanValue()) {
 				classRelationships.add(relationship);
@@ -1522,7 +1523,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EORelationship> getNonClassRelationships() {
-		Set<EORelationship> nonClassRelationships = new HashSet<EORelationship>();
+		Set<EORelationship> nonClassRelationships = new LinkedHashSet<EORelationship>();
 		for (EORelationship relationship : getRelationships()) {
 			if (relationship.isClassProperty() == null || !relationship.isClassProperty().booleanValue()) {
 				nonClassRelationships.add(relationship);
@@ -1532,7 +1533,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EORelationship> getInheritedRelationships() {
-		Set<EORelationship> inheritedRelationships = new HashSet<EORelationship>();
+		Set<EORelationship> inheritedRelationships = new LinkedHashSet<EORelationship>();
 		for (EORelationship relationship : getRelationships()) {
 			if (relationship.isInherited()) {
 				inheritedRelationships.add(relationship);
@@ -1542,7 +1543,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EORelationship> getToOneRelationships() {
-		Set<EORelationship> toOneRelationships = new HashSet<EORelationship>();
+		Set<EORelationship> toOneRelationships = new LinkedHashSet<EORelationship>();
 		for (EORelationship relationship : getRelationships()) {
 			if (relationship.isToOne() != null && relationship.isToOne().booleanValue()) {
 				toOneRelationships.add(relationship);
@@ -1556,7 +1557,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EORelationship> getClassToOneRelationships() {
-		Set<EORelationship> toOneRelationships = new HashSet<EORelationship>();
+		Set<EORelationship> toOneRelationships = new LinkedHashSet<EORelationship>();
 		for (EORelationship relationship : getRelationships()) {
 			if (relationship.isToOne() != null && relationship.isToOne().booleanValue() && relationship.isClassProperty() != null && relationship.isClassProperty()) {
 				toOneRelationships.add(relationship);
@@ -1574,7 +1575,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EORelationship> getClientClassToOneRelationships() {
-		Set<EORelationship> toOneRelationships = new HashSet<EORelationship>();
+		Set<EORelationship> toOneRelationships = new LinkedHashSet<EORelationship>();
 		for (EORelationship relationship : getRelationships()) {
 			if (relationship.isToOne() != null && relationship.isToOne().booleanValue() && relationship.isClientClassProperty() != null && relationship.isClientClassProperty()) {
 				toOneRelationships.add(relationship);
@@ -1588,7 +1589,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EORelationship> getCommonClassToOneRelationships() {
-		Set<EORelationship> toOneRelationships = new HashSet<EORelationship>();
+		Set<EORelationship> toOneRelationships = new LinkedHashSet<EORelationship>();
 		for (EORelationship relationship : getRelationships()) {
 			if (relationship.isToOne() != null && relationship.isToOne().booleanValue() && relationship.isCommonClassProperty() != null && relationship.isCommonClassProperty()) {
 				toOneRelationships.add(relationship);
@@ -1598,7 +1599,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EORelationship> getToManyRelationships() {
-		Set<EORelationship> toManyRelationships = new HashSet<EORelationship>();
+		Set<EORelationship> toManyRelationships = new LinkedHashSet<EORelationship>();
 		for (EORelationship relationship : getRelationships()) {
 			if (relationship.isToMany() != null && relationship.isToMany().booleanValue()) {
 				toManyRelationships.add(relationship);
@@ -1612,7 +1613,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EORelationship> getClassToManyRelationships() {
-		Set<EORelationship> toManyRelationships = new HashSet<EORelationship>();
+		Set<EORelationship> toManyRelationships = new LinkedHashSet<EORelationship>();
 		for (EORelationship relationship : getRelationships()) {
 			if (relationship.isToMany() != null && relationship.isToMany().booleanValue() && relationship.isClassProperty() != null && relationship.isClassProperty()) {
 				toManyRelationships.add(relationship);
@@ -1626,7 +1627,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EORelationship> getClientClassToManyRelationships() {
-		Set<EORelationship> toManyRelationships = new HashSet<EORelationship>();
+		Set<EORelationship> toManyRelationships = new LinkedHashSet<EORelationship>();
 		for (EORelationship relationship : getRelationships()) {
 			if (relationship.isToMany() != null && relationship.isToMany().booleanValue() && relationship.isClientClassProperty() != null && relationship.isClientClassProperty()) {
 				toManyRelationships.add(relationship);
@@ -1640,7 +1641,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	}
 
 	public Set<EORelationship> getCommonClassToManyRelationships() {
-		Set<EORelationship> toManyRelationships = new HashSet<EORelationship>();
+		Set<EORelationship> toManyRelationships = new LinkedHashSet<EORelationship>();
 		for (EORelationship relationship : getRelationships()) {
 			if (relationship.isToMany() != null && relationship.isToMany().booleanValue() && relationship.isCommonClassProperty() != null && relationship.isCommonClassProperty()) {
 				toManyRelationships.add(relationship);
@@ -1713,7 +1714,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		Set<EOAttribute> oldAttributes = null;
 		if (_fireEvents) {
 			oldAttributes = myAttributes;
-			Set<EOAttribute> newAttributes = new HashSet<EOAttribute>();
+			Set<EOAttribute> newAttributes = new LinkedHashSet<EOAttribute>();
 			newAttributes.addAll(myAttributes);
 			newAttributes.add(_attribute);
 			myAttributes = newAttributes;
@@ -1729,7 +1730,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	public void removeAttribute(EOAttribute _attribute, boolean _removeFromSubclasses) {
 		String attributeName = _attribute.getName();
 		Set<EOAttribute> oldAttributes = myAttributes;
-		Set<EOAttribute> newAttributes = new HashSet<EOAttribute>();
+		Set<EOAttribute> newAttributes = new LinkedHashSet<EOAttribute>();
 		newAttributes.addAll(myAttributes);
 		newAttributes.remove(_attribute);
 		myAttributes = newAttributes;
@@ -1827,7 +1828,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		Set<EORelationship> oldRelationships = null;
 		if (fireEvents) {
 			oldRelationships = myRelationships;
-			Set<EORelationship> newRelationships = new HashSet<EORelationship>();
+			Set<EORelationship> newRelationships = new LinkedHashSet<EORelationship>();
 			newRelationships.addAll(myRelationships);
 			newRelationships.add(relationship);
 			myRelationships = newRelationships;
@@ -1840,7 +1841,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	public void removeRelationship(EORelationship _relationship, boolean _removeFromSubclasses) {
 		String relationshipName = _relationship.getName();
 		Set<EORelationship> oldRelationships = myRelationships;
-		Set<EORelationship> newRelationships = new HashSet<EORelationship>();
+		Set<EORelationship> newRelationships = new LinkedHashSet<EORelationship>();
 		newRelationships.addAll(myRelationships);
 		newRelationships.remove(_relationship);
 		myRelationships = newRelationships;
@@ -1907,7 +1908,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		Set<EOFetchSpecification> oldFetchSpecs = null;
 		if (_fireEvents) {
 			oldFetchSpecs = myFetchSpecs;
-			Set<EOFetchSpecification> newFetchSpecs = new HashSet<EOFetchSpecification>();
+			Set<EOFetchSpecification> newFetchSpecs = new LinkedHashSet<EOFetchSpecification>();
 			newFetchSpecs.addAll(myFetchSpecs);
 			newFetchSpecs.add(_fetchSpecification);
 			myFetchSpecs = newFetchSpecs;
@@ -1919,7 +1920,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public void removeFetchSpecification(EOFetchSpecification _fetchSpecification) {
 		Set<EOFetchSpecification> oldFetchSpecs = myFetchSpecs;
-		Set<EOFetchSpecification> newFetchSpecs = new HashSet<EOFetchSpecification>();
+		Set<EOFetchSpecification> newFetchSpecs = new LinkedHashSet<EOFetchSpecification>();
 		newFetchSpecs.addAll(myFetchSpecs);
 		newFetchSpecs.remove(_fetchSpecification);
 		myFetchSpecs = newFetchSpecs;
@@ -1988,7 +1989,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		Set<EOEntityIndex> oldEntityIndexes = null;
 		if (_fireEvents) {
 			oldEntityIndexes = myEntityIndexes;
-			Set<EOEntityIndex> newEntityIndexes = new HashSet<EOEntityIndex>();
+			Set<EOEntityIndex> newEntityIndexes = new LinkedHashSet<EOEntityIndex>();
 			newEntityIndexes.addAll(myEntityIndexes);
 			newEntityIndexes.add(_entityIndex);
 			myEntityIndexes = newEntityIndexes;
@@ -2000,7 +2001,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 
 	public void removeEntityIndex(EOEntityIndex _entityIndex) {
 		Set<EOEntityIndex> oldEntityIndexes = myEntityIndexes;
-		Set<EOEntityIndex> newEntityIndexes = new HashSet<EOEntityIndex>();
+		Set<EOEntityIndex> newEntityIndexes = new LinkedHashSet<EOEntityIndex>();
 		newEntityIndexes.addAll(myEntityIndexes);
 		newEntityIndexes.remove(_entityIndex);
 		myEntityIndexes = newEntityIndexes;
