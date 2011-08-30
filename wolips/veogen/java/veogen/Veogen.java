@@ -38,12 +38,12 @@ public class Veogen {
 		return finalPath;
 	}
 	
-	protected static File workingDir(List<String> argsList) {
+	protected static File workingDir(List<String> argsList) throws IOException {
 	    File workingDir = null;
         for (int argNum = 0; argNum < argsList.size(); argNum++) {
             String arg = argsList.get(argNum);
             if ("-workingDir".equals(arg)) {
-                workingDir = new File(argsList.get(++argNum));
+                workingDir = new File(argsList.get(++argNum)).getCanonicalFile();
                 break;
             }
         }
@@ -60,7 +60,7 @@ public class Veogen {
 			argsList.add(arg);
 		}
 
-        File workingDir = workingDir(argsList);
+		File workingDir = workingDir(argsList);
 		if (argsList.size() >= 2 && "-config".equals(argsList.get(0))) {
 			BufferedReader br = new BufferedReader(new FileReader(PathUtils.getAbsolutePath(argsList.get(1), workingDir)));
 			try {
