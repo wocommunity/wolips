@@ -1,10 +1,12 @@
 package org.objectstyle.wolips.core.resources.types;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -41,7 +43,7 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 
 	private ITypeHierarchy hierarchy;
 	private IType[] types;
-	private HashSet resourcePaths;
+	private Set resourcePaths;
 	private IPath[] enclosingProjectsAndJars;
 
 	protected IResource[] elements;
@@ -356,7 +358,7 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 	 * @throws JavaModelException
 	 */
 	protected void initialize() throws JavaModelException {
-		this.resourcePaths = new HashSet<String>();
+		this.resourcePaths = Collections.synchronizedSet(new HashSet<String>());
 		this.elements = new IResource[5];
 		this.elementCount = 0;
 		this.needsRefresh = false;
