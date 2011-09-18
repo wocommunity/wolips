@@ -11,6 +11,7 @@ public class Application extends ERXApplication {
 	public Application() {
 		ERXApplication.log.info("Welcome to " + name() + " !");
 		setDefaultRequestHandler(requestHandlerForKey(directActionRequestHandlerKey()));
+		setAllowsConcurrentRequestHandling(true);		
 	}
 	
     @Override
