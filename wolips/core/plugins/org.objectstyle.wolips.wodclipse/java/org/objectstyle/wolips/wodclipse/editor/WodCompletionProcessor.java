@@ -337,14 +337,23 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 			offset--;
 		}
 		int foundIndex = -1;
-		boolean inquote = false;
+		boolean inQuote = false;
+		char quoteChar = 0;
 		for (int i = offset; foundIndex == -1 && i >= 0; i--) {
 			char ch = _document.getChar(i);
 			if (ch == '\'' || ch == '"') {
-				inquote = !inquote;
+				boolean escaped = i > 0 && _document.getChar(i-1) == '\\';
+				if (inQuote && quoteChar == ch && !escaped) {
+					inQuote = false;
+					quoteChar = 0;
+				}
+				else if (!inQuote){
+					inQuote = true;
+					quoteChar = ch;
+				}
 			}
 			for (int lookForCharNum = 0; foundIndex == -1 && lookForCharNum < _lookForChars.length; lookForCharNum++) {
-				if (ch == _lookForChars[lookForCharNum] && !(inquote && excludeQuoted)) {
+				if (ch == _lookForChars[lookForCharNum] && !(inQuote && excludeQuoted)) {
 					foundIndex = i;
 				}
 			}
