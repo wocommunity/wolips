@@ -303,35 +303,57 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 	protected IType findNearestElementType(IJavaProject _project, IDocument _document, WodScanner _scanner, int _offset, TypeCache cache) throws BadLocationException, JavaModelException {
 		// Go hunting for the element type in a potentially malformed document
 		// ...
-		IType type;
-		int colonOffset = WodCompletionProcessor.scanBackFor(_document, _offset, new char[] { ':' }, false);
-		if (colonOffset != -1) {
-			_scanner.setRange(_document, colonOffset, _offset - colonOffset);
-			RulePosition elementRulePosition = _scanner.getFirstRulePositionOfType(ElementTypeRule.class);
-			if (elementRulePosition != null) {
-				String elementTypeName = elementRulePosition.getText();
-				type = BindingReflectionUtils.findElementType(_project, elementTypeName, false, cache);
+		IType type = null;
+		int offset = _offset;
+		while (offset != -1 && type == null) {
+			offset = WodCompletionProcessor.scanBackFor(_document, offset, new char[] { '{' }, false, true);
+			int colonOffset = WodCompletionProcessor.scanBackFor(_document, offset, new char[] { ':' }, false, true);
+			if (colonOffset != -1) {
+				_scanner.setRange(_document, colonOffset, _offset - colonOffset);
+				RulePosition elementRulePosition = _scanner.getFirstRulePositionOfType(ElementTypeRule.class);
+				if (elementRulePosition != null) {
+					String elementTypeName = elementRulePosition.getText();
+					type = BindingReflectionUtils.findElementType(_project, elementTypeName, false, cache);
+				} else {
+					// we didn't find a ElementTypeRule
+					type = null;
+					offset--;
+				}
 			} else {
-				// we didn't find a ElementTypeRule
+				// failed colonoscopy
 				type = null;
 			}
-		} else {
-			// failed colonoscopy
-			type = null;
 		}
 		return type;
 	}
 
 	protected static int scanBackFor(IDocument _document, int _offset, char[] _lookForChars, boolean _negate) throws BadLocationException {
+		return scanBackFor(_document, _offset, _lookForChars, _negate, false);
+	}
+	
+	protected static int scanBackFor(IDocument _document, int _offset, char[] _lookForChars, boolean _negate, boolean excludeQuoted) throws BadLocationException {
 		int offset = _offset;
 		if (offset >= _document.getLength()) {
 			offset--;
 		}
 		int foundIndex = -1;
+		boolean inQuote = false;
+		char quoteChar = 0;
 		for (int i = offset; foundIndex == -1 && i >= 0; i--) {
 			char ch = _document.getChar(i);
+			if (ch == '\'' || ch == '"') {
+				boolean escaped = i > 0 && _document.getChar(i-1) == '\\';
+				if (inQuote && quoteChar == ch && !escaped) {
+					inQuote = false;
+					quoteChar = 0;
+				}
+				else if (!inQuote){
+					inQuote = true;
+					quoteChar = ch;
+				}
+			}
 			for (int lookForCharNum = 0; foundIndex == -1 && lookForCharNum < _lookForChars.length; lookForCharNum++) {
-				if (ch == _lookForChars[lookForCharNum]) {
+				if (ch == _lookForChars[lookForCharNum] && !(inQuote && excludeQuoted)) {
 					foundIndex = i;
 				}
 			}
