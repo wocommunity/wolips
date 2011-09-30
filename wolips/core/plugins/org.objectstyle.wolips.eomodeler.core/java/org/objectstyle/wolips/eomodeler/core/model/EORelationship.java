@@ -888,12 +888,13 @@ public class EORelationship extends UserInfoableEOModelObject<EOEntity> implemen
 				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The relationship " + getName() + " has no destination entity.", false));
 			}
 		}
-		if (BooleanUtils.isTrue(isPropagatesPrimaryKey()) && BooleanUtils.isTrue(isToMany())) {
-			EOEntity destination = getDestination();
-			if (destination != null && destination.getPrimaryKeyAttributes().size() == 1) {
-				_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The relationship " + getName() + " is a to-many but also propagates its primary key.", false));
-			}
-		}
+		// Q: EOF supports this for some specific cases - disabling until I work out a more concise check
+		//if (BooleanUtils.isTrue(isPropagatesPrimaryKey()) && BooleanUtils.isTrue(isToMany())) {
+		//	EOEntity destination = getDestination();
+		//	if (destination != null && destination.getPrimaryKeyAttributes().size() == 1) {
+		//		_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The relationship " + getName() + " is a to-many but also propagates its primary key.", false));
+		//	}
+		//}
 		EOEntity entity = getEntity();
 		boolean singleTableInheritance = entity != null && entity.isSingleTableInheritance();
 		boolean mandatory = BooleanUtils.isTrue(isMandatory());
