@@ -42,6 +42,8 @@
 		${migrationTableName}.newTimestampColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull}#if ($attribute.userInfo.default), er.extensions.foundation.ERXTimestampUtilities.timestampForString("${attribute.userInfo.default}")#end);
 #elseif ($attribute.javaClassName == "NSData")
 		${migrationTableName}.newBlobColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
+#elseif ($attribute.javaClassName == "ERXMutableDictionary" || $attribute.javaClassName == "er.extensions.foundation.ERXMutableDictionary")
+		${migrationTableName}.newBlobColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.adaptorValueConversionMethodName)
 #if ($attribute.factoryMethodArgumentType.ID == "EOFactoryMethodArgumentIsNSString")
 		${migrationTableName}.newStringColumn("${attribute.columnName}", ${attribute.width}, ${attribute.sqlGenerationAllowsNull}#if ($attribute.userInfo.default), "${attribute.userInfo.default}"#end);
