@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+ <globalConfiguration>
+  <parameter name="sendMultiRefs" value="true"/>
+  <parameter name="sendXsiTypes" value="true"/>
+  <parameter name="sendXMLDeclaration" value="true"/>
+  <requestFlow>
+   <handler type="java:com.webobjects.webservices.support._private.WOSecurityHandler"/>
+   <handler type="java:com.webobjects.webservices.client._private.WOClientSessionHandler"/>
+  </requestFlow>
+  <responseFlow>
+   <handler type="java:com.webobjects.webservices.client._private.WOClientSessionHandler"/>
+   <handler type="java:com.webobjects.webservices.support._private.WOSecurityHandler"/>
+  </responseFlow>
+</globalConfiguration>
+ <transport name="http" pivot="java:org.apache.axis.transport.http.HTTPSender"/>
+ <transport name="https" pivot="java:org.apache.axis.transport.http.HTTPSender"/>
+ <transport name="local" pivot="java:org.apache.axis.transport.local.LocalSender"/>
+</deployment>
+
+

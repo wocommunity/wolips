@@ -73,15 +73,15 @@ import org.objectstyle.wolips.templateengine.TemplateEngine;
  * @author uli
  * @author dlee
  */
-public class D2WebServiceApplicationWizard extends AbstractProjectWizard {
+public class D2WebServiceApplicationWizard extends NewWOProjectWizard {
 
 	/**
 	 *
 	 */
 	public D2WebServiceApplicationWizard() {
-		super();
+		super("DirectToWebServices Application");
 	}
-
+	
 	public String getWindowTitle() {
 		return Messages.getString("D2WebServiceApplicationWizard.title");
 	}
@@ -96,51 +96,6 @@ public class D2WebServiceApplicationWizard extends AbstractProjectWizard {
 
 	@Override
 	protected void postInstallTemplate(IProject project, IProgressMonitor progressMonitor) throws Exception {
-
-		String projectName = project.getName();
-		String path = project.getLocation().toOSString();
-		String rootTemplate = getTemplateFolder();
-
-		//Java Package support
-		String packagePath = "";
-		String packageName = "";
-		String fullSrcPath = path+File.separator+"src";
-		if (_packagePage != null) {
-			packageName = _packagePage.getPackageName();
-			packagePath = _packagePage.getConvertedPath();
-			fullSrcPath += File.separator+packagePath;
-		}
-		createJavaPackageSupport(project, packagePath);
-
-		File bin = new File(path + File.separator + "bin");
-		bin.mkdirs();
-
-		TemplateEngine templateEngine = new TemplateEngine();
-		templateEngine.init();
-
-		templateEngine.getWolipsContext().setProjectName(projectName);
-		templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
-		templateEngine.getWolipsContext().setPackageName(packageName);
-
-		addMavenComponentDefinition(rootTemplate, templateEngine, path, "Main", packagePath);
-
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Application.java.vm", fullSrcPath, "Application.java", "Application.java"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/DirectAction.java.vm", fullSrcPath, "DirectAction.java", "DirectAction.java"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Session.java.vm", fullSrcPath, "Session.java", "Session.java"));
-
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/.classpath.vm", path, ".classpath", ".classpath"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/.project.vm", path, ".project", ".project"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/build.xml.vm", path, "build.xml", "build.xml"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/build.properties.vm", path, "build.properties", "build.properties"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/Properties.vm", path, "Properties", "Properties"));
-		templateEngine.addTemplate(new TemplateDefinition(rootTemplate+"/user.d2wmodel.vm", path, "user.d2wmodel", "user.d2wmodel"));
-
-		//FIXME: these are auto-copied from templates but don't have to.  See comments in createWebServicesSupport()
-		templateEngine.addTemplate(new TemplateDefinition("d2webservice_application/template_server.wsdd.vm", path, "server.wsdd", "server.wsdd"));
-		templateEngine.addTemplate(new TemplateDefinition("d2webservice_application/template_client.wsdd.vm", path, "client.wsdd", "client.wsdd"));
-
-		templateEngine.run(progressMonitor);
-
 	}
 
 	@Override
