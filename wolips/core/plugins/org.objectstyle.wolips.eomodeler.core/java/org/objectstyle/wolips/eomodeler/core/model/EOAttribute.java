@@ -567,6 +567,9 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 	}
 
 	public String getColumnName() {
+		if(isFlattened()) {
+			return null;
+		}
 		return (String) _prototypeValueIfNull(AbstractEOArgument.COLUMN_NAME, super.getColumnName());
 	}
 
