@@ -314,9 +314,9 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 				if (elementRulePosition != null) {
 					String elementTypeName = elementRulePosition.getText();
 					type = BindingReflectionUtils.findElementType(_project, elementTypeName, false, cache);
+					offset = -1;
 				} else {
 					// we didn't find a ElementTypeRule
-					type = null;
 					offset--;
 				}
 			} else {
