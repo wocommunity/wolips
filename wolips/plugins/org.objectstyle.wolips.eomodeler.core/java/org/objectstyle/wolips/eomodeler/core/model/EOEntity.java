@@ -53,6 +53,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -527,40 +528,63 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		if (subclassEntity.isAbstractEntity() != null) {
 			subclassEntity.myAbstractEntity = Boolean.FALSE;
 		}
+		
+		List<EOEntity> ancestors = getAncestors();
+		Collections.reverse(ancestors);
+		ancestors.add(this);
+		
+		for(EOEntity ancestor: ancestors) {
+			EORelationship superclassRelationship = _subclassParentRelationship(ancestor, subclassEntity);
+			_flattenParentAttributes(ancestor, subclassEntity, superclassRelationship);
+			_flattenParentRelationships(ancestor, subclassEntity, superclassRelationship);
+		}
 
-		EORelationship superclassRelationship = subclassEntity.addBlankRelationship(subclassEntity.findUnusedRelationshipName(StringUtils.toLowercaseFirstLetter(getName())));
+		return subclassEntity;
+	}
+	
+	protected static EORelationship _subclassParentRelationship(EOEntity parent, EOEntity subclassEntity) throws DuplicateNameException {
+		EORelationship superclassRelationship = subclassEntity.addBlankRelationship(subclassEntity.findUnusedRelationshipName(StringUtils.toLowercaseFirstLetter(parent.getName())));
 		superclassRelationship.setToMany(Boolean.FALSE);
-		superclassRelationship.setDestination(this);
+		superclassRelationship.setDestination(parent);
 		superclassRelationship.setClassProperty(Boolean.FALSE, false);
 		superclassRelationship.setMandatory(Boolean.TRUE);
-		Set<EOAttribute> primaryKeyAttributes = getPrimaryKeyAttributes();
-		for (EOAttribute superclassPrimaryKeyAttribute : getPrimaryKeyAttributes()) {
-			EOAttribute subclassPrimaryKeyAttribute = superclassPrimaryKeyAttribute._cloneModelObject();
+		superclassRelationship.setOwnsDestination(Boolean.TRUE);
+		superclassRelationship.setDeleteRule(EODeleteRule.CASCADE);
+		final boolean clonePK = subclassEntity.getPrimaryKeyAttributes().isEmpty();
+		Set<EOAttribute> primaryKeyAttributes = parent.getPrimaryKeyAttributes();
+		for (EOAttribute superclassPrimaryKeyAttribute : primaryKeyAttributes) {
+			EOAttribute subclassPrimaryKeyAttribute = clonePK?superclassPrimaryKeyAttribute._cloneModelObject():subclassEntity.getAttributeNamed(superclassPrimaryKeyAttribute.getName());
 			EOJoin superclassJoin = new EOJoin();
 			superclassJoin.setSourceAttribute(subclassPrimaryKeyAttribute);
 			superclassJoin.setDestinationAttribute(superclassPrimaryKeyAttribute);
 			superclassRelationship.addJoin(superclassJoin, false);
-			subclassEntity.addAttribute(subclassPrimaryKeyAttribute);
+			if(clonePK) {
+				subclassEntity.addAttribute(subclassPrimaryKeyAttribute);
+			}
 		}
-
-		for (EOAttribute parentAttribute : getAttributes()) {
-			if (!primaryKeyAttributes.contains(parentAttribute)) {
+		
+		return superclassRelationship;
+	}
+	
+	protected static void _flattenParentAttributes(EOEntity parent, EOEntity subclassEntity, EORelationship superclassRelationship) throws DuplicateNameException {
+		Set<EOAttribute> primaryKeyAttributes = parent.getPrimaryKeyAttributes();
+		for (EOAttribute parentAttribute : parent.getAttributes()) {
+			if (!primaryKeyAttributes.contains(parentAttribute) && !parentAttribute.isInherited()) {
 				EOAttributePath inheritedAttributePath = new EOAttributePath(new EORelationshipPath(null, superclassRelationship), parentAttribute);
 				EOAttribute inheritedAttribute = subclassEntity.addBlankAttribute(parentAttribute.getName(), inheritedAttributePath);
 				inheritedAttribute.setClassProperty(parentAttribute.isClassProperty());
 			}
 		}
+	}
 
-		for (EORelationship parentRelationship : getRelationships()) {
-			if (BooleanUtils.isTrue(parentRelationship.isClassProperty())) {
+	protected static void _flattenParentRelationships(EOEntity parent, EOEntity subclassEntity, EORelationship superclassRelationship) throws DuplicateNameException {
+		for (EORelationship parentRelationship : parent.getRelationships()) {
+			if (BooleanUtils.isTrue(parentRelationship.isClassProperty()) && !parentRelationship.isInherited()) {
 				EORelationshipPath inheritedRelationshipPath = new EORelationshipPath(new EORelationshipPath(null, superclassRelationship), parentRelationship);
 				subclassEntity.addBlankRelationship(parentRelationship.getName(), inheritedRelationshipPath);
 			}
 		}
-
-		return subclassEntity;
 	}
-
 	protected void _cloneFetchSpecificationsFrom(EOEntity _entity, boolean _skipExistingNames) throws DuplicateNameException {
 		for (EOFetchSpecification fetchSpec : _entity.getFetchSpecs()) {
 			if (!_skipExistingNames || getFetchSpecNamed(fetchSpec.getName()) == null) {
