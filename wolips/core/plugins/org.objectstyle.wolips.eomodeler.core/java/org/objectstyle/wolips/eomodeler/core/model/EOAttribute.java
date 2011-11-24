@@ -88,7 +88,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 
 	public static final String GENERATE_SOURCE = "generateSource";
 
-	private static final String[] PROTOTYPED_PROPERTIES = { AbstractEOArgument.NAME, AbstractEOArgument.COLUMN_NAME, AbstractEOArgument.ALLOWS_NULL, AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, AbstractEOArgument.EXTERNAL_TYPE, AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE, AbstractEOArgument.PRECISION, AbstractEOArgument.SCALE, AbstractEOArgument.VALUE_CLASS_NAME, AbstractEOArgument.CLASS_NAME, AbstractEOArgument.VALUE_FACTORY_METHOD_NAME, AbstractEOArgument.VALUE_TYPE, AbstractEOArgument.DEFINITION, AbstractEOArgument.WIDTH, EOAttribute.READ_FORMAT, EOAttribute.WRITE_FORMAT, EOAttribute.INDEXED, EOAttribute.READ_ONLY };
+	private static final String[] PROTOTYPED_PROPERTIES = { AbstractEOArgument.NAME, AbstractEOArgument.COLUMN_NAME, AbstractEOArgument.ALLOWS_NULL, AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_CLASS_NAME, AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, AbstractEOArgument.EXTERNAL_TYPE, AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE, AbstractEOArgument.PRECISION, AbstractEOArgument.SCALE, AbstractEOArgument.VALUE_CLASS_NAME, AbstractEOArgument.CLASS_NAME, AbstractEOArgument.VALUE_FACTORY_CLASS_NAME, AbstractEOArgument.VALUE_FACTORY_METHOD_NAME, AbstractEOArgument.VALUE_TYPE, AbstractEOArgument.DEFINITION, AbstractEOArgument.WIDTH, EOAttribute.READ_FORMAT, EOAttribute.WRITE_FORMAT, EOAttribute.INDEXED, EOAttribute.READ_ONLY };
 
 	private static Map<String, IKey> myCachedPropertyKeys;
 
@@ -210,11 +210,15 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 								prototypeMatches = true;
 							} else if (AbstractEOArgument.VALUE_CLASS_NAME.equals(propertyName) && "NSDecimalNumber".equals(currentValue) && "NSNumber".equals(prototypeValue)) {
 								prototypeMatches = true;
+							} else if (probablyBooleanString && AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_CLASS_NAME.equals(propertyName) && currentValue == null && "toString".equals(prototypeValue)) {
+								prototypeMatches = true;
 							} else if (probablyBooleanString && AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME.equals(propertyName) && currentValue == null && "toString".equals(prototypeValue)) {
 								prototypeMatches = true;
 							} else if (probablyBooleanString && AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE.equals(propertyName) && currentValue == null && EOFactoryMethodArgumentType.STRING.equals(prototypeValue)) {
 								prototypeMatches = true;
 							} else if (probablyBooleanString && AbstractEOArgument.VALUE_CLASS_NAME.equals(propertyName) && "NSString".equals(currentValue) && "java.lang.Boolean".equals(prototypeValue)) {
+								prototypeMatches = true;
+							} else if (probablyBooleanString && AbstractEOArgument.VALUE_FACTORY_CLASS_NAME.equals(propertyName) && currentValue == null && "valueOf".equals(prototypeValue)) {
 								prototypeMatches = true;
 							} else if (probablyBooleanString && AbstractEOArgument.VALUE_FACTORY_METHOD_NAME.equals(propertyName) && currentValue == null && "valueOf".equals(prototypeValue)) {
 								prototypeMatches = true;
@@ -637,6 +641,14 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		}
 	}
 
+	public String getAdaptorValueConversionClassName() {
+		return (String) _prototypeValueIfNull(AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_CLASS_NAME, super.getAdaptorValueConversionClassName());
+	}
+
+	public void setAdaptorValueConversionClassName(String _adaptorValueConversionClassName) {
+		super.setAdaptorValueConversionClassName((String) _nullIfPrototyped(AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_CLASS_NAME, _adaptorValueConversionClassName));
+	}
+
 	public String getAdaptorValueConversionMethodName() {
 		return (String) _prototypeValueIfNull(AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, super.getAdaptorValueConversionMethodName());
 	}
@@ -699,6 +711,14 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 
 	public synchronized void setValueClassName(String _valueClassName, boolean _updateDataType) {
 		super.setValueClassName((String) _nullIfPrototyped(AbstractEOArgument.VALUE_CLASS_NAME, _valueClassName), _updateDataType);
+	}
+
+	public String getValueFactoryClassName() {
+		return (String) _prototypeValueIfNull(AbstractEOArgument.VALUE_FACTORY_CLASS_NAME, super.getValueFactoryClassName());
+	}
+
+	public void setValueFactoryClassName(String _valueFactoryClassName) {
+		super.setValueFactoryClassName((String) _nullIfPrototyped(AbstractEOArgument.VALUE_FACTORY_CLASS_NAME, _valueFactoryClassName));
 	}
 
 	public String getValueFactoryMethodName() {
