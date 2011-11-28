@@ -139,9 +139,7 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.folder");//$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.file");//$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.ui.editors.wizards.UntitledTextFileWizard");//$NON-NLS-1$
-		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.application"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.wonderapplication"); //$NON-NLS-1$
-		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.framework"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.wonderframework"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.d2wapplication"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.wonderd2wapplication"); //$NON-NLS-1$
