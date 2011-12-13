@@ -1,8 +1,8 @@
 package org.objectstyle.wolips.eomodeler.core.model;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * EOEntityTreeNode is a data structure for representing a subtree of a set of
@@ -11,7 +11,7 @@ import java.util.Set;
  * 
  * @author mschrag
  */
-public class EOEntityTreeNode {
+public class EOEntityTreeNode implements Comparable<EOEntityTreeNode> {
 	private EOEntity _entity;
 
 	private EOEntityTreeNode _parent;
@@ -20,7 +20,7 @@ public class EOEntityTreeNode {
 
 	public EOEntityTreeNode(EOEntity entity) {
 		_entity = entity;
-		_children = new HashSet<EOEntityTreeNode>();
+		_children = new TreeSet<EOEntityTreeNode>();
 	}
 
 	public EOEntity getEntity() {
@@ -60,5 +60,9 @@ public class EOEntityTreeNode {
 
 	public String toString() {
 		return "[EOEntityNode: entity=" + _entity.getName() + "]";
+	}
+
+	public int compareTo(EOEntityTreeNode otherNode) {
+		return _entity.getName().compareTo(otherNode.getEntity().getName());
 	}
 }
