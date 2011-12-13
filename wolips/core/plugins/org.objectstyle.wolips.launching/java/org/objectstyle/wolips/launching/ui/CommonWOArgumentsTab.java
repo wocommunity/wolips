@@ -56,6 +56,7 @@
 
 package org.objectstyle.wolips.launching.ui;
 
+import java.util.Arrays;
 import java.util.Vector;
 
 import org.eclipse.core.resources.IContainer;
@@ -220,6 +221,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		this.allArguments = new Vector();
 		this.allParameter = new Vector();
 		this.includeTable.removeAll();
+		Arrays.sort(launchInfoArray);
 		for (int i = 0; i < launchInfoArray.length; i++) {
 			ILaunchInfo launchInfo = launchInfoArray[i];
 			TableItem item = new TableItem(this.includeTable, SWT.NONE);
