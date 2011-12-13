@@ -1,12 +1,13 @@
 package org.objectstyle.wolips.eomodeler.core.model;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * EOEntityForest represents a collection of EOEntityTreeNodes. An arbitrary
@@ -19,11 +20,11 @@ public class EOEntityForest {
 	private Map<EOEntity, EOEntityTreeNode> _nodes;
 
 	public EOEntityForest() {
-		_nodes = new HashMap<EOEntity, EOEntityTreeNode>();
+		_nodes = new TreeMap<EOEntity, EOEntityTreeNode>();
 	}
 
 	public Set<EOEntityTreeNode> getRootNodes() {
-		Set<EOEntityTreeNode> rootNodes = new HashSet<EOEntityTreeNode>();
+		Set<EOEntityTreeNode> rootNodes = new TreeSet<EOEntityTreeNode>();
 		for (EOEntityTreeNode node : _nodes.values()) {
 			if (node.isRoot()) {
 				rootNodes.add(node);
@@ -45,9 +46,11 @@ public class EOEntityForest {
 			_nodes.put(entity, node);
 
 			EOEntity parentEntity = entity.getParent();
-			EOEntityTreeNode parentNode = _nodes.get(parentEntity);
-			if (parentNode != null) {
-				parentNode.addChild(node);
+			if (parentEntity != null) {
+				EOEntityTreeNode parentNode = _nodes.get(parentEntity);
+				if (parentNode != null) {
+					parentNode.addChild(node);
+				}
 			}
 
 			Set<EOEntity> childrenEntities = entity.getChildrenEntities();
