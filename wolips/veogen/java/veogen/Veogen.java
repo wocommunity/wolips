@@ -202,10 +202,18 @@ public class Veogen {
 		EOModelGroup modelGroup = new EOModelGroup();
 		Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
 		if (loadModelGroup || modelPaths.size() == 0) {
-            new BundleEOModelGroupFactory().loadModelGroup(modelGroupFolder, modelGroup, failures, loadModelGroup, new NullProgressMonitor());
-			new SimpleManifestEOModelGroupFactory().loadModelGroup(modelGroupFolder, modelGroup, failures, true, new NullProgressMonitor());
-			new IDEAProjectEOModelGroupFactory().loadModelGroup(modelGroupFolder, modelGroup, failures, true, new NullProgressMonitor());
-			new EclipseProjectEOModelGroupFactory().loadModelGroup(modelGroupFolder, modelGroup, failures, true, new NullProgressMonitor());
+		  if (System.getProperty("veogen.modelgroup.nobundle") == null) {
+		    new BundleEOModelGroupFactory().loadModelGroup(modelGroupFolder, modelGroup, failures, loadModelGroup, new NullProgressMonitor());
+		  }
+		  if (System.getProperty("veogen.modelgroup.nomanifest") == null) {
+		    new SimpleManifestEOModelGroupFactory().loadModelGroup(modelGroupFolder, modelGroup, failures, true, new NullProgressMonitor());
+		  }
+		  if (System.getProperty("veogen.modelgroup.noidea") == null) {
+		    new IDEAProjectEOModelGroupFactory().loadModelGroup(modelGroupFolder, modelGroup, failures, true, new NullProgressMonitor());
+		  }
+		  if (System.getProperty("veogen.modelgroup.noeclipse") == null) {
+		    new EclipseProjectEOModelGroupFactory().loadModelGroup(modelGroupFolder, modelGroup, failures, true, new NullProgressMonitor());
+		  }
 		}
 		for (String modelPath : modelPaths) {
 			modelGroup.loadModelFromURL(new File(modelPath).toURL());
