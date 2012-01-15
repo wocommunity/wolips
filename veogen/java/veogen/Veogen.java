@@ -39,15 +39,15 @@ public class Veogen {
 	}
 	
 	protected static File workingDir(List<String> argsList) throws IOException {
-	    File workingDir = null;
-        for (int argNum = 0; argNum < argsList.size(); argNum++) {
-            String arg = argsList.get(argNum);
-            if ("-workingDir".equals(arg)) {
-                workingDir = new File(argsList.get(++argNum)).getCanonicalFile();
-                break;
-            }
-        }
-        return workingDir;
+	  File workingDir = null;
+	  for (int argNum = 0; argNum < argsList.size(); argNum++) {
+	    String arg = argsList.get(argNum);
+	    if ("-workingDir".equals(arg)) {
+	      workingDir = new File(argsList.get(++argNum)).getCanonicalFile();
+	      break;
+	    }
+	  }
+	  return workingDir;
 	}
 	
 	public static void main(String[] args2) throws Exception {
@@ -73,12 +73,13 @@ public class Veogen {
 		}
 
 		if (workingDir == null) {
-		    workingDir = workingDir(argsList);
+		  workingDir = workingDir(argsList);
 		}
 		
 		boolean loadModelGroup = false;
 		File modelGroupFolder = workingDir == null ? new File(".") : workingDir;
 		List<String> modelPaths = new LinkedList<String>();
+		boolean force = false;
 		for (int argNum = 0; argNum < argsList.size(); argNum++) {
 			String arg = argsList.get(argNum);
 			if ("-model".equalsIgnoreCase(arg)) {
@@ -97,12 +98,12 @@ public class Veogen {
 			else if ("-subclassTemplate".equalsIgnoreCase(arg)) {
 				eogeneratorModel.setSubclassJavaTemplate(argsList.get(++argNum));
 			}
-            else if ("-javaTemplate".equalsIgnoreCase(arg)) {
-                eogeneratorModel.setJavaTemplate(argsList.get(++argNum));
-            }
-            else if ("-subclassJavaTemplate".equalsIgnoreCase(arg)) {
-                eogeneratorModel.setSubclassJavaTemplate(argsList.get(++argNum));
-            }
+			else if ("-javaTemplate".equalsIgnoreCase(arg)) {
+			  eogeneratorModel.setJavaTemplate(argsList.get(++argNum));
+			}
+			else if ("-subclassJavaTemplate".equalsIgnoreCase(arg)) {
+			  eogeneratorModel.setSubclassJavaTemplate(argsList.get(++argNum));
+			}
 			else if ("-extension".equalsIgnoreCase(arg)) {
 				eogeneratorModel.setExtension(argsList.get(++argNum));
 			}
@@ -136,6 +137,10 @@ public class Veogen {
 			}
 			else if ("-loadModelGroup".equalsIgnoreCase(arg)) {
 				loadModelGroup = true;
+			}
+			else if ("-force".equalsIgnoreCase(arg)) {
+			  force = true;
+			  argNum ++;
 			}
 			else if ("-workingDir".equalsIgnoreCase(arg)) {
 				argNum ++;
@@ -190,6 +195,8 @@ public class Veogen {
 			System.out.println("    if specified and -modelgroup is not, an implicit modelgroup folder of '.' will be used.");
 			System.out.println("  -workingDir");
 			System.out.println("    the working directory to prepend to all the provided paths");
+			System.out.println("  -force");
+			System.out.println("    force generation even if there are errors");
 			System.out.println();
 			System.out.println("You must specify at least -destination and a -generate or -model.");
 			System.exit(0);
@@ -223,15 +230,18 @@ public class Veogen {
 		modelGroup.verify(failures);
 		boolean hasFailures = false;
 		for (EOModelVerificationFailure failure : failures) {
-		    if (!failure.isWarning()) {
-		        System.out.println("Failure: " + failure.getMessage());
-		        hasFailures = true;
-		    }
+		  if (!failure.isWarning()) {
+		    System.out.println("Failure: " + failure.getMessage());
+		    hasFailures = true;
+		  }
 		}
-		if (!hasFailures) {
-    		VelocityEOGeneratorRunner eogenRunner = new VelocityEOGeneratorRunner(false);
-    		StringBuffer results = new StringBuffer();
-    		eogenRunner.generate(eogeneratorModel, results, modelGroup, VeogenResourceLoader.class, new NullProgressMonitor());
+		if (hasFailures && force) {
+		    System.out.println("**** There were errors but -force was specified.");
+		}
+		if (!hasFailures || force) {
+		  VelocityEOGeneratorRunner eogenRunner = new VelocityEOGeneratorRunner(false);
+		  StringBuffer results = new StringBuffer();
+		  eogenRunner.generate(eogeneratorModel, results, modelGroup, VeogenResourceLoader.class, new NullProgressMonitor());
 		}
 	}
 }
