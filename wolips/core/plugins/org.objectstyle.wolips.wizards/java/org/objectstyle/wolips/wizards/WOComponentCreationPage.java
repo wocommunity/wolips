@@ -454,10 +454,13 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 			// not possible ( see validatePage() )
 			setErrorMessage("unknown error");
 			return false;
+		case 1:
+			componentCreator = new WOComponentCreator(getProject(), componentName, packageName, superclassName, _bodyCheckbox.getSelection(), _apiCheckbox.getSelection(), this);
+			break;
 		default:
 			// determine parent resource for component creator by removing
 			// first element (workspace) from full path
-			IFolder subprojectFolder = actualProject.getFolder(getContainerFullPath().removeFirstSegments(1));
+			IFolder subprojectFolder = getProject().getFolder(getContainerFullPath().removeFirstSegments(1));
 			componentCreator = new WOComponentCreator(subprojectFolder, componentName, packageName, superclassName, _bodyCheckbox.getSelection(), _apiCheckbox.getSelection(), this);
 			break;
 		}
