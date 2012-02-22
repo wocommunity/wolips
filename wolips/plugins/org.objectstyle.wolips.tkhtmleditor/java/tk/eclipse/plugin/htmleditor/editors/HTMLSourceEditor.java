@@ -95,7 +95,6 @@ public class HTMLSourceEditor extends TextEditor {
     setPreferenceStore(new ChainedPreferenceStore(new IPreferenceStore[] { getPreferenceStore(), HTMLPlugin.getDefault().getPreferenceStore() }));
 
     setAction(ACTION_ESCAPE_HTML, new EscapeHTMLAction());
-    setAction(ACTION_COMMENT, new CommentAction());
     //setAction(ACTION_OPEN_PALETTE, new OpenPaletteAction());
     //setAction(ACTION_CHOOSE_COLOR, new ChooseColorAction(this));
 
@@ -457,6 +456,7 @@ public class HTMLSourceEditor extends TextEditor {
     IAction action = new ContentAssistAction(HTMLPlugin.getDefault().getResourceBundle(), "ContentAssistProposal", this);
     action.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
     setAction(ACTION_COMPLETION, action);
+    setAction(ACTION_COMMENT, new CommentAction());
   }
 
   @Override
@@ -819,8 +819,7 @@ public class HTMLSourceEditor extends TextEditor {
 
     public CommentAction() {
       super(HTMLPlugin.getResourceString("HTMLEditor.CommentAction"));
-      setEnabled(false);
-      setAccelerator(SWT.CTRL | '/');
+      setActionDefinitionId("tk.eclipse.plugin.htmleditor.comment");
     }
 
     @Override
