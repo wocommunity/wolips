@@ -26,6 +26,9 @@ public class ComponentInstanceNameVerifyListener implements VerifyListener
 		if((ch>=0x30) && (ch<=0x39))
 			return true;
 		
+		if(ch == 0x5F)
+			return true;
+		
 		return false;
 	}
 	
