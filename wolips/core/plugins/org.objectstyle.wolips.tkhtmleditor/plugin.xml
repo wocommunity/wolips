@@ -369,6 +369,11 @@
             categoryId="tk.eclipse.plugin.htmleditor"
             id="tk.eclipse.plugin.xmleditor.format"
             name="%plugin.command.formatXML"/>
+      <command
+            categoryId="tk.eclipse.plugin.htmleditor"
+            id="tk.eclipse.plugin.htmleditor.comment"
+            name="%plugin.command.commentHTML">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -376,6 +381,11 @@
             commandId="tk.eclipse.plugin.xmleditor.format"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+F"/>
+      <key
+            commandId="tk.eclipse.plugin.htmleditor.comment"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+/">
+      </key>
    </extension>
    <extension
          point="org.eclipse.ui.editors.annotationTypes">
