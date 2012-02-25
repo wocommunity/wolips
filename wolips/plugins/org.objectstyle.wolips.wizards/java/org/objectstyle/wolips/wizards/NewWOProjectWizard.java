@@ -301,14 +301,14 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 			}
 		}
 
-		if (wizardType == WizardType.D2W_APPLICATION_WIZARD || wizardType == WizardType.WO_APPLICATION_WIZARD || wizardType == WizardType.D2WS_APPLICATION_WIZARD || wizardType == WizardType.WO_FRAMEWORK_WIZARD) {
+		if (wizardType == WizardType.D2W_APPLICATION_WIZARD || wizardType == WizardType.WO_APPLICATION_WIZARD || wizardType == WizardType.ERREST_APPLICATION_WIZARD || wizardType == WizardType.D2WS_APPLICATION_WIZARD || wizardType == WizardType.WO_FRAMEWORK_WIZARD) {
 			_frameworkSupportPage = createFrameworkSupportPage();
 			if (_frameworkSupportPage != null) {
 				addPage(_frameworkSupportPage);
 			}
 		}
 
-		if (wizardType == WizardType.WO_APPLICATION_WIZARD || wizardType == WizardType.D2W_APPLICATION_WIZARD || wizardType == WizardType.WO_FRAMEWORK_WIZARD) {
+		if (wizardType == WizardType.WO_APPLICATION_WIZARD || wizardType == WizardType.ERREST_APPLICATION_WIZARD || wizardType == WizardType.D2W_APPLICATION_WIZARD || wizardType == WizardType.WO_FRAMEWORK_WIZARD) {
 			_webservicesSupportPage = createWebServicesSupportPage();
 			if (_webservicesSupportPage != null) {
 				addPage(_webservicesSupportPage);

@@ -109,6 +109,18 @@
          </description>
       </wizard>
       <wizard
+            name="ERRest Application"
+            icon="icons/woproject/woapplication_wiz.gif"
+            category="org.objectstyle.wolips.wizards"
+            project="true"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.errestapplication">
+            <class class="org.objectstyle.wolips.wizards.ERRestApplicationWizard">
+              <parameter name="wotype" value="true"/>
+            </class>
+         <description>
+         </description>
+      </wizard>      
+      <wizard
             name="Wonder Application"
             icon="icons/woproject/woapplication_wiz.gif"
             category="org.objectstyle.wolips.wizards"
@@ -156,18 +168,6 @@
          <description>
          </description>
       </wizard>
-      <wizard
-            name="Wonder REST Project"
-            icon="icons/woproject/woapplication_wiz.gif"
-            category="org.objectstyle.wolips.wizards"
-            project="true"
-            id="org.objectstyle.wolips.wizards.new.wo.5.1.errestframework">
-            <class class="org.objectstyle.wolips.wizards.ERRestApplicationWizard">
-              <parameter name="wotype" value="true"/>
-            </class>
-         <description>
-         </description>
-      </wizard>      
       <wizard
             name="Jar Project"
             icon="icons/woproject/jar_project_wiz.gif"
