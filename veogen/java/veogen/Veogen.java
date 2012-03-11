@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -79,7 +80,10 @@ public class Veogen {
 		boolean loadModelGroup = false;
 		File modelGroupFolder = workingDir == null ? new File(".") : workingDir;
 		List<String> modelPaths = new LinkedList<String>();
+		List<String> entityList = new LinkedList<String>();
 		boolean force = false;
+		boolean useStdout = false;
+		
 		for (int argNum = 0; argNum < argsList.size(); argNum++) {
 			String arg = argsList.get(argNum);
 			if ("-model".equalsIgnoreCase(arg)) {
@@ -140,13 +144,17 @@ public class Veogen {
 			}
 			else if ("-force".equalsIgnoreCase(arg)) {
 			  force = true;
-			  argNum ++;
 			}
 			else if ("-workingDir".equalsIgnoreCase(arg)) {
 				argNum ++;
 			}
 			else if ("-config".equalsIgnoreCase(arg)) {
 				argNum ++;
+			}
+			else if ("-stdout".equalsIgnoreCase(arg))
+			  useStdout = true;
+			else {
+			  entityList.add(arg);
 			}
 		}
 
@@ -197,6 +205,8 @@ public class Veogen {
 			System.out.println("    the working directory to prepend to all the provided paths");
 			System.out.println("  -force");
 			System.out.println("    force generation even if there are errors");
+			System.out.println("  -stdout");
+			System.out.println("    send output to the console instead of the filesystem");
 			System.out.println();
 			System.out.println("You must specify at least -destination and a -generate or -model.");
 			System.exit(0);
@@ -231,17 +241,18 @@ public class Veogen {
 		boolean hasFailures = false;
 		for (EOModelVerificationFailure failure : failures) {
 		  if (!failure.isWarning()) {
-		    System.out.println("Failure: " + failure.getMessage());
+		    System.err.println("Failure: " + failure.getMessage());
 		    hasFailures = true;
 		  }
 		}
 		if (hasFailures && force) {
-		    System.out.println("**** There were errors but -force was specified.");
+		    System.err.println("**** There were errors but -force was specified.");
 		}
 		if (!hasFailures || force) {
 		  VelocityEOGeneratorRunner eogenRunner = new VelocityEOGeneratorRunner(false);
+		  eogenRunner.setUseStdout(useStdout);
 		  StringBuffer results = new StringBuffer();
-		  eogenRunner.generate(eogeneratorModel, results, modelGroup, VeogenResourceLoader.class, new NullProgressMonitor());
+		  eogenRunner.generate(eogeneratorModel, results, modelGroup, entityList, VeogenResourceLoader.class, new NullProgressMonitor());
 		}
 	}
 }

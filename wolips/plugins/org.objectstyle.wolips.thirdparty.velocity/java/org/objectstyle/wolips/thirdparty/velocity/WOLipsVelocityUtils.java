@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.security.MessageDigest;
@@ -115,6 +116,17 @@ public class WOLipsVelocityUtils {
 		return writeTemplateToString(engine, context, templateName, new ByteArrayOutputStream());
 	}
 
+	public static void writeTemplate(VelocityEngine engine, VelocityContext context, String templateName, OutputStream outputStream) throws ResourceNotFoundException, ParseErrorException, MethodInvocationException, Exception {
+		ByteArrayOutputStream newFileContentsStream = new ByteArrayOutputStream();
+		String newFileContentsStr = WOLipsVelocityUtils.writeTemplateToString(engine, context, templateName, newFileContentsStream);
+		BufferedWriter newFileBufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+		try {
+			newFileBufferedWriter.write(newFileContentsStr);
+		} finally {
+			newFileBufferedWriter.close();
+		}
+	}
+	
 	public static void writeTemplate(VelocityEngine engine, VelocityContext context, String templateName, File outputFile) throws ResourceNotFoundException, ParseErrorException, MethodInvocationException, Exception {
 		ByteArrayOutputStream newFileContentsStream = new ByteArrayOutputStream();
 		String newFileContentsStr = WOLipsVelocityUtils.writeTemplateToString(engine, context, templateName, newFileContentsStream);

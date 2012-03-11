@@ -50,6 +50,8 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 	}
 
 	private boolean _insideEclipse;
+	private boolean _useStdout = false;
+
 
 	public VelocityEOGeneratorRunner() {
 		this(true);
@@ -60,14 +62,14 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 	}
 
 	public boolean generate(EOGeneratorModel eogeneratorModel, StringBuffer results, IProgressMonitor monitor) throws Exception {
-		return generate(eogeneratorModel, results, null, ResourceLoader.class, monitor);
+		return generate(eogeneratorModel, results, null, null, ResourceLoader.class, monitor);
 	}
 
 	public boolean generate(EOGeneratorModel eogeneratorModel, StringBuffer results, EOModelGroup preloadedModelGroup, IProgressMonitor monitor) throws Exception {
-		return generate(eogeneratorModel, results, preloadedModelGroup, ResourceLoader.class, monitor);
+		return generate(eogeneratorModel, results, preloadedModelGroup, null, ResourceLoader.class, monitor);
 	}
 
-	public boolean generate(EOGeneratorModel eogeneratorModel, StringBuffer results, EOModelGroup preloadedModelGroup, Class resourceLoaderClass, IProgressMonitor monitor) throws Exception {
+	public boolean generate(EOGeneratorModel eogeneratorModel, StringBuffer results, EOModelGroup preloadedModelGroup, List<String> entityList, Class resourceLoaderClass, IProgressMonitor monitor) throws Exception {
 		boolean showResults = false;
 
 		String superclassTemplateName = eogeneratorModel.getJavaTemplate();
@@ -200,6 +202,10 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			context.put("set", new SetTool());
 			//context.put("sorter", new SortTool());
 			String extension = eogeneratorModel.getExtension();
+			Set<String> entitySet = new HashSet<String>();
+			if (entityList != null) {
+				entitySet.addAll(entityList);
+			}
 			for (EOModel model : models) {
 				if (monitor.isCanceled()) {
 					throw new OperationCanceledException("EOGenerator canceled.");
@@ -208,6 +214,10 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 				context.put("model", model);
 
 				for (EOEntity entity : model.getEntities()) {
+					if (entitySet.size() != 0 && !(entitySet.contains(model.getName()) 
+							|| entitySet.contains(model.getName() + "." + entity.getName()))) {
+						continue;
+					}
 					if (monitor.isCanceled()) {
 						throw new OperationCanceledException("EOGenerator canceled.");
 					}
@@ -245,7 +255,13 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 								throw new IOException("Unable to make superclass folder '" + superclassFolder + "'.");
 							}
 						}
-						WOLipsVelocityUtils.writeTemplate(velocityEngine, context, superclassTemplateName, superclassFile);
+						
+						if (_useStdout) {
+							WOLipsVelocityUtils.writeTemplate(velocityEngine, context, superclassTemplateName, System.out);
+						}
+						else {
+							WOLipsVelocityUtils.writeTemplate(velocityEngine, context, superclassTemplateName, superclassFile);
+						}
 
 						String subclassFileTemplate;
 						// StringWriter subclassFilePathWriter = new
@@ -299,5 +315,9 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			EOModel model = modelGroup.loadModelFromURL(modelURL);
 			loadedModels.add(model);
 		}
+	}
+	
+	public void setUseStdout(boolean useStdout) {
+		_useStdout = useStdout;
 	}
 }
