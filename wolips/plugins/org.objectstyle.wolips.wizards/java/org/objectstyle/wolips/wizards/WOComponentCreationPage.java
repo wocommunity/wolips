@@ -96,7 +96,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.internal.cocoa.NSString;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -571,7 +570,6 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	 * Populate a SWT Combo with NSStringEncoding doctypes (See NSString.h)
 	 * 
 	 * @param c
-	 * @see NSString.h
 	 */
 	public void populateStringEncodingCombo(Combo c) {
 
