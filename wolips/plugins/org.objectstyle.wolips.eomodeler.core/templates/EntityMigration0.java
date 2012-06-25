@@ -46,7 +46,7 @@
 		${migrationTableName}.newBlobColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
 #elseif ($attribute.adaptorValueConversionMethodName)
 #if ($attribute.factoryMethodArgumentType.ID == "EOFactoryMethodArgumentIsNSString")
-		${migrationTableName}.newStringColumn("${attribute.columnName}", ${attribute.width}, ${attribute.sqlGenerationAllowsNull}#if ($attribute.userInfo.default), "${attribute.userInfo.default}"#end);
+		${migrationTableName}.newStringColumn("${attribute.columnName}"#if ($attribute.width), ${attribute.width}#end, ${attribute.sqlGenerationAllowsNull}#if ($attribute.userInfo.default), "${attribute.userInfo.default}"#end);
 #elseif ($attribute.factoryMethodArgumentType.ID == "EOFactoryMethodArgumentIsData")
 		${migrationTableName}.newBlobColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNull});
 #else
