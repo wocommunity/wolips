@@ -130,7 +130,7 @@ public abstract class AbstractFolderFramework extends Framework {
 			    for (String javaPath : javaPaths) {
 			      File jarFile = new File(jarFolder, javaPath);
 			      String jarFileName = jarFile.getName();
-			      if (jarFile.exists() && !isSourceJar(jarFileName)) {
+			      if (jarFile.exists() && jarFileName.toLowerCase().endsWith(".jar") && !isSourceJar(jarFileName)) {
 			        jarFiles.add(jarFile);
 			      }
 			    }
