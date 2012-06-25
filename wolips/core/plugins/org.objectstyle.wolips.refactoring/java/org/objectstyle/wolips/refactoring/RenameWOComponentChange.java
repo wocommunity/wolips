@@ -76,7 +76,10 @@ import org.eclipse.ltk.core.refactoring.CompositeChange;
 import org.eclipse.ltk.core.refactoring.RefactoringChangeDescriptor;
 import org.eclipse.ltk.core.refactoring.RefactoringDescriptor;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.TextFileChange;
 import org.eclipse.ltk.core.refactoring.resource.RenameResourceChange;
+import org.eclipse.text.edits.MultiTextEdit;
+import org.eclipse.text.edits.ReplaceEdit;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
@@ -191,6 +194,12 @@ public final class RenameWOComponentChange extends CompositeChange {
 		if (oldApiFile != null || oldWoFolders.length > 0) {
 			CompositeChange compositeChange = new CompositeChange("Rename WOComponent Files");
 			if (oldApiFile != null) {
+				TextFileChange apiTextFileChange = new TextFileChange("Rename Java class name in API file", oldApiFile);
+				apiTextFileChange.setTextType("xml");
+				String javaFileName = getCompilationUnit().getElementName();
+				String apiContent = apiTextFileChange.getCurrentContent(null);
+				apiTextFileChange.setEdit(new ReplaceEdit(apiContent.indexOf(javaFileName), javaFileName.length(), getNewName() + ".java"));
+				compositeChange.add(apiTextFileChange);
 				compositeChange.add(new RenameResourceChange(oldApiFile.getFullPath(), getNewName() + ".api"));
 			}
 			for (int i = 0; i < oldWoFolders.length; i++) {
