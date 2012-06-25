@@ -75,7 +75,7 @@ import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityRenamedEvent;
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.core.utils.NamingConvention;
 
-public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOEntityRelative, ISortableEOModelObject {
+public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOEntityRelative, ISortableEOModelObject, Comparable<EOEntity> {
 	private static final String EONEXT_PRIMARY_KEY_PROCEDURE = "EONextPrimaryKeyProcedure";
 
 	private static final String EOFETCH_WITH_PRIMARY_KEY_PROCEDURE = "EOFetchWithPrimaryKeyProcedure";
@@ -2721,5 +2721,9 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	
 	public static void main(String[] args) {
 		System.out.println("EOEntity.main: " + NamingConvention.DEFAULT.format("NewEntity"));
+	}
+
+	public int compareTo(EOEntity otherEntity) {
+		return myName.compareTo(otherEntity.getName());
 	}
 }
