@@ -1,6 +1,7 @@
 package $basePackage;
 
 import com.webobjects.appserver.WOActionResults;
+import com.webobjects.appserver.WOApplication;
 import com.webobjects.appserver.WORequest;
 
 import er.extensions.appserver.ERXDirectAction;
@@ -15,5 +16,14 @@ public class DirectAction extends ERXDirectAction {
 	@Override
 	public WOActionResults defaultAction() {
 		return pageWithName(Main.class.getName());
+	}
+	
+	public Application application() {
+		return (Application)WOApplication.application();
+	}
+	
+	@Override
+	public Session session() {
+		return (Session)super.session();
 	}
 }
