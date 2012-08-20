@@ -296,6 +296,7 @@ public class ApiModel {
       Transformer transformer = transformerFactory.newTransformer();
       transformer.setOutputProperty(OutputKeys.INDENT, "yes");
       transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+      transformer.setOutputProperty(OutputKeys.STANDALONE, "yes");
       DOMSource domsource = new DOMSource(_document);
       StreamResult output = new StreamResult(writer);
       transformer.transform(domsource, output);
