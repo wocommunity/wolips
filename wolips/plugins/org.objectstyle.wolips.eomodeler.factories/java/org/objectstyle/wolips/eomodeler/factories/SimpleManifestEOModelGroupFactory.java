@@ -46,6 +46,10 @@ public class SimpleManifestEOModelGroupFactory extends AbstractManifestEOModelGr
 			try {
 				String searchFolderPath;
 				while ((searchFolderPath = manifestReader.readLine()) != null) {
+					searchFolderPath = searchFolderPath.trim();
+					if (searchFolderPath.equals("") || searchFolderPath.startsWith("#")) {
+						continue;
+					}
 					if (searchFolderPath.contains(",")) {
 						for (String possibleFolderPath : searchFolderPath.split(",")) {
 							int count = fillInSearchFolders(manifestFile.getParentFile(), possibleFolderPath, searchFolders);
