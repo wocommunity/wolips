@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+ <globalConfiguration>
+  <parameter name="sendMultiRefs" value="true"/>
+  <parameter name="sendXsiTypes" value="true"/>
+  <parameter name="sendXMLDeclaration" value="true"/>
+  <requestFlow>
+   <handler type="java:com.webobjects.webservices.support._private.WOSecurityHandler"/>
+   <handler type="java:com.webobjects.appserver._private.WOServerSessionHandler"/>
+  </requestFlow>
+  <responseFlow>
+   <handler type="java:com.webobjects.appserver._private.WOServerSessionHandler"/>
+   <handler type="java:com.webobjects.webservices.support._private.WOSecurityHandler"/>
+  </responseFlow>
+ </globalConfiguration>
+ <handler name="URLMapper" type="java:org.apache.axis.handlers.http.URLMapper"/>
+ <handler name="HTTPActionHandler" type="java:org.apache.axis.handlers.http.HTTPActionHandler"/>
+ <handler name="RPCDispatcher" type="java:org.apache.axis.providers.java.RPCProvider"/>
+ <handler name="MsgDispatcher" type="java:org.apache.axis.providers.java.MsgProvider"/>
+ <transport name="http">
+  <requestFlow>
+   <handler type="HTTPActionHandler"/>
+   <handler type="URLMapper"/>
+  </requestFlow>
+ </transport>
+</deployment>
