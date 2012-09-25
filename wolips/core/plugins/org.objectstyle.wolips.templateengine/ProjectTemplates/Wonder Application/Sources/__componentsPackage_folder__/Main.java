@@ -2,9 +2,7 @@ package $componentsPackage;
 
 import com.webobjects.appserver.WOContext;
 
-import er.extensions.components.ERXComponent;
-
-public class Main extends ERXComponent {
+public class Main extends BaseComponent {
 	public Main(WOContext context) {
 		super(context);
 	}

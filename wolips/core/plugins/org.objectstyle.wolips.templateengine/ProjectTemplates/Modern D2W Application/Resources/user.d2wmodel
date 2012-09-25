@@ -1,6 +1,33 @@
 {
   "rules" = (
     {
+      "author" = "20"; 
+      "class" = "com.webobjects.directtoweb.Rule"; 
+      "rhs" = {
+        "class" = "com.webobjects.directtoweb.Assignment"; 
+        "keyPath" = "appScreenStylesheet"; 
+        "value" = {
+          "filename" = "customizations.css"; 
+          "framework" = "app"; 
+          "media" = "screen"; 
+        }; 
+      }; 
+    }, 
+    {
+      "author" = "30"; 
+      "class" = "com.webobjects.directtoweb.Rule"; 
+      "rhs" = {
+        "class" = "com.webobjects.directtoweb.Assignment"; 
+        "keyPath" = "stylesheets"; 
+        "value" = (
+          "defaultMainScreenStylesheet", 
+          "defaultMainPrintStylesheet", 
+          "datepickerStylesheet", 
+          "appScreenStylesheet"
+        ); 
+      }; 
+    }, 
+    {
       "author" = "40"; 
       "class" = "com.webobjects.directtoweb.Rule"; 
       "rhs" = {

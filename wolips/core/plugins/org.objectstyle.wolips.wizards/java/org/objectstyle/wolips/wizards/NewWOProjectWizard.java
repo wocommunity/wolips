@@ -162,7 +162,8 @@ import org.objectstyle.wolips.wizards.template.TemplateInputsWizardPage;
  * @see WOnderApplicationWizard
  * @see WOnderFrameworkWizard
  * @see WOSubprojectCreationWizard
- * @see WOWebServicesWizardPage
+ * @see WOnderApplicationWizard
+ * @see ERRestApplicationWizard
  */
 public abstract class NewWOProjectWizard extends BasicNewResourceWizard implements IExecutableExtension {
 
@@ -188,10 +189,10 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 	 * D2W_APPLICATION_WIZARD, D2WS_APPLICATION_WIZARD, JARPROJECT_WIZARD,
 	 * WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD,
 	 * WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD,
-	 * NEWPROJECT_TEMPLATE_WIZARD,WOMAVENAPPLICATION
+	 * NEWPROJECT_TEMPLATE_WIZARD,WOMAVENAPPLICATION, ERREST_APPLICATION_WIZARD
 	 */
 	public enum WizardType {
-		WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, D2JC_APPLICATION_WIZARD, D2WS_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD, NEWPROJ_TEMPLATE_WIZARD, WOMAVENPROJECT
+		WO_APPLICATION_WIZARD, D2W_APPLICATION_WIZARD, D2JC_APPLICATION_WIZARD, D2WS_APPLICATION_WIZARD, JARPROJECT_WIZARD, WO_FRAMEWORK_WIZARD, WONDER_APPLICATION_WIZARD, WONDER_D2W_APPLICATION_WIZARD, WONDER_FRAMEWORK_WIZARD, NEWPROJ_TEMPLATE_WIZARD, WOMAVENPROJECT, ERREST_APPLICATION_WIZARD
 	}
 
 	private WizardNewProjectCreationPage _mainPage;
@@ -300,14 +301,14 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 			}
 		}
 
-		if (wizardType == WizardType.D2W_APPLICATION_WIZARD || wizardType == WizardType.WO_APPLICATION_WIZARD || wizardType == WizardType.D2WS_APPLICATION_WIZARD || wizardType == WizardType.WO_FRAMEWORK_WIZARD) {
+		if (wizardType == WizardType.D2W_APPLICATION_WIZARD || wizardType == WizardType.WO_APPLICATION_WIZARD || wizardType == WizardType.ERREST_APPLICATION_WIZARD || wizardType == WizardType.D2WS_APPLICATION_WIZARD || wizardType == WizardType.WO_FRAMEWORK_WIZARD) {
 			_frameworkSupportPage = createFrameworkSupportPage();
 			if (_frameworkSupportPage != null) {
 				addPage(_frameworkSupportPage);
 			}
 		}
 
-		if (wizardType == WizardType.WO_APPLICATION_WIZARD || wizardType == WizardType.D2W_APPLICATION_WIZARD || wizardType == WizardType.WO_FRAMEWORK_WIZARD) {
+		if (wizardType == WizardType.WO_APPLICATION_WIZARD || wizardType == WizardType.ERREST_APPLICATION_WIZARD || wizardType == WizardType.D2W_APPLICATION_WIZARD || wizardType == WizardType.WO_FRAMEWORK_WIZARD) {
 			_webservicesSupportPage = createWebServicesSupportPage();
 			if (_webservicesSupportPage != null) {
 				addPage(_webservicesSupportPage);

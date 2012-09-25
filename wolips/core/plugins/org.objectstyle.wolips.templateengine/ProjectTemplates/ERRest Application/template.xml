@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template name = "ERRest Application">
+	<inputs>
+		<input name = "basePackage" type = "Package">
+			<question>Base Package?</question>
+			<default>your.app</default>
+		</input>
+		<input name = "componentsPackage" type = "Package">
+			<question>Components Package?</question>
+			<default>your.app.components</default>
+		</input>
+		<input name = "restControllersPackage" type = "Package">
+			<question>Rest Controllers Package?</question>
+			<default>your.app.rest.controllers</default>
+		</input>		
+	</inputs>
+</template>
