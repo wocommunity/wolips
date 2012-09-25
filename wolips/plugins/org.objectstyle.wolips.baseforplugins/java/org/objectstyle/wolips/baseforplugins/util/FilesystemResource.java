@@ -70,6 +70,10 @@ public class FilesystemResource implements IResource, IResourceProxy {
 		throw new UnsupportedOperationException();
 	}
 
+	public void accept(IResourceProxyVisitor visitor, int depth, int memberFlags) throws CoreException {
+		throw new UnsupportedOperationException();
+	}
+
 	public void clearHistory(IProgressMonitor monitor) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
