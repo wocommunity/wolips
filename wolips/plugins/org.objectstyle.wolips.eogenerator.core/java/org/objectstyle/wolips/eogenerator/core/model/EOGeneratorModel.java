@@ -410,6 +410,9 @@ public class EOGeneratorModel {
 
 	protected void append(StringBuffer _buffer, String _name, Boolean _value) {
 		if (_value != null && _value.booleanValue()) {
+			if (_buffer.length() > 0) {
+				_buffer.append(" \\\n");
+			}
 			_buffer.append(" ");
 			_buffer.append(_name);
 		}
@@ -417,6 +420,9 @@ public class EOGeneratorModel {
 
 	protected void append(StringBuffer _buffer, String _name, String _value) {
 		if (_value != null && _value.trim().length() > 0) {
+			if (_buffer.length() > 0) {
+				_buffer.append(" \\\n");
+			}
 			_buffer.append(" ");
 			_buffer.append(_name);
 			_buffer.append(" ");
@@ -446,7 +452,7 @@ public class EOGeneratorModel {
 		if (!tokenizer.hasMoreTokens()) {
 			throw new ParseException(previousToken + " must be followed by a value.", -1);
 		}
-		String token = tokenizer.nextToken();
+		String token = tokenizer.nextToken().trim();
 		return token;
 	}
 
@@ -853,7 +859,7 @@ public class EOGeneratorModel {
 			BufferedReader br = new BufferedReader(new InputStreamReader(eogenFileStream));
 			String line;
 			while ((line = br.readLine()) != null) {
-				sb.append(line);
+				sb.append(line.replace("\\$", ""));
 			}
 			String string = sb.toString();
 			string.replace('\\', '/');
