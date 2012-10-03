@@ -859,7 +859,7 @@ public class EOGeneratorModel {
 			BufferedReader br = new BufferedReader(new InputStreamReader(eogenFileStream));
 			String line;
 			while ((line = br.readLine()) != null) {
-				sb.append(line.replace("\\$", ""));
+				sb.append(line.replaceFirst("\\\\$", ""));
 			}
 			String string = sb.toString();
 			string.replace('\\', '/');

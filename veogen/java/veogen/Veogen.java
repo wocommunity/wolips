@@ -68,7 +68,7 @@ public class Veogen {
 				StringBuilder sb = new StringBuilder();
 				String configLine;
 				while ((configLine = br.readLine()) != null) {
-					sb.append(configLine.replace("\\$", ""));
+					sb.append(configLine.replaceFirst("\\\\$", ""));
 				}
 				eogeneratorModel.readFromString(sb.toString(), workingDir);
 			}
