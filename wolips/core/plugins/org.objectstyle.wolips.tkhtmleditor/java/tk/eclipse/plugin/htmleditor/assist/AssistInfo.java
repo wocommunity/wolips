@@ -10,6 +10,7 @@ public class AssistInfo {
 	private String replaceString;
 	private Image image;
   private int _offset;
+	private boolean _deprecated;
 	
 	public AssistInfo(String displayString){
 		this.displayString = displayString;
@@ -52,8 +53,24 @@ public class AssistInfo {
   public int getOffset() {
     return _offset;
   }
+
+  	public void setDeprecated(boolean deprecated) {
+  		_deprecated = deprecated;
+  	}
+  	
+  	public boolean getDeprecated() {
+  		return _deprecated;
+  	}
 	
 	public ICompletionProposal toCompletionProposal(int offset, String matchString, Image defaultImage){
+		if (_deprecated) {
+			return new HTMLDeprecatedCompletionProposal(
+				getReplaceString(),
+				_offset + offset - matchString.length(), matchString.length() - _offset,
+				getReplaceString().length(),
+				getImage()==null ? defaultImage : getImage(),
+				getDisplayString(), null, null);
+		}
 		return new CompletionProposal(
 				getReplaceString(),
 				_offset + offset - matchString.length(), matchString.length() - _offset,

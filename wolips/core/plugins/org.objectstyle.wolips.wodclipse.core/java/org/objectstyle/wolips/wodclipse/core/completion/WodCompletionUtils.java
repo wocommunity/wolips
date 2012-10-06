@@ -102,11 +102,20 @@ public class WodCompletionUtils {
           elementTypeName = BindingReflectionUtils.getShortClassName(matchingElementTypeName);
         }
         WodCompletionProposal completionProposal;
+        IType type = typeNameCollector.getTypeForClassName(matchingElementTypeName);
         if (WodCompletionUtils.shouldSmartInsert() && guessed) {
-          completionProposal = new WodCompletionProposal(token, tokenOffset, offset, elementTypeName + " {\n\t\n}", elementTypeName, elementTypeName.length() + 4);
+       	  if (BindingReflectionUtils.memberIsDeprecated(type)) {
+       		completionProposal = new WodDeprecatedCompletionProposal(token, tokenOffset, offset, elementTypeName + " {\n\t\n}", elementTypeName, elementTypeName.length() + 4);
+       	  } else {
+       		completionProposal = new WodCompletionProposal(token, tokenOffset, offset, elementTypeName + " {\n\t\n}", elementTypeName, elementTypeName.length() + 4);
+       	  }
         }
         else {
-          completionProposal = new WodCompletionProposal(token, tokenOffset, offset, elementTypeName);
+          if (BindingReflectionUtils.memberIsDeprecated(type)) {
+        	completionProposal = new WodDeprecatedCompletionProposal(token, tokenOffset, offset, elementTypeName);
+          } else {
+        	completionProposal = new WodCompletionProposal(token, tokenOffset, offset, elementTypeName);
+          }
         }
         completionProposalsSet.add(completionProposal);
       }
@@ -193,9 +202,13 @@ public class WodCompletionUtils {
     Iterator<BindingValueKey> bindingKeysIter = BindingReflectionUtils.filterSystemBindingValueKeys(bindingKeys, showUsefulSystemBindings).iterator();
     while (bindingKeysIter.hasNext()) {
       BindingValueKey bindingKey = bindingKeysIter.next();
-      WodCompletionProposal completionProposal = new WodCompletionProposal(token, tokenOffset, offset, bindingKey.getBindingName());
+      WodCompletionProposal completionProposal;
+      if (BindingReflectionUtils.bindingPointsToDeprecatedValue(bindingKey)) {
+    	  completionProposal = new WodDeprecatedCompletionProposal(token, tokenOffset, offset, bindingKey.getBindingName());
+      } else {
+    	  completionProposal = new WodCompletionProposal(token, tokenOffset, offset, bindingKey.getBindingName());
+      }
       completionProposalsSet.add(completionProposal);
     }
   }
-
 }
