@@ -93,7 +93,7 @@ public class TargetBuilder extends JavaBuilder {
 	}
 
 	private void cancelBuildOnErrors() throws CoreException {
-		Integer severityError = new Integer(IMarker.SEVERITY_ERROR);
+		Integer severityError = Integer.valueOf(IMarker.SEVERITY_ERROR);
 
 		IMarker[] problemMarkers = JavaBuilder.getProblemsFor(getProject());
 		for (int j = 0; j < problemMarkers.length; j++) {

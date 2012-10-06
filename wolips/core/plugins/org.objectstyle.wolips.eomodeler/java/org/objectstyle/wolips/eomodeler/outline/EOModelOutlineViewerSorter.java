@@ -26,17 +26,17 @@ public class EOModelOutlineViewerSorter extends ViewerSorter {
 
 	public EOModelOutlineViewerSorter() {
 		myOrder = new HashMap<Class, Integer>();
-		myOrder.put(EOModel.class, new Integer(1));
-		myOrder.put(EOEntity.class, new Integer(10));
-		myOrder.put(EOAttribute.class, new Integer(3));
-		myOrder.put(EOAttributePath.class, new Integer(3));
-		myOrder.put(EOArgument.class, new Integer(4));
-		myOrder.put(EORelationship.class, new Integer(5));
-		myOrder.put(EORelationshipPath.class, new Integer(5));
-		myOrder.put(EOFetchSpecification.class, new Integer(6));
-		myOrder.put(EOStoredProcedure.class, new Integer(7));
-		myOrder.put(EOEntityIndex.class, new Integer(20));
-		myOrder.put(EODatabaseConfig.class, new Integer(30));
+		myOrder.put(EOModel.class, Integer.valueOf(1));
+		myOrder.put(EOEntity.class, Integer.valueOf(10));
+		myOrder.put(EOAttribute.class, Integer.valueOf(3));
+		myOrder.put(EOAttributePath.class, Integer.valueOf(3));
+		myOrder.put(EOArgument.class, Integer.valueOf(4));
+		myOrder.put(EORelationship.class, Integer.valueOf(5));
+		myOrder.put(EORelationshipPath.class, Integer.valueOf(5));
+		myOrder.put(EOFetchSpecification.class, Integer.valueOf(6));
+		myOrder.put(EOStoredProcedure.class, Integer.valueOf(7));
+		myOrder.put(EOEntityIndex.class, Integer.valueOf(20));
+		myOrder.put(EODatabaseConfig.class, Integer.valueOf(30));
 	}
 
 	protected int getOrder(Object _obj) {

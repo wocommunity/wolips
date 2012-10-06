@@ -97,9 +97,9 @@ public class DTDEditor extends HTMLSourceEditor {
 						DTDErrorInfo error = new DTDErrorInfo(ex);
 						IMarker marker = file.createMarker(IMarker.PROBLEM);
 						Map<String, Object> map = new HashMap<String, Object>();
-						map.put(IMarker.SEVERITY, new Integer(IMarker.SEVERITY_ERROR));
+						map.put(IMarker.SEVERITY, Integer.valueOf(IMarker.SEVERITY_ERROR));
 						map.put(IMarker.MESSAGE, error.getError());
-						map.put(IMarker.LINE_NUMBER,new Integer(error.getLine()));
+						map.put(IMarker.LINE_NUMBER,Integer.valueOf(error.getLine()));
 						marker.setAttributes(map);
 					} catch(Exception ex){
 						HTMLPlugin.logException(ex);

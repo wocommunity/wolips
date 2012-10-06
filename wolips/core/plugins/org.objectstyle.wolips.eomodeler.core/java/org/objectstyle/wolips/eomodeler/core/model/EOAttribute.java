@@ -188,7 +188,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 
 	public void guessPrototype(boolean _skipIfAlreadyPrototyped) {
 		if (!_skipIfAlreadyPrototyped || getPrototype() == null) {
-			boolean probablyBooleanString = new Integer(5).equals(getWidth()) && ("S".equals(getValueType()) || "c".equals(getValueType()));
+			boolean probablyBooleanString = Integer.valueOf(5).equals(getWidth()) && ("S".equals(getValueType()) || "c".equals(getValueType()));
 			EOAttribute matchingPrototypeAttribute = null;
 			Iterator<EOAttribute> prototypeAttributesIter = getEntity().getModel().getPrototypeAttributes().iterator();
 			while (matchingPrototypeAttribute == null && prototypeAttributesIter.hasNext()) {

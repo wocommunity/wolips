@@ -65,7 +65,7 @@ public class EOArgumentsCellModifier extends TablePropertyCellModifier {
 		Object value = null;
 		if (EOArgument.DIRECTION.equals(_property)) {
 			EOArgumentDirection direction = argument.getDirection();
-			value = new Integer(direction.getID());
+			value = Integer.valueOf(direction.getID());
 		} else if (AbstractEOArgument.ALLOWS_NULL.equals(_property)) {
 			value = super.getValue(_element, _property);
 			if (value == null) {

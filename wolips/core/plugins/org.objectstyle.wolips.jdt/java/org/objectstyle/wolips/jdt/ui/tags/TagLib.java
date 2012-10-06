@@ -116,7 +116,7 @@ public class TagLib {
 			String key = (String) enumeration.nextElement();
 			if (key.startsWith(TAG)) {
 				String id = key.substring(key.indexOf('.') + 1);
-				Integer idInteger = new Integer(id);
+				Integer idInteger = Integer.valueOf(id);
 				String value = properties.getProperty(key);
 				Tag tag = new Tag(this, idInteger.intValue(), value);
 				tagsList.add(tag);
@@ -131,7 +131,7 @@ public class TagLib {
 				ArrayList<Integer> idsList = new ArrayList<Integer>();
 				while (stringTokenizer.hasMoreTokens()) {
 					String id = stringTokenizer.nextToken();
-					Integer idInteger = new Integer(id);
+					Integer idInteger = Integer.valueOf(id);
 					idsList.add(idInteger);
 				}
 				int[] ids = new int[idsList.size()];
