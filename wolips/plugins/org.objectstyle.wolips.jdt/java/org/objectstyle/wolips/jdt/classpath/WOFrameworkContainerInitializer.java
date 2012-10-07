@@ -91,6 +91,8 @@ import org.objectstyle.wolips.jdt.classpath.model.IEclipseFramework;
  * @author mschrag
  */
 public class WOFrameworkContainerInitializer extends ClasspathContainerInitializer {
+	protected Map<String, WOFrameworkClasspathContainer> classpathContainerCache = new HashMap<String, WOFrameworkClasspathContainer>();
+
 	public static final String OLD_OLD_WOLIPS_CLASSPATH_CONTAINER_ID = "org.objectstyle.wolips.WO_CLASSPATH";
 
 	public static final String OLD_WOLIPS_CLASSPATH_CONTAINER_ID = "org.objectstyle.wolips.ContainerInitializer";
@@ -129,15 +131,24 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 		} else if (WOFrameworkContainerInitializer.OLD_WOLIPS_CLASSPATH_CONTAINER_ID.equals(containerID)) {
 			convertOldClasspathContainer(javaProject);
 		} else if (WOFrameworkClasspathContainer.ID.equals(containerID)) {
-			String frameworkName = frameworkNameForClasspathPath(containerPath);
-			IEclipseFramework framework = JdtPlugin.getDefault().getFrameworkModel(javaProject.getProject()).getFrameworkWithName(frameworkName);
-			if (framework != null) {
-				WOFrameworkClasspathContainer frameworkContainer = new WOFrameworkClasspathContainer(framework, paramsForClasspathPath(containerPath));
-				JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { javaProject }, new IClasspathContainer[] { frameworkContainer }, null);
-			} else {
-				JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { javaProject }, new IClasspathContainer[] { null }, null);
-			}
+			WOFrameworkClasspathContainer frameworkContainer = frameworkContainerForClasspath(containerPath, javaProject);
+			JavaCore.setClasspathContainer(containerPath, new IJavaProject[] { javaProject }, new IClasspathContainer[] { frameworkContainer }, null);
 		}
+	}
+	
+	protected synchronized WOFrameworkClasspathContainer frameworkContainerForClasspath(IPath containerPath, IJavaProject javaProject) {
+		String frameworkName = frameworkNameForClasspathPath(containerPath);
+		IEclipseFramework framework = JdtPlugin.getDefault().getFrameworkModel(javaProject.getProject()).getFrameworkWithName(frameworkName);
+		if (framework == null) {
+			return null;
+		}
+		String key = containerPath.toPortableString();
+		WOFrameworkClasspathContainer container = classpathContainerCache.get(key);
+		if (container == null) {
+			container =  new WOFrameworkClasspathContainer(framework, paramsForClasspathPath(containerPath));
+			classpathContainerCache.put(key, container);
+		}
+		return container;
 	}
 
 	protected void convertOldClasspathContainer(final IJavaProject javaProject) throws JavaModelException {
