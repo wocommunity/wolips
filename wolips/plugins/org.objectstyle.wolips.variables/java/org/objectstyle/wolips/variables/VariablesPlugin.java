@@ -101,6 +101,24 @@ public class VariablesPlugin extends AbstractBaseActivator {
 	public ProjectVariables getProjectVariables(IProject project) {
 		return new ProjectVariables(getWOVariables(project, null));
 	}
+	
+	public boolean hasProjectVariables(IProject project) {
+		Properties defaultProperties = new Properties();
+		String defaultPropertiesFile = Preferences.getString(Preferences.PREF_WOLIPS_PROPERTIES_FILE);
+		if (defaultPropertiesFile != null && defaultPropertiesFile.length() > 0) {
+			defaultProperties.put(WOVariables.WOLIPS_PROPERTIES, defaultPropertiesFile);
+		}
+
+		if (project != null) {
+			BuildProperties buildPropertiesAdapter = (BuildProperties) project.getAdapter(BuildProperties.class);
+			Properties buildProperties = null;
+			if (buildPropertiesAdapter != null) {
+				buildProperties = buildPropertiesAdapter.getProperties();
+			}
+			return buildProperties != null && !buildProperties.isEmpty();
+		}
+		return false;
+	}
 
 	private WOVariables getWOVariables(IProject project, String wolipsPropertiesFile) {
 		//if (this.woEnvironment == null) {

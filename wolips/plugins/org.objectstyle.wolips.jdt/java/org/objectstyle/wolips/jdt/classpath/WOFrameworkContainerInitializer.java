@@ -85,7 +85,9 @@ import org.eclipse.ui.PlatformUI;
 import org.objectstyle.woenvironment.frameworks.FrameworkModel;
 import org.objectstyle.wolips.jdt.JdtPlugin;
 import org.objectstyle.wolips.jdt.ProjectFrameworkAdapter;
+import org.objectstyle.wolips.jdt.classpath.model.EclipseFrameworkModel;
 import org.objectstyle.wolips.jdt.classpath.model.IEclipseFramework;
+import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
  * @author mschrag
@@ -138,17 +140,28 @@ public class WOFrameworkContainerInitializer extends ClasspathContainerInitializ
 	
 	protected synchronized WOFrameworkClasspathContainer frameworkContainerForClasspath(IPath containerPath, IJavaProject javaProject) {
 		String frameworkName = frameworkNameForClasspathPath(containerPath);
-		IEclipseFramework framework = JdtPlugin.getDefault().getFrameworkModel(javaProject.getProject()).getFrameworkWithName(frameworkName);
+		EclipseFrameworkModel frameworkModel;
+		boolean useCache = ! VariablesPlugin.getDefault().hasProjectVariables(javaProject.getProject());
+		if (!useCache) {
+			frameworkModel = JdtPlugin.getDefault().getFrameworkModel(javaProject.getProject());
+		} 
+		else {
+			frameworkModel = JdtPlugin.getDefault().getFrameworkModel(null);
+		}
+		IEclipseFramework framework = frameworkModel.getFrameworkWithName(frameworkName);
 		if (framework == null) {
 			return null;
 		}
-		String key = containerPath.toPortableString();
-		WOFrameworkClasspathContainer container = classpathContainerCache.get(key);
-		if (container == null) {
-			container =  new WOFrameworkClasspathContainer(framework, paramsForClasspathPath(containerPath));
-			classpathContainerCache.put(key, container);
+		if (useCache) {
+			String key = containerPath.toPortableString();
+			WOFrameworkClasspathContainer container = classpathContainerCache.get(key);
+			if (container == null) {
+				container = new WOFrameworkClasspathContainer(framework, paramsForClasspathPath(containerPath));
+				classpathContainerCache.put(key, container);
+			}
+			return container;
 		}
-		return container;
+		return new WOFrameworkClasspathContainer(framework, paramsForClasspathPath(containerPath));
 	}
 
 	protected void convertOldClasspathContainer(final IJavaProject javaProject) throws JavaModelException {

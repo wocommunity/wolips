@@ -48,7 +48,7 @@ public class ProjectVariables implements IPersistentPreferenceStore {
 	/**
 	 * @return the path to the local root
 	 */
-	public IPath getLocalFrameworkPatb() {
+	public IPath getLocalFrameworkPath() {
 		return this.fixMissingSeparatorAfterDevice(_variables.localFrameworkPath());
 	}
 
