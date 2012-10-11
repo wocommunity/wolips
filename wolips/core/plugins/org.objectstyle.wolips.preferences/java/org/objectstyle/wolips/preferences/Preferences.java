@@ -393,6 +393,10 @@ public class Preferences {
 			return this.parameter;
 		}
 
+		public int compareTo(ILaunchInfo obj) {
+			return parameter.compareTo(obj.getParameter());
+		}
+
 	}
 
 	public static String getLaunchGlobal() {
