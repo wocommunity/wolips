@@ -76,6 +76,7 @@ public class BindingValidationPreferencePage extends FieldEditorPreferencePage i
 		addField(new ComboFieldEditor(PreferenceConstants.WOD_API_PROBLEMS_SEVERITY_KEY, "WOD API Problems", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
 		addField(new ComboFieldEditor(PreferenceConstants.UNUSED_WOD_ELEMENT_SEVERITY_KEY, "Unused WOD Elements", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
 		addField(new ComboFieldEditor(PreferenceConstants.WOD_ERRORS_IN_HTML_SEVERITY_KEY, "WOD Errors in Template", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
+		addField(new ComboFieldEditor(PreferenceConstants.DEPRECATED_BINDING_SEVERITY_KEY, "Deprecated API in Template", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
 		addField(new ComboFieldEditor(PreferenceConstants.MISSING_COLLECTION_SEVERITY_KEY, "Missing Key on NSDictionary/NSArray", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
 		addField(new ComboFieldEditor(PreferenceConstants.MISSING_COMPONENT_SEVERITY_KEY, "Missing Key on 'extends WOComponent'", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
 		addField(new ComboFieldEditor(PreferenceConstants.MISSING_NSKVC_SEVERITY_KEY, "Missing Key on 'implements NSKeyValueCoding'", PreferenceConstants.IGNORE_WARNING_ERROR, getFieldEditorParent()));
