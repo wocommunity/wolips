@@ -30,6 +30,7 @@ import org.objectstyle.wolips.bindings.wod.TagShortcut;
 import org.objectstyle.wolips.variables.BuildProperties;
 import org.objectstyle.wolips.wodclipse.core.completion.WodCompletionProposal;
 import org.objectstyle.wolips.wodclipse.core.completion.WodCompletionUtils;
+import org.objectstyle.wolips.wodclipse.core.completion.WodDeprecatedCompletionProposal;
 import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import org.objectstyle.wolips.wodclipse.core.util.WodHtmlUtils;
 
@@ -221,6 +222,9 @@ public class TemplateAssistProcessor extends HTMLAssistProcessor {
           }
           AssistInfo assist = new AssistInfo(proposalString);
           assist.setOffset(dotIndex);
+          if (proposal instanceof WodDeprecatedCompletionProposal) {
+            assist.setDeprecated(true);
+          }
           attributeValuesList.add(assist);
         }
       }

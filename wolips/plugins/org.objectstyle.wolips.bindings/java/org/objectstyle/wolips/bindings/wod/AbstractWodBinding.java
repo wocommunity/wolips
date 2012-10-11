@@ -363,6 +363,18 @@ public abstract class AbstractWodBinding implements IWodBinding {
             // problems.add(new WodBindingValueProblem(bindingName, "The key '" + getName() + "' cannot be a constant value.", getValuePosition(), lineNumber, false));
           }
         }
+        String deprecationSeverity = Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.DEPRECATED_BINDING_SEVERITY_KEY);
+        if (!PreferenceConstants.IGNORE.equals(deprecationSeverity)) {
+          BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(bindingValue, javaFileType, javaProject, cache);
+          if (bindingValueKeyPath.isValid() && bindingValueKeyPath.getBindingKeys() != null) {
+            for (BindingValueKey bindingKey : bindingValueKeyPath.getBindingKeys()) {
+              if (BindingReflectionUtils.bindingPointsToDeprecatedValue(bindingKey)) {
+                problems.add(new WodBindingDeprecationProblem(element, this, bindingName, "The key '" +bindingName + "' uses a value that is deprecated.", getValuePosition(), lineNumber, PreferenceConstants.WARNING.equals(deprecationSeverity)));
+                break;
+              }
+            }
+          }
+        }
 
         String invalidOGNLSeverity = Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.INVALID_OGNL_SEVERITY_KEY);
         if (!PreferenceConstants.IGNORE.equals(invalidOGNLSeverity) && isOGNL()) {
