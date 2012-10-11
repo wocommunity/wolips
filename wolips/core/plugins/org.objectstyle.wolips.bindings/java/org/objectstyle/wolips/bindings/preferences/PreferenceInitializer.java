@@ -154,6 +154,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     prefs.setDefault(PreferenceConstants.UNUSED_WOD_ELEMENT_SEVERITY_KEY, PreferenceConstants.WARNING);
     prefs.setDefault(PreferenceConstants.WOD_MISSING_COMPONENT_SEVERITY_KEY, PreferenceConstants.ERROR);
     prefs.setDefault(PreferenceConstants.WOD_API_PROBLEMS_SEVERITY_KEY, PreferenceConstants.ERROR);
+    prefs.setDefault(PreferenceConstants.DEPRECATED_BINDING_SEVERITY_KEY, PreferenceConstants.WARNING);
     prefs.setDefault(PreferenceConstants.AT_OPERATOR_SEVERITY_KEY, PreferenceConstants.WARNING);
     prefs.setDefault(PreferenceConstants.HELPER_FUNCTION_SEVERITY_KEY, PreferenceConstants.WARNING);
     prefs.setDefault(PreferenceConstants.WELL_FORMED_TEMPLATE_KEY, PreferenceConstants.DEFAULT);

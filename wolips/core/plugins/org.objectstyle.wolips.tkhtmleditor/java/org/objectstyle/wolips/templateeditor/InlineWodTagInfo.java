@@ -38,6 +38,16 @@ public class InlineWodTagInfo extends TagInfo {
   public IJavaProject getJavaProject() {
     return _javaProject;
   }
+  
+  public IType getElementType() {
+    IType elementType = null;
+    try {
+      elementType = BindingReflectionUtils.findElementType(_javaProject, getExpandedElementTypeName(), false, _cache);
+    } catch (JavaModelException e) {
+      // ignore;
+    }
+    return elementType;
+  }
 
   public String getElementTypeName() {
     return _elementTypeName;
