@@ -56,6 +56,7 @@
 
 package org.objectstyle.wolips.launching.ui;
 
+import java.util.Arrays;
 import java.util.Vector;
 
 import org.eclipse.core.resources.IContainer;
@@ -103,9 +104,9 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 
 	private Button changeButton;
 
-	private Vector allParameter;
+	private Vector<String> allParameter;
 
-	private Vector allArguments;
+	private Vector<String> allArguments;
 
 	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
@@ -217,9 +218,10 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 	}
 
 	private void fillTable(ILaunchInfo[] launchInfoArray) {
-		this.allArguments = new Vector();
-		this.allParameter = new Vector();
+		this.allArguments = new Vector<String>();
+		this.allParameter = new Vector<String>();
 		this.includeTable.removeAll();
+		Arrays.sort(launchInfoArray);
 		for (int i = 0; i < launchInfoArray.length; i++) {
 			ILaunchInfo launchInfo = launchInfoArray[i];
 			TableItem item = new TableItem(this.includeTable, SWT.NONE);
@@ -294,8 +296,8 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		if (selection.length != 1)
 			return;
 		int index = selection[0];
-		String parameter = (String) this.allParameter.elementAt(index);
-		InputDialog argumentDialog = new InputDialog(getShell(), parameter + " " + PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), (String) this.allArguments.elementAt(index), null);
+		String parameter = this.allParameter.elementAt(index);
+		InputDialog argumentDialog = new InputDialog(getShell(), parameter + " " + PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), this.allArguments.elementAt(index), null);
 		argumentDialog.open();
 		if (argumentDialog.getReturnCode() != Window.OK)
 			return;
@@ -364,8 +366,8 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		boolean[] enabled = new boolean[count];
 		TableItem[] items = this.includeTable.getItems();
 		for (int i = 0; i < count; i++) {
-			parameter[i] = (String) this.allParameter.get(i);
-			arguments[i] = (String) this.allArguments.get(i);
+			parameter[i] = this.allParameter.get(i);
+			arguments[i] = this.allArguments.get(i);
 			enabled[i] = items[i].getChecked();
 		}
 		String string = Preferences.LaunchInfoToString(parameter, arguments, enabled);
