@@ -243,7 +243,7 @@ public class Wo extends AbstractApiModelElement {
           StringWriter sw = new StringWriter();
 
           TransformerFactory transformerFactory = TransformerFactory.newInstance();
-          transformerFactory.setAttribute("indent-number", new Integer(4));
+          transformerFactory.setAttribute("indent-number", Integer.valueOf(4));
           StreamResult output = new StreamResult(sw);
           Transformer transformer = transformerFactory.newTransformer();
           transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -251,7 +251,7 @@ public class Wo extends AbstractApiModelElement {
           transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 
           //      TransformerFactory xformerFactory = TransformerFactory.newInstance();
-          //      xformerFactory.setAttribute("indent-number", new Integer(4));
+          //      xformerFactory.setAttribute("indent-number", Integer.valueOf(4));
           //      OutputFormat outputFormat = new OutputFormat("XML", "UTF-8", true);
           //      outputFormat.setIndent(1);
           //      outputFormat.setIndenting(true);

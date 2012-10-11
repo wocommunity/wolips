@@ -81,7 +81,7 @@ public class EOArgument extends AbstractEOArgument<EOStoredProcedure> {
 		super.loadFromMap(_argumentMap, _failures);
 		Integer argumentDirectionNum = _argumentMap.getInteger("parameterDirection");
 		if (argumentDirectionNum == null) {
-			argumentDirectionNum = new Integer(0);
+			argumentDirectionNum = Integer.valueOf(0);
 		}
 		myDirection = EOArgumentDirection.getArgumentDirectionByID(argumentDirectionNum.intValue());
 	}
@@ -91,7 +91,7 @@ public class EOArgument extends AbstractEOArgument<EOStoredProcedure> {
 		if (myDirection == null || myDirection == EOArgumentDirection.VOID) {
 			argumentMap.remove("parameterDirection");
 		} else {
-			argumentMap.setInteger("parameterDirection", new Integer(myDirection.getID()));
+			argumentMap.setInteger("parameterDirection", Integer.valueOf(myDirection.getID()));
 		}
 		return argumentMap;
 	}

@@ -284,7 +284,7 @@ public class RuleEditor {
 		 * rhstext.setText(rule.rhsKeyPath()); if (rule.rhs().value() == null)
 		 * valuetext.setText(""); else
 		 * valuetext.setText(rule.rhs().value().toString());
-		 * prioritytext.setText((new Integer(rule.author())).toString()); } }
+		 * prioritytext.setText((Integer.valueOf(rule.author())).toString()); } }
 		 * public void mouseDoubleClick(MouseEvent event) { // Dispose any
 		 * existing editor Control old = editor.getEditor(); if (old != null)
 		 * old.dispose(); if (item != null) { // Create the Text object for our

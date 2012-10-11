@@ -409,9 +409,9 @@ public class HTMLUtil {
 		try {
 			IMarker marker = resource.createMarker(IMarker.PROBLEM);
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put(IMarker.SEVERITY, new Integer(type));
+			map.put(IMarker.SEVERITY, Integer.valueOf(type));
 			map.put(IMarker.MESSAGE, message);
-			map.put(IMarker.LINE_NUMBER,new Integer(line));
+			map.put(IMarker.LINE_NUMBER,Integer.valueOf(line));
 			marker.setAttributes(map);
 		} catch(CoreException ex){
 			HTMLPlugin.logException(ex);
@@ -432,9 +432,9 @@ public class HTMLUtil {
 		try {
 			IMarker marker = resource.createMarker(IMarker.TASK);
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put(IMarker.PRIORITY, new Integer(priority));
+			map.put(IMarker.PRIORITY, Integer.valueOf(priority));
 			map.put(IMarker.MESSAGE, message);
-			map.put(IMarker.LINE_NUMBER,new Integer(line));
+			map.put(IMarker.LINE_NUMBER,Integer.valueOf(line));
 			marker.setAttributes(map);
 		} catch(CoreException ex){
 			HTMLPlugin.logException(ex);
@@ -455,11 +455,11 @@ public class HTMLUtil {
 		try {
 			IMarker marker = resource.createMarker(IMarker.PROBLEM);
 			Map<String, Object> map = new HashMap<String, Object>();
-			map.put(IMarker.SEVERITY, new Integer(type));
+			map.put(IMarker.SEVERITY, Integer.valueOf(type));
 			map.put(IMarker.MESSAGE, message);
-			map.put(IMarker.CHAR_START,new Integer(offset));
-			map.put(IMarker.CHAR_END,new Integer(offset + length));
-			map.put(IMarker.LINE_NUMBER,new Integer(line));
+			map.put(IMarker.CHAR_START,Integer.valueOf(offset));
+			map.put(IMarker.CHAR_END,Integer.valueOf(offset + length));
+			map.put(IMarker.LINE_NUMBER,Integer.valueOf(line));
 			marker.setAttributes(map);
 		} catch(CoreException ex){
 			HTMLPlugin.logException(ex);

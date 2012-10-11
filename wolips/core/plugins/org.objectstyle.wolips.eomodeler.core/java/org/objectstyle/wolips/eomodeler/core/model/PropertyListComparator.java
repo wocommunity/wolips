@@ -91,7 +91,7 @@ public class PropertyListComparator implements Comparator<Object> {
 							}
 						}
 						if (oneEntry != null) {
-							result.guideMap.put(oneEntry, new Integer(i));
+							result.guideMap.put(oneEntry, Integer.valueOf(i));
 						}
 					}
 				}
@@ -175,7 +175,7 @@ public class PropertyListComparator implements Comparator<Object> {
 					return compareResult;
 				}
 			}
-			return compare(new Integer(allKeys0.size()), new Integer(allKeys1.size()));
+			return compare(Integer.valueOf(allKeys0.size()), Integer.valueOf(allKeys1.size()));
 		} else {
 			int compareResult = compare(arg0.getClass().getName(), arg1.getClass().getName());
 			if (compareResult != 0) {
