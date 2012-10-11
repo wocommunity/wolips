@@ -1,6 +1,5 @@
 package org.objectstyle.wolips.bindings.utils;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.Flags;
@@ -540,5 +538,33 @@ public class BindingReflectionUtils {
     }
 
     return typeKeys;
+  }
+
+  /**
+   * Check if the member the given binding key points to is deprecated.
+   * 
+   * @param bindingKey the binding
+   * @return <code>true</code> if binding points to something deprecated
+   */
+  public static boolean bindingPointsToDeprecatedValue(BindingValueKey bindingKey) {
+	  return memberIsDeprecated(bindingKey.getBindingMember());
+  }
+  
+  /**
+   * Check if the given member is deprecated.
+   * 
+   * @param member the member
+   * @return <code>true</code> if member is deprecated
+   */
+  public static boolean memberIsDeprecated(IMember member) {
+	  boolean isDeprecated = false;
+	  if (member != null) {
+		  try {
+			  isDeprecated = ((member.getFlags() & Flags.AccDeprecated) == Flags.AccDeprecated);
+		  } catch (JavaModelException e) {
+			  // ignore
+		  }
+	  }
+	  return isDeprecated;
   }
 }
