@@ -62,11 +62,15 @@ public interface CoreServices extends Library {
 	
 	public int Gestalt(int selector, int[] response);
 	
-	public class CoreServicesWrapper implements CoreServices {
-		private final CoreServices coreServices;
+	public static class CoreServicesWrapper implements CoreServices {
+		private static final CoreServices coreServices = CoreServices.INSTANCE;
+		private static final CoreServicesWrapper wrapper = new CoreServicesWrapper();
 
-		public CoreServicesWrapper() {
-			coreServices = CoreServices.INSTANCE;
+		public static CoreServicesWrapper defaultInstance() {
+			return wrapper;
+		}
+		
+		private CoreServicesWrapper() {
 		}
 
 		public long FSEventsGetCurrentEventId() {
