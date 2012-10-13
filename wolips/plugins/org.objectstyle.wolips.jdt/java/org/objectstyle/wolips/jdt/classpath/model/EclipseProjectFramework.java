@@ -88,7 +88,7 @@ import org.xml.sax.SAXException;
 
 public class EclipseProjectFramework extends Framework implements IEclipseFramework {
 	private IProject project;
-	private List<IClasspathEntry> cachedClasspathEntries;
+	private IClasspathEntry[] cachedClasspathEntries;
 
 	public EclipseProjectFramework(Root root, IProject project) {
 		super(root, EclipseProjectFramework.frameworkNameForProject(project));
@@ -113,14 +113,14 @@ public class EclipseProjectFramework extends Framework implements IEclipseFramew
 		return true;
 	}
 
-	public synchronized List<IClasspathEntry> getClasspathEntries() {
-		List<IClasspathEntry> classpathEntries = cachedClasspathEntries;
+	public synchronized IClasspathEntry[] getClasspathEntries() {
+		List<IClasspathEntry> classpathEntries;
 		if (cachedClasspathEntries == null) {
 			classpathEntries = new LinkedList<IClasspathEntry>();
 			classpathEntries.add(JavaCore.newProjectEntry(this.project.getFullPath()));
-			cachedClasspathEntries = classpathEntries;
+			cachedClasspathEntries = classpathEntries.toArray(new IClasspathEntry[classpathEntries.size()]);
 		}
-		return classpathEntries;
+		return cachedClasspathEntries.clone();
 	}
 	
 	public Version getVersion() {

@@ -1,5 +1,8 @@
 package org.objectstyle.wolips.jdt.classpath;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -11,12 +14,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IClasspathContainer;
-import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 import org.objectstyle.wolips.jdt.JdtPlugin;
 import org.objectstyle.wolips.jdt.ProjectFrameworkAdapter;
 import org.objectstyle.wolips.jdt.classpath.model.EclipseProjectFramework;
@@ -25,26 +27,18 @@ public class WOFrameworkResourceListener implements IResourceChangeListener {
 	protected synchronized void woFrameworkChanged(String frameworkName) throws CoreException {
 		JdtPlugin.getDefault().invalidateFrameworkModel();
 		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
-		for (IProject project : projects) {
-			if (project.isAccessible()) {
-				ProjectAdapter woProjectAdaptor = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
-				if (woProjectAdaptor != null) {
-					IJavaProject javaProject = JavaCore.create(project);
-					if (javaProject != null) {
-						IClasspathEntry[] classpathEntries = javaProject.getRawClasspath();
-						for (IClasspathEntry classpathEntry : classpathEntries) {
-							if (classpathEntry.getEntryKind() == IClasspathEntry.CPE_CONTAINER) {
-								IPath entryPath = classpathEntry.getPath();
-								if (entryPath.segmentCount() >= 2 && entryPath.segment(0).equals(WOFrameworkClasspathContainer.ID) && entryPath.segment(1).equals(frameworkName)) {
-									IClasspathContainer classpathContainer = JavaCore.getClasspathContainer(entryPath, javaProject);
-									JavaCore.getClasspathContainerInitializer(WOFrameworkClasspathContainer.ID).requestClasspathContainerUpdate(entryPath, javaProject, classpathContainer);
-								}
-							}
-						}
-					}
-				}
+		List<IJavaProject> javaProjects = new ArrayList<IJavaProject>(projects.length);
+		for (int i = 0; i < projects.length; i++) { 
+			if (projects[i].isAccessible()) {
+				javaProjects.add(JavaCore.create(projects[i]));
 			}
 		}
+		IClasspathContainer[] containers = new IClasspathContainer[javaProjects.size()];
+		IJavaProject[] javaProjectsArray = javaProjects.toArray(new IJavaProject[javaProjects.size()]);
+		
+		IPath containerPath = new Path(JavaCore.getClasspathContainerInitializer(WOFrameworkClasspathContainer.ID) + "/" + frameworkName);
+		// Just invalidate the containerPath for all projects. It will get lazily initialized as needed in the background.
+		JavaCore.setClasspathContainer(containerPath, javaProjectsArray, containers, null);
 	}
 
 	public void resourceChanged(IResourceChangeEvent event) {
@@ -54,8 +48,7 @@ public class WOFrameworkResourceListener implements IResourceChangeListener {
 			IResourceDelta[] resourceDeltas = delta.getAffectedChildren(IResourceDelta.CHANGED | IResourceDelta.ADDED | IResourceDelta.REMOVED);
 			for (int i = 0; i < resourceDeltas.length; ++i) {
 				IResourceDelta resourceDelta = resourceDeltas[i];
-				// System.out.println("WOFrameworkContainerInitializer.resourceChanged:
-				// " + resourceDelta);
+				//System.out.println("WOFrameworkContainerInitializer.resourceChanged: " + resourceDelta);
 				IResource resource = resourceDelta.getResource();
 				if (resource instanceof IProject) {
 					if ((resourceDelta.getFlags() & IResourceDelta.OPEN) != 0) {
@@ -99,6 +92,4 @@ public class WOFrameworkResourceListener implements IResourceChangeListener {
 			}
 		}
 	}
-	
-
 }

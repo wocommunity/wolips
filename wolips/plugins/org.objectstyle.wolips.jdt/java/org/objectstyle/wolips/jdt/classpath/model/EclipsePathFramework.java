@@ -71,14 +71,14 @@ import org.objectstyle.woenvironment.frameworks.Root;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
 public class EclipsePathFramework extends AbstractFolderFramework implements IEclipseFramework {
-	private List<IClasspathEntry> cachedClasspathEntries;
+	private IClasspathEntry[] cachedClasspathEntries;
 	
 	public EclipsePathFramework(Root root, File frameworkFolder) {
 		super(root, frameworkFolder);
 	}
 	
-	public synchronized List<IClasspathEntry> getClasspathEntries() {
-		List<IClasspathEntry> classpathEntries = cachedClasspathEntries;
+	public synchronized IClasspathEntry[] getClasspathEntries() {
+		List<IClasspathEntry> classpathEntries;
 		
 		if (cachedClasspathEntries == null) {
 			classpathEntries =  new LinkedList<IClasspathEntry>();
@@ -108,9 +108,9 @@ public class EclipsePathFramework extends AbstractFolderFramework implements IEc
 				IClasspathEntry classpathEntry = JavaCore.newLibraryEntry(jarPath, sourceJarPath, sourcePath, ClasspathEntry.NO_ACCESS_RULES, attributes, false);
 				classpathEntries.add(classpathEntry);
 			}
-			cachedClasspathEntries = classpathEntries;
+			cachedClasspathEntries = classpathEntries.toArray(new IClasspathEntry[classpathEntries.size()]);
 		}
 		
-		return classpathEntries;
+		return cachedClasspathEntries.clone();
 	}
 }
