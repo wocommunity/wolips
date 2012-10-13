@@ -164,4 +164,18 @@ public class EclipseFrameworkModel extends FrameworkModel<IEclipseFramework> {
 		}
 		return roots;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof EclipseFrameworkModel) {
+			EclipseFrameworkModel model = (EclipseFrameworkModel) obj;
+			return model.project == project || (model.project != null && model.project.equals(project));
+		}
+		return super.equals(obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return EclipseFrameworkModel.class.hashCode() + project.hashCode();
+	}
 }

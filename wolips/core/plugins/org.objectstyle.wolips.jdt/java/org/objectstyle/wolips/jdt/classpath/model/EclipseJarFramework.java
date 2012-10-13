@@ -1,7 +1,6 @@
 package org.objectstyle.wolips.jdt.classpath.model;
 
 import java.io.File;
-import java.util.List;
 
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.objectstyle.woenvironment.frameworks.AbstractJarFramework;
@@ -12,7 +11,7 @@ public class EclipseJarFramework extends AbstractJarFramework implements IEclips
 		super(root, jarFile);
 	}
 
-	public List<IClasspathEntry> getClasspathEntries() {
+	public IClasspathEntry[] getClasspathEntries() {
 		return null;
 	}
 }
