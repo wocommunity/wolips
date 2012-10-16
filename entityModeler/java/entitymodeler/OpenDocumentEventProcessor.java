@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.objectstyle.wolips.eomodeler.actions.OpenEntityModelerAction;
 
 public class OpenDocumentEventProcessor implements Listener {
 	private ArrayList<String> _filesToOpen = new ArrayList<String>(1);
