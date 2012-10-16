@@ -62,16 +62,14 @@ public class NewEOModelAction extends Action implements ActionFactory.IWorkbench
           return;
         }
 
-        boolean createModelGroup = false;
         EOModelGroup modelGroup = new EOModelGroup();
         try {
-          IEOModelGroupFactory.Utility.loadModelGroup(modelFolder, modelGroup, failures, true, modelFolder.toURL(), new NullProgressMonitor());
+          IEOModelGroupFactory.Utility.loadModelGroup(modelFolder, modelGroup, failures, true, modelFolder.toURI().toURL(), new NullProgressMonitor());
         }
         catch (Exception e) {
           failures.clear();
           failures.add(new EOModelVerificationFailure(null, "Creating empty EOModelGroup for this model because " + e.getMessage(), true, e));
           modelGroup = new EOModelGroup();
-          createModelGroup = true;
           EOModelErrorDialog errors = new EOModelErrorDialog(Display.getDefault().getActiveShell(), failures);
           errors.open();
         }
@@ -82,7 +80,7 @@ public class NewEOModelAction extends Action implements ActionFactory.IWorkbench
           //model.setEditing(true);
           EODatabaseConfig databaseConfig = new EODatabaseConfig("Default");
           databaseConfig.setAdaptorName("JDBC");
-          model.setModelURL(modelFolder.toURL());
+          model.setModelURL(modelFolder.toURI().toURL());
           model.addDatabaseConfig(databaseConfig);
           model.saveToFolder(modelFolder);
 
