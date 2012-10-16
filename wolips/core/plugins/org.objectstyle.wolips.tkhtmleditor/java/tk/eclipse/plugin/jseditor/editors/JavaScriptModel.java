@@ -158,7 +158,7 @@ public class JavaScriptModel implements JavaScriptContext {
 				JavaScriptFunction func = new JavaScriptFunction(matcher.group(1), args, position);
 				func.setParent(context);
 				context.add(func);
-				return new Object[]{new Integer(matcher.end()), func};
+				return new Object[]{Integer.valueOf(matcher.end()), func};
 			}
 		}
 		return null;

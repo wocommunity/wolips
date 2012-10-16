@@ -267,7 +267,7 @@ public class KeyComboBoxCellEditor extends CellEditor {
 	 *         <code>Integer</code>
 	 */
 	protected Object doGetValue() {
-		return new Integer(selection);
+		return Integer.valueOf(selection);
 	}
 
 	/*

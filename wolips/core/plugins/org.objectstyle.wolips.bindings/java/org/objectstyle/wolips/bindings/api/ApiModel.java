@@ -292,7 +292,7 @@ public class ApiModel {
   public void saveChanges(Writer writer) throws ApiModelException {
     try {
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
-      transformerFactory.setAttribute("indent-number", new Integer(4));
+      transformerFactory.setAttribute("indent-number", Integer.valueOf(4));
       Transformer transformer = transformerFactory.newTransformer();
       transformer.setOutputProperty(OutputKeys.INDENT, "yes");
       transformer.setOutputProperty(OutputKeys.METHOD, "xml");

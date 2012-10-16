@@ -141,7 +141,7 @@ public class PaletteView extends ViewPart {
 //        FuzzyXMLElement group = (FuzzyXMLElement) groups[i];
 //
 //        String name = group.getAttributeNode("name").getValue();
-//        boolean visible = new Boolean(group.getAttributeNode("visible").getValue()).booleanValue();
+//        boolean visible = Boolean.valueOf(group.getAttributeNode("visible").getValue()).booleanValue();
 //
 //        List entries = viewer.getPaletteRoot().getChildren();
 //        PaletteDrawer drawer = null;

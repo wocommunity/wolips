@@ -280,11 +280,11 @@ public class WOJavaRuntime {
 		if (projects == null) {
 			projects = new ArrayList();
 			fgProjects.set(projects);
-			count = new Integer(0);
+			count = Integer.valueOf(0);
 		}
 		int intCount = count.intValue();
 		intCount++;
-		fgEntryCount.set(new Integer(intCount));
+		fgEntryCount.set(Integer.valueOf(intCount));
 		try {
 			for (int i = 0; i < cpes.length; i++) {
 				IClasspathEntry cpe = cpes[i];
@@ -315,7 +315,7 @@ public class WOJavaRuntime {
 				fgProjects.set(null);
 				fgEntryCount.set(null);
 			} else {
-				fgEntryCount.set(new Integer(intCount));
+				fgEntryCount.set(Integer.valueOf(intCount));
 			}
 		}
 		// set classpath property
