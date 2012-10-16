@@ -345,7 +345,6 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 			prototypeNameChanged = false;
 		}
 
-		EODataType oldDataType = getDataType();
 		Map<String, Object> oldValues = new HashMap<String, Object>();
 		for (int propertyNum = 0; propertyNum < PROTOTYPED_PROPERTIES.length; propertyNum++) {
 			String propertyName = PROTOTYPED_PROPERTIES[propertyNum];
@@ -364,7 +363,7 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 				String propertyName = PROTOTYPED_PROPERTIES[propertyNum];
 				IKey propertyKey = EOAttribute.getPropertyKey(propertyName);
 				Object oldValue = oldValues.get(propertyName);
-				Object newPrototypeValue = propertyKey.getValue(_prototype);
+				Object newPrototypeValue = _prototype != null ? propertyKey.getValue(_prototype) : oldValue;
 				Object newValue;
 				if (AbstractEOArgument.NAME.equals(propertyName)) {
 					newValue = oldValue;
@@ -379,7 +378,9 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 				propertyKey.setValue(this, newValue);
 				firePropertyChange(propertyName, oldValue, newValue);
 			}
-			updateDataType(oldDataType);
+			//Q: The value of DataType is probably going to change underneath us as we iterate and if it happens to end up back at what we started with it may not get updated
+			//   so we pass a null to force an update of the UI
+			updateDataType(null);
 		}
 	}
 
