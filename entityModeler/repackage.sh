@@ -23,7 +23,8 @@ test -d plugins && mv plugins "${resources}"
 cp ${basedir}/icons/EOModel.icns "${resources}"
 cp ${basedir}/Info.plist "${contents}"
 version=`grep '<product' "${basedir}/EntityModeler.product"  | sed -E 's/.*version="([^"]*)".*/\1/'`
-sed -i "" "s/__VERSION__/${version}/" "${contents}/Info.plist"
+sed "s/__VERSION__/${version}/" "${contents}/Info.plist" > Info.plist.$$
+mv Info.plist.$$ "${contents}/Info.plist"
 
 rm -f EntityModeler-*.zip
 zip -qr EntityModeler-${version}.zip Entity\ Modeler.app
