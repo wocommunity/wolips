@@ -79,7 +79,7 @@
 	    </zip>
 
 	
-      <jar destfile="veogen2.jar" filesetmanifest="mergewithoutmain">
+      <jar destfile="veogen.jar" filesetmanifest="mergewithoutmain">
         <manifest>
           <attribute name="Main-Class" value="veogen.Veogen"/>
           <attribute name="Class-Path" value="."/>
