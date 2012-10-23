@@ -92,5 +92,7 @@
                                 We recommend to add all arguments in eclipse.ini
                          -->
 		</array>
+	<key>NSHighResolutionCapable</key>
+		<true/>
 	</dict>
 </plist>
