@@ -19,9 +19,9 @@
             <fileset dir="../core/plugins/org.objectstyle.wolips.eomodeler.doc/bin"/>
             <fileset dir="../core/plugins/org.objectstyle.wolips.eomodeler.factories/bin"/>
             <fileset dir="../core/plugins/org.objectstyle.wolips.thirdparty.velocity/bin"/>
-            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.core.resources_3.8.0.v20120522-2034.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.core.resources_3.8.1.v20120802-154922.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime_3.8.0.v20120521-2346.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.osgi_3.8.0.v20120529-1548.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.osgi_3.8.1.v20120830-144521.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.common_3.6.100.v20120522-1841.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.core.jobs_3.5.200.v20120521-2346.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="../core/plugins/org.objectstyle.wolips.woproject/lib/woproject.jar"/>
@@ -31,4 +31,63 @@
             <zipfileset excludes="META-INF/*.SF" src="../core/plugins/org.objectstyle.wolips.thirdparty.commonscollections/lib/commons-collections-3.1.jar"/>
         </jar>
     </target>
+	  <target name="build">
+      <property name="ECLIPSE_HOME" value="/Users/q/Developer/Applications/eclipse.38"/>
+
+	    <path id="classpath">
+	      <fileset dir="${ECLIPSE_HOME}/plugins">
+	        <include name="*.jar"/>
+	      </fileset>
+	      <fileset dir="../core/plugins/org.objectstyle.wolips.thirdparty.velocity/lib">
+	        <include name="*.jar"/>
+	      </fileset>
+        <fileset dir="../core/plugins/org.objectstyle.wolips.thirdparty.commonscollections/lib">
+          <include name="*.jar"/>
+        </fileset>
+	    </path>
+
+	    <javac destdir="bin">
+	      <classpath refid="classpath"/>
+	      <src path="./java" />
+	      <src path="../../woenvironment/src/java" />
+        <src path="../core/plugins/org.objectstyle.wolips.eogenerator.core/java" />
+        <src path="../core/plugins/org.objectstyle.wolips.eomodeler.core/java" />
+        <src path="../core/plugins/org.objectstyle.wolips.eomodeler.eclipse/java" />
+        <src path="../core/plugins/org.objectstyle.wolips.baseforplugins/java" />
+        <src path="../core/plugins/org.objectstyle.wolips.eomodeler.doc/java" />
+        <src path="../core/plugins/org.objectstyle.wolips.eomodeler.factories/java" />
+        <src path="../core/plugins/org.objectstyle.wolips.thirdparty.velocity/java" />
+      </javac>
+
+	    <zip destfile="temp.zip">
+        <zipgroupfileset dir="${ECLIPSE_HOME}/plugins/">
+	        <include name="org.eclipse.core.resources_*.jar"/>
+	        <include name="org.eclipse.core.runtime_*.jar"/>
+	        <include name="org.eclipse.osgi_*.jar"/>
+	        <include name="org.eclipse.equinox.common_*.jar"/>
+          <include name="org.eclipse.core.jobs_*.jar"/>
+	      </zipgroupfileset>
+        <fileset dir="bin"/>
+        <fileset dir="../core/plugins/org.objectstyle.wolips.eogenerator.core" includes="templates/*"/>
+        <fileset dir="../core/plugins/org.objectstyle.wolips.eomodeler.doc/java" includes="**/*.vm"/>
+        <fileset dir="../core/plugins/org.objectstyle.wolips.eomodeler.core/java" includes="**/*.properties"/>
+        <zipfileset src="../core/plugins/org.objectstyle.wolips.woproject/lib/woproject.jar"/>
+        <zipfileset src="../core/plugins/org.objectstyle.wolips.thirdparty.velocity/lib/velocity-1.5.jar"/>
+        <zipfileset src="../core/plugins/org.objectstyle.wolips.thirdparty.velocity/lib/velocity-tools-generic-1.4.jar"/>
+        <zipfileset src="../core/plugins/org.objectstyle.wolips.thirdparty.velocity/lib/commons-lang-2.1.jar"/>
+        <zipfileset src="../core/plugins/org.objectstyle.wolips.thirdparty.commonscollections/lib/commons-collections-3.1.jar"/>
+	    </zip>
+
+	
+      <jar destfile="veogen2.jar" filesetmanifest="mergewithoutmain">
+        <manifest>
+          <attribute name="Main-Class" value="veogen.Veogen"/>
+          <attribute name="Class-Path" value="."/>
+        </manifest>
+        <fileset dir="bin"/>
+        <zipfileset excludes="META-INF/*.SF" src="temp.zip"/>
+      </jar>
+	
+	    <delete file="temp.zip" />
+	  </target>
 </project>
