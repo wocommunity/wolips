@@ -50,6 +50,7 @@
 	      <classpath refid="classpath"/>
 	      <src path="./java" />
 	      <src path="../../woenvironment/src/java" />
+	      <src path="../core/plugins/org.objectstyle.wolips.builder/java" />
         <src path="../core/plugins/org.objectstyle.wolips.eogenerator.core/java" />
         <src path="../core/plugins/org.objectstyle.wolips.eomodeler.core/java" />
         <src path="../core/plugins/org.objectstyle.wolips.eomodeler.eclipse/java" />
