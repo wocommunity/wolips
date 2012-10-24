@@ -47,7 +47,7 @@
 	    <property file="${project.lib.dir}/lib.properties" />
     </target>
 	  <target name="build" depends="props">
-      <ant antfile="build.xml" target="all" dir="../.." />
+      <!-- ant antfile="build.xml" target="all" dir="../.." / -->
 	    <path id="classpath">
         <pathelement path="../../${build.output.java.dir}" />
 	      <fileset dir="${eclipse.home}/plugins">
