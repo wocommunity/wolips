@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="create_run_jar" name="Create Runnable Jar for Project veogen">
+<project default="veogen_jar">
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
     <target name="create_run_jar">
-      <property name="ECLIPSE_HOME" value="/Users/q/Developer/Applications/eclipse.38"/>
+      <property name="ECLIPSE_HOME" value="/Users/q/Developer/Applications/eclipse.380"/>
 
         <jar destfile="veogen.jar" filesetmanifest="mergewithoutmain">
             <manifest>
@@ -31,11 +31,26 @@
             <zipfileset excludes="META-INF/*.SF" src="../core/plugins/org.objectstyle.wolips.thirdparty.commonscollections/lib/commons-collections-3.1.jar"/>
         </jar>
     </target>
-	  <target name="build">
-      <property name="ECLIPSE_HOME" value="/Users/q/Developer/Applications/eclipse.38"/>
-
+            	
+    <target name="props">
+        <property file="../../build.properties" />
+	    <property file="${user.home}${file.separator}build.properties" />
+	    <property file="${user.home}${file.separator}Library${file.separator}wobuild.properties" />
+	    <loadproperties srcfile="../../default.properties">
+	      <filterchain>
+	        <tokenfilter>
+	          <replacestring from="$Revision: " to="" />
+	          <replacestring from=" $" to="" />
+	        </tokenfilter>
+	      </filterchain>
+	    </loadproperties>
+	    <property file="${project.lib.dir}/lib.properties" />
+    </target>
+	  <target name="build" depends="props">
+      <ant antfile="build.xml" target="all" dir="../.." />
 	    <path id="classpath">
-	      <fileset dir="${ECLIPSE_HOME}/plugins">
+        <pathelement path="../../${build.output.java.dir}" />
+	      <fileset dir="${eclipse.home}/plugins">
 	        <include name="*.jar"/>
 	      </fileset>
 	      <fileset dir="../core/plugins/org.objectstyle.wolips.thirdparty.velocity/lib">
@@ -46,11 +61,11 @@
         </fileset>
 	    </path>
 
+	    <mkdir dir="bin" />
 	    <javac destdir="bin">
 	      <classpath refid="classpath"/>
 	      <src path="./java" />
 	      <src path="../../woenvironment/src/java" />
-	      <src path="../core/plugins/org.objectstyle.wolips.builder/java" />
         <src path="../core/plugins/org.objectstyle.wolips.eogenerator.core/java" />
         <src path="../core/plugins/org.objectstyle.wolips.eomodeler.core/java" />
         <src path="../core/plugins/org.objectstyle.wolips.eomodeler.eclipse/java" />
@@ -61,7 +76,7 @@
       </javac>
 
 	    <zip destfile="temp.zip">
-        <zipgroupfileset dir="${ECLIPSE_HOME}/plugins/">
+        <zipgroupfileset dir="${eclipse.home}/plugins/">
 	        <include name="org.eclipse.core.resources_*.jar"/>
 	        <include name="org.eclipse.core.runtime_*.jar"/>
 	        <include name="org.eclipse.osgi_*.jar"/>
