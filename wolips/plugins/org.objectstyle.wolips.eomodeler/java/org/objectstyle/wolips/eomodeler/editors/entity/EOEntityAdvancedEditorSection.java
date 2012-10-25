@@ -81,6 +81,8 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 	private Button _cacheInMemoryButton;
 
 	private Button _readOnlyButton;
+	
+	private Button _immutableButton;
 
 	private Button _generateSourceButton;
 
@@ -122,6 +124,10 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		_readOnlyButton = new Button(topForm, SWT.CHECK);
 		_readOnlyButton.setText(Messages.getString("EOEntity." + EOEntity.READ_ONLY));
+
+		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
+		_immutableButton = new Button(topForm, SWT.CHECK);
+		_immutableButton.setText(Messages.getString("EOEntity." + EOEntity.IMMUTABLE));
 
 		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		_generateSourceButton = new Button(topForm, SWT.CHECK);
@@ -172,6 +178,7 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 			// "^[0-9]+$", "Please enter a number"), null));
 			_bindingContext.bindValue(SWTObservables.observeSelection(_cacheInMemoryButton), BeansObservables.observeValue(_entity, EOEntity.CACHES_OBJECTS), null, new BooleanUpdateValueStrategy());
 			_bindingContext.bindValue(SWTObservables.observeSelection(_readOnlyButton), BeansObservables.observeValue(_entity, EOEntity.READ_ONLY), null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(SWTObservables.observeSelection(_immutableButton), BeansObservables.observeValue(_entity, EOEntity.IMMUTABLE), null, new BooleanUpdateValueStrategy());
 			_bindingContext.bindValue(SWTObservables.observeSelection(_generateSourceButton), BeansObservables.observeValue(_entity, EOEntity.GENERATE_SOURCE), null, new BooleanUpdateValueStrategy());
 			_bindingContext.bindValue(SWTObservables.observeSelection(_rawRowsOnlyButton), BeansObservables.observeValue(_entity, EOEntity.RAW_ROWS_ONLY), null, new BooleanUpdateValueStrategy());
 			_bindingContext.bindValue(SWTObservables.observeText(_externalQueryText, SWT.Modify), BeansObservables.observeValue(_entity, EOEntity.EXTERNAL_QUERY), null, null);

@@ -115,6 +115,8 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	public static final String MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH = "maxNumberOfInstancesToBatchFetch";
 
 	public static final String READ_ONLY = "readOnly";
+	
+	public static final String IMMUTABLE = "immutable";
 
 	public static final String RAW_ROWS_ONLY = "rawRowsOnly";
 
@@ -173,6 +175,8 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	private Boolean myAbstractEntity;
 
 	private Boolean myReadOnly;
+
+	private Boolean myImmutable;
 
 	private Boolean myRawRowsOnly;
 
@@ -878,6 +882,20 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		firePropertyChange(EOEntity.READ_ONLY, oldReadOnly, myReadOnly);
 	}
 
+	public Boolean getImmutable() {
+		return isImmutable();
+	}
+
+	public Boolean isImmutable() {
+		return myImmutable;
+	}
+
+	public void setImmutable(Boolean _immutable) {
+		Boolean oldImmutable = myImmutable;
+		myImmutable = _immutable;
+		firePropertyChange(EOEntity.IMMUTABLE, oldImmutable, myImmutable);
+	}
+	
 	public Boolean getRawRowsOnly() {
 		return isRawRowsOnly();
 	}
@@ -2102,6 +2120,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 			myAbstractEntity = _entityMap.getBoolean("isAbstractEntity");
 		}
 		myReadOnly = _entityMap.getBoolean("isReadOnly");
+		myImmutable = _entityMap.getBoolean("isImmutable");
 		myRawRowsOnly = _entityMap.getBoolean("isRawRowsOnly");
 		if (_entityMap.containsKey("mappingQualifier")) {
 			myRestrictingQualifier = _entityMap.getString("mappingQualifier", true);
@@ -2203,6 +2222,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		entityMap.setBoolean("isAbstractEntity", myAbstractEntity, EOModelMap.YNOptionalDefaultNo);
 		entityMap.remove("isFetchable");
 		entityMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YNOptionalDefaultNo);
+		entityMap.setBoolean("isImmutable", myImmutable, EOModelMap.YNOptionalDefaultNo);
 		entityMap.setBoolean("isRawRowsOnly", myRawRowsOnly, EOModelMap.YNOptionalDefaultNo);
 		entityMap.setString("restrictingQualifier", myRestrictingQualifier, true);
 		entityMap.remove("mappingQualifier");
@@ -2634,6 +2654,7 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 		entity.myCachesObjects = myCachesObjects;
 		entity.myAbstractEntity = myAbstractEntity;
 		entity.myReadOnly = myReadOnly;
+		entity.myImmutable = myImmutable;
 		entity.myRawRowsOnly = myRawRowsOnly;
 		entity.myMaxNumberOfInstancesToBatchFetch = myMaxNumberOfInstancesToBatchFetch;
 		entity.myGenerateSource = myGenerateSource;
