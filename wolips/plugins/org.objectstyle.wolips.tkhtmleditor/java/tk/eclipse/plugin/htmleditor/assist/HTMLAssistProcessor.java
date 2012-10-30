@@ -24,6 +24,8 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
+import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
+import org.objectstyle.wolips.templateeditor.InlineWodTagInfo;
 import org.objectstyle.wolips.wodclipse.core.Activator;
 import org.objectstyle.wolips.wodclipse.core.preferences.PreferenceConstants;
 
@@ -379,7 +381,11 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
             }
           }
           try {
-            list.add(new CompletionProposal(assistKeyword, documentOffset - word.length() + 1, word.length() - 1, position, _tagImage, tagName, null, tagInfo.getDescription()));
+            if (tagInfo instanceof InlineWodTagInfo && BindingReflectionUtils.memberIsDeprecated(((InlineWodTagInfo)tagInfo).getElementType())) {
+              list.add(new HTMLDeprecatedCompletionProposal(assistKeyword, documentOffset - word.length() + 1, word.length() - 1, position, _tagImage, tagName, null, tagInfo.getDescription()));
+            } else {
+              list.add(new CompletionProposal(assistKeyword, documentOffset - word.length() + 1, word.length() - 1, position, _tagImage, tagName, null, tagInfo.getDescription()));
+            }
           }
           catch (Exception ex) {
             ex.printStackTrace();

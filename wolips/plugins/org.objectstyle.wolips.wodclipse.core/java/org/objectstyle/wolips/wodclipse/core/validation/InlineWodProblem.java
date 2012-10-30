@@ -9,6 +9,7 @@ import jp.aonir.fuzzyxml.FuzzyXMLElement;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.Position;
+import org.objectstyle.wolips.bindings.wod.WodBindingDeprecationProblem;
 import org.objectstyle.wolips.bindings.wod.WodBindingNameProblem;
 import org.objectstyle.wolips.bindings.wod.WodBindingValueProblem;
 import org.objectstyle.wolips.bindings.wod.WodProblem;
@@ -76,6 +77,17 @@ public class InlineWodProblem {
               marker.setAttribute(IMarker.LINE_NUMBER, WodHtmlUtils.getLineAtOffset(_cache.getHtmlEntry().getContents(), offset));
               marker.setAttribute(IMarker.CHAR_START, _element.getOffset() + attribute.getValueDataOffset() + 1);
               marker.setAttribute(IMarker.CHAR_END, _element.getOffset() + attribute.getValueDataOffset() + 1 + attribute.getValueDataLength());
+            }
+          }
+          else if (wodProblem instanceof WodBindingDeprecationProblem) {
+            String name = ((WodBindingDeprecationProblem) wodProblem).getBindingName();
+            FuzzyXMLAttribute attribute = _element.getAttributeNode(name);
+            if (attribute != null) {
+              elementError = false;
+              int offset = _element.getOffset() + attribute.getValueDataOffset() + 1;
+              marker.setAttribute(IMarker.LINE_NUMBER, WodHtmlUtils.getLineAtOffset(_cache.getHtmlEntry().getContents(), offset));
+              marker.setAttribute(IMarker.CHAR_START, offset);
+              marker.setAttribute(IMarker.CHAR_END, offset + attribute.getValueDataLength());
             }
           }
 

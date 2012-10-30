@@ -114,6 +114,7 @@ public class WodSourceViewerConfiguration extends SourceViewerConfiguration {
 			myContentAssistant.setAutoActivationDelay(500);
 			myContentAssistant.enableAutoInsert(true);
 			myContentAssistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+			myContentAssistant.enableColoredLabels(true);
 		}
 		return myContentAssistant;
 	}
