@@ -273,6 +273,14 @@ public abstract class AbstractWodElement implements IWodElement, Comparable<IWod
     if (!PreferenceConstants.IGNORE.equals(unusedWodElementSeverity) && !_inline && !htmlCache.containsElementNamed(elementName)) {
       problems.add(new WodElementProblem(this, "There is no element named '" + elementName + "' in your component HTML file", getElementNamePosition(), lineNumber, PreferenceConstants.WARNING.equals(unusedWodElementSeverity)));
     }
+    
+    String deprecationSeverity = Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.DEPRECATED_BINDING_SEVERITY_KEY);
+    if (!PreferenceConstants.IGNORE.equals(deprecationSeverity)) {
+      IType elementType = BindingReflectionUtils.findElementType(javaProject, elementTypeName, false, typeCache);
+      if (BindingReflectionUtils.memberIsDeprecated(elementType)) {
+        problems.add(new WodElementDeprecationProblem(this, "The component named '" + elementTypeName + "' is deprecated.", getElementTypePosition(), lineNumber, PreferenceConstants.WARNING.equals(deprecationSeverity)));
+      }
+    }
 
     Wo wo = null;
     if (!PreferenceConstants.IGNORE.equals(wodMissingComponentSeverity)) {
