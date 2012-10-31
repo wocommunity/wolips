@@ -72,7 +72,7 @@ import org.objectstyle.wolips.jdt.JdtPlugin;
 import org.objectstyle.wolips.jdt.classpath.WOFrameworkClasspathContainer;
 
 public interface IEclipseFramework extends IFramework {
-	public List<IClasspathEntry> getClasspathEntries();
+	public IClasspathEntry[] getClasspathEntries();
 
 	public static class Utility {
 		public static void addFrameworksToProject(List<IEclipseFramework> frameworksToAdd, IJavaProject javaProject, boolean reload) throws JavaModelException {

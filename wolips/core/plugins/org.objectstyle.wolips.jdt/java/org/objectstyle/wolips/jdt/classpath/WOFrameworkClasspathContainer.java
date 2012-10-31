@@ -1,7 +1,6 @@
 package org.objectstyle.wolips.jdt.classpath;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IPath;
@@ -63,8 +62,7 @@ public class WOFrameworkClasspathContainer implements IClasspathContainer {
 	}
 
 	public IClasspathEntry[] getClasspathEntries() {
-		List<IClasspathEntry> classpathEntries = this.framework.getClasspathEntries();
-		return classpathEntries.toArray(new IClasspathEntry[classpathEntries.size()]);
+		return this.framework.getClasspathEntries();
 	}
 
 	public static WOFrameworkClasspathContainer getFrameworkClasspathContainer(IJavaProject project, IClasspathEntry classpathEntry) {

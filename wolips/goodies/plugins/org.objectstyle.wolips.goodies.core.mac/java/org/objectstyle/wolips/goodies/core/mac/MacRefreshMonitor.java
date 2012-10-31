@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 
+import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.refresh.IRefreshMonitor;
@@ -41,8 +42,8 @@ public class MacRefreshMonitor extends Job implements IRefreshMonitor {
 		setPriority(Job.DECORATE);
 		setSystem(true);
         _resources = new ConcurrentHashMap<IPath, MonitoredResource>();
-        coreServices = new CoreServicesWrapper();
-        coreFoundation = new CoreFoundationWrapper();
+        coreServices = CoreServicesWrapper.defaultInstance();
+        coreFoundation = CoreFoundationWrapper.defaultInstance();
         currentEvent = coreServices.FSEventsGetCurrentEventId();
 	}
 
@@ -113,7 +114,7 @@ public class MacRefreshMonitor extends Job implements IRefreshMonitor {
 				refresh(matchingContainer);
 			}
 			else {
-				IContainer[] matchingContainers = _resource.getWorkspace().getRoot().findContainersForLocation(location);
+				IContainer[] matchingContainers = _resource.getWorkspace().getRoot().findContainersForLocationURI(URIUtil.toURI(location.makeAbsolute()));
 				if (matchingContainers != null) {
 					for (IContainer container : matchingContainers) {
 						refresh(container);

@@ -12,7 +12,7 @@ public class MacRefreshProvider extends RefreshProvider {
 	@Override
 	public synchronized IRefreshMonitor installMonitor(IResource resource, IRefreshResult result) {
 		IRefreshMonitor refreshMonitor;
-		CoreServicesWrapper coreServices = new CoreServicesWrapper();
+		CoreServicesWrapper coreServices = CoreServicesWrapper.defaultInstance();
 		if (coreServices.SystemVersion() >= 0x1050) {
 			if (_refreshMonitor == null) {
 				_refreshMonitor = new MacRefreshMonitor();

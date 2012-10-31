@@ -1,6 +1,6 @@
 #/bin/bash
 WORKSPACE=/Volumes/Development/Development/wolips/wolips
-ECLIPSE=/Users/q/Developer/Applications/eclipse.37
+ECLIPSE=/Users/q/Developer/Applications/eclipse.38
 TEMPDIR=/tmp/veogenjar
 MANIFEST=/tmp/MANIFEST.MF
 DATE=`perl -e 'use POSIX qw(strftime); print strftime("%F", localtime());'`

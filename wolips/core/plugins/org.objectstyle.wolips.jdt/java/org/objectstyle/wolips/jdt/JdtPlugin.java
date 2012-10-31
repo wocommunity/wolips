@@ -80,7 +80,7 @@ public class JdtPlugin extends AbstractUIPlugin {
 
 	private PluginLogger pluginLogger = null;
 
-	private Map<IProject, EclipseFrameworkModel> frameworkModels;
+	private Map<String, EclipseFrameworkModel> frameworkModels;
 
 	/**
 	 * The constructor.
@@ -88,7 +88,7 @@ public class JdtPlugin extends AbstractUIPlugin {
 	public JdtPlugin() {
 		super();
 		plugin = this;
-		this.frameworkModels = new HashMap<IProject, EclipseFrameworkModel>();
+		this.frameworkModels = new HashMap<String, EclipseFrameworkModel>();
 		try {
 			this.resourceBundle = ResourceBundle.getBundle("org.objectstyle.wolips.jdt.JdtPluginResources");
 		} catch (MissingResourceException x) {
@@ -165,10 +165,11 @@ public class JdtPlugin extends AbstractUIPlugin {
 	 * @return Returns the classpathModel.
 	 */
 	public synchronized EclipseFrameworkModel getFrameworkModel(IProject project) {
-		EclipseFrameworkModel frameworkModel = this.frameworkModels.get(project);
+		String projectName = project != null ? project.getName() : null;
+		EclipseFrameworkModel frameworkModel = this.frameworkModels.get(projectName);
 		if (frameworkModel == null || frameworkModel.shouldReload()) {
 			frameworkModel = new EclipseFrameworkModel(project);
-			this.frameworkModels.put(project, frameworkModel);
+			this.frameworkModels.put(projectName, frameworkModel);
 		}
 		return frameworkModel;
 	}

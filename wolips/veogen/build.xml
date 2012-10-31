@@ -3,7 +3,7 @@
     <!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
     <target name="create_run_jar">
-      <property name="ECLIPSE_HOME" value="/Users/q/Developer/Applications/eclipse.37"/>
+      <property name="ECLIPSE_HOME" value="/Users/q/Developer/Applications/eclipse.38"/>
 
         <jar destfile="veogen.jar" filesetmanifest="mergewithoutmain">
             <manifest>
@@ -19,11 +19,11 @@
             <fileset dir="../core/plugins/org.objectstyle.wolips.eomodeler.doc/bin"/>
             <fileset dir="../core/plugins/org.objectstyle.wolips.eomodeler.factories/bin"/>
             <fileset dir="../core/plugins/org.objectstyle.wolips.thirdparty.velocity/bin"/>
-            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.core.resources_3.7.100.v20110510-0712.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime_3.7.0.v20110110.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.osgi_3.7.1.R37x_v20110808-1106.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.common_3.6.0.v20110523.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.core.jobs_3.5.100.v20110404.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.core.resources_3.8.0.v20120522-2034.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.core.runtime_3.8.0.v20120521-2346.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.osgi_3.8.0.v20120529-1548.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.common_3.6.100.v20120522-1841.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.core.jobs_3.5.200.v20120521-2346.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="../core/plugins/org.objectstyle.wolips.woproject/lib/woproject.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="../core/plugins/org.objectstyle.wolips.thirdparty.velocity/lib/velocity-1.5.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="../core/plugins/org.objectstyle.wolips.thirdparty.velocity/lib/velocity-tools-generic-1.4.jar"/>

@@ -55,7 +55,9 @@
  */
 package org.objectstyle.wolips.jdt.classpath.model;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -66,7 +68,9 @@ import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 public class EclipseProjectRoot extends Root<IEclipseFramework> {
 	private IWorkspaceRoot workspaceRoot;
 	private Set<IEclipseFramework> cachedFrameworks;
+	private Map<String, IEclipseFramework> cachedFrameworksByName;
 	private Set<IEclipseFramework> cachedApplications;
+	private Map<String, IEclipseFramework> cachedApplicationsByName;
 	
 	public EclipseProjectRoot(String shortName, String name, IWorkspaceRoot workspaceRoot) {
 		super(shortName, name);
@@ -78,16 +82,20 @@ public class EclipseProjectRoot extends Root<IEclipseFramework> {
 		Set<IEclipseFramework> frameworks = this.cachedFrameworks;
 		if (frameworks == null) {
 			frameworks = new HashSet<IEclipseFramework>();
+			Map<String, IEclipseFramework> frameworksMap = new HashMap<String, IEclipseFramework>();
 			IProject[] projects = this.workspaceRoot.getProjects();
 			for (IProject project : projects) {
 				if (project.isAccessible()) {
 					ProjectAdapter woProjectAdaptor = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
 					if (woProjectAdaptor != null && woProjectAdaptor.isFramework()) {
-						frameworks.add(new EclipseProjectFramework(this, project));
+						EclipseProjectFramework framework = new EclipseProjectFramework(this, project);
+						frameworks.add(framework);
+						frameworksMap.put(framework.getName(), framework);
 					}
 				}
 			}
 			this.cachedFrameworks = frameworks;
+			this.cachedFrameworksByName = frameworksMap;
 		}
 		return frameworks;
 	}
@@ -97,18 +105,38 @@ public class EclipseProjectRoot extends Root<IEclipseFramework> {
 		Set<IEclipseFramework> applications = this.cachedApplications;
 		if (applications == null) {
 			applications = new HashSet<IEclipseFramework>();
+			Map<String, IEclipseFramework> applicationsMap = new HashMap<String, IEclipseFramework>();
 			IProject[] projects = this.workspaceRoot.getProjects();
 			for (IProject project : projects) {
 				if (project.isAccessible()) {
 					ProjectAdapter woProjectAdaptor = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
 					if (woProjectAdaptor != null && woProjectAdaptor.isApplication()) {
-						applications.add(new EclipseProjectFramework(this, project));
+						EclipseProjectFramework application = new EclipseProjectFramework(this, project);
+						applications.add(application);
+						applicationsMap.put(application.getName(), application);
 					}
 				}
 			}
 			this.cachedApplications = applications;
+			this.cachedApplicationsByName = applicationsMap;
 		}
 		return applications;
+	}
+	
+	@Override
+	public IEclipseFramework getApplicationWithName(String applicationName) {
+		if (cachedApplicationsByName == null) {
+			getApplications();
+		}
+		return cachedApplicationsByName.get(applicationName);
+	}
+
+	@Override
+	public IEclipseFramework getFrameworkWithName(String frameworkName) {
+		if (cachedFrameworksByName == null) {
+			getFrameworks();
+		}
+		return cachedFrameworksByName.get(frameworkName);
 	}
 	
 	@Override
