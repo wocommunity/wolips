@@ -117,7 +117,7 @@ public class EclipseFrameworkModel extends FrameworkModel<IEclipseFramework> {
 		}
 		roots.add(_projectRootCache);
 
-		ProjectAdapter projectAdapter = (ProjectAdapter) this.project.getAdapter(ProjectAdapter.class);
+		ProjectAdapter projectAdapter = this.project != null ? (ProjectAdapter) this.project.getAdapter(ProjectAdapter.class) : null;
 		if (projectAdapter != null) {
 			BuildProperties buildProperties = projectAdapter.getBuildProperties();
 			if (buildProperties != null) {
@@ -146,7 +146,7 @@ public class EclipseFrameworkModel extends FrameworkModel<IEclipseFramework> {
 		}
 		
 		IPath localRoot = variables.getLocalRoot();
-		IPath localFrameworkPath = variables.getLocalFrameworkPatb();
+		IPath localFrameworkPath = variables.getLocalFrameworkPath();
 		if (localRoot != null && localFrameworkPath != null) {
 			roots.add(getCachedFolderRoot(Root.LOCAL_ROOT, "Local Frameworks", localRoot.toFile(), localFrameworkPath.toFile()));
 		}
@@ -163,5 +163,19 @@ public class EclipseFrameworkModel extends FrameworkModel<IEclipseFramework> {
 			roots.add(getCachedFolderRoot(Root.NETWORK_ROOT, "Network Frameworks", networkRoot.toFile(), networkSystemPath.toFile()));
 		}
 		return roots;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof EclipseFrameworkModel) {
+			EclipseFrameworkModel model = (EclipseFrameworkModel) obj;
+			return model.project == project || (model.project != null && model.project.equals(project));
+		}
+		return super.equals(obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return EclipseFrameworkModel.class.hashCode() + project.hashCode();
 	}
 }

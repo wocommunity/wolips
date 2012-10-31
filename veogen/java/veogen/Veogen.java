@@ -65,8 +65,12 @@ public class Veogen {
 		if (argsList.size() >= 2 && "-config".equals(argsList.get(0))) {
 			BufferedReader br = new BufferedReader(new FileReader(PathUtils.getAbsolutePath(argsList.get(1), workingDir)));
 			try {
-				String configLine = br.readLine();
-				eogeneratorModel.readFromString(configLine, workingDir);
+				StringBuilder sb = new StringBuilder();
+				String configLine;
+				while ((configLine = br.readLine()) != null) {
+					sb.append(configLine.replaceFirst("\\\\$", ""));
+				}
+				eogeneratorModel.readFromString(sb.toString(), workingDir);
 			}
 			finally {
 				br.close();

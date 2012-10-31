@@ -113,7 +113,11 @@ public class EOModelErrorDialog extends Dialog {
 			failedObjectLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		}
 		
+		int count = 0;
 		while (failuresIter.hasNext()) {
+			if (++count > 100) {
+				break;
+			}
 			EOModelVerificationFailure failure = failuresIter.next();
 			Label iconLabel = new Label(failuresComposite, SWT.NONE);
 			iconLabel.setBackground(failuresComposite.getBackground());

@@ -91,11 +91,15 @@ public interface CoreFoundation extends Library {
 
 	public String strerror(int errnum);
 	
-	public class CoreFoundationWrapper implements CoreFoundation {
-		private final CoreFoundation coreFoundation;
+	public static class CoreFoundationWrapper implements CoreFoundation {
+		private static final CoreFoundation coreFoundation = (CoreFoundation) Native.loadLibrary("CoreFoundation", CoreFoundation.class);
+		private static final CoreFoundationWrapper wrapper = new CoreFoundationWrapper();
 
-		public CoreFoundationWrapper() {
-			coreFoundation = (CoreFoundation) Native.loadLibrary("CoreFoundation", CoreFoundation.class);
+		public static CoreFoundationWrapper defaultInstance() {
+			return wrapper;
+		}
+		
+		private CoreFoundationWrapper() {
 		}
 
 		public Pointer CFArrayCreate(Pointer allocator, Pointer[] values, int numValues, CFArrayCallBacks callBacks) {
