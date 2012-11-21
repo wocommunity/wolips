@@ -61,7 +61,9 @@ public class EOFactoryMethodArgumentType {
 
 	public static final EOFactoryMethodArgumentType DATE = new EOFactoryMethodArgumentType("EOFactoryMethodArgumentIsDate", Messages.getString("EOFactoryMethodArgumentType.date"));
 
-	public static final EOFactoryMethodArgumentType[] ARGUMENT_TYPES = new EOFactoryMethodArgumentType[] { EOFactoryMethodArgumentType.STRING, EOFactoryMethodArgumentType.DATA, EOFactoryMethodArgumentType.BYTES, EOFactoryMethodArgumentType.DATE };
+	public static final EOFactoryMethodArgumentType NUMBER = new EOFactoryMethodArgumentType("EOFactoryMethodArgumentIsNumber", Messages.getString("EOFactoryMethodArgumentType.number"));
+
+	public static final EOFactoryMethodArgumentType[] ARGUMENT_TYPES = new EOFactoryMethodArgumentType[] { EOFactoryMethodArgumentType.STRING, EOFactoryMethodArgumentType.DATA, EOFactoryMethodArgumentType.BYTES, EOFactoryMethodArgumentType.DATE, EOFactoryMethodArgumentType.NUMBER };
 
 	private String myID;
 
