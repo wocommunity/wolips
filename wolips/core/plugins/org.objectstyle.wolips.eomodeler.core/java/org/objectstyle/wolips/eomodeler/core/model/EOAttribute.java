@@ -1103,8 +1103,8 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 				} else {
 					if (getDefinition() == null) {
 						for (EOAttribute attribute : myEntity.getAttributes()) {
-							if (attribute != this && prototypeValueEquals(AbstractEOArgument.COLUMN_NAME, columnName, attribute.getColumnName())) {
-								_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + "'s column name is the same as " + attribute.getName() + "'s.", true));
+							if (attribute != this && prototypeValueEquals(AbstractEOArgument.COLUMN_NAME, columnName, attribute.getColumnName()) && (this.isReadOnly() == null || !this.isReadOnly()) && (attribute.isReadOnly() == null || !attribute.isReadOnly())) {
+								_failures.add(new EOModelVerificationFailure(myEntity.getModel(), this, "The attribute " + getName() + "'s column name is the same as " + attribute.getName() + "'s and it is not read only.", true));
 							}
 						}
 					}
