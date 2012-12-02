@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Entity Modeler" uid="EntityModeler.EntityModeler" id="EntityModeler.EntityModeler" application="EntityModeler.EntityModeler" version="1.0.21" useFeatures="false" includeLaunchers="true">
+<product name="Entity Modeler" uid="EntityModeler.EntityModeler" id="EntityModeler.EntityModeler" application="EntityModeler.EntityModeler" version="1.0.22" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="icons/EntityModelerSmall.png"/>
