@@ -6,7 +6,7 @@ import org.zeroturnaround.eclipse.IRebelPluginProvider;
 
 
 public class WOJRebelPluginProvider implements IRebelPluginProvider {
-  private static final String[] WOJR_54 = new String[] { "lib/WOJRebel-54-5.0.jar" };
+  private static final String[] WOJR = new String[] { "lib/WOJRebel-5.0.jar" };
   private static final String[] WOJR_53 = new String[] { "lib/WOJRebel-53-5.0.jar" };
   private static final String[] EmptyStringArray = new String[0];
 
@@ -16,7 +16,7 @@ public class WOJRebelPluginProvider implements IRebelPluginProvider {
       if (version != null && version.startsWith("5.3")) {
         return WOJR_53;
       } else {
-        return WOJR_54;
+        return WOJR;
       }
     }
     return EmptyStringArray;
