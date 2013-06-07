@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <template name = "Wonder Framework">
 	<inputs>
+		<input name = "basePackage" type = "Package">
+			<question>Base Package?</question>
+			<default>your.app</default>
+		</input>
 	</inputs>
 </template>
