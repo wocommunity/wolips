@@ -173,7 +173,7 @@ public class OpenEntityDialog extends FilteredResourcesSelectionDialog {
 		// Arrow down button for Open With menu
 		((GridLayout) openComposite.getLayout()).numColumns++;
 		openWithButton = new Button(openComposite, SWT.PUSH);
-		openWithButton.setToolTipText(IDEWorkbenchMessages.OpenResourceDialog_openWithButton_toolTip);
+		openWithButton.setToolTipText(IDEWorkbenchMessages.OpenResourceDialog_openWithButton_text);
 		openWithButton.setImage(WorkbenchImages.getImage(IWorkbenchGraphicConstants.IMG_LCL_BUTTON_MENU));
 
 		GridData data = new GridData(SWT.CENTER, SWT.FILL, false, true);

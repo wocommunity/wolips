@@ -69,9 +69,9 @@ public class WooTab extends ComponentEditorTab {
 
 	public void createTab() {
 		wooEditor = new WooEditor();
-		IEditorSite apiSite = this.getComponentEditorPart().publicCreateSite(wooEditor);
+		IEditorSite wooSite = this.getComponentEditorPart().publicCreateSite(wooEditor);
 		try {
-			wooEditor.init(apiSite, wooInput);
+			wooEditor.init(wooSite, wooInput);
 		} catch (PartInitException e) {
 			ComponenteditorPlugin.getDefault().log(e);
 		}

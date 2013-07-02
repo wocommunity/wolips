@@ -7,6 +7,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/org.objectstyle.wolips.eogenerator.core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.objectstyle.wolips.thirdparty.velocity"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.objectstyle.wolips.thirdparty.commonscollections"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.equinox.common_3.6.100.v20120522-1841.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
