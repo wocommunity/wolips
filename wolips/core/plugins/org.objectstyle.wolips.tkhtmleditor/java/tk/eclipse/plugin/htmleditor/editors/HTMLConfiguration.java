@@ -217,6 +217,8 @@ public class HTMLConfiguration extends SourceViewerConfiguration {
 			InnerCSSAssistProcessor cssProcessor = getCSSAssistProcessor();
 			_assistant.setContentAssistProcessor(cssProcessor,HTMLPartitionScanner.HTML_CSS);
 			
+			_assistant.enableColoredLabels(true);
+			
 			_assistant.install(sourceViewer);
 			
 			// ï‚äÆÇÃê›íËÇîΩâf

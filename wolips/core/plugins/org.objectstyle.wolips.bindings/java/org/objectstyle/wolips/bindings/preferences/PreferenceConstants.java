@@ -60,6 +60,8 @@ public class PreferenceConstants {
 
 	public static final String WOD_API_PROBLEMS_SEVERITY_KEY = "WodApiProblemsSeverityKey";
 
+	public static final String DEPRECATED_BINDING_SEVERITY_KEY = "DeprecatedBindingSeverityKey";
+
 	public static final String WOD_MISSING_COMPONENT_SEVERITY_KEY = "WodProblemsSeverityKey";
 
 	public static final String WOD_ERRORS_IN_HTML_SEVERITY_KEY = "WodErrorsInHtmlSeverityKey";
