@@ -86,7 +86,6 @@ import org.objectstyle.wolips.wodclipse.core.woo.WooModel;
 import org.objectstyle.wolips.wooeditor.WooeditorPlugin;
 
 public class WooEditor extends FormEditor {
-
 	private WooModel model;
 
 	private TextEditor myTextEditor;
@@ -97,7 +96,6 @@ public class WooEditor extends FormEditor {
 
 	public WooEditor() {
 		super();
-		myDisplayGroupPage = new DisplayGroupPage(this, "Display Groups");
 	}
 	
 	@Override
@@ -110,13 +108,14 @@ public class WooEditor extends FormEditor {
 		return new FormToolkit(WooeditorPlugin.getDefault().getFormColors(
 				display));
 	}
-
+	
 	@Override
   protected void addPages() {
 		try {
+			myDisplayGroupPage = new DisplayGroupPage(this, "Display Groups");
 			addPage(myDisplayGroupPage);
+
 			myTextEditor = new TextEditor();
-			
 			IEditorInput input = this.getEditorInput();
 			IFile file = ((FileEditorInput) input).getFile();
 			if (!file.exists()) {
@@ -129,21 +128,22 @@ public class WooEditor extends FormEditor {
 					e.printStackTrace();
 				}
 			}
-			int index = addPage(myTextEditor, input);
-			setPageText(index, "Source");
+// Disable for 4.x until a workaround is found for the CCE it causes.
+//		int index = addPage(myTextEditor, input);
+//		setPageText(index, "Source");
 		} catch (PartInitException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    
-    CTabFolder ctf = (CTabFolder)getContainer();
-    ctf.setBorderVisible(false);
-    ctf.setTabPosition(SWT.TOP);
-    if (getPageCount() <= 1) {
-      ctf.setTabHeight(0);
-    }
-	}
 
+		CTabFolder ctf = (CTabFolder)getContainer();
+		ctf.setBorderVisible(false);
+		ctf.setTabPosition(SWT.TOP);
+		if (getPageCount() <= 1) {
+			ctf.setTabHeight(0);
+		}
+	}
+	
 	@Override
   public void doSave(final IProgressMonitor monitor) {
 		try {

@@ -24,8 +24,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.eclipse.update.internal.core.UpdateCore;
-import org.eclipse.update.internal.ui.UpdateUI;
 import org.osgi.framework.BundleContext;
 
 import tk.eclipse.plugin.htmleditor.views.IPaletteContributer;
@@ -229,10 +227,6 @@ public class HTMLPlugin extends AbstractUIPlugin {
   public void start(BundleContext context) throws Exception {
 		super.start(context);
 		colorProvider = new ColorProvider(getPreferenceStore());
-		
-		// activate org.eclipse.update.core plugin, and enable proxy settings
-		UpdateCore.getPlugin();
-		UpdateUI.getDefault();
 	}
 	
 	@Override
