@@ -149,6 +149,9 @@ public class ComponentEditorPart extends MultiPageEditorPart implements IEditorT
 	}
 
 	public IEditorInput getEditorInput() {
+		if (componentEditorTabs == null) {
+			return null;
+		}
 		return componentEditorTabs[this.getActivePage()].getActiveEditorInput();
 	}
 
