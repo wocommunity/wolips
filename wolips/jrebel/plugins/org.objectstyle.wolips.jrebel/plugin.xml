@@ -11,7 +11,7 @@
    <extension
          point="org.eclipse.debug.ui.launchConfigurationTabs">
       <tab
-            class="org.zeroturnaround.eclipse.ui.tabs.StandardRebelTab"
+            class="org.zeroturnaround.eclipse.ui.tabs.JRebelTab"
             group="org.objectstyle.wolips.launching.WOLocalJavaApplicationTabGroup"
             id="org.zeroturnaround.eclipse.launch.localJavaApplication"
             name="JRebel">
@@ -19,14 +19,11 @@
                after="org.eclipse.debug.ui.CommonTab">
          </placement>
       </tab>
-      <tab
-            class="org.objectstyle.wolips.jrebel.JRebelCustomTab"
-            group="org.objectstyle.wolips.launching.WOLocalJavaApplicationTabGroup"
-            id="org.zeroturnaround.eclipse.launch.localJavaApplication"
-            name="JRebel">
-         <placement
-               after="org.eclipse.debug.ui.CommonTab">
-         </placement>
-      </tab>
+   </extension>
+   <extension
+         point="org.zeroturnaround.eclipse.rebelLaunchConfigurationAdaptor">
+      <rebelLaunchConfigurationAdaptor
+            class="org.objectstyle.wolips.jrebel.WOJRebelLaunchConfigProvider">
+      </rebelLaunchConfigurationAdaptor>
    </extension>
 </plugin>
