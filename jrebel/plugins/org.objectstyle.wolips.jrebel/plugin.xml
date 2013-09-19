@@ -19,5 +19,14 @@
                after="org.eclipse.debug.ui.CommonTab">
          </placement>
       </tab>
+      <tab
+            class="org.objectstyle.wolips.jrebel.JRebelCustomTab"
+            group="org.objectstyle.wolips.launching.WOLocalJavaApplicationTabGroup"
+            id="org.zeroturnaround.eclipse.launch.localJavaApplication"
+            name="JRebel">
+         <placement
+               after="org.eclipse.debug.ui.CommonTab">
+         </placement>
+      </tab>
    </extension>
 </plugin>
