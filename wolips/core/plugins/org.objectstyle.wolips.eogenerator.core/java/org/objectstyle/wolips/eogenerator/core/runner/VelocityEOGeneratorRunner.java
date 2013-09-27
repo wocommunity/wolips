@@ -94,7 +94,6 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 
 		Bundle templateBundle = _insideEclipse ? Activator.getDefault().getBundle() : null;
 		VelocityEngine velocityEngine = WOLipsVelocityUtils.createVelocityEngine("EOGenerator", templateBundle, eogeneratorModel.getTemplateDir(), eogeneratorModel.getProjectPath(), _insideEclipse, resourceLoaderClass);
-		VelocityContext context = new VelocityContext();
 
 		List<EOModel> models = new LinkedList<EOModel>();
 		EOModelRenderContext renderContext = new EOModelRenderContext();
@@ -192,28 +191,31 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 			// == 0) {
 			// }
 
-			context.put("eogeneratorModel", eogeneratorModel);
-			context.put("date", new Date());
-			context.put("calendar", Calendar.getInstance());
-			for (Define define : eogeneratorModel.getDefines()) {
-				context.put(define.getName(), define.getValue());
-			}
-			context.put("list", new ListTool());
-			context.put("set", new SetTool());
-			//context.put("sorter", new SortTool());
 			String extension = eogeneratorModel.getExtension();
 			Set<String> entitySet = new HashSet<String>();
 			if (entityList != null) {
 				entitySet.addAll(entityList);
 			}
+			Date date = new Date();
+			
 			for (EOModel model : models) {
 				if (monitor.isCanceled()) {
 					throw new OperationCanceledException("EOGenerator canceled.");
 				}
 				// System.out.println("Generating " + model.getName() + " ...");
-				context.put("model", model);
-
 				for (EOEntity entity : model.getEntities()) {
+					VelocityContext context = new VelocityContext();
+					context.put("eogeneratorModel", eogeneratorModel);
+					context.put("date", date);
+					context.put("calendar", Calendar.getInstance());
+					for (Define define : eogeneratorModel.getDefines()) {
+						context.put(define.getName(), define.getValue());
+					}
+					context.put("list", new ListTool());
+					context.put("set", new SetTool());
+					//context.put("sorter", new SortTool());
+					context.put("model", model);
+
 					if (entitySet.size() != 0 && !entitySet.contains(entity.getName())) {
 						continue;
 					}
