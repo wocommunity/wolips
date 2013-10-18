@@ -738,7 +738,9 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		// steal away focus and then steal it back.
 		IWorkbenchPart activePart = getSite().getPage().getActivePart();
 		if (activePart instanceof PropertySheet) {
-			getContentOutlinePage().setFocus();
+			if (getContentOutlinePage().getControl() != null) {
+				getContentOutlinePage().setFocus();
+			}
 			getSite().getPage().activate(activePart);
 		}
 		Object[] selectionChangedListeners = mySelectionChangedListeners.getListeners();
