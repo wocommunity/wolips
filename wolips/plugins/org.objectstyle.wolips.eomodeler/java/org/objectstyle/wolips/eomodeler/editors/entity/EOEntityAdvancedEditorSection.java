@@ -72,6 +72,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 import org.objectstyle.wolips.eomodeler.utils.FormUtils;
+import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
 public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 	private EOEntity _entity;
@@ -141,16 +142,19 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 		_externalQueryText = new Text(topForm, SWT.BORDER);
 		GridData externalQueryFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_externalQueryText.setLayoutData(externalQueryFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(_externalQueryText);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.CLIENT_CLASS_NAME), SWT.NONE);
 		_clientClassNameText = new Text(topForm, SWT.BORDER);
 		GridData clientClassNameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_clientClassNameText.setLayoutData(clientClassNameLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(_clientClassNameText);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.PARENT_CLASS_NAME), SWT.NONE);
 		_parentClassNameText = new Text(topForm, SWT.BORDER);
 		GridData parentClassNameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_parentClassNameText.setLayoutData(parentClassNameLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(_parentClassNameText);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.PARTIAL_ENTITY), SWT.NONE);
 		Combo partialEntityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);

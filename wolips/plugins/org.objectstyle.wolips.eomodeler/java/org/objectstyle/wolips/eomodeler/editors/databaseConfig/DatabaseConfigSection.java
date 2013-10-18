@@ -29,6 +29,7 @@ import org.objectstyle.wolips.eomodeler.editors.entity.EOPrototypeEntityListCont
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 import org.objectstyle.wolips.eomodeler.utils.FormUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringLabelProvider;
+import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
 public class DatabaseConfigSection extends AbstractPropertySection {
 	private DataBindingContext _bindingContext;
@@ -79,14 +80,17 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EODatabaseConfig." + EODatabaseConfig.NAME), SWT.NONE);
 		_nameText = new Text(topForm, SWT.BORDER);
 		_nameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		UglyFocusHackWorkaroundListener.addListener(_nameText);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EODatabaseConfig." + EODatabaseConfig.DEPLOYMENT_PROFILE), SWT.NONE);
 		_deploymentProfileText = new Text(topForm, SWT.BORDER);
 		_deploymentProfileText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		UglyFocusHackWorkaroundListener.addListener(_deploymentProfileText);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EODatabaseConfig." + EODatabaseConfig.PRIORITY), SWT.NONE);
 		_priorityText = new Text(topForm, SWT.BORDER);
 		_priorityText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		UglyFocusHackWorkaroundListener.addListener(_priorityText);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EODatabaseConfig." + EODatabaseConfig.PROTOTYPE), SWT.NONE);
 		_prototypeComboViewer = new ComboViewer(topForm, SWT.READ_ONLY);

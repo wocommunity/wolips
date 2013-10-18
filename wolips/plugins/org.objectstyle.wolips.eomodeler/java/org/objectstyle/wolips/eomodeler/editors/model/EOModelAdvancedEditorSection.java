@@ -76,6 +76,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.utils.NamingConvention;
 import org.objectstyle.wolips.eomodeler.utils.FormUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringLabelProvider;
+import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
 public class EOModelAdvancedEditorSection extends AbstractPropertySection implements ModifyListener, ISelectionChangedListener, SelectionListener {
 	private EOModel _model;
@@ -113,10 +114,12 @@ public class EOModelAdvancedEditorSection extends AbstractPropertySection implem
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + EOModel.ATTRIBUTE_NAMING_CONVENTION + ".prefix"), SWT.NONE);
 		_attributePrefix = new Text(topForm, SWT.BORDER);
 		_attributePrefix.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		UglyFocusHackWorkaroundListener.addListener(_attributePrefix);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + EOModel.ATTRIBUTE_NAMING_CONVENTION + ".suffix"), SWT.NONE);
 		_attributeSuffix = new Text(topForm, SWT.BORDER);
 		_attributeSuffix.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		UglyFocusHackWorkaroundListener.addListener(_attributeSuffix);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + EOModel.ATTRIBUTE_NAMING_CONVENTION + ".case"), SWT.NONE);
 		Combo attributeCaseCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
@@ -137,10 +140,12 @@ public class EOModelAdvancedEditorSection extends AbstractPropertySection implem
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + EOModel.ENTITY_NAMING_CONVENTION + ".prefix"), SWT.NONE);
 		_entityPrefix = new Text(topForm, SWT.BORDER);
 		_entityPrefix.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		UglyFocusHackWorkaroundListener.addListener(_entityPrefix);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + EOModel.ENTITY_NAMING_CONVENTION + ".suffix"), SWT.NONE);
 		_entitySuffix = new Text(topForm, SWT.BORDER);
 		_entitySuffix.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		UglyFocusHackWorkaroundListener.addListener(_entitySuffix);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + EOModel.ENTITY_NAMING_CONVENTION + ".case"), SWT.NONE);
 		Combo entityCaseCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);

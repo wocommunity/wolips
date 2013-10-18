@@ -69,6 +69,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttributePath;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
 import org.objectstyle.wolips.eomodeler.utils.FormUtils;
+import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
 public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
 	private EOAttribute _attribute;
@@ -103,11 +104,13 @@ public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
 		_readFormatText = new Text(topForm, SWT.BORDER);
 		GridData readFormatFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_readFormatText.setLayoutData(readFormatFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(_readFormatText);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.WRITE_FORMAT), SWT.NONE);
 		_writeFormatText = new Text(topForm, SWT.BORDER);
 		GridData writeFormatFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_writeFormatText.setLayoutData(writeFormatFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(_writeFormatText);
 
 		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		_readOnlyButton = new Button(topForm, SWT.CHECK);

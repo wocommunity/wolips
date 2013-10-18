@@ -60,6 +60,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
+import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
 public class RESTConnectionDictionarySection extends Composite implements IConnectionDictionarySection {
 	private EODatabaseConfig _databaseConfig;
@@ -86,14 +87,17 @@ public class RESTConnectionDictionarySection extends Composite implements IConne
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.URL), SWT.NONE);
 		_urlText = new Text(this, SWT.BORDER);
 		_urlText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		UglyFocusHackWorkaroundListener.addListener(_urlText);
 
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.USERNAME), SWT.NONE);
 		_usernameText = new Text(this, SWT.BORDER);
 		_usernameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		UglyFocusHackWorkaroundListener.addListener(_usernameText);
 
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.PASSWORD), SWT.NONE);
 		_passwordText = new Text(this, SWT.BORDER | SWT.PASSWORD);
 		_passwordText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		UglyFocusHackWorkaroundListener.addListener(_passwordText);
 	}
 
 	public void setInput(EODatabaseConfig databaseContext) {

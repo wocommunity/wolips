@@ -68,6 +68,7 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
 import org.objectstyle.wolips.eomodeler.utils.FormUtils;
+import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
 public class EOFetchSpecOptionsEditorSection extends AbstractPropertySection {
 	private EOFetchSpecification _fetchSpecification;
@@ -104,6 +105,7 @@ public class EOFetchSpecOptionsEditorSection extends AbstractPropertySection {
 		_fetchLimitText = new Text(topForm, SWT.BORDER);
 		GridData fetchLimitLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_fetchLimitText.setLayoutData(fetchLimitLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(_fetchLimitText);
 
 		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		_promptsAfterFetchLimitButton = new Button(topForm, SWT.CHECK);

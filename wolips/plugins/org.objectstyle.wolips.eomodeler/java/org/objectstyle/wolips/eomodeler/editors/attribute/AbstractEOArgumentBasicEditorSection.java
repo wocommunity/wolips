@@ -91,6 +91,7 @@ import org.objectstyle.wolips.eomodeler.editors.dataType.StringDataTypePanel;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 import org.objectstyle.wolips.eomodeler.utils.FormUtils;
+import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
 public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPropertySection {
 	private static String COLUMN = "Column";
@@ -156,6 +157,7 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 		_nameText = new Text(topForm, SWT.BORDER);
 		GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_nameText.setLayoutData(nameFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(_nameText);
 
 		Combo derivedCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
 		_derivedComboViewer = new ComboViewer(derivedCombo);
@@ -165,7 +167,7 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 		_derivedComboViewer.addSelectionChangedListener(new ColumnDerivedChangeListener());
 		GridData derivedComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		derivedCombo.setLayoutData(derivedComboLayoutData);
-
+		
 		_columnNameDefinitionComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
 		GridData columnNameDefinitionFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_columnNameDefinitionComposite.setLayoutData(columnNameDefinitionFieldLayoutData);
@@ -176,12 +178,14 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 		_columnNameText = new Text(_columnNameDefinitionComposite, SWT.BORDER);
 		GridData externalNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_columnNameText.setLayoutData(externalNameFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(_columnNameText);
 
 		getWidgetFactory().createCLabel(_columnNameDefinitionComposite, Messages.getString("AbstractEOArgument." + AbstractEOArgument.DEFINITION), SWT.NONE);
 		_definitionText = new Text(_columnNameDefinitionComposite, SWT.BORDER);
 		GridData definitionFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_definitionText.setLayoutData(definitionFieldLayoutData);
 		_columnNameDefinitionLayout.topControl = _columnNameText;
+		UglyFocusHackWorkaroundListener.addListener(_definitionText);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("AbstractEOArgument.settings"), SWT.NONE);
 		
@@ -216,11 +220,13 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 		_externalTypeText = new Text(topForm, SWT.BORDER);
 		GridData externalTypeFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_externalTypeText.setLayoutData(externalTypeFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(_externalTypeText);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("AbstractEOArgument." + AbstractEOArgument.CLASS_NAME), SWT.NONE);
 		_classNameText = new Text(topForm, SWT.BORDER);
 		GridData classNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_classNameText.setLayoutData(classNameFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(_classNameText);
 
 		_dataTypePanel = getWidgetFactory().createPlainComposite(form, SWT.NONE);
 		FormData dataTypeFormData = new FormData();

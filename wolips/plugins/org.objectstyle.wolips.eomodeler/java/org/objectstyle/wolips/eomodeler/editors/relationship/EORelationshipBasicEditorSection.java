@@ -87,6 +87,7 @@ import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityListContentProvid
 import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 import org.objectstyle.wolips.eomodeler.utils.FormUtils;
+import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
 public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 	private EORelationship _relationship;
@@ -148,11 +149,13 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 		_nameText = new Text(topForm, SWT.BORDER);
 		GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_nameText.setLayoutData(nameFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(_nameText);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.DEFINITION), SWT.NONE);
 		_definitionText = new Text(topForm, SWT.BORDER);
 		GridData definitionFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_definitionText.setLayoutData(definitionFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(_definitionText);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.settings"), SWT.NONE);
 		
