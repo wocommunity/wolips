@@ -71,7 +71,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.core.sourcelookup.ISourceLookupDirector;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
@@ -203,6 +202,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends JavaLaunc
 		return workingDirectoryFile;
 	}
 
+	@SuppressWarnings("unused")
 	public boolean isValidProjectPath(IProject project) {
 		try {
 			return true;//project.getLocation().toOSString().indexOf("-") == -1;
@@ -404,13 +404,4 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends JavaLaunc
 		return getVMArguments(configuration);
 	}
 
-	protected void setDefaultSourceLocator(ILaunch launch, ILaunchConfiguration configuration) throws CoreException {
-		// set default source locator if none specified
-		if (launch.getSourceLocator() == null || !(launch.getSourceLocator() instanceof JavaSourceLookupDirectorWO)) {
-			ISourceLookupDirector sourceLocator = new JavaSourceLookupDirectorWO();
-			sourceLocator.setSourcePathComputer(getLaunchManager().getSourcePathComputer("org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer")); //$NON-NLS-1$
-			sourceLocator.initializeDefaults(configuration);
-			launch.setSourceLocator(sourceLocator);
-		}
-	}
 }

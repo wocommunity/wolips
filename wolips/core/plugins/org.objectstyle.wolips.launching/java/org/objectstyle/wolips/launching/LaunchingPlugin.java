@@ -56,9 +56,12 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
+import org.objectstyle.wolips.jdt.classpath.WOFrameworkClasspathContainer;
+import org.objectstyle.wolips.launching.classpath.WORuntimeClasspathEntryResolver;
 import org.objectstyle.wolips.launching.exceptionhandler.IExceptionHandler;
 import org.objectstyle.wolips.launching.exceptionhandler.internal.ExceptionHandlerWrapper;
 import org.osgi.framework.BundleContext;
@@ -85,6 +88,7 @@ public class LaunchingPlugin extends AbstractBaseUIActivator {
 	public LaunchingPlugin() {
 		super();
 		plugin = this;
+		JavaRuntime.addContainerResolver(new WORuntimeClasspathEntryResolver(), WOFrameworkClasspathContainer.ID);
 	}
 
 	/**
