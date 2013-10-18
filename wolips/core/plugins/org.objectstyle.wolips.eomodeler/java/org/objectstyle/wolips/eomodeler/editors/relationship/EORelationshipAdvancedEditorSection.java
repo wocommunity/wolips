@@ -72,6 +72,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
 import org.objectstyle.wolips.eomodeler.utils.FormUtils;
+import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
 public class EORelationshipAdvancedEditorSection extends AbstractPropertySection {
 	private EORelationship _relationship;
@@ -106,6 +107,7 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
 		_numberOfToManyFaultsToBatchFetchText = new Text(topForm, SWT.BORDER);
 		GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_numberOfToManyFaultsToBatchFetchText.setLayoutData(nameFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(_numberOfToManyFaultsToBatchFetchText);
 
 		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		_ownsDestinationButton = new Button(topForm, SWT.CHECK);

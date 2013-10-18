@@ -63,6 +63,7 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 import org.objectstyle.wolips.eomodeler.utils.StringLabelProvider;
+import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
 public class JNDIConnectionDictionarySection extends Composite implements IConnectionDictionarySection {
 	private EODatabaseConfig _databaseConfig;
@@ -103,14 +104,17 @@ public class JNDIConnectionDictionarySection extends Composite implements IConne
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.URL), SWT.NONE);
 		_serverUrlText = new Text(this, SWT.BORDER);
 		_serverUrlText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		UglyFocusHackWorkaroundListener.addListener(_serverUrlText);
 
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.USERNAME), SWT.NONE);
 		_usernameText = new Text(this, SWT.BORDER);
 		_usernameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		UglyFocusHackWorkaroundListener.addListener(_usernameText);
 
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.PASSWORD), SWT.NONE);
 		_passwordText = new Text(this, SWT.BORDER | SWT.PASSWORD);
 		_passwordText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		UglyFocusHackWorkaroundListener.addListener(_passwordText);
 
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.AUTHENTICATION_METHOD), SWT.NONE);
 		_authenticationMethodComboViewer = new ComboViewer(this, SWT.READ_ONLY);
@@ -121,6 +125,7 @@ public class JNDIConnectionDictionarySection extends Composite implements IConne
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.TIMEOUT), SWT.NONE);
 		_timeoutText = new Text(this, SWT.BORDER);
 		_timeoutText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		UglyFocusHackWorkaroundListener.addListener(_timeoutText);
 
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.SCOPE), SWT.NONE);
 		_scopeComboViewer = new ComboViewer(this, SWT.READ_ONLY);
@@ -131,10 +136,12 @@ public class JNDIConnectionDictionarySection extends Composite implements IConne
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.PLUGIN), SWT.NONE);
 		_plugInClassNameText = new Text(this, SWT.BORDER);
 		_plugInClassNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		UglyFocusHackWorkaroundListener.addListener(_plugInClassNameText);
 
 		widgetFactory.createCLabel(this, Messages.getString("EOModel." + EODatabaseConfig.INITIAL_CONTEXT_FACTORY), SWT.NONE);
 		_initialContextFactoryText = new Text(this, SWT.BORDER);
 		_initialContextFactoryText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		UglyFocusHackWorkaroundListener.addListener(_initialContextFactoryText);
 	}
 
 	public void setInput(EODatabaseConfig databaseContext) {

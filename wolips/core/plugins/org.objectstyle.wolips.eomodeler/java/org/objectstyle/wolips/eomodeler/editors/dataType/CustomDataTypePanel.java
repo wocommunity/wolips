@@ -66,6 +66,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOFactoryMethodArgumentType;
 import org.objectstyle.wolips.eomodeler.editors.attribute.EOFactoryMethodArgumentTypeContentProvider;
 import org.objectstyle.wolips.eomodeler.editors.attribute.EOFactoryMethodArgumentTypeLabelProvider;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
+import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
 public class CustomDataTypePanel extends Composite implements IDataTypePanel {
 	private Text myExternalWidthText;
@@ -101,36 +102,43 @@ public class CustomDataTypePanel extends Composite implements IDataTypePanel {
 		myExternalWidthText = new Text(this, SWT.BORDER);
 		GridData externalWidthFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		myExternalWidthText.setLayoutData(externalWidthFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(myExternalWidthText);
 
 		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.VALUE_CLASS_NAME), SWT.NONE);
 		myValueClassNameText = new Text(this, SWT.BORDER);
 		GridData valueClassNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		myValueClassNameText.setLayoutData(valueClassNameFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(myValueClassNameText);
 
 		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.VALUE_TYPE), SWT.NONE);
 		myValueTypeText = new Text(this, SWT.BORDER);
 		GridData valueTypeFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		myValueTypeText.setLayoutData(valueTypeFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(myValueTypeText);
 
 		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.VALUE_FACTORY_CLASS_NAME), SWT.NONE);
 		myFactoryClassText = new Text(this, SWT.BORDER);
 		GridData factoryClassFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		myFactoryClassText.setLayoutData(factoryClassFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(myFactoryClassText);
 
 		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.VALUE_FACTORY_METHOD_NAME), SWT.NONE);
 		myFactoryMethodText = new Text(this, SWT.BORDER);
 		GridData factoryMethodFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		myFactoryMethodText.setLayoutData(factoryMethodFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(myFactoryMethodText);
 
 		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_CLASS_NAME), SWT.NONE);
 		myConversionClassText = new Text(this, SWT.BORDER);
 		GridData conversionClassFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		myConversionClassText.setLayoutData(conversionClassFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(myConversionClassText);
 
 		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME), SWT.NONE);
 		myConversionMethodText = new Text(this, SWT.BORDER);
 		GridData conversionMethodFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		myConversionMethodText.setLayoutData(conversionMethodFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(myConversionMethodText);
 
 		_widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE), SWT.NONE);
 		Combo argumentTypeComboViewer = new Combo(this, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);

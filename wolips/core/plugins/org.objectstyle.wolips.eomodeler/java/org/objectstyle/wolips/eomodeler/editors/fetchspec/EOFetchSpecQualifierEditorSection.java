@@ -76,6 +76,7 @@ import org.objectstyle.wolips.eomodeler.core.model.IEOAttribute;
 import org.objectstyle.wolips.eomodeler.outline.EOEntityTreeViewUpdater;
 import org.objectstyle.wolips.eomodeler.outline.EOModelOutlineContentProvider;
 import org.objectstyle.wolips.eomodeler.utils.FormUtils;
+import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
 public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection implements ISelectionChangedListener {
 	private EOFetchSpecification _fetchSpecification;
@@ -113,6 +114,7 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 		_nameText = new Text(topForm, SWT.BORDER);
 		GridData nameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_nameText.setLayoutData(nameLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(_nameText);
 
 		_modelTreeViewer = new TreeViewer(topForm);
 		GridData modelTreeLayoutData = new GridData(GridData.FILL_BOTH);

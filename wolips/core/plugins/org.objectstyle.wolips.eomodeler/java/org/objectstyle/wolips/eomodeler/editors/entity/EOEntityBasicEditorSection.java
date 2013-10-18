@@ -72,6 +72,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUpdateValueStrategy;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 import org.objectstyle.wolips.eomodeler.utils.FormUtils;
+import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
 public class EOEntityBasicEditorSection extends AbstractPropertySection {
 	private EOEntity myEntity;
@@ -104,16 +105,19 @@ public class EOEntityBasicEditorSection extends AbstractPropertySection {
 		myNameText = new Text(topForm, SWT.BORDER);
 		GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		myNameText.setLayoutData(nameFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(myNameText);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.EXTERNAL_NAME), SWT.NONE);
 		myExternalNameText = new Text(topForm, SWT.BORDER);
 		GridData externalNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		myExternalNameText.setLayoutData(externalNameFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(myExternalNameText);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.CLASS_NAME), SWT.NONE);
 		myClassNameText = new Text(topForm, SWT.BORDER);
 		GridData classNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		myClassNameText.setLayoutData(classNameFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(myClassNameText);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.PARENT), SWT.NONE);
 		Combo parentEntityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
@@ -127,11 +131,12 @@ public class EOEntityBasicEditorSection extends AbstractPropertySection {
 		myRestrictingQualifierText = new Text(topForm, SWT.BORDER);
 		GridData restrictingQualifierFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		myRestrictingQualifierText.setLayoutData(restrictingQualifierFieldLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(myRestrictingQualifierText);
 
 		getWidgetFactory().createCLabel(topForm, "", SWT.NONE);
 		myAbstractButton = new Button(topForm, SWT.CHECK);
 		myAbstractButton.setText(Messages.getString("EOEntity." + EOEntity.ABSTRACT_ENTITY));
-	}
+}
 
 	public void setInput(IWorkbenchPart part, ISelection selection) {
 		if (ComparisonUtils.equals(selection, getSelection())) {

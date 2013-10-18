@@ -72,6 +72,7 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntityIndex;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 import org.objectstyle.wolips.eomodeler.utils.FormUtils;
+import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
 public class EOEntityIndexBasicEditorSection extends AbstractPropertySection implements ISelectionChangedListener {
 	private EOEntityIndex _entityIndex;
@@ -115,6 +116,7 @@ public class EOEntityIndexBasicEditorSection extends AbstractPropertySection imp
 		_nameText = new Text(topForm, SWT.BORDER);
 		GridData nameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_nameText.setLayoutData(nameLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(_nameText);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntityIndex." + EOEntityIndex.CONSTRAINT), SWT.NONE);
 		Combo constraintCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);

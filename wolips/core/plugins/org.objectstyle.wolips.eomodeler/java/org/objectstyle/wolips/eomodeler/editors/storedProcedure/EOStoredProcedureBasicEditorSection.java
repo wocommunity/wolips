@@ -68,6 +68,7 @@ import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.utils.FormUtils;
+import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
 public class EOStoredProcedureBasicEditorSection extends AbstractPropertySection implements ISelectionChangedListener {
 	private EOStoredProcedure _storedProcedure;
@@ -94,11 +95,13 @@ public class EOStoredProcedureBasicEditorSection extends AbstractPropertySection
 		_nameText = new Text(topForm, SWT.BORDER);
 		GridData nameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_nameText.setLayoutData(nameLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(_nameText);
 
 		getWidgetFactory().createCLabel(topForm, Messages.getString("EOStoredProcedure." + EOStoredProcedure.EXTERNAL_NAME), SWT.NONE);
 		_externalNameText = new Text(topForm, SWT.BORDER);
 		GridData externalLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		_externalNameText.setLayoutData(externalLayoutData);
+		UglyFocusHackWorkaroundListener.addListener(_externalNameText);
 	}
 
 	public void setInput(IWorkbenchPart part, ISelection selection) {
