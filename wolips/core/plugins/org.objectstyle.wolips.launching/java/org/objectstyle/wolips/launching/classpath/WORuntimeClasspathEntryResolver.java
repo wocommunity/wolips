@@ -69,6 +69,10 @@ public class WORuntimeClasspathEntryResolver implements IRuntimeClasspathEntryRe
 	 * Performs default resolution for a container entry.
 	 * Delegates to the Java model.
 	 */
+	
+	private static ThreadLocal<List<IJavaProject>> fgProjects = new ThreadLocal<List<IJavaProject>>(); // Lists
+	private static ThreadLocal<Integer> fgEntryCount = new ThreadLocal<Integer>(); // Integers
+
 	private IRuntimeClasspathEntry[] computeDefaultContainerEntries(IRuntimeClasspathEntry entry, IJavaProject project) throws CoreException {
 		if (project == null || entry == null) {
 			// cannot resolve without entry or project context
@@ -94,17 +98,31 @@ public class WORuntimeClasspathEntryResolver implements IRuntimeClasspathEntryRe
 			break;
 		}
 		List<IRuntimeClasspathEntry> resolved = new ArrayList<IRuntimeClasspathEntry>(cpes.length);
+		List<IJavaProject> projects = fgProjects.get();
+		Integer count = fgEntryCount.get();
+		if (projects == null) {
+			projects = new ArrayList<IJavaProject>();
+			fgProjects.set(projects);
+			count = Integer.valueOf(0);
+		}
+		int intCount = count.intValue();
+		intCount++;
+		fgEntryCount.set(Integer.valueOf(intCount));
+		try {
 		for (int i = 0; i < cpes.length; i++) {
 			IClasspathEntry cpe = cpes[i];
 			if (cpe.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
 				IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(cpe.getPath().segment(0));
 				IJavaProject jp = JavaCore.create(p);
-				IRuntimeClasspathEntry classpath = JavaRuntime.newDefaultProjectClasspathEntry(jp);
-				IRuntimeClasspathEntry[] entries = resolveRuntimeClasspathEntry(classpath, jp);
-				for (int j = 0; j < entries.length; j++) {
-					IRuntimeClasspathEntry e = entries[j];
-					if (!resolved.contains(e)) {
-						resolved.add(entries[j]);
+				if (!projects.contains(jp)) {
+					projects.add(jp);
+					IRuntimeClasspathEntry classpath = JavaRuntime.newDefaultProjectClasspathEntry(jp);
+					IRuntimeClasspathEntry[] entries = JavaRuntime.resolveRuntimeClasspathEntry(classpath, jp);
+					for (int j = 0; j < entries.length; j++) {
+						IRuntimeClasspathEntry e = entries[j];
+						if (!resolved.contains(e)) {
+							resolved.add(entries[j]);
+						}
 					}
 				}
 			} else {
@@ -112,6 +130,15 @@ public class WORuntimeClasspathEntryResolver implements IRuntimeClasspathEntryRe
 				if (!resolved.contains(e)) {
 					resolved.add(e);
 				}
+			}
+		}
+		} finally {
+			intCount--;
+			if (intCount == 0) {
+				fgProjects.set(null);
+				fgEntryCount.set(null);
+			} else {
+				fgEntryCount.set(new Integer(intCount));
 			}
 		}
 		// set classpath property
