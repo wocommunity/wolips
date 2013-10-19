@@ -23,30 +23,30 @@ import org.eclipse.jdt.launching.IRuntimeClasspathEntry2;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntryResolver2;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
-import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
-import org.objectstyle.wolips.jdt.classpath.WOFrameworkClasspathContainer;
 
 /**
  * Default resolver for a contributed classpath entry
  */
 public class WORuntimeClasspathEntryResolver implements IRuntimeClasspathEntryResolver2 {
 	public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(IRuntimeClasspathEntry entry, ILaunchConfiguration configuration) throws CoreException {
-		IJavaProject project = entry.getJavaProject();
-		if (project == null) {
-			project = JavaRuntime.getJavaProject(configuration);
+		IRuntimeClasspathEntry[] entries;
+		if (entry instanceof IRuntimeClasspathEntry2) {
+			IRuntimeClasspathEntry2 entry2 = (IRuntimeClasspathEntry2)entry;
+			entries = entry2.getRuntimeClasspathEntries(configuration);
 		}
-		return resolveRuntimeClasspathEntry(entry, project);
+		else {
+			entries = new IRuntimeClasspathEntry[] { entry };
+		}
+		List<IRuntimeClasspathEntry> resolved = new ArrayList<IRuntimeClasspathEntry>();
+		for (IRuntimeClasspathEntry i : entries) {
+			for (IRuntimeClasspathEntry e : computeDefaultContainerEntries(i, configuration)) {
+				resolved.add(e);
+			}
+		}
+		return resolved.toArray(new IRuntimeClasspathEntry[resolved.size()]);		
 	}
 
 	public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(IRuntimeClasspathEntry entry, IJavaProject project) throws CoreException {
-		ProjectAdapter projectAdapter = (ProjectAdapter)project.getProject().getAdapter(ProjectAdapter.class);
-		if (projectAdapter != null && projectAdapter.isFramework()) {
-			IClasspathEntry cp = entry.getClasspathEntry();
-			if (cp != null && !cp.isExported() && cp.getPath() != null && cp.getPath().segmentCount() > 0 && WOFrameworkClasspathContainer.ID.equals(cp.getPath().segment(0))) {
-				return new IRuntimeClasspathEntry[0];
-			}
-		}
-		
 		IRuntimeClasspathEntry[] entries;
 		if (entry instanceof IRuntimeClasspathEntry2) {
 			IRuntimeClasspathEntry2 entry2 = (IRuntimeClasspathEntry2)entry;
@@ -56,10 +56,9 @@ public class WORuntimeClasspathEntryResolver implements IRuntimeClasspathEntryRe
 			entries = new IRuntimeClasspathEntry[] { entry };
 		}
 		List<IRuntimeClasspathEntry> resolved = new ArrayList<IRuntimeClasspathEntry>();
-		for (int i = 0; i < entries.length; i++) {
-			IRuntimeClasspathEntry[] temp = computeDefaultContainerEntries(entries[i], project);
-			for (int j = 0; j < temp.length; j++) {
-				resolved.add(temp[j]);
+		for (IRuntimeClasspathEntry i : entries) {
+			for (IRuntimeClasspathEntry e : computeDefaultContainerEntries(i, project)) {
+				resolved.add(e);
 			}
 		}
 		return resolved.toArray(new IRuntimeClasspathEntry[resolved.size()]);
@@ -72,6 +71,14 @@ public class WORuntimeClasspathEntryResolver implements IRuntimeClasspathEntryRe
 	
 	private static ThreadLocal<List<IJavaProject>> fgProjects = new ThreadLocal<List<IJavaProject>>(); // Lists
 	private static ThreadLocal<Integer> fgEntryCount = new ThreadLocal<Integer>(); // Integers
+
+	private IRuntimeClasspathEntry[] computeDefaultContainerEntries(IRuntimeClasspathEntry entry, ILaunchConfiguration configuration) throws CoreException {
+		IJavaProject project = entry.getJavaProject();
+		if (project == null) {
+			project = JavaRuntime.getJavaProject(configuration);
+		}
+		return computeDefaultContainerEntries(entry, project);
+	}
 
 	private IRuntimeClasspathEntry[] computeDefaultContainerEntries(IRuntimeClasspathEntry entry, IJavaProject project) throws CoreException {
 		if (project == null || entry == null) {
@@ -109,29 +116,27 @@ public class WORuntimeClasspathEntryResolver implements IRuntimeClasspathEntryRe
 		intCount++;
 		fgEntryCount.set(Integer.valueOf(intCount));
 		try {
-		for (int i = 0; i < cpes.length; i++) {
-			IClasspathEntry cpe = cpes[i];
-			if (cpe.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
-				IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(cpe.getPath().segment(0));
-				IJavaProject jp = JavaCore.create(p);
-				if (!projects.contains(jp)) {
-					projects.add(jp);
-					IRuntimeClasspathEntry classpath = JavaRuntime.newDefaultProjectClasspathEntry(jp);
-					IRuntimeClasspathEntry[] entries = JavaRuntime.resolveRuntimeClasspathEntry(classpath, jp);
-					for (int j = 0; j < entries.length; j++) {
-						IRuntimeClasspathEntry e = entries[j];
-						if (!resolved.contains(e)) {
-							resolved.add(entries[j]);
+			for (IClasspathEntry cpe : cpes) {
+				if (cpe.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
+					IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(cpe.getPath().segment(0));
+					IJavaProject jp = JavaCore.create(p);
+					if (!projects.contains(jp)) {
+						projects.add(jp);
+						IRuntimeClasspathEntry classpath = JavaRuntime.newDefaultProjectClasspathEntry(jp);
+						IRuntimeClasspathEntry[] entries = JavaRuntime.resolveRuntimeClasspathEntry(classpath, jp);
+						for (IRuntimeClasspathEntry e : entries) {
+							if (!resolved.contains(e)) {
+								resolved.add(e);
+							}
 						}
 					}
-				}
-			} else {
-				IRuntimeClasspathEntry e = new RuntimeClasspathEntry(cpe);
-				if (!resolved.contains(e)) {
-					resolved.add(e);
+				} else {
+					IRuntimeClasspathEntry e = new RuntimeClasspathEntry(cpe);
+					if (!resolved.contains(e)) {
+						resolved.add(e);
+					}
 				}
 			}
-		}
 		} finally {
 			intCount--;
 			if (intCount == 0) {
