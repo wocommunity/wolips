@@ -34,9 +34,6 @@ public class WORuntimeClasspathEntryResolver implements IRuntimeClasspathEntryRe
 	 * Delegates to the Java model.
 	 */
 	
-	private static ThreadLocal<List<IJavaProject>> fgProjects = new ThreadLocal<List<IJavaProject>>(); // Lists
-	private static ThreadLocal<Integer> fgEntryCount = new ThreadLocal<Integer>(); // Integers
-
 	public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(IRuntimeClasspathEntry entry, ILaunchConfiguration configuration) throws CoreException {
 		IJavaProject project = entry.getJavaProject();
 		if (project == null) {
@@ -45,13 +42,6 @@ public class WORuntimeClasspathEntryResolver implements IRuntimeClasspathEntryRe
 		if (project == null || entry == null) {
 			// cannot resolve without entry or project context
 			return new IRuntimeClasspathEntry[0];
-		}
-		ProjectAdapter projectAdapter = (ProjectAdapter)project.getProject().getAdapter(ProjectAdapter.class);
-		IClasspathEntry cp = entry.getClasspathEntry();
-		if (projectAdapter != null && projectAdapter.isFramework()) {
-			if (cp != null && !cp.isExported() && cp.getPath() != null && cp.getPath().segmentCount() > 0 && WOFrameworkClasspathContainer.ID.equals(cp.getPath().segment(0))) {
-				return new IRuntimeClasspathEntry[0];
-			}
 		}
 		IClasspathContainer container = JavaCore.getClasspathContainer(entry.getPath(), project);
 		if (container == null) {
@@ -73,45 +63,22 @@ public class WORuntimeClasspathEntryResolver implements IRuntimeClasspathEntryRe
 			break;
 		}
 		List<IRuntimeClasspathEntry> resolved = new ArrayList<IRuntimeClasspathEntry>(cpes.length);
-		List<IJavaProject> projects = fgProjects.get();
-		Integer count = fgEntryCount.get();
-		if (projects == null) {
-			projects = new ArrayList<IJavaProject>();
-			fgProjects.set(projects);
-			count = 0;
-		}
-		int intCount = count.intValue();
-		intCount++;
-		fgEntryCount.set(intCount);
-		try {
-			for (IClasspathEntry cpe : cpes) {
-				if (cpe.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
-					IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(cpe.getPath().segment(0));
-					IJavaProject jp = JavaCore.create(p);
-					if (!projects.contains(jp)) {
-						projects.add(jp);
-						IRuntimeClasspathEntry classpath = JavaRuntime.newDefaultProjectClasspathEntry(jp);
-						IRuntimeClasspathEntry[] entries = JavaRuntime.resolveRuntimeClasspathEntry(classpath, configuration);
-						for (IRuntimeClasspathEntry e : entries) {
-							if (!resolved.contains(e)) {
-								resolved.add(e);
-							}
-						}
-					}
-				} else {
-					IRuntimeClasspathEntry e = new RuntimeClasspathEntry(cpe);
+		for (IClasspathEntry cpe : cpes) {
+			if (cpe.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
+				IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(cpe.getPath().segment(0));
+				IJavaProject jp = JavaCore.create(p);
+				IRuntimeClasspathEntry classpath = JavaRuntime.newDefaultProjectClasspathEntry(jp);
+				IRuntimeClasspathEntry[] entries = JavaRuntime.resolveRuntimeClasspathEntry(classpath, jp);
+				for (IRuntimeClasspathEntry e : entries) {
 					if (!resolved.contains(e)) {
 						resolved.add(e);
 					}
 				}
-			}
-		} finally {
-			intCount--;
-			if (intCount == 0) {
-				fgProjects.set(null);
-				fgEntryCount.set(null);
 			} else {
-				fgEntryCount.set(intCount);
+				IRuntimeClasspathEntry e = new RuntimeClasspathEntry(cpe);
+				if (!resolved.contains(e)) {
+					resolved.add(e);
+				}
 			}
 		}
 		// set classpath property
@@ -154,45 +121,22 @@ public class WORuntimeClasspathEntryResolver implements IRuntimeClasspathEntryRe
 			break;
 		}
 		List<IRuntimeClasspathEntry> resolved = new ArrayList<IRuntimeClasspathEntry>(cpes.length);
-		List<IJavaProject> projects = fgProjects.get();
-		Integer count = fgEntryCount.get();
-		if (projects == null) {
-			projects = new ArrayList<IJavaProject>();
-			fgProjects.set(projects);
-			count = 0;
-		}
-		int intCount = count.intValue();
-		intCount++;
-		fgEntryCount.set(intCount);
-		try {
-			for (IClasspathEntry cpe : cpes) {
-				if (cpe.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
-					IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(cpe.getPath().segment(0));
-					IJavaProject jp = JavaCore.create(p);
-					if (!projects.contains(jp)) {
-						projects.add(jp);
-						IRuntimeClasspathEntry classpath = JavaRuntime.newDefaultProjectClasspathEntry(jp);
-						IRuntimeClasspathEntry[] entries = JavaRuntime.resolveRuntimeClasspathEntry(classpath, jp);
-						for (IRuntimeClasspathEntry e : entries) {
-							if (!resolved.contains(e)) {
-								resolved.add(e);
-							}
-						}
-					}
-				} else {
-					IRuntimeClasspathEntry e = new RuntimeClasspathEntry(cpe);
+		for (IClasspathEntry cpe : cpes) {
+			if (cpe.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
+				IProject p = ResourcesPlugin.getWorkspace().getRoot().getProject(cpe.getPath().segment(0));
+				IJavaProject jp = JavaCore.create(p);
+				IRuntimeClasspathEntry classpath = JavaRuntime.newDefaultProjectClasspathEntry(jp);
+				IRuntimeClasspathEntry[] entries = JavaRuntime.resolveRuntimeClasspathEntry(classpath, jp);
+				for (IRuntimeClasspathEntry e : entries) {
 					if (!resolved.contains(e)) {
 						resolved.add(e);
 					}
 				}
-			}
-		} finally {
-			intCount--;
-			if (intCount == 0) {
-				fgProjects.set(null);
-				fgEntryCount.set(null);
 			} else {
-				fgEntryCount.set(intCount);
+				IRuntimeClasspathEntry e = new RuntimeClasspathEntry(cpe);
+				if (!resolved.contains(e)) {
+					resolved.add(e);
+				}
 			}
 		}
 		// set classpath property
