@@ -64,10 +64,13 @@ public class JProfilerWOJavaLocalApplicationLaunchConfigurationDelegate extends
 
 	public final static String JProfilerWOJavaLocalApplicationID = "org.objectstyle.wolips.jprofiler.launching.JProfilerWOLocalJavaApplication";
 	
-	private LocalJavaDelegate delegate = new LocalJavaDelegate();
+	private LocalJavaDelegate delegate = new LocalJavaDelegate() {
+		public String getProgramArguments(ILaunchConfiguration configuration) throws CoreException {
+			return JProfilerWOJavaLocalApplicationLaunchConfigurationDelegate.this.getProgramArguments(configuration);
+		}
+	};
 	
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
-		
 		delegate.launch(configuration, ILaunchManager.RUN_MODE, launch, monitor);
 	}
 
