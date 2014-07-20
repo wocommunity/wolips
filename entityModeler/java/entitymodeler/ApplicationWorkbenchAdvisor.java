@@ -1,12 +1,14 @@
 package entitymodeler;
 
+import javax.inject.Inject;
+
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.internal.adaptor.EclipseEnvironmentInfo;
 import org.eclipse.osgi.service.datalocation.Location;
+import org.eclipse.osgi.service.environment.EnvironmentInfo;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
@@ -23,7 +25,8 @@ import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
 
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	private OpenDocumentEventProcessor _openDocProcessor;
-
+	@Inject private EnvironmentInfo environmentInfo;
+	
 	public ApplicationWorkbenchAdvisor(OpenDocumentEventProcessor openDocProcessor) {
 		_openDocProcessor = openDocProcessor;
 	}
@@ -60,7 +63,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	public void postStartup() {
 		super.postStartup();
 		try {
-			String[] args = EclipseEnvironmentInfo.getDefault().getNonFrameworkArgs();
+			String[] args = environmentInfo.getNonFrameworkArgs();
 
 			String modelPath = null;
 			boolean optionValue = false;
