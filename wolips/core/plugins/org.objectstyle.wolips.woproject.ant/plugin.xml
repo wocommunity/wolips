@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<plugin
-   id="org.objectstyle.wolips.woproject.ant"
-   name="WOProject Ant"
-   version="1.0.6"
-   provider-name="objectstyle.org">
-
-   <runtime>
-   </runtime>
-   <requires>
-      <import plugin="org.objectstyle.wolips.baseforplugins" version="1.0.6"/>
-   </requires>
+<plugin>
 
 <!-- =================================================================================== -->
 <!-- Extension: Ant                                                                      -->
