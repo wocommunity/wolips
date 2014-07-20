@@ -8,14 +8,13 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
-import org.eclipse.osgi.framework.internal.core.BundleURLConnection;
 
 public class URLUtils {
 	public static String getExtension(URL url) {
@@ -94,8 +93,8 @@ public class URLUtils {
 		URL[] children;
 		String protocol = parentUrl.getProtocol();
 		if ("bundleresource".equals(protocol)) {
-			BundleURLConnection conn = (BundleURLConnection)parentUrl.openConnection();
-			parentUrl = conn.getFileURL();
+			URLConnection conn = parentUrl.openConnection();
+			parentUrl = conn.getURL();
 			protocol = parentUrl.getProtocol();
 		}
 				
@@ -114,7 +113,7 @@ public class URLUtils {
 					for (int i = 0; i < files.length; i++) {
 						File child = files[i];
 						if (!child.isHidden() && child.isDirectory()) {
-							childrenList.add(child.toURL());
+							childrenList.add(child.toURI().toURL());
 						}
 					}
 					children = childrenList.toArray(new URL[childrenList.size()]);
@@ -193,8 +192,8 @@ public class URLUtils {
 				}
 			} else if ("bundleresource".equals(protocol)) {
 				try {
-					BundleURLConnection conn = (BundleURLConnection) url.openConnection();
-					String externalForm = conn.getFileURL().toExternalForm();
+					URLConnection conn =  url.openConnection();
+					String externalForm = conn.getURL().toExternalForm();
 					externalForm = URLDecoder.decode(externalForm, "UTF-8");
 					externalForm = externalForm.replaceAll(" ", "%20");
 					f = new File(new URI(externalForm));
