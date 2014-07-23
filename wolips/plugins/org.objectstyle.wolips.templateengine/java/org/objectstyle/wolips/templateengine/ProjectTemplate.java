@@ -3,6 +3,8 @@ package org.objectstyle.wolips.templateengine;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -14,12 +16,14 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.baseforplugins.util.FileUtilities;
-import org.objectstyle.wolips.baseforplugins.util.URLUtils;
 import org.objectstyle.wolips.core.resources.internal.types.project.ProjectPatternsets;
 import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
 import org.objectstyle.wolips.variables.BuildProperties;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -316,15 +320,14 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 	public static List<File> templateBaseFolders(IProject project, String baseFolderName) {
 		LinkedList<File> templateBaseFolders = new LinkedList<File>();
 		try {
-			File projectTemplatesFile = URLUtils.cheatAndTurnIntoFile(TemplateEngine.class.getResource("/" + baseFolderName));
-			if (projectTemplatesFile != null) {
-				templateBaseFolders.add(projectTemplatesFile);
-			}
-			File projectTemplatesFileWithoutSpaces = URLUtils.cheatAndTurnIntoFile(TemplateEngine.class.getResource("/" + baseFolderName.replaceAll(" ", "")));
-			if (projectTemplatesFileWithoutSpaces != null && !projectTemplatesFileWithoutSpaces.equals(projectTemplatesFile)) {
-				templateBaseFolders.add(projectTemplatesFileWithoutSpaces);
-			}
-		} catch (IllegalArgumentException e) {
+			Bundle bundle = FrameworkUtil.getBundle(TemplateEngine.class);
+			URL urlInBundle = bundle.getEntry(baseFolderName);
+			URL fileUrl = FileLocator.toFileURL(urlInBundle);
+			File baseFolder = new File(fileUrl.toURI());
+			templateBaseFolders.add(baseFolder);
+		} catch (URISyntaxException e) {
+			TemplateEnginePlugin.getDefault().log(e);
+		} catch (IOException e) {
 			TemplateEnginePlugin.getDefault().log(e);
 		}
 		if (project != null) {

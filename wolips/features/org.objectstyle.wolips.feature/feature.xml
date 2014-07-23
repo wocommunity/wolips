@@ -251,8 +251,7 @@ on the ObjectStyle Group, please see http://objectstyle.org/
          id="org.objectstyle.wolips.templateengine"
          download-size="8"
          install-size="8"
-         version="1.0.6"
-         unpack="false"/>
+         version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips.tkhtmleditor"
