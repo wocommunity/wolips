@@ -320,11 +320,18 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 	public static List<File> templateBaseFolders(IProject project, String baseFolderName) {
 		LinkedList<File> templateBaseFolders = new LinkedList<File>();
 		try {
-			Bundle bundle = FrameworkUtil.getBundle(TemplateEngine.class);
-			URL urlInBundle = bundle.getEntry(baseFolderName);
-			URL fileUrl = FileLocator.toFileURL(urlInBundle);
-			File baseFolder = new File(fileUrl.toURI());
-			templateBaseFolders.add(baseFolder);
+			if (baseFolderName != null) {
+				Bundle bundle = FrameworkUtil.getBundle(TemplateEngine.class);
+				URL urlInBundle = bundle.getEntry(baseFolderName);
+				if (urlInBundle == null) {
+					urlInBundle =  bundle.getEntry(baseFolderName.replaceAll(" ", ""));
+				}
+				if (urlInBundle != null) {
+					URL fileUrl = FileLocator.toFileURL(urlInBundle);
+					File baseFolder = new File(fileUrl.toURI());
+					templateBaseFolders.add(baseFolder);
+				}
+			}
 		} catch (URISyntaxException e) {
 			TemplateEnginePlugin.getDefault().log(e);
 		} catch (IOException e) {
