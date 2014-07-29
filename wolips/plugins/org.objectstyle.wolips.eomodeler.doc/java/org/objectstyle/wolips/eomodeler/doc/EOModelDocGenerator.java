@@ -36,60 +36,68 @@ public class EOModelDocGenerator {
 	}
 
 	public static void generate(EOModelGroup modelGroup, File outputFolder, File templatePath, String entityURLTemplate) throws Exception {
-		VelocityEngine velocityEngine = new VelocityEngine();
-		velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, org.apache.velocity.runtime.log.NullLogSystem.class.getName());
-		// velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
-		// ConsoleLogger.class.getName());
-		StringBuffer templatePaths = new StringBuffer();
-		templatePaths.append(".");
-		if (templatePath != null) {
-			templatePaths.append(",");
-			templatePaths.append(templatePath.getAbsolutePath());
-		}
-		velocityEngine.setProperty("resource.loader", "file,class");
-		velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
-		velocityEngine.setProperty("file.resource.loader.path", templatePaths.toString());
-		velocityEngine.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
+		Thread thread = Thread.currentThread();
+		ClassLoader loader = thread.getContextClassLoader();
+		thread.setContextClassLoader(modelGroup.getClass().getClassLoader());
+		try {
+			VelocityEngine velocityEngine = new VelocityEngine();
+			velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, org.apache.velocity.runtime.log.NullLogSystem.class.getName());
+			// velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
+			// ConsoleLogger.class.getName());
+			StringBuffer templatePaths = new StringBuffer();
+			templatePaths.append(".");
+			if (templatePath != null) {
+				templatePaths.append(",");
+				templatePaths.append(templatePath.getAbsolutePath());
+			}
+			velocityEngine.setProperty("resource.loader", "file,class");
+			velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
+			velocityEngine.setProperty("file.resource.loader.path", templatePaths.toString());
+			velocityEngine.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
+	
+			velocityEngine.init();
 
-		velocityEngine.init();
-		VelocityContext context = new VelocityContext();
-
-		context.put("modelGroup", modelGroup);
-		EOModelDocGenerator.writeTemplate(velocityEngine, context, "eomodeldoc.css.vm", new File(outputFolder, "eomodeldoc.css"));
-		EOModelDocGenerator.writeTemplate(velocityEngine, context, "eomodeldoc.js.vm", new File(outputFolder, "eomodeldoc.js"));
-		EOModelDocGenerator.writeTemplate(velocityEngine, context, "prototype.js.vm", new File(outputFolder, "prototype.js"));
-		EOModelDocGenerator.writeTemplate(velocityEngine, context, "index.html.vm", new File(outputFolder, "index.html"));
-		EOModelDocGenerator.writeTemplate(velocityEngine, context, "indexContent.html.vm", new File(outputFolder, "content.html"));
-		EOModelDocGenerator.writeTemplate(velocityEngine, context, "indexOverview.html.vm", new File(outputFolder, "overview.html"));
-		EOModelDocGenerator.writeTemplate(velocityEngine, context, "indexModels.html.vm", new File(outputFolder, "models.html"));
-		for (EOModel model : modelGroup.getModels()) {
-			System.out.println("Generating " + model.getName() + " ...");
-			context.put("model", model);
-			EOModelDocGenerator.writeTemplate(velocityEngine, context, "modelOverview.html.vm", new File(outputFolder, model.getName() + "/overview.html"));
-			EOModelDocGenerator.writeTemplate(velocityEngine, context, "modelContent.html.vm", new File(outputFolder, model.getName() + "/content.html"));
-
-			for (EOEntity entity : model.getEntities()) {
-				System.out.println("Generating " + model.getName() + "." + entity.getName() + " ...");
-				context.put("entity", entity);
-				if (entityURLTemplate != null) {
-					String className = entity.getClassName();
-					if (className != null && className.length() > 0) {
-						StringWriter entityURLWriter = new StringWriter();
-						VelocityContext entityURLContext = new VelocityContext();
-						entityURLContext.put("entity", entity);
-						entityURLContext.put("model", model);
-						Velocity.evaluate(entityURLContext, entityURLWriter, "entityURL", entityURLTemplate);
-						context.put("entityURL", entityURLWriter.toString());
+			VelocityContext context = new VelocityContext();
+	
+			context.put("modelGroup", modelGroup);
+			EOModelDocGenerator.writeTemplate(velocityEngine, context, "eomodeldoc.css.vm", new File(outputFolder, "eomodeldoc.css"));
+			EOModelDocGenerator.writeTemplate(velocityEngine, context, "eomodeldoc.js.vm", new File(outputFolder, "eomodeldoc.js"));
+			EOModelDocGenerator.writeTemplate(velocityEngine, context, "prototype.js.vm", new File(outputFolder, "prototype.js"));
+			EOModelDocGenerator.writeTemplate(velocityEngine, context, "index.html.vm", new File(outputFolder, "index.html"));
+			EOModelDocGenerator.writeTemplate(velocityEngine, context, "indexContent.html.vm", new File(outputFolder, "content.html"));
+			EOModelDocGenerator.writeTemplate(velocityEngine, context, "indexOverview.html.vm", new File(outputFolder, "overview.html"));
+			EOModelDocGenerator.writeTemplate(velocityEngine, context, "indexModels.html.vm", new File(outputFolder, "models.html"));
+			for (EOModel model : modelGroup.getModels()) {
+				System.out.println("Generating " + model.getName() + " ...");
+				context.put("model", model);
+				EOModelDocGenerator.writeTemplate(velocityEngine, context, "modelOverview.html.vm", new File(outputFolder, model.getName() + "/overview.html"));
+				EOModelDocGenerator.writeTemplate(velocityEngine, context, "modelContent.html.vm", new File(outputFolder, model.getName() + "/content.html"));
+	
+				for (EOEntity entity : model.getEntities()) {
+					System.out.println("Generating " + model.getName() + "." + entity.getName() + " ...");
+					context.put("entity", entity);
+					if (entityURLTemplate != null) {
+						String className = entity.getClassName();
+						if (className != null && className.length() > 0) {
+							StringWriter entityURLWriter = new StringWriter();
+							VelocityContext entityURLContext = new VelocityContext();
+							entityURLContext.put("entity", entity);
+							entityURLContext.put("model", model);
+							Velocity.evaluate(entityURLContext, entityURLWriter, "entityURL", entityURLTemplate);
+							context.put("entityURL", entityURLWriter.toString());
+						}
 					}
+					EOModelDocGenerator.writeTemplate(velocityEngine, context, "entityContent.html.vm", new File(outputFolder, model.getName() + "/entities/" + entity.getName() + ".html"));
 				}
-				EOModelDocGenerator.writeTemplate(velocityEngine, context, "entityContent.html.vm", new File(outputFolder, model.getName() + "/entities/" + entity.getName() + ".html"));
+	
+				for (EOStoredProcedure storedProcedure : model.getStoredProcedures()) {
+					System.out.println("Generating " + model.getName() + "." + storedProcedure.getName() + " ...");
+					context.put("storedProcedure", storedProcedure);
+					EOModelDocGenerator.writeTemplate(velocityEngine, context, "storedProcedureContent.html.vm", new File(outputFolder, model.getName() + "/storedProcedures/" + storedProcedure.getName() + ".html"));
+				}
 			}
-
-			for (EOStoredProcedure storedProcedure : model.getStoredProcedures()) {
-				System.out.println("Generating " + model.getName() + "." + storedProcedure.getName() + " ...");
-				context.put("storedProcedure", storedProcedure);
-				EOModelDocGenerator.writeTemplate(velocityEngine, context, "storedProcedureContent.html.vm", new File(outputFolder, model.getName() + "/storedProcedures/" + storedProcedure.getName() + ".html"));
-			}
+		} finally {
+			thread.setContextClassLoader(loader);
 		}
 
 		System.out.println("Done: " + new File(outputFolder, "index.html"));
