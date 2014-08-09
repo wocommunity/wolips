@@ -69,22 +69,28 @@ public class WOLipsVelocityUtils {
 		templatePaths.append(",");
 		templatePaths.append(new File(System.getProperty("user.home"), "Library/Application Support/WOLips/" + templateFamilyName).getAbsolutePath());
 
-		VelocityEngine velocityEngine = new VelocityEngine();
-		velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, org.apache.velocity.runtime.log.NullLogSystem.class.getName());
-		velocityEngine.setProperty("resource.loader", "file,wolips");
-		velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
-		velocityEngine.setProperty("file.resource.loader.path", templatePaths.toString());
-		if (insideEclipse) {
-			velocityEngine.setProperty("wolips.resource.loader.class", ResourceLoader.class.getName());
-			if (templateBundle != null) {
-				velocityEngine.setProperty("wolips.resource.loader.bundle", templateBundle);
+		Thread thread = Thread.currentThread();
+		ClassLoader loader = thread.getContextClassLoader();
+		thread.setContextClassLoader(resourceLoaderClass.getClassLoader());
+		try {
+			VelocityEngine velocityEngine = new VelocityEngine();
+			velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, org.apache.velocity.runtime.log.NullLogSystem.class.getName());
+			velocityEngine.setProperty("resource.loader", "file,wolips");
+			velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
+			velocityEngine.setProperty("file.resource.loader.path", templatePaths.toString());
+			if (insideEclipse) {
+				velocityEngine.setProperty("wolips.resource.loader.class", ResourceLoader.class.getName());
+				if (templateBundle != null) {
+					velocityEngine.setProperty("wolips.resource.loader.bundle", templateBundle);
+				}
+			} else if (resourceLoaderClass != null) {
+				velocityEngine.setProperty("wolips.resource.loader.class", resourceLoaderClass.getName());
 			}
-		} else if (resourceLoaderClass != null) {
-			velocityEngine.setProperty("wolips.resource.loader.class", resourceLoaderClass.getName());
+			velocityEngine.init();
+			return velocityEngine;
+		} finally {
+			thread.setContextClassLoader(loader);
 		}
-		velocityEngine.init();
-
-		return velocityEngine;
 	}
 
 	public static String writeTemplateToString(VelocityEngine engine, VelocityContext context, String templateName, ByteArrayOutputStream newFileContentsStream) throws ResourceNotFoundException, ParseErrorException, MethodInvocationException, Exception {
