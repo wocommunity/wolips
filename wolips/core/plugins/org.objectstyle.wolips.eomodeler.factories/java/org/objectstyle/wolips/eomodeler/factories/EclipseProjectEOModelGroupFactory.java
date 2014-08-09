@@ -53,7 +53,7 @@ public class EclipseProjectEOModelGroupFactory extends AbstractManifestEOModelGr
 				// + eclipseProjectFolder);
 				Set<File> visitedProjectFolders = new HashSet<File>();
 				try {
-					processEclipseProject(eclipseProjectFolder, searchFolders, visitedProjectFolders, new WOEnvironment(null));
+					processEclipseProject(eclipseProjectFolder, searchFolders, visitedProjectFolders, new WOEnvironment());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

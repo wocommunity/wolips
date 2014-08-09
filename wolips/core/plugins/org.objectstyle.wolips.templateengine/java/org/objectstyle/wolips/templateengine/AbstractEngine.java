@@ -103,25 +103,32 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 		/*
 		 * create a new instance of the engine
 		 */
-		this.velocityEngine = new VelocityEngine();//jar.resource.loader.path
-		this.velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.NullLogSystem");
-		/*
-		 * initialize the engine
-		 */
-		String userHomeWOLipsPath = System.getProperty("user.home") + File.separator + "Library" + File.separator + "WOLips";
-		URL url = null;
-		url = Platform.resolve(TemplateEnginePlugin.baseURL());
-		String templatePaths = userHomeWOLipsPath + ", ";
-		Path path = new Path(url.getPath());
-		templatePaths = templatePaths + path.append("templates").toOSString();
-		this.velocityEngine.setProperty("resource.loader", "wolips");
-		this.velocityEngine.setProperty("wolips.resource.loader.class", "org.objectstyle.wolips.thirdparty.velocity.resourceloader.ResourceLoader");
-		this.velocityEngine.setProperty("wolips.resource.loader.bundle", TemplateEnginePlugin.getDefault().getBundle());
-//		this.velocityEngine.setProperty("jar.resource.loader.path", "jar:" + TemplateEnginePlugin.getDefault().getBundle().getResource("plugin.xml").getFile());
-		this.velocityEngine.init();
-		this.context = new VelocityContext();
-		this.templates = new ArrayList<TemplateDefinition>();
-		this.setPropertyForKey(this, WOLipsContext.Key);
+		Thread thread = Thread.currentThread();
+		ClassLoader loader = thread.getContextClassLoader();
+		thread.setContextClassLoader(this.getClass().getClassLoader());
+		try {
+			this.velocityEngine = new VelocityEngine();//jar.resource.loader.path
+			this.velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.NullLogSystem");
+			/*
+			 * initialize the engine
+			 */
+			String userHomeWOLipsPath = System.getProperty("user.home") + File.separator + "Library" + File.separator + "WOLips";
+			URL url = null;
+			url = Platform.resolve(TemplateEnginePlugin.baseURL());
+			String templatePaths = userHomeWOLipsPath + ", ";
+			Path path = new Path(url.getPath());
+			templatePaths = templatePaths + path.append("templates").toOSString();
+			this.velocityEngine.setProperty("resource.loader", "wolips");
+			this.velocityEngine.setProperty("wolips.resource.loader.class", "org.objectstyle.wolips.thirdparty.velocity.resourceloader.ResourceLoader");
+			this.velocityEngine.setProperty("wolips.resource.loader.bundle", TemplateEnginePlugin.getDefault().getBundle());
+	//		this.velocityEngine.setProperty("jar.resource.loader.path", "jar:" + TemplateEnginePlugin.getDefault().getBundle().getResource("plugin.xml").getFile());
+			this.velocityEngine.init();
+			this.context = new VelocityContext();
+			this.templates = new ArrayList<TemplateDefinition>();
+			this.setPropertyForKey(this, WOLipsContext.Key);
+		} finally {
+			thread.setContextClassLoader(loader);
+		}
 //		SAXBuilder builder;
 //		Document myContext = null;
 //		try {

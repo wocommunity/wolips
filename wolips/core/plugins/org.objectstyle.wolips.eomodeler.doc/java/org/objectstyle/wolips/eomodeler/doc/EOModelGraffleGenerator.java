@@ -41,20 +41,27 @@ public class EOModelGraffleGenerator {
 
 		_id = 2;
 
-		_velocityEngine = new VelocityEngine();
-		_velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, org.apache.velocity.runtime.log.NullLogSystem.class.getName());
-		StringBuffer templatePaths = new StringBuffer();
-		templatePaths.append(".");
-		if (templatePath != null) {
-			templatePaths.append(",");
-			templatePaths.append(templatePath.getAbsolutePath());
+		Thread thread = Thread.currentThread();
+		ClassLoader loader = thread.getContextClassLoader();
+		thread.setContextClassLoader(this.getClass().getClassLoader());
+		try {
+			_velocityEngine = new VelocityEngine();
+			_velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, org.apache.velocity.runtime.log.NullLogSystem.class.getName());
+			StringBuffer templatePaths = new StringBuffer();
+			templatePaths.append(".");
+			if (templatePath != null) {
+				templatePaths.append(",");
+				templatePaths.append(templatePath.getAbsolutePath());
+			}
+			_velocityEngine.setProperty("resource.loader", "file,class");
+			_velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
+			_velocityEngine.setProperty("file.resource.loader.path", templatePaths.toString());
+			_velocityEngine.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
+	
+			_velocityEngine.init();
+		} finally {
+			thread.setContextClassLoader(loader);
 		}
-		_velocityEngine.setProperty("resource.loader", "file,class");
-		_velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
-		_velocityEngine.setProperty("file.resource.loader.path", templatePaths.toString());
-		_velocityEngine.setProperty("class.resource.loader.class", ClasspathResourceLoader.class.getName());
-
-		_velocityEngine.init();
 		_context = new VelocityContext();
 		_ids = new HashMap<Object, Integer>();
 		_modelGroup = modelGroup;
