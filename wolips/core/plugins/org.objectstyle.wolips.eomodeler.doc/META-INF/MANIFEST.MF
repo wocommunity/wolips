@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: EOModelDoc
 Bundle-SymbolicName: org.objectstyle.wolips.eomodeler.doc;singleton:=true
 Bundle-Version: 1.0.6
-Bundle-Activator: org.objectstyle.wolips.eomodeler.core.Activator
+Bundle-Activator: org.objectstyle.wolips.eomodeler.doc.Activator
 Require-Bundle: org.objectstyle.wolips.eomodeler.core,
  org.objectstyle.wolips.thirdparty.velocity,
  org.objectstyle.wolips.baseforplugins
