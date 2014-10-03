@@ -8,20 +8,19 @@ import java.util.regex.Pattern;
 
 public class FuzzyXMLUtil {
 
-  /** XMLのエンコードを取得するための正規表現 */
+  /** XML */
   private static Pattern encoding = Pattern.compile("<\\?xml\\s+[^\\?>]*?encoding\\s*=\\s*\"(.*?)\"[^\\?>]*?\\?>");
-  /** スクリプト部分を取得するための正規表現 */
+
   private static Pattern script = Pattern.compile("(<script.*?>)(.*?)(</script>)", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 
   private static Pattern woTag = Pattern.compile("<(/*)(wo|webobject)(s*[^>]*)>", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
   private static Pattern whiteSpace = Pattern.compile("([\\ \\t\\r\\n])");
 
   /**
-   * スクリプト部分（&lt;script ... &gt;～&lt;/script&gt;で囲まれた範囲）の
-   * 文字列を半角スペースに置換します。
+   * &lt;script ... &gt; &lt;/script&gt;
    * 
-   * @param source XMLソース
-   * @return 変換後の文字列
+   * @param source XML
+   * @return 
    */
   public static String escapeScript(String source) {
     StringBuffer sb = new StringBuffer();
@@ -56,13 +55,8 @@ public class FuzzyXMLUtil {
   }
 
   /**
-   * 文字列リテラル（ダブルクォートまたはシングルクォートで囲まれた範囲）
-   * の中に&lt;と&gt;が存在した場合に半角スペースに変換します。
-   * <p>
-   * こんな方法でいいのかぁ…
-   * 
-   * @param source XMLのソース
-   * @return 変換後の文字列
+   * @param source
+   * @return
    */
   public static String escapeString(String source) {
     StringBuffer sb = new StringBuffer();
@@ -123,16 +117,16 @@ public class FuzzyXMLUtil {
   }
 
   /**
-   * HTML/JSP/XMLのコメント部分を半角スペースに置換します。
-   * アウトラインの抽出などコメント部分を非対象としたテキスト処理を行う場合に使用します。
+   * HTML/JSP/XML
+
    * <ul>
-   *   <li>&lt;!-- から --&gt;までをマッチした文字数分の半角スペースに変換</li>
+   *   <li>&lt;!-- --&gt;</li>
    * </ul>
    * 
-   * @param source XMLのソース
-   * @param contentsOnly trueの場合は&lt;!--、--&gt;は残して置換します。
-   *                     falseの場合は&lt;!--、--&gt;もスペースに置換します。
-   * @return 変換後の文字列
+   * @param source XML
+   * @param contentsOnly true
+   *                     false
+   * @return
    */
   public static String comment2space(String source, boolean contentsOnly) {
     int index = 0;
@@ -312,7 +306,6 @@ public class FuzzyXMLUtil {
     return sb.toString();
   }
 
-  /** ストリームから読み込んだ内容をバイト配列として返却します。 */
   public static byte[] readStream(InputStream in) throws IOException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     try {

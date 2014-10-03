@@ -340,7 +340,7 @@ public class HTMLPlugin extends AbstractUIPlugin {
 	
 	/**
 	 * Generates a message from a template and parameters.
-	 * Replace template {0}{1}.. with parametersB
+	 * Replace template {0}{1}.. with parameter
 	 * 
 	 * @param message message
 	 * @param params  parameterd

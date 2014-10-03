@@ -84,7 +84,6 @@ public class MultiPageHTMLEditor extends MultiPageEditorPart implements IResourc
 	
 	@Override
   public void dispose() {
-		// テンポラリファイルがあったら削除する
 		if(isFileEditorInput()){
 			File tmpFile = _editor.getTempFile();
 			if(tmpFile.exists()){

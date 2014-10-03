@@ -31,9 +31,9 @@ public class FuzzyXMLProcessingInstructionImpl extends AbstractFuzzyXMLNode impl
   public void setData(String data) {
     int length = this._data.length();
     this._data = data;
-    // 更新イベントを発火
+
     fireModifyEvent(toXMLString(new RenderContext(false)), getOffset(), getLength());
-    // 位置情報を更新
+
     appendOffset((FuzzyXMLElement) getParentNode(), getOffset(), data.length() - length);
   }
 

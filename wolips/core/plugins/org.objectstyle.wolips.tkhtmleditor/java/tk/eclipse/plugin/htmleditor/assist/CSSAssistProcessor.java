@@ -136,7 +136,6 @@ public class CSSAssistProcessor {
       //			} catch(Exception ex){
       //			}
     }
-    // ‘Š‘ÎƒpƒX
     return _file.getProject().getFile(_file.getParent().getProjectRelativePath().append(path));
   }
 

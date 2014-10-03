@@ -27,7 +27,6 @@ public class FuzzyXMLDocumentImpl implements FuzzyXMLDocument {
     this._root = root;
     this._docType = docType;
 
-    // ドキュメントオブジェクトをセット
     if (this._root != null) {
       ((FuzzyXMLElementImpl) this._root).setDocument(this);
       setDocument(this._root);
@@ -99,7 +98,6 @@ public class FuzzyXMLDocumentImpl implements FuzzyXMLDocument {
     matches.add(_root);
     matchOffsetElement(_root, matches, offset);
 
-    // 区間が最も短いものを選ぶ
     FuzzyXMLElement find = null;
     for (int i = 0; i < matches.size(); i++) {
       FuzzyXMLElement element = matches.get(i);
@@ -132,8 +130,6 @@ public class FuzzyXMLDocumentImpl implements FuzzyXMLDocument {
   }
 
   /**
-   * 更新イベントを発火します。
-   * 
    * @param newText
    * @param offset
    * @param length
@@ -147,8 +143,6 @@ public class FuzzyXMLDocumentImpl implements FuzzyXMLDocument {
   }
 
   /**
-   * オフセット値を更新します。
-   * 
    * @param offset
    * @param append
    */
