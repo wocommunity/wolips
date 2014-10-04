@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="java"/>
-	<classpathentry kind="src" path="wojava"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="var" path="WO_HOME/JavaEOAccess.jar"/>
+	<classpathentry kind="var" path="WO_HOME/JavaFoundation.jar"/>
+	<classpathentry kind="var" path="WO_HOME/JavaJDBCAdaptor.jar"/>
+	<classpathentry kind="var" path="WO_HOME/JavaEOControl.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
