@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.4"?>
+<?eclipse version="3.3?>
 <plugin>
    <extension
          id="org.objectstyle.wolips.eomodeler.eomodelGroupFactory.eclipse"
@@ -8,46 +8,22 @@
       <modelGroupFactory
             class="org.objectstyle.wolips.eomodeler.eclipse.EclipseEOModelGroupFactory"
             id="org.objectstyle.wolips.eomodeler.eclipse.modelGroupFactory"
-            name="Eclipse EOModel Group Factory">
-      </modelGroupFactory>
+            name="Eclipse EOModelGroup Factory"/>
    </extension>
    <extension
          id="org.objectstyle.wolips.eomodeler.eoclassLoaderFactory.eclipse"
          name="Eclipse EOClassLoader Factory"
          point="org.objectstyle.wolips.eomodeler.eoclassLoaderFactory">
       <eoclassLoaderFactory
-            class="org.objectstyle.wolips.eomodeler.eclipse.EclipseEOModelGroupFactory"
+            class="org.objectstyle.wolips.eomodeler.eclipse.EclipseEOClassLoaderFactory"
             id="org.objectstyle.wolips.eomodeler.eclipse.eoclassLoaderFactory"
-            name="Eclipse EOClassLoader Factory">
-      </eoclassLoaderFactory>
+            name="Eclipse EOClassLoader Factory"/>
    </extension>
    <extension
          point="org.eclipse.ui.startup">
-      <startup
-            class="org.objectstyle.wolips.eomodeler.eclipse.EntityModelerStartup">
-      </startup>
+      <startup class="org.objectstyle.wolips.eomodeler.eclipse.EntityModelerStartup"/>
    </extension>
-   <extension
-         id="org.objectstyle.wolips.eomodeler.sqlGeneratorFactory.eclipse"
-         name="Eclipse SQL Generator Factories"
-         point="org.objectstyle.wolips.eomodeler.sqlGeneratorFactory">
-      <sqlGeneratorFactory
-            class="org.objectstyle.wolips.eomodeler.core.sql.EOFSQLGeneratorFactory"
-            id="org.objectstyle.wolips.eomodeler.eclipse.sqlGeneratorFactory"
-            name="Eclipse SQL Generator Factory">
-      </sqlGeneratorFactory>
-   </extension>
-   <extension
-         id="org.objectstyle.wolips.eomodeler.sqlReverseEngineerFactory.eclipse"
-         name="Eclipse SQL Reverse Engineer Factories"
-         point="org.objectstyle.wolips.eomodeler.sqlReverseEngineerFactory">
-      <sqlReverseEngineerFactory
-            class="org.objectstyle.wolips.eomodeler.core.sql.EOFSQLReverseEngineerFactory"
-            id="org.objectstyle.wolips.eomodeler.eclipse.sqlReverseEngineerFactory"
-            name="Eclipse SQL Reverse Engineer Factory">
-      </sqlReverseEngineerFactory>
-   </extension>
-
+   
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
@@ -189,5 +165,25 @@
          <part id="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"/>
          <part id="org.eclipse.ui.views.PropertySheet"/>
       </actionSetPartAssociation>
+   </extension>
+   <extension
+         id="org.objectstyle.wolips.eomodeler.sqlGeneratorFactory.eclipse"
+         name="Eclipse SQL Generator Factories"
+         point="org.objectstyle.wolips.eomodeler.sqlGeneratorFactory">
+      <sqlGeneratorFactory
+            class="org.objectstyle.wolips.eomodeler.core.sql.EOFSQLGeneratorFactory"
+            id="org.objectstyle.wolips.eomodeler.eclipse.sqlGeneratorFactory"
+            name="Eclipse SQL Generator Factory">
+      </sqlGeneratorFactory>
+   </extension>
+   <extension
+         id="org.objectstyle.wolips.eomodeler.sqlReverseEngineerFactory.eclipse"
+         name="Eclipse SQL Reverse Engineer Factories"
+         point="org.objectstyle.wolips.eomodeler.sqlReverseEngineerFactory">
+      <sqlReverseEngineerFactory
+            class="org.objectstyle.wolips.eomodeler.core.sql.EOFSQLReverseEngineerFactory"
+            id="org.objectstyle.wolips.eomodeler.eclipse.sqlReverseEngineerFactory"
+            name="Eclipse SQL Reverse Engineer Factory">
+      </sqlReverseEngineerFactory>
    </extension>
 </plugin>
