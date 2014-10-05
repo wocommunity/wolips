@@ -7,3 +7,4 @@ Bundle-Activator: org.objectstyle.wolips.groovy.ui.Activator
 Bundle-Vendor: objectstyle.org
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
+Import-Package: org.objectstyle.wolips.componenteditor.editormenu
