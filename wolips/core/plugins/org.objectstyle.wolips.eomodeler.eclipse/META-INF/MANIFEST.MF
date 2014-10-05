@@ -21,3 +21,4 @@ Import-Package: org.eclipse.jdt.debug.ui.launchConfigurations,
  org.objectstyle.wolips.baseforuiplugins,
  org.objectstyle.wolips.eomodeler.core.model,
  org.objectstyle.wolips.workbenchutilities.actions
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

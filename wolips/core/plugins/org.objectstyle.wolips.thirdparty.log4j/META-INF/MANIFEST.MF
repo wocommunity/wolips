@@ -29,3 +29,4 @@ Export-Package: org.objectstyle.wolips.thirdparty.log4j,
  org.apache.log4j.chainsaw,
  org.apache.log4j
 Bundle-ClassPath: .,lib/log4j.jar
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
