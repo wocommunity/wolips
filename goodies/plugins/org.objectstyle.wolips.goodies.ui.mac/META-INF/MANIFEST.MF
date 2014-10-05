@@ -13,3 +13,4 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.goodies.ui.mac,
  org.objectstyle.wolips.goodies.ui.mac.actions
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
