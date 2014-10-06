@@ -50,12 +50,13 @@
 package org.objectstyle.wolips.eomodeler.eclipse;
 
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractUIPlugin {
+public class Activator extends AbstractBaseUIActivator {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.objectstyle.wolips.eomodeler.eclipse"; //$NON-NLS-1$
