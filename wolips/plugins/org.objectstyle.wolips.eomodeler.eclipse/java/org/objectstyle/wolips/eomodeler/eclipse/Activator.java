@@ -49,7 +49,6 @@
  */
 package org.objectstyle.wolips.eomodeler.eclipse;
 
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.baseforuiplugins.AbstractBaseUIActivator;
 import org.osgi.framework.BundleContext;
 
