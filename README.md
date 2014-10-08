@@ -11,7 +11,8 @@ Fork of wonder/wolips with changes to develop and debug in Eclipse 4.4 PDE
 
 2) Be sure to use Java 1.7 or higher
 
-3) m2e : Plugin for Maven - http://download.eclipse.org/technology/m2e/releases/ 
+3) If not already contained in the Eclipse package:
+   m2e : Plugin for Maven - http://download.eclipse.org/technology/m2e/releases/ 
    Click the checkbox to the left of "Maven Integration for Eclipse"
    
 4) Google Mechanic - http://workspacemechanic.eclipselabs.org.codespot.com/git.update/mechanic/
