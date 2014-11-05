@@ -57,9 +57,9 @@ package org.objectstyle.woenvironment.frameworks;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.objectstyle.woenvironment.env.WOEnvironment;
 import org.objectstyle.woenvironment.env.WOVariables;
@@ -67,7 +67,7 @@ import org.objectstyle.woenvironment.env.WOVariables;
 public class ExternalFrameworkModel extends FrameworkModel<IFramework> {
   private WOEnvironment environment;
 
-  public ExternalFrameworkModel(Map<Object, Object> existingProperties) {
+  public ExternalFrameworkModel(Hashtable<String,Object> existingProperties) {
     this.environment = new WOEnvironment(existingProperties);
   }
 

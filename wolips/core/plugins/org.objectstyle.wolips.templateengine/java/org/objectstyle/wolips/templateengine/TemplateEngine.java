@@ -97,33 +97,40 @@ public class TemplateEngine implements IRunnableWithProgress {
 	private String _templatePath;
 	
 	public void init() throws Exception {
-		/*
-		 * create a new instance of the engine
-		 */
-		_velocityEngine = new VelocityEngine();
-		_velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.NullLogSystem");
-
-		/*
-		 * initialize the engine
-		 */
-		String userHomeWOLipsPath = System.getProperty("user.home") + File.separator + "Library" + File.separator + "WOLips";
-		URL url = FileLocator.resolve(TemplateEnginePlugin.baseURL());
-		String templatePaths = userHomeWOLipsPath + ", ";
-		Path path = new Path(url.getPath());
-		templatePaths = templatePaths + path.append("templates").toOSString();
-
-		_velocityEngine.setProperty("resource.loader", "wolips, file");
-
-		// _velocityEngine.setProperty("resource.loader", "wolips");
-		_velocityEngine.setProperty("wolips.resource.loader.class", org.objectstyle.wolips.thirdparty.velocity.resourceloader.ResourceLoader.class.getName());
-		_velocityEngine.setProperty("wolips.resource.loader.bundle", TemplateEnginePlugin.getDefault().getBundle());
-
-		// _velocityEngine.setProperty("resource.loader", "file");
-		_velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
-		if (_templatePath != null) {
-			_velocityEngine.setProperty("file.resource.loader.path", _templatePath);
+		Thread thread = Thread.currentThread();
+		ClassLoader loader = thread.getContextClassLoader();
+		thread.setContextClassLoader(this.getClass().getClassLoader());
+		try {
+			/*
+			 * create a new instance of the engine
+			 */
+			_velocityEngine = new VelocityEngine();
+			_velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.NullLogSystem");
+	
+			/*
+			 * initialize the engine
+			 */
+			String userHomeWOLipsPath = System.getProperty("user.home") + File.separator + "Library" + File.separator + "WOLips";
+			URL url = FileLocator.resolve(TemplateEnginePlugin.baseURL());
+			String templatePaths = userHomeWOLipsPath + ", ";
+			Path path = new Path(url.getPath());
+			templatePaths = templatePaths + path.append("templates").toOSString();
+	
+			_velocityEngine.setProperty("resource.loader", "wolips, file");
+	
+			// _velocityEngine.setProperty("resource.loader", "wolips");
+			_velocityEngine.setProperty("wolips.resource.loader.class", org.objectstyle.wolips.thirdparty.velocity.resourceloader.ResourceLoader.class.getName());
+			_velocityEngine.setProperty("wolips.resource.loader.bundle", TemplateEnginePlugin.getDefault().getBundle());
+	
+			// _velocityEngine.setProperty("resource.loader", "file");
+			_velocityEngine.setProperty("file.resource.loader.class", FileResourceLoader.class.getName());
+			if (_templatePath != null) {
+				_velocityEngine.setProperty("file.resource.loader.path", _templatePath);
+			}
+			_velocityEngine.init();
+		} finally {
+			thread.setContextClassLoader(loader);
 		}
-		_velocityEngine.init();
 		_context = new VelocityContext();
 		_templates = new LinkedList<TemplateDefinition>();
 		_wolipsContext = new WOLipsContext();
