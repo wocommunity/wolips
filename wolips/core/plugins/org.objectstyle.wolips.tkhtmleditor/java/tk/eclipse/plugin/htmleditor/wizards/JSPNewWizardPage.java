@@ -39,7 +39,7 @@ public class JSPNewWizardPage extends HTMLNewWizardPage {
 //			charset = project.getDefaultCharset();
 //		} catch(CoreException ex){
 //		}
-		// JSP�̍쐬
+		// JSP
 		StringBuffer sb = new StringBuffer();
 		if(charset==null){
 			sb.append("<%@page contentType=\"text/html\" %>\n");

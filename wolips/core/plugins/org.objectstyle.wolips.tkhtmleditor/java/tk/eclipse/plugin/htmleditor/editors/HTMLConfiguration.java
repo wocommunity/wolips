@@ -221,7 +221,6 @@ public class HTMLConfiguration extends SourceViewerConfiguration {
 			
 			_assistant.install(sourceViewer);
 			
-			// ï‚äÆÇÃê›íËÇîΩâf
 			IPreferenceStore store = HTMLPlugin.getDefault().getPreferenceStore();
 			_assistant.enableAutoActivation(store.getBoolean(HTMLPlugin.PREF_ASSIST_AUTO));
 			_assistant.setAutoActivationDelay(store.getInt(HTMLPlugin.PREF_ASSIST_TIMES));

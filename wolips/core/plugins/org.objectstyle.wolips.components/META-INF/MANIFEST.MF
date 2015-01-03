@@ -12,3 +12,4 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.components,
  org.objectstyle.wolips.components.editor,
  org.objectstyle.wolips.components.input
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
