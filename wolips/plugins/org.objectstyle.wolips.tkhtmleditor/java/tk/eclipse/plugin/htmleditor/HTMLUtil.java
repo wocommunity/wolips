@@ -161,8 +161,8 @@ public class HTMLUtil {
 	 * @param source source code of the HTML/JSP/XML
 	 * @param contentsOnly
 	 * <ul>
-	 *   <li>true - &lt;!--、--&gt; and &lt;%--、--%&gt; are not replaced.<li>
-	 *   <li>false - &lt;!--、--&gt; and &lt;%--、--%&gt; are also replaced.<li>
+	 *   <li>true - &lt;!-- --&gt; and &lt;%-- --%&gt; are not replaced.<li>
+	 *   <li>false - &lt;!-- --&gt; and &lt;%-- --%&gt; are also replaced.<li>
 	 * </ul>
 	 * @return processed source code
 	 */
@@ -178,8 +178,8 @@ public class HTMLUtil {
 	 * @param source source code of the JSP
 	 * @param contentsOnly 
 	 * <ul>
-	 *   <li>true - &lt;%、%&gt; are not replaced.</li>
-	 *   <li>false - &lt;%、%&gt; are also replaced.</li>
+	 *   <li>true - &lt;% %&gt; are not replaced.</li>
+	 *   <li>false - &lt;% %&gt; are also replaced.</li>
 	 * </ul>
 	 * @return processed source code
 	 */
@@ -219,8 +219,8 @@ public class HTMLUtil {
 	 * @param source source code of the JSP
 	 * @param contentsOnly
 	 * <ul>
-	 *   <li>true - &lt;%、%&gt; are not replaced.
-	 *   <li>false - &lt;%、%&gt; are also replaced.
+	 *   <li>true - &lt;% %&gt; are not replaced.
+	 *   <li>false - &lt;% %&gt; are also replaced.
 	 * </ul>
 	 * @return processed source code
 	 */

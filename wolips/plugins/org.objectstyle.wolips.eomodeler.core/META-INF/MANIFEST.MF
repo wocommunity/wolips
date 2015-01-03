@@ -18,8 +18,5 @@ Export-Package: org.objectstyle.wolips.eomodeler.core,
  org.objectstyle.wolips.eomodeler.core.model.qualifier,
  org.objectstyle.wolips.eomodeler.core.sql,
  org.objectstyle.wolips.eomodeler.core.utils
-Bundle-ClassPath: .,
- lib/EOFSQLUtils.jar,
- lib/EOFSQLUtils53.jar,
- lib/EOFSQLUtils56.jar
+Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

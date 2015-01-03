@@ -15,13 +15,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 public class EOFSQLGeneratorFactory implements IEOSQLGeneratorFactory {
 	public IEOSQLGenerator sqlGenerator(EOModel model, List<String> entityNames, EODatabaseConfig databaseConfig, ClassLoader eomodelClassLoader, boolean runInEntityModeler) throws SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		WOUtils.setWOSystemProperties();
-		String className;
-		if (WOUtils.version(eomodelClassLoader) == WOUtils.Version.WO_5_6) {
-			className = "org.objectstyle.wolips.eomodeler.core.sql.EOFSQLGenerator56";
-		}
-		else {
-			className = "org.objectstyle.wolips.eomodeler.core.sql.EOFSQLGenerator53";
-		}
+		String className = "org.objectstyle.wolips.eomodeler.core.sql.EOFSQLGenerator53";
 		Class sqlGeneratorClass = Class.forName(className, true, eomodelClassLoader);
 
 		List<URL> modelURLs = new LinkedList();
@@ -38,7 +32,7 @@ public class EOFSQLGeneratorFactory implements IEOSQLGeneratorFactory {
 		modelURLs.add(WOUtils.trimModelURLs(model.getModelURL()));
 
 		Constructor sqlGeneratorConstructor = sqlGeneratorClass.getConstructor(new Class[] { String.class, List.class, List.class, Map.class, boolean.class });
-		if(databaseConfig == null) {
+		if (databaseConfig == null) {
 			throw new IllegalStateException("Database config is not defined");
 		}
 		Object sqlGeneratorButICantCastItBecauseItCrossesClassLoaders = sqlGeneratorConstructor.newInstance(new Object[] { model.getName(), modelURLs, entityNames, databaseConfig.toMap().getBackingMap(), Boolean.valueOf(runInEntityModeler) });
