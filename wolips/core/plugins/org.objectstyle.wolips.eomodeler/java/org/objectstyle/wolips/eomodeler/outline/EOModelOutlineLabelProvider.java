@@ -74,7 +74,6 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.core.model.IEOAttribute;
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
-import org.objectstyle.wolips.eomodeler.core.utils.EOModelUtils;
 
 public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvider, IColorProvider {
 	private TreeViewer _treeViewer;

@@ -5,7 +5,7 @@
 	<classpathentry kind="src" path="Main.wo"/>
 	<classpathentry kind="src" path="PageWrapper.wo"/>
 	<classpathentry kind="con" path="org.objectstyle.wolips.WO_CLASSPATH/JavaWebObjects/JavaFoundation/JavaXML/JavaWOExtensions/JavaEOAccess/JavaEOControl/JavaDTWGeneration/JavaDirectToWeb/JavaEOProject/JavaJDBCAdaptor"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="lib" path="/Library/WebObjects/Extensions/derby.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

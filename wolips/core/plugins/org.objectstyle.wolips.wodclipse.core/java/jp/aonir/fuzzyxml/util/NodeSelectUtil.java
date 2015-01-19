@@ -6,18 +6,12 @@ import java.util.List;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
 import jp.aonir.fuzzyxml.FuzzyXMLNode;
 
-/**
- * ノードを選択するためのユーティリティメソッドを提供します。
- */
 public class NodeSelectUtil {
 
   /**
-   * 子ノードの中からフィルタにマッチしたものを配列で返却します。
-   * 検索対象は引数で渡した要素の直下のノードのみです。
-   * 
-   * @param element 検索対象の要素
-   * @param filter フィルタ
-   * @return フィルタにマッチした要素の配列
+   * @param element
+   * @param filter
+   * @return
    */
   public static FuzzyXMLNode[] getChildren(FuzzyXMLElement element, NodeFilter filter) {
     List<FuzzyXMLNode> result = new ArrayList<FuzzyXMLNode>();
@@ -31,12 +25,9 @@ public class NodeSelectUtil {
   }
 
   /**
-   * 子孫のノードの中からフィルタにマッチしたものを配列で返却します。
-   * 引数で渡した要素から再帰的に検索を行います。
-   * 
-   * @param element 検索対象の要素
-   * @param filter フィルタ
-   * @return フィルタにマッチした要素の配列
+   * @param element
+   * @param filter
+   * @return
    */
   public static FuzzyXMLNode[] getNodeByFilter(FuzzyXMLElement element, NodeFilter filter) {
     List<FuzzyXMLNode> result = new ArrayList<FuzzyXMLNode>();
@@ -60,13 +51,9 @@ public class NodeSelectUtil {
   }
 
   /**
-   * 引数で渡した要素を再帰的に検索し、id属性がマッチする要素を返却します。
-   * 要素が見つからない場合はnullを返却します。
-   * また、同じid属性を持つ要素が複数存在した場合は最初に発見した要素を返却します。
-   * 
-   * @param element 検索対象の要素
-   * @param id 検索するid属性の値
-   * @return id属性の値がマッチした要素
+   * @param element
+   * @param id
+   * @return id
    */
   public static FuzzyXMLElement getElementById(FuzzyXMLElement element, String id) {
     FuzzyXMLElement[] elements = getElementByAttribute(element, "id", id);
@@ -77,12 +64,10 @@ public class NodeSelectUtil {
   }
 
   /**
-   * 引数で渡した要素を再帰的に検索し、属性がマッチする要素を返却します。
-   * 
-   * @param element 検索対象の要素
-   * @param name 検索する属性名
-   * @param value 検索する属性値
-   * @return 属性名と属性値がマッチした要素の配列
+   * @param element
+   * @param name
+   * @param value
+   * @return
    */
   public static FuzzyXMLElement[] getElementByAttribute(FuzzyXMLElement element, String name, String value) {
     List<FuzzyXMLElement> result = new ArrayList<FuzzyXMLElement>();
@@ -103,11 +88,9 @@ public class NodeSelectUtil {
   }
 
   /**
-   * 引数で渡した要素を再帰的に検索し、タグ名がマッチする要素を返却します。
-   * 
-   * @param element 検索対象の要素
-   * @param name タグ名
-   * @return タグ名がマッチした要素の配列
+   * @param element
+   * @param name
+   * @return
    */
   public static FuzzyXMLElement[] getElementByTagName(FuzzyXMLElement element, String name) {
     List<FuzzyXMLElement> result = new ArrayList<FuzzyXMLElement>();

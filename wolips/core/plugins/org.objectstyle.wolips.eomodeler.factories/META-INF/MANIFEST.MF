@@ -10,3 +10,4 @@ Require-Bundle: org.objectstyle.wolips.eomodeler.core,
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: objectstyle.org
 Export-Package: org.objectstyle.wolips.eomodeler.factories
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

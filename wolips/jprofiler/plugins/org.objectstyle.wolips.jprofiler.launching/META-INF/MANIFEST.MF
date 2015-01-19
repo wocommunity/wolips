@@ -18,4 +18,5 @@ Require-Bundle: org.eclipse.jdt.debug.ui,
  com.jprofiler.integrations.eclipse
 Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.jprofiler.launching
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 

@@ -52,7 +52,6 @@ package org.objectstyle.wolips.eomodeler.editors;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.operations.UndoRedoActionGroup;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 
