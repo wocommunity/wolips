@@ -105,7 +105,7 @@ public class EOAttributesCellModifier extends TablePropertyCellModifier {
 			} else {
 				prototypeName = prototype.getName();
 			}
-			value = new Integer(myPrototypeNames.indexOf(prototypeName));
+			value = Integer.valueOf(myPrototypeNames.indexOf(prototypeName));
 		} else if (AbstractEOArgument.ALLOWS_NULL.equals(_property) || EOAttribute.CLASS_PROPERTY.equals(_property) || EOAttribute.CLIENT_CLASS_PROPERTY.equals(_property) || EOAttribute.INDEXED.equals(_property) || EOAttribute.PRIMARY_KEY.equals(_property) || EOAttribute.READ_ONLY.equals(_property) || EOAttribute.USED_FOR_LOCKING.equals(_property)) {
 			value = super.getValue(_element, _property);
 			if (value == null && !attribute.getEntity().isPrototype()) {

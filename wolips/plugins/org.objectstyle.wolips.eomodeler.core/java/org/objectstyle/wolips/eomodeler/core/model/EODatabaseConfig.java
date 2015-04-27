@@ -181,7 +181,7 @@ public class EODatabaseConfig extends EOModelObject<EOModel> {
 				setInitialContextFactory("com.sun.jndi.ldap.LdapCtxFactory");
 			}
 			if (getTimeout() == null) {
-				setTimeout(new Integer(3600));
+				setTimeout(Integer.valueOf(3600));
 			}
 			if (getScope() == null || getScope().length() ==0) {
 				setScope(EODatabaseConfig.SUBTREE_SCOPE);

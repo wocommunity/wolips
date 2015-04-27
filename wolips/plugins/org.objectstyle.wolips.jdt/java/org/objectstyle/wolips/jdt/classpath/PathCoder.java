@@ -81,7 +81,7 @@ public class PathCoder {
 			Integer integer = null;
 			try {
 				String string = path.segment(i);
-				integer = new Integer(string);
+				integer = Integer.valueOf(string);
 			} catch (NumberFormatException e) {
 				JdtPlugin.getDefault().getPluginLogger().log(e);
 				throw new PathCoderException();

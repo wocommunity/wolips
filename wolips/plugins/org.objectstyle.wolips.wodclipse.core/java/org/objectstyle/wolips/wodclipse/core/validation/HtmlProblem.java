@@ -59,7 +59,7 @@ public class HtmlProblem {
       else {
         severity = IMarker.SEVERITY_ERROR;
       }
-      marker.setAttribute(IMarker.SEVERITY, new Integer(severity));
+      marker.setAttribute(IMarker.SEVERITY, Integer.valueOf(severity));
       marker.setAttribute(IMarker.LINE_NUMBER, _lineNumber);
       marker.setAttribute(IMarker.CHAR_START, _position.getOffset());
       marker.setAttribute(IMarker.CHAR_END, _position.getOffset() + _position.getLength());

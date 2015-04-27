@@ -99,7 +99,7 @@ public class EOEntitiesCellModifier extends TablePropertyCellModifier {
 			} else {
 				parentName = parent.getName();
 			}
-			value = new Integer(myEntityNames.indexOf(parentName));
+			value = Integer.valueOf(myEntityNames.indexOf(parentName));
 		} else {
 			value = super.getValue(_element, _property);
 		}
