@@ -878,7 +878,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 										} else {
 											severity = IMarker.SEVERITY_ERROR;
 										}
-										marker.setAttribute(IMarker.SEVERITY, new Integer(severity));
+										marker.setAttribute(IMarker.SEVERITY, Integer.valueOf(severity));
 										marker.setAttribute(IMarker.TRANSIENT, false);
 									}
 								} catch (Exception e) {

@@ -104,7 +104,7 @@ public class DisplayGroupPageBlock extends MasterDetailsBlock {
 				for (DisplayGroup dg : wooEditor.getModel().getDisplayGroups()) {
 					if (dg.getName().matches("^displayGroup[0-9]*$")) {
 						String index = dg.getName().replaceAll("^displayGroup([0-9]*)$", "$1");
-						int j = new Integer(index);
+						int j = Integer.valueOf(index);
 						if (nextId <= j) {
 							nextId = j + 1;
 						}

@@ -71,12 +71,12 @@ public class EOJoinsCellModifier extends TablePropertyCellModifier {
 		if (EOJoin.DESTINATION_ATTRIBUTE_NAME.equals(_property)) {
 			String attributeName = join.getDestinationAttributeName();
 			if (attributeName != null) {
-				value = new Integer(Arrays.asList(join.getRelationship().getDestination().getAttributeNames()).indexOf(attributeName));
+				value = Integer.valueOf(Arrays.asList(join.getRelationship().getDestination().getAttributeNames()).indexOf(attributeName));
 			}
 		} else if (EOJoin.SOURCE_ATTRIBUTE_NAME.equals(_property)) {
 			String attributeName = join.getSourceAttributeName();
 			if (attributeName != null) {
-				value = new Integer(Arrays.asList(join.getRelationship().getEntity().getAttributeNames()).indexOf(attributeName));
+				value = Integer.valueOf(Arrays.asList(join.getRelationship().getEntity().getAttributeNames()).indexOf(attributeName));
 			}
 		} else {
 			value = super.getValue(_element, _property);

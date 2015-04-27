@@ -329,8 +329,8 @@ public class ResourceUtilities {
 			}
 			Map attr = new HashMap();
 	
-			attr.put(IMarker.PRIORITY, new Integer(IMarker.PRIORITY_HIGH));
-			attr.put(IMarker.SEVERITY, new Integer(severity));
+			attr.put(IMarker.PRIORITY, Integer.valueOf(IMarker.PRIORITY_HIGH));
+			attr.put(IMarker.SEVERITY, Integer.valueOf(severity));
 			attr.put(IMarker.MESSAGE, message);
 			attr.put(IMarker.LOCATION, location);
 	
