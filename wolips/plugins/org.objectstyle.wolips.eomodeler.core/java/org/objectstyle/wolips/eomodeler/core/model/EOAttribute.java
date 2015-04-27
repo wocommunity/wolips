@@ -1215,6 +1215,13 @@ public class EOAttribute extends AbstractEOArgument<EOEntity> implements IEOAttr
 		return getEntity().isSingleTableInheritance() || BooleanUtils.isTrue(isAllowsNull());
 	}
 
+	private static final String SQL_ALLOWS_NULL = "ALLOWS_NULL";
+	private static final String SQL_NOT_NULL = "NOT_NULL";
+	
+	public String getSqlGenerationAllowsNullAsConstant() {
+		return getSqlGenerationAllowsNull() ? SQL_ALLOWS_NULL : SQL_NOT_NULL;
+	}
+
 	public boolean getSqlGenerationCreateProperty() {
 		return !hasDefinition() && (!isInherited() || getEntity().getSqlGenerationCreateInheritedProperties() || (isInherited() && !isFlattened() && getEntity().isVerticalInheritance()));
 	}
