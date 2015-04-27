@@ -78,7 +78,7 @@ public class SetTool
             return null;
         }
 
-        return new Integer(((Set) set).size());
+        return Integer.valueOf(((Set) set).size());
     }
 
     /**
@@ -104,7 +104,7 @@ public class SetTool
             return null;
         }
 
-        return new Boolean(size.intValue() == 0);
+        return Boolean.valueOf(size.intValue() == 0);
     }
 
     /**
@@ -120,6 +120,6 @@ public class SetTool
             return null;
         }
 
-        return new Boolean(((Set) set).contains(element));
+        return Boolean.valueOf(((Set) set).contains(element));
     }
 }

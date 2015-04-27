@@ -24,18 +24,18 @@ public class BooleanPropertyDescriptor extends PropertyDescriptor {
         	@Override
           protected void doSetValue(Object value){
         		if(((Boolean)value).booleanValue()){
-        			super.doSetValue(new Integer(0));
+        			super.doSetValue(Integer.valueOf(0));
         		} else {
-        			super.doSetValue(new Integer(1));
+        			super.doSetValue(Integer.valueOf(1));
         		}
         	}
         	@Override
           protected Object doGetValue(){
         		int selection = ((Integer)super.doGetValue()).intValue();
         		if(selection==0){
-        			return new Boolean(true);
+        			return Boolean.TRUE;
         		} else {
-        			return new Boolean(false);
+        			return Boolean.FALSE;
         		}
         	}
         };

@@ -31,11 +31,11 @@ public class AttributeValueDefinition {
 	
 	private static void addAttributeValues(int type,String[] values){
 		Arrays.sort(values);
-		map.put(new Integer(type),values);
+		map.put(Integer.valueOf(type),values);
 	}
 	
 	public static String[] getAttributeValues(int type){
-		Integer key = new Integer(type);
+		Integer key = Integer.valueOf(type);
 		if(map.get(key)==null){
 			return new String[0];
 		}

@@ -107,7 +107,7 @@ public class NSArrayLogicalStructureType extends NSKeyValueCodingLogicalStructur
 	}
 
 	public String[] resolveObjects() {
-		Integer count = new Integer(this.resolveCount());
+		Integer count = Integer.valueOf(this.resolveCount());
 		String[] attributes = new String[count.intValue()];
 		for (int i = 0; i < count.intValue(); i++) {
 			String attribute = resolveObjectAtIndex(i);

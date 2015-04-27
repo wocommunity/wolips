@@ -197,7 +197,7 @@ public class WodModelUtils {
       else {
         severity = IMarker.SEVERITY_ERROR;
       }
-      marker.setAttribute(IMarker.SEVERITY, new Integer(severity));
+      marker.setAttribute(IMarker.SEVERITY, Integer.valueOf(severity));
       if (problemPosition != null) {
 //        IWodModel model = getModel();
 //        if (_lineNumber == -1 && model instanceof DocumentWodModel) {
