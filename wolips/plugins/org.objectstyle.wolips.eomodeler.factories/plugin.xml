@@ -35,24 +35,4 @@
             id="entitymodeler.IDEAProjectEOClassLoaderFactory"
             name="IDEA Project EOClassLoader Factory"/>
    </extension>
-   <extension
-         id="org.objectstyle.wolips.eomodeler.sqlGeneratorFactory.eclipse"
-         name="Eclipse SQL Generator Factories"
-         point="org.objectstyle.wolips.eomodeler.sqlGeneratorFactory">
-      <sqlGeneratorFactory
-            class="org.objectstyle.wolips.eomodeler.core.sql.EOFSQLGeneratorFactory"
-            id="org.objectstyle.wolips.eomodeler.eclipse.sqlGeneratorFactory"
-            name="Eclipse SQL Generator Factory">
-      </sqlGeneratorFactory>
-   </extension>
-   <extension
-         id="org.objectstyle.wolips.eomodeler.sqlReverseEngineerFactory.eclipse"
-         name="Eclipse SQL Reverse Engineer Factories"
-         point="org.objectstyle.wolips.eomodeler.sqlReverseEngineerFactory">
-      <sqlReverseEngineerFactory
-            class="org.objectstyle.wolips.eomodeler.core.sql.EOFSQLReverseEngineerFactory"
-            id="org.objectstyle.wolips.eomodeler.eclipse.sqlReverseEngineerFactory"
-            name="Eclipse SQL Reverse Engineer Factory">
-      </sqlReverseEngineerFactory>
-   </extension>
 </plugin>
