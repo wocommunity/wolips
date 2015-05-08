@@ -16,7 +16,7 @@
          name="Eclipse EOClassLoader Factory"
          point="org.objectstyle.wolips.eomodeler.eoclassLoaderFactory">
       <eoclassLoaderFactory
-            class="org.objectstyle.wolips.eomodeler.eclipse.EclipseEOModelGroupFactory"
+            class="org.objectstyle.wolips.eomodeler.eclipse.EclipseEOClassLoaderFactory"
             id="org.objectstyle.wolips.eomodeler.eclipse.eoclassLoaderFactory"
             name="Eclipse EOClassLoader Factory">
       </eoclassLoaderFactory>
