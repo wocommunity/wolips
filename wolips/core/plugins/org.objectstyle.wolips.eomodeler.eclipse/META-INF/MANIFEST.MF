@@ -15,10 +15,10 @@ Require-Bundle: org.eclipse.ui,
  org.objectstyle.wolips.eogenerator.core,
  org.objectstyle.wolips,
  org.eclipse.jdt.ui,
- org.objectstyle.wolips.ui
-Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.jdt.debug.ui.launchConfigurations,
+ org.objectstyle.wolips.ui,
  org.objectstyle.wolips.baseforuiplugins,
- org.objectstyle.wolips.eomodeler.core.model,
- org.objectstyle.wolips.workbenchutilities.actions
+ org.objectstyle.wolips.workbenchutilities,
+ org.objectstyle.wolips.eomodeler.core
+Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.jdt.debug.ui.launchConfigurations
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

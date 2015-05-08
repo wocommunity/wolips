@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.objectstyle.wolips.eomodeler">
+<schema targetNamespace="org.objectstyle.wolips.eomodeler" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.objectstyle.wolips.eomodeler" id="org.objectstyle.wolips.eomodeler.eomodelGroupFactory" name="EOModel Group Factory"/>
+         <meta.schema plugin="org.objectstyle.wolips.eomodeler" id="org.objectstyle.wolips.eomodeler.eoclassLoaderFactory" name="EOModel Group Factory"/>
       </appInfo>
       <documentation>
          [Enter description of this extension point.]
@@ -11,9 +11,14 @@
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
       <complexType>
          <sequence>
-            <element ref="eoclassLoaderFactory" minOccurs="1" maxOccurs="unbounded" />
+            <element ref="eoclassLoaderFactory" minOccurs="1" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -50,7 +55,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.objectstyle.wolips.eomodeler.model.IEOModelGroupFactory"/>
+                  <meta.attribute kind="java" basedOn=":org.objectstyle.wolips.eomodeler.core.model.IEOClassLoaderFactory"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -110,13 +115,5 @@
       </documentation>
    </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="copyright"/>
-      </appInfo>
-      <documentation>
-         
-      </documentation>
-   </annotation>
 
 </schema>
