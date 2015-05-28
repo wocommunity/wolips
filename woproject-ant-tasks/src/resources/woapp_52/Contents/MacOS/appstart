@@ -274,6 +274,11 @@ do
         -X*)      # This only belongs in the JVM arg list, doesn't need quotes.
                   JAVA_EXECUTABLE_ARGS="${JAVA_EXECUTABLE_ARGS:+$JAVA_EXECUTABLE_ARGS }${arg}"
                   ;;
+        ---*)     # (ldeck WOL-1002) Standard Java options (e.g., -yjpagent:foo) need some form of escaping.
+                  # These only belongs in the JVM arg list, doesn't need quotes.
+                  # Otherwise any such options end up looking like WO property keys thus distorting the remaining arguments list.
+                  JAVA_EXECUTABLE_ARGS="${JAVA_EXECUTABLE_ARGS:+$JAVA_EXECUTABLE_ARGS }"`echo "${arg}" | sed -e "s/^---\(.*\)$/-\1/"`
+                  ;;
         [\"]*[\"] | [\']*[\'])
                   # These args are already quoted.
                   COMMAND_LINE_ARGS="${COMMAND_LINE_ARGS:+$COMMAND_LINE_ARGS }${arg}"
