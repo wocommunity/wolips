@@ -194,12 +194,14 @@ public final class RenameWOComponentChange extends CompositeChange {
 		if (oldApiFile != null || oldWoFolders.length > 0) {
 			CompositeChange compositeChange = new CompositeChange("Rename WOComponent Files");
 			if (oldApiFile != null) {
-				TextFileChange apiTextFileChange = new TextFileChange("Rename Java class name in API file", oldApiFile);
-				apiTextFileChange.setTextType("xml");
 				String javaFileName = getCompilationUnit().getElementName();
-				String apiContent = apiTextFileChange.getCurrentContent(null);
-				apiTextFileChange.setEdit(new ReplaceEdit(apiContent.indexOf(javaFileName), javaFileName.length(), getNewName() + ".java"));
-				compositeChange.add(apiTextFileChange);
+				if (!renameJavaClassInAPIFile(compositeChange, oldApiFile, javaFileName)) {
+					int dotPosition = javaFileName.indexOf('.');
+					if (dotPosition > -1) {
+						javaFileName = javaFileName.substring(0, dotPosition);
+						renameJavaClassInAPIFile(compositeChange, oldApiFile, javaFileName);
+					}
+				}
 				compositeChange.add(new RenameResourceChange(oldApiFile.getFullPath(), getNewName() + ".api"));
 			}
 			for (int i = 0; i < oldWoFolders.length; i++) {
@@ -234,6 +236,18 @@ public final class RenameWOComponentChange extends CompositeChange {
 		}
 	}
 	
+	private boolean renameJavaClassInAPIFile(CompositeChange compositeChange, IFile oldApiFile, String javaFileName) throws CoreException {
+		TextFileChange apiTextFileChange = new TextFileChange("Rename Java class name in API file", oldApiFile);
+		apiTextFileChange.setTextType("xml");
+		String apiContent = apiTextFileChange.getCurrentContent(null);
+		int javaFileNamePosition = apiContent.indexOf(javaFileName);
+		if (javaFileNamePosition > -1) {
+			apiTextFileChange.setEdit(new ReplaceEdit(javaFileNamePosition, javaFileName.length(), getNewName() + ".java"));
+			compositeChange.add(apiTextFileChange);
+			return true;
+		}
+		return false;
+	}
 	
 	private ICompilationUnit getCompilationUnit() {
 		if (_compilationUnit != null) {
