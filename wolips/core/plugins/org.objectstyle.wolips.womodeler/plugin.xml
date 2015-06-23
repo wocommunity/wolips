@@ -3,6 +3,9 @@
 <plugin>
    <extension
          point="org.eclipse.ui.startup">
+      <startup
+            class="org.objectstyle.wolips.womodeler.WOModelerStartup">
+      </startup>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
