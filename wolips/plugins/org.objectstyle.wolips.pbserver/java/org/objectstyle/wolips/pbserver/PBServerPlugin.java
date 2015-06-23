@@ -43,11 +43,8 @@
  */
 package org.objectstyle.wolips.pbserver;
 
-import java.io.IOException;
-
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.ui.IStartup;
 import org.objectstyle.wolips.pbserver.preferences.PreferenceConstants;
 import org.objectstyle.wolips.preferences.PreferencesPlugin;
 import org.osgi.framework.BundleContext;
@@ -55,12 +52,10 @@ import org.osgi.framework.BundleContext;
 /**
  * @author mike
  */
-public class PBServerPlugin extends Plugin implements IStartup {
+public class PBServerPlugin extends Plugin {
 
 	// The shared instance.
 	private static PBServerPlugin plugin;
-
-	private PBServer myServer;
 
 	/**
 	 * The constructor.
@@ -93,18 +88,5 @@ public class PBServerPlugin extends Plugin implements IStartup {
 	 */
 	public static PBServerPlugin getDefault() {
 		return plugin;
-	}
-
-	public void earlyStartup() {
-		IPreferenceStore store = PreferencesPlugin.getDefault().getPreferenceStore();
-		if (store.getBoolean(PreferenceConstants.PBSERVER_ENABLED)) {
-			myServer = new PBServer();
-			try {
-				int port = store.getInt(PreferenceConstants.PBSERVER_PORT);
-				myServer.start(port);
-			} catch (IOException e) {
-				e.printStackTrace(System.out);
-			}
-		}
 	}
 }
