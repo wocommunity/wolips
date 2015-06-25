@@ -130,7 +130,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
       }
 
 #if (${relationship.actualDestination.genericRecord})
-      EOFetchSpecification fetchSpec = new EOFetchSpecification("${relationship.actualDestination.name}", qualifier, sortOrderings);
+      EOFetchSpecification fetchSpec = new EOFetchSpecification("${relationship.actualDestination.name}", fullQualifier, sortOrderings);
       fetchSpec.setIsDeep(true);
       results = (NSArray<${relationship.actualDestination.classNameWithDefault}>)editingContext().objectsWithFetchSpecification(fetchSpec);
 #else
