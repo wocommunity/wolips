@@ -3,6 +3,9 @@
 <plugin>
    <extension
          point="org.eclipse.ui.startup">
+      <startup
+            class="org.objectstyle.wolips.pbserver.PBServerStartup">
+      </startup>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
