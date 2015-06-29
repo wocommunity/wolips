@@ -69,7 +69,7 @@ Fork of wonder/wolips with changes to develop and debug in Eclipse 4.4 PDE
 
 ### Prepare WOLips source folder
 
-1) clone https://github.com/swklein/wolips/ to your desktop
+1) clone https://github.com/wocommunity/wolips/ to your desktop
    or fork it in your own repository an clone that
    
 2) If you don't have JRebel installed:
