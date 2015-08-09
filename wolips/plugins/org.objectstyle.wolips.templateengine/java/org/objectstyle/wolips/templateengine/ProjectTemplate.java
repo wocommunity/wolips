@@ -3,6 +3,7 @@ package org.objectstyle.wolips.templateengine;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
@@ -18,6 +19,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.URIUtil;
 import org.objectstyle.wolips.baseforplugins.util.FileUtilities;
 import org.objectstyle.wolips.core.resources.internal.types.project.ProjectPatternsets;
 import org.objectstyle.wolips.core.resources.types.project.ProjectAdapter;
@@ -328,7 +330,8 @@ public class ProjectTemplate implements Comparable<ProjectTemplate> {
 				}
 				if (urlInBundle != null) {
 					URL fileUrl = FileLocator.toFileURL(urlInBundle);
-					File baseFolder = new File(fileUrl.toURI());
+					URI fileUri = URIUtil.toURI(fileUrl);
+					File baseFolder = new File(fileUri);
 					templateBaseFolders.add(baseFolder);
 				}
 			}
