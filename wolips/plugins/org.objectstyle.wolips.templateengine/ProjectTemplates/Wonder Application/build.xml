@@ -121,11 +121,14 @@
 		</war>
 	</target>
 
-	<!-- To use this target
+	<!-- For deploying to Tomcat or Jetty. To use this target
     	1) create the LICENSE in your project directory
     	2) add JavaWOJSPServlet in your WOFrameworks build path
     	3) set servlet deployment to true in WOLips Properties
-    -->
+    	4) make your Application class extend ERXServletApplication
+    	5) if you are deploying to Tomcat 8 or later you must replace WOServletAdaptor with a fixed version and include it in your Sources folder 
+    	Then the app url will be: http://localhost:8080/<WAR_FILE_NAME>/WebObjects/<APP_NAME>.woa/
+     -->
 	<target name="ssdd" if="servletDeployment" depends="build.woapp">
 		<mkdir dir="${dest.dir}/${build.app.name}/WEB-INF/classes" />
 		<mkdir dir="${dest.dir}/${build.app.name}/WEB-INF/tlds" />
@@ -162,6 +165,16 @@
 			<mapper type="flatten" />
 		</copy>
 
+		<!-- Extra unnecessary version of classes in order to get OUR WOServletAdaptor first in the class path and fix loading bug on tomcat 8 and later. -->
+		<copy todir="${dest.dir}/${build.app.name}/WEB-INF/classes">
+			<fileset dir="${classes.dir}">
+				<include name="**/*" />
+			</fileset>
+			<fileset dir="Sources">
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+		
 		<!--  Get the necessary Frameworks from the webobjects system root instead of the project wrapper -->
 		<copy todir="${dest.dir}/${build.app.name}/WEB-INF/lib" file="${wo.system.frameworks}/JavaWOJSPServlet.framework/WebServerResources/Java/JavaWOJSPServlet_client.jar" />
 
@@ -183,7 +196,7 @@
 		<!-- the Java Client Client-Side Classes 	  -->
 		<copy todir="${dest.dir}/${build.app.name}/WEB-INF/${build.app.name}.woa/Contents/WebServerResources/Java">
 			<fileset dir="${wo.local.frameworks}"> 
-				<include name="**/WebServerResources/Java/*.jar"/> 
+				<include if="javaClient" name="**/WebServerResources/Java/*.jar"/> 
 			</fileset> 
 			<mapper type="flatten"/>
 		</copy>
@@ -197,6 +210,19 @@
 
 		<!-- fix the web.xml file to remove the extra Frameworks/ directory level for the frameworks -->
 		<replaceregexp file="${dest.dir}/${build.app.name}/WEB-INF/web.xml" match="WEBINFROOT/Frameworks//" replace="WEBINFROOT/" byline="true" />
+		
+		<!-- switch static resource serving to Deployment mode -->
+		<replace file="${dest.dir}/${build.app.name}/WEB-INF/web.xml" token="&lt;param-value&gt;Development&lt;/param-value&gt;" value="&lt;param-value&gt;Deployment&lt;/param-value&gt;" />
+
+		<!-- copy web server resources to "static/" folder so they are available at http://localhost:8080/<WAR_FILE_NAME>/static/<APP_NAME>.woa/Contents/WebServerResources/ -->
+		<copy todir="${dest.dir}/${build.app.name}/static/${build.app.name}.woa/Contents/WebServerResources/">
+			<fileset dir="WebServerResources" includes="**" />
+		</copy>
+		<copy todir="${dest.dir}/${build.app.name}/static/Frameworks/">
+			<fileset dir="${dest.dir}/${build.app.name}.woa/Contents/Frameworks/">
+				<include name="*.framework/WebServerResources/**"/>
+			</fileset>
+		</copy>
 	</target>
 
 	<target name="compile" depends="init.properties">
