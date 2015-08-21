@@ -103,7 +103,7 @@
 			<frameworks root="Network" embed="${embed.Network}" eclipse="true" />
 
 			<lib dir="Libraries">
-				<include name="*.jar" />
+				<include name="**/*.jar" />
 			</lib>
 		</woapplication>
 	</target>
@@ -212,7 +212,7 @@
 			<frameworks root="Network" embed="false" eclipse="true" />
 			<classpath>
 				<fileset dir="Libraries">
-					<include name="*.jar" />
+					<include name="**/*.jar" />
 				</fileset>
 				<fileset dir="${wo.extensions}">
 					<include name="*.jar" />
