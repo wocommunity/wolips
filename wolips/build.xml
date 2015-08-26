@@ -6,6 +6,10 @@
 <!-- ======================================================== -->
 <project name="wolips" default="" basedir=".">
 
+	<!-- Optionally skip third-party integrations with command line flags: 
+	     ant -Dskip.jprofiler=true -Dskip.jrebel=true
+	-->
+	
 	<!-- ========================================== -->
 	<!-- Verify eclipse.home.                       -->
 	<!-- ========================================== -->
@@ -35,12 +39,20 @@
 		<ant dir="core" target="all" />
 		<ant dir="goodies" target="all" />
 		<!-- ant dir="maven" target="all" / -->
-		<ant dir="jprofiler" target="all" />
-		<ant dir="jrebel" target="all" />
+		<antcall target="jprofiler" />
+		<antcall target="jrebel" />
 		<ant dir="scripting" target="all" />
 		<!-- ant dir="apple" target="all" / -->
 	</target>
 
+	<target name="jprofiler" unless="skip.jprofiler">
+		<ant dir="jprofiler" target="all" />
+	</target>
+	
+	<target name="jrebel" unless="skip.jrebel">
+		<ant dir="jrebel" target="all" />
+	</target>
+	
 	<!-- ========================================== -->
 	<!-- Build all.                                 -->
 	<!-- ========================================== -->
@@ -57,8 +69,8 @@
 		<ant dir="goodies" target="dist" />
 		<!-- ant dir="maven" target="dist" / -->
 		<!-- ant dir="apple" target="dist" / -->
-		<ant dir="jprofiler" target="dist" />
-		<ant dir="jrebel" target="dist" />
+		<antcall target="jprofiler" />
+		<antcall target="jrebel" />
 		<ant dir="scripting" target="dist" />
 		<copy file="update/local/site.xml" todir="../${build.output.dist.dir}" overwrite="true" />
 		<replace file="../${build.output.dist.dir}/site.xml" token="${build.version.to.replace}" value="${build.version}" />

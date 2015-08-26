@@ -35,7 +35,7 @@ Installing prebuilt versions of WOLips in existing Eclipse installations can be 
 3. build with ant. Example: 
 	
 	```bash
-	user$ ant -Dbuild.version=4.4.0 -Declipse.home=/path/to/eclipse
+	user$ ant -Dbuild.version=4.4.0 -Declipse.home=/path/to/eclipse -Dskip.jprofiler=true -Dskip.jrebel=true
 	```
 	
 4. verify the build succeeded and the product is in the dist directory
