@@ -156,7 +156,6 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
       }
 
 #if (${relationship.actualDestination.genericRecord})
-      fetchSpec.setIsDeep(true);
       ERXFetchSpecification<${entity.classNameWithOptionalPackage}> fetchSpec = new ERXFetchSpecification<${entity.classNameWithOptionalPackage}>("${relationship.actualDestination.name}", qualifier, sortOrderings);
       results = (NSArray<${relationship.actualDestination.classNameWithDefault}>)editingContext().objectsWithFetchSpecification(fetchSpec);
 #else
@@ -288,7 +287,6 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 
   public static NSArray<${entity.classNameWithOptionalPackage}> fetch${entity.pluralName}(EOEditingContext editingContext, EOQualifier qualifier, NSArray<EOSortOrdering> sortOrderings) {
     ERXFetchSpecification<${entity.classNameWithOptionalPackage}> fetchSpec = new ERXFetchSpecification<${entity.classNameWithOptionalPackage}>(${entity.prefixClassNameWithoutPackage}.ENTITY_NAME, qualifier, sortOrderings);
-    fetchSpec.setIsDeep(true);
     NSArray<${entity.classNameWithOptionalPackage}> eoObjects = fetchSpec.fetchObjects(editingContext);
     return eoObjects;
   }
