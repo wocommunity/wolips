@@ -156,8 +156,8 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
       }
 
 #if (${relationship.actualDestination.genericRecord})
-      EOFetchSpecification fetchSpec = new EOFetchSpecification("${relationship.actualDestination.name}", qualifier, sortOrderings);
       fetchSpec.setIsDeep(true);
+      ERXFetchSpecification<${entity.classNameWithOptionalPackage}> fetchSpec = new ERXFetchSpecification<${entity.classNameWithOptionalPackage}>("${relationship.actualDestination.name}", qualifier, sortOrderings);
       results = (NSArray<${relationship.actualDestination.classNameWithDefault}>)editingContext().objectsWithFetchSpecification(fetchSpec);
 #else
       results = ${relationship.actualDestination.classNameWithDefault}.fetch${relationship.actualDestination.pluralName}(editingContext(), fullQualifier, sortOrderings);
