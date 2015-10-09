@@ -88,11 +88,11 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #end
 #end
 #foreach ($relationship in $entity.sortedClassToOneRelationships)
-#if (!$relationship.inherited) 
+#if (!$relationship.inherited)
   public $relationship.actualDestination.classNameWithDefault ${relationship.name}() {
     return ($relationship.actualDestination.classNameWithDefault)storedValueForKey(${entity.prefixClassNameWithoutPackage}.${relationship.uppercaseUnderscoreName}_KEY);
   }
-  
+
   public void set${relationship.capitalizedName}($relationship.actualDestination.classNameWithDefault value) {
     takeStoredValueForKey(value, ${entity.prefixClassNameWithoutPackage}.${relationship.uppercaseUnderscoreName}_KEY);
   }
@@ -100,22 +100,22 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   public void set${relationship.capitalizedName}Relationship($relationship.actualDestination.classNameWithDefault value) {
     log.debug("updating $relationship.name from {} to {}", ${relationship.name}(), value);
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	set${relationship.capitalizedName}(value);
+      set${relationship.capitalizedName}(value);
     }
     else if (value == null) {
-    	$relationship.actualDestination.classNameWithDefault oldValue = ${relationship.name}();
-    	if (oldValue != null) {
-    		removeObjectFromBothSidesOfRelationshipWithKey(oldValue, ${entity.prefixClassNameWithoutPackage}.${relationship.uppercaseUnderscoreName}_KEY);
+      $relationship.actualDestination.classNameWithDefault oldValue = ${relationship.name}();
+      if (oldValue != null) {
+        removeObjectFromBothSidesOfRelationshipWithKey(oldValue, ${entity.prefixClassNameWithoutPackage}.${relationship.uppercaseUnderscoreName}_KEY);
       }
     } else {
-    	addObjectToBothSidesOfRelationshipWithKey(value, ${entity.prefixClassNameWithoutPackage}.${relationship.uppercaseUnderscoreName}_KEY);
+      addObjectToBothSidesOfRelationshipWithKey(value, ${entity.prefixClassNameWithoutPackage}.${relationship.uppercaseUnderscoreName}_KEY);
     }
   }
-  
+
 #end
 #end
 #foreach ($relationship in $entity.sortedClassToManyRelationships)
-#if (!$relationship.inherited) 
+#if (!$relationship.inherited)
   public NSArray<${relationship.actualDestination.classNameWithDefault}> ${relationship.name}() {
     return (NSArray<${relationship.actualDestination.classNameWithDefault}>)storedValueForKey(${entity.prefixClassNameWithoutPackage}.${relationship.uppercaseUnderscoreName}_KEY);
   }
@@ -144,7 +144,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #else
       EOQualifier inverseQualifier = new EOKeyValueQualifier(${relationship.actualDestination.classNameWithDefault}.${relationship.inverseRelationship.uppercaseUnderscoreName}_KEY, EOQualifier.QualifierOperatorEqual, this);
 #end
-    	
+
       if (qualifier == null) {
         fullQualifier = inverseQualifier;
       }
@@ -177,7 +177,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #end
     return results;
   }
-  
+
   public void addTo${relationship.capitalizedName}($relationship.actualDestination.classNameWithDefault object) {
     includeObjectIntoPropertyWithKey(object, ${entity.prefixClassNameWithoutPackage}.${relationship.uppercaseUnderscoreName}_KEY);
   }
@@ -189,20 +189,20 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   public void addTo${relationship.capitalizedName}Relationship($relationship.actualDestination.classNameWithDefault object) {
     log.debug("adding {} to ${relationship.name} relationship", object);
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	addTo${relationship.capitalizedName}(object);
+      addTo${relationship.capitalizedName}(object);
     }
     else {
-    	addObjectToBothSidesOfRelationshipWithKey(object, ${entity.prefixClassNameWithoutPackage}.${relationship.uppercaseUnderscoreName}_KEY);
+      addObjectToBothSidesOfRelationshipWithKey(object, ${entity.prefixClassNameWithoutPackage}.${relationship.uppercaseUnderscoreName}_KEY);
     }
   }
 
   public void removeFrom${relationship.capitalizedName}Relationship($relationship.actualDestination.classNameWithDefault object) {
     log.debug("removing {} from ${relationship.name} relationship", object);
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
-    	removeFrom${relationship.capitalizedName}(object);
+      removeFrom${relationship.capitalizedName}(object);
     }
     else {
-    	removeObjectFromBothSidesOfRelationshipWithKey(object, ${entity.prefixClassNameWithoutPackage}.${relationship.uppercaseUnderscoreName}_KEY);
+      removeObjectFromBothSidesOfRelationshipWithKey(object, ${entity.prefixClassNameWithoutPackage}.${relationship.uppercaseUnderscoreName}_KEY);
     }
   }
 
@@ -245,17 +245,17 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #end
 ) {
     ${entity.classNameWithOptionalPackage} eo = (${entity.classNameWithOptionalPackage})#if ($entity.partialEntitySet)this;#else EOUtilities.createAndInsertInstance(editingContext, ${entity.prefixClassNameWithoutPackage}.ENTITY_NAME);#end
-    
+
 #foreach ($attribute in $entity.sortedClassAttributes)
 #if (!$attribute.allowsNull)
 #set ($restrictingQualifierKey = 'false')
-#foreach ($qualifierKey in $entity.restrictingQualifierKeys) 
+#foreach ($qualifierKey in $entity.restrictingQualifierKeys)
 #if ($attribute.name == $qualifierKey)
 #set ($restrictingQualifierKey = 'true')
 #end
 #end
 #if ($restrictingQualifierKey == 'false')
-		eo.set${attribute.capitalizedName}(${attribute.name});
+    eo.set${attribute.capitalizedName}(${attribute.name});
 #end
 #end
 #end
@@ -340,10 +340,10 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
     fetchSpec = fetchSpec.fetchSpecificationWithQualifierBindings(bindings);
     return (NSArray#if ($fetchSpecification.fetchEnterpriseObjects)<${entity.className}>#else<NSDictionary>#end)editingContext.objectsWithFetchSpecification(fetchSpec);
   }
-  
+
 #end
   public static NSArray#if ($fetchSpecification.fetchEnterpriseObjects)<${entity.className}>#else<NSDictionary>#end fetch${fetchSpecification.capitalizedName}(EOEditingContext editingContext#foreach ($binding in $fetchSpecification.distinctBindings),
-	${binding.attributePath.childClassName} ${binding.name}Binding#end)
+  ${binding.attributePath.childClassName} ${binding.name}Binding#end)
   {
     EOFetchSpecification fetchSpec = EOFetchSpecification.fetchSpecificationNamed("${fetchSpecification.name}", ${entity.prefixClassNameWithoutPackage}.ENTITY_NAME);
 #if ($fetchSpecification.distinctBindings.size() > 0)
@@ -351,10 +351,10 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #foreach ($binding in $fetchSpecification.distinctBindings)
     bindings.takeValueForKey(${binding.name}Binding, "${binding.name}");
 #end
-	fetchSpec = fetchSpec.fetchSpecificationWithQualifierBindings(bindings);
+    fetchSpec = fetchSpec.fetchSpecificationWithQualifierBindings(bindings);
 #end
     return (NSArray#if ($fetchSpecification.fetchEnterpriseObjects)<${entity.className}>#else<NSDictionary>#end)editingContext.objectsWithFetchSpecification(fetchSpec);
   }
-  
+
 #end
 }
