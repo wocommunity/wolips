@@ -8,10 +8,12 @@ import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import java.math.*;
 import java.util.*;
-import org.apache.log4j.Logger;
 
 import er.extensions.eof.*;
 import er.extensions.foundation.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("all")
 public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($entity.parentClassNameSet)${entity.parentClassName}#elseif ($entity.partialEntitySet)er.extensions.partials.ERXPartial<${entity.partialEntity.className}>#elseif ($entity.parentSet)${entity.parent.classNameWithDefault}#elseif ($EOGenericRecord)${EOGenericRecord}#else ERXGenericRecord#end {
@@ -49,7 +51,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #end
 #end
 
-  private static Logger LOG = Logger.getLogger(${entity.prefixClassNameWithoutPackage}.class);
+  private static Logger log = LoggerFactory.getLogger(${entity.prefixClassNameWithoutPackage}.class);
 
 #if (!$entity.partialEntitySet)
   public $entity.classNameWithOptionalPackage localInstanceIn(EOEditingContext editingContext) {
@@ -78,9 +80,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   }
 
   public void set${attribute.capitalizedName}($attribute.javaClassName value) {
-    if (${entity.prefixClassNameWithoutPackage}.LOG.isDebugEnabled()) {
-    	${entity.prefixClassNameWithoutPackage}.LOG.debug( "updating $attribute.name from " + ${attribute.name}() + " to " + value);
-    }
+    log.debug( "updating $attribute.name from {} to {}", ${attribute.name}(), value);
     takeStoredValueForKey(value, ${entity.prefixClassNameWithoutPackage}.${attribute.uppercaseUnderscoreName}_KEY);
   }
 #end
@@ -98,9 +98,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   }
 
   public void set${relationship.capitalizedName}Relationship($relationship.actualDestination.classNameWithDefault value) {
-    if (${entity.prefixClassNameWithoutPackage}.LOG.isDebugEnabled()) {
-      ${entity.prefixClassNameWithoutPackage}.LOG.debug("updating $relationship.name from " + ${relationship.name}() + " to " + value);
-    }
+    log.debug("updating $relationship.name from {} to {}", ${relationship.name}(), value);
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
     	set${relationship.capitalizedName}(value);
     }
@@ -189,9 +187,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   }
 
   public void addTo${relationship.capitalizedName}Relationship($relationship.actualDestination.classNameWithDefault object) {
-    if (${entity.prefixClassNameWithoutPackage}.LOG.isDebugEnabled()) {
-      ${entity.prefixClassNameWithoutPackage}.LOG.debug("adding " + object + " to ${relationship.name} relationship");
-    }
+    log.debug("adding {} to ${relationship.name} relationship", object);
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
     	addTo${relationship.capitalizedName}(object);
     }
@@ -201,9 +197,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   }
 
   public void removeFrom${relationship.capitalizedName}Relationship($relationship.actualDestination.classNameWithDefault object) {
-    if (${entity.prefixClassNameWithoutPackage}.LOG.isDebugEnabled()) {
-      ${entity.prefixClassNameWithoutPackage}.LOG.debug("removing " + object + " from ${relationship.name} relationship");
-    }
+    log.debug("removing {} from ${relationship.name} relationship", object);
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
     	removeFrom${relationship.capitalizedName}(object);
     }
