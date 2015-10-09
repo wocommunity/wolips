@@ -23,20 +23,30 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 
   // Attribute Keys
 #foreach ($attribute in $entity.sortedClassAttributes)
+#if (!$attribute.inherited)
   public static final ERXKey<$attribute.javaClassName> ${attribute.uppercaseUnderscoreName} = new ERXKey<$attribute.javaClassName>("$attribute.name");
 #end
+#end
+
   // Relationship Keys
 #foreach ($relationship in $entity.sortedClassRelationships)
+#if (!$relationship.inherited)
   public static final ERXKey<$relationship.actualDestination.classNameWithDefault> ${relationship.uppercaseUnderscoreName} = new ERXKey<$relationship.actualDestination.classNameWithDefault>("$relationship.name");
+#end
 #end
 
   // Attributes
 #foreach ($attribute in $entity.sortedClassAttributes)
+#if (!$attribute.inherited)
   public static final String ${attribute.uppercaseUnderscoreName}_KEY = ${attribute.uppercaseUnderscoreName}.key();
 #end
+#end
+
   // Relationships
 #foreach ($relationship in $entity.sortedClassRelationships)
+#if (!$relationship.inherited)
   public static final String ${relationship.uppercaseUnderscoreName}_KEY = ${relationship.uppercaseUnderscoreName}.key();
+#end
 #end
 
   private static Logger LOG = Logger.getLogger(${entity.prefixClassNameWithoutPackage}.class);
