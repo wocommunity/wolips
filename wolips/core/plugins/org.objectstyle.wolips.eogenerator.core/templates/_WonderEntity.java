@@ -54,6 +54,9 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   private static Logger log = LoggerFactory.getLogger(${entity.prefixClassNameWithoutPackage}.class);
 
 #if (!$entity.partialEntitySet)
+#if ($entity.parentSet)
+  @Override
+#end
   public $entity.classNameWithOptionalPackage localInstanceIn(EOEditingContext editingContext) {
     $entity.classNameWithOptionalPackage localInstance = ($entity.classNameWithOptionalPackage)EOUtilities.localInstanceOfObject(editingContext, this);
     if (localInstance == null) {
