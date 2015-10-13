@@ -144,19 +144,16 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
     if (fetch) {
       EOQualifier fullQualifier;
 #if (${relationship.actualDestination.genericRecord})
-      EOQualifier inverseQualifier = new EOKeyValueQualifier("${relationship.inverseRelationship.name}", EOQualifier.QualifierOperatorEqual, this);
+      EOQualifier inverseQualifier = ERXQ.equals("${relationship.inverseRelationship.name}", this);
 #else
-      EOQualifier inverseQualifier = new EOKeyValueQualifier(${relationship.actualDestination.classNameWithDefault}.${relationship.inverseRelationship.uppercaseUnderscoreName}_KEY, EOQualifier.QualifierOperatorEqual, this);
+      EOQualifier inverseQualifier = ERXQ.equals(${relationship.actualDestination.classNameWithDefault}.${relationship.inverseRelationship.uppercaseUnderscoreName}_KEY, this);
 #end
 
       if (qualifier == null) {
         fullQualifier = inverseQualifier;
       }
       else {
-        NSMutableArray<EOQualifier> qualifiers = new NSMutableArray<EOQualifier>();
-        qualifiers.addObject(qualifier);
-        qualifiers.addObject(inverseQualifier);
-        fullQualifier = new EOAndQualifier(qualifiers);
+        fullQualifier = ERXQ.and(qualifier, inverseQualifier);
       }
 
 #if (${relationship.actualDestination.genericRecord})
