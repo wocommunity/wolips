@@ -51,7 +51,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #end
 #end
 
-  private static Logger log = LoggerFactory.getLogger(${entity.prefixClassNameWithoutPackage}.class);
+  private static final Logger log = LoggerFactory.getLogger(${entity.prefixClassNameWithoutPackage}.class);
 
 #if (!$entity.partialEntitySet)
 #if ($entity.parentSet)
