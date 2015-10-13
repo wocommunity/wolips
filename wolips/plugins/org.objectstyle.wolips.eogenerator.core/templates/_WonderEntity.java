@@ -209,9 +209,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   }
 
   public $relationship.actualDestination.classNameWithDefault create${relationship.capitalizedName}Relationship() {
-    EOClassDescription eoClassDesc = EOClassDescription.classDescriptionForEntityName(#if(${relationship.actualDestination.genericRecord})"${relationship.actualDestination.name}"#else ${relationship.actualDestination.classNameWithDefault}.ENTITY_NAME #end);
-    EOEnterpriseObject eo = eoClassDesc.createInstanceWithEditingContext(editingContext(), null);
-    editingContext().insertObject(eo);
+    EOEnterpriseObject eo = EOUtilities.createAndInsertInstance(editingContext(), #if(${relationship.actualDestination.genericRecord})"${relationship.actualDestination.name}"#else ${relationship.actualDestination.classNameWithDefault}.ENTITY_NAME #end);
     addObjectToBothSidesOfRelationshipWithKey(eo, ${entity.prefixClassNameWithoutPackage}.${relationship.uppercaseUnderscoreName}_KEY);
     return ($relationship.actualDestination.classNameWithDefault) eo;
   }
@@ -295,7 +293,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   }
 
   public static ${entity.classNameWithOptionalPackage} fetch${entity.name}(EOEditingContext editingContext, String keyName, Object value) {
-    return ${entity.prefixClassNameWithoutPackage}.fetch${entity.name}(editingContext, new EOKeyValueQualifier(keyName, EOQualifier.QualifierOperatorEqual, value));
+    return ${entity.prefixClassNameWithoutPackage}.fetch${entity.name}(editingContext, ERXQ.equals(keyName, value));
   }
 
   public static ${entity.classNameWithOptionalPackage} fetch${entity.name}(EOEditingContext editingContext, EOQualifier qualifier) {
@@ -315,7 +313,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   }
 
   public static ${entity.classNameWithOptionalPackage} fetchRequired${entity.name}(EOEditingContext editingContext, String keyName, Object value) {
-    return ${entity.prefixClassNameWithoutPackage}.fetchRequired${entity.name}(editingContext, new EOKeyValueQualifier(keyName, EOQualifier.QualifierOperatorEqual, value));
+    return ${entity.prefixClassNameWithoutPackage}.fetchRequired${entity.name}(editingContext, ERXQ.equals(keyName, value));
   }
 
   public static ${entity.classNameWithOptionalPackage} fetchRequired${entity.name}(EOEditingContext editingContext, EOQualifier qualifier) {
