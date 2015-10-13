@@ -75,6 +75,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   }
 
   public void set${attribute.capitalizedName}($attribute.userInfo.ERXConstantClassName value) {
+    log.debug( "updating $attribute.name from {} to {}", ${attribute.name}(), value);
     takeStoredValueForKey(value, ${entity.prefixClassNameWithoutPackage}.${attribute.uppercaseUnderscoreName}_KEY);
   }
 #else
