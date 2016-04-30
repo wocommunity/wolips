@@ -99,7 +99,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
   }
 
   protected FuzzyXMLParser createParser(IProject project) {
-    BuildProperties buildProperties = (BuildProperties)project.getAdapter(BuildProperties.class);
+    BuildProperties buildProperties = project.getAdapter(BuildProperties.class);
     FuzzyXMLParser parser = new FuzzyXMLParser(buildProperties != null ? buildProperties.isWellFormedTemplateRequired() : false, isHTML());
     return parser;
   }
@@ -175,7 +175,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
 
       FuzzyXMLNode selectedNode = _idToNodeMap.get(target);
       ProjectionAnnotationModel model = ((ProjectionViewer) _editor.getViewer()).getProjectionAnnotationModel();
-      ProjectionAnnotation lastAnnotation = getAnnotationForNode(selectedNode, model);
+      Annotation lastAnnotation = getAnnotationForNode(selectedNode, model);
       if (lastAnnotation != null) {
         model.collapse(lastAnnotation);
       }
@@ -193,7 +193,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
 
       FuzzyXMLNode selectedNode = _idToNodeMap.get(target);
       ProjectionAnnotationModel model = ((ProjectionViewer) _editor.getViewer()).getProjectionAnnotationModel();
-      ProjectionAnnotation lastAnnotation = getAnnotationForNode(selectedNode, model);
+      Annotation lastAnnotation = getAnnotationForNode(selectedNode, model);
       if (lastAnnotation != null) {
         model.expand(lastAnnotation);
       }
@@ -223,14 +223,13 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
    * @param model the annotation model
    * @return the matching annotation (or null if not found) 
    */
-  @SuppressWarnings("unchecked")
-  protected ProjectionAnnotation getAnnotationForNode(FuzzyXMLNode node, ProjectionAnnotationModel model) {
-    ProjectionAnnotation matchingAnnotation = null;
+  protected Annotation getAnnotationForNode(FuzzyXMLNode node, ProjectionAnnotationModel model) {
+	  Annotation matchingAnnotation = null;
     if (model != null) {
       int index = node.getOffset();
-      Iterator<ProjectionAnnotation> annotationsIter = model.getAnnotationIterator();
+      Iterator<Annotation> annotationsIter = model.getAnnotationIterator();
       while (annotationsIter.hasNext()) {
-        ProjectionAnnotation annotation = annotationsIter.next();
+    	  Annotation annotation = annotationsIter.next();
         if (model.getPosition(annotation).getOffset() == index) {
           matchingAnnotation = annotation;
         }
@@ -560,7 +559,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       if (woTag) {
         className = className + " wo";
         try {
-          BuildProperties buildProperties = (BuildProperties)_editor.getParserCache().getProject().getAdapter(BuildProperties.class);
+          BuildProperties buildProperties = _editor.getParserCache().getProject().getAdapter(BuildProperties.class);
           wodElement = WodHtmlUtils.getWodElement(element, buildProperties, true, cache);
         }
         catch (Throwable t) {
