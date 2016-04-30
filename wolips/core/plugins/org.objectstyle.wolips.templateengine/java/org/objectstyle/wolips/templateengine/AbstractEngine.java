@@ -62,7 +62,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -81,7 +80,6 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
 /**
@@ -112,12 +110,6 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 			/*
 			 * initialize the engine
 			 */
-			String userHomeWOLipsPath = System.getProperty("user.home") + File.separator + "Library" + File.separator + "WOLips";
-			URL url = null;
-			url = Platform.resolve(TemplateEnginePlugin.baseURL());
-			String templatePaths = userHomeWOLipsPath + ", ";
-			Path path = new Path(url.getPath());
-			templatePaths = templatePaths + path.append("templates").toOSString();
 			this.velocityEngine.setProperty("resource.loader", "wolips");
 			this.velocityEngine.setProperty("wolips.resource.loader.class", "org.objectstyle.wolips.thirdparty.velocity.resourceloader.ResourceLoader");
 			this.velocityEngine.setProperty("wolips.resource.loader.bundle", TemplateEnginePlugin.getDefault().getBundle());

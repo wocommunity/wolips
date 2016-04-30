@@ -60,7 +60,6 @@ No other license or rights are granted by Apple, explicitly, by implication,
 by estoppel, or otherwise.  All rights reserved.*/
 package org.objectstyle.wolips.templateengine;
 
-import java.net.URL;
 import java.util.Dictionary;
 
 import org.eclipse.core.resources.IWorkspace;
@@ -153,15 +152,6 @@ public class TemplateEnginePlugin extends AbstractBaseUIActivator {
 	 */
 	public static IWorkspace getWorkspace() {
 		return ResourcesPlugin.getWorkspace();
-	}
-
-	/**
-	 * Method baseURL.
-	 *
-	 * @return URL
-	 */
-	public static URL baseURL() {
-		return TemplateEnginePlugin.getDefault().getDescriptor().getInstallURL();
 	}
 
 	/**
