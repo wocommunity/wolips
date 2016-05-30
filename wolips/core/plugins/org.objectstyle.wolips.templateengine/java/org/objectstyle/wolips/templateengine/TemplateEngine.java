@@ -61,7 +61,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -73,9 +72,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 
 /**
@@ -110,12 +107,6 @@ public class TemplateEngine implements IRunnableWithProgress {
 			/*
 			 * initialize the engine
 			 */
-			String userHomeWOLipsPath = System.getProperty("user.home") + File.separator + "Library" + File.separator + "WOLips";
-			URL url = FileLocator.resolve(TemplateEnginePlugin.baseURL());
-			String templatePaths = userHomeWOLipsPath + ", ";
-			Path path = new Path(url.getPath());
-			templatePaths = templatePaths + path.append("templates").toOSString();
-	
 			_velocityEngine.setProperty("resource.loader", "wolips, file");
 	
 			// _velocityEngine.setProperty("resource.loader", "wolips");
