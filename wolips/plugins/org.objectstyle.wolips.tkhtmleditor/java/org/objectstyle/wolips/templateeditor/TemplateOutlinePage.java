@@ -99,7 +99,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
   }
 
   protected FuzzyXMLParser createParser(IProject project) {
-    BuildProperties buildProperties = project.getAdapter(BuildProperties.class);
+    BuildProperties buildProperties = (BuildProperties)project.getAdapter(BuildProperties.class);
     FuzzyXMLParser parser = new FuzzyXMLParser(buildProperties != null ? buildProperties.isWellFormedTemplateRequired() : false, isHTML());
     return parser;
   }
@@ -559,7 +559,7 @@ public class TemplateOutlinePage extends Page implements IContentOutlinePage, IH
       if (woTag) {
         className = className + " wo";
         try {
-          BuildProperties buildProperties = _editor.getParserCache().getProject().getAdapter(BuildProperties.class);
+          BuildProperties buildProperties = (BuildProperties)_editor.getParserCache().getProject().getAdapter(BuildProperties.class);
           wodElement = WodHtmlUtils.getWodElement(element, buildProperties, true, cache);
         }
         catch (Throwable t) {
