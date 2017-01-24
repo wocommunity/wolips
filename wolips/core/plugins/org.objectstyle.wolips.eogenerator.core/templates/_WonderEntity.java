@@ -51,7 +51,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
 #end
 #end
 
-  private static final Logger log = LoggerFactory.getLogger(${entity.prefixClassNameWithoutPackage}.class);
+  private static final Logger LOG = LoggerFactory.getLogger(${entity.prefixClassNameWithoutPackage}.class);
 
 #if (!$entity.partialEntitySet)
 #if ($entity.parentSet)
@@ -75,7 +75,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   }
 
   public void set${attribute.capitalizedName}($attribute.userInfo.ERXConstantClassName value) {
-    log.debug( "updating $attribute.name from {} to {}", ${attribute.name}(), value);
+    LOG.debug("updating $attribute.name from {} to {}", ${attribute.name}(), value);
     takeStoredValueForKey(value, ${entity.prefixClassNameWithoutPackage}.${attribute.uppercaseUnderscoreName}_KEY);
   }
 #else
@@ -84,7 +84,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   }
 
   public void set${attribute.capitalizedName}($attribute.javaClassName value) {
-    log.debug( "updating $attribute.name from {} to {}", ${attribute.name}(), value);
+    LOG.debug("updating $attribute.name from {} to {}", ${attribute.name}(), value);
     takeStoredValueForKey(value, ${entity.prefixClassNameWithoutPackage}.${attribute.uppercaseUnderscoreName}_KEY);
   }
 #end
@@ -102,7 +102,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   }
 
   public void set${relationship.capitalizedName}Relationship($relationship.actualDestination.classNameWithDefault value) {
-    log.debug("updating $relationship.name from {} to {}", ${relationship.name}(), value);
+    LOG.debug("updating $relationship.name from {} to {}", ${relationship.name}(), value);
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
       set${relationship.capitalizedName}(value);
     }
@@ -187,7 +187,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   }
 
   public void addTo${relationship.capitalizedName}Relationship($relationship.actualDestination.classNameWithDefault object) {
-    log.debug("adding {} to ${relationship.name} relationship", object);
+    LOG.debug("adding {} to ${relationship.name} relationship", object);
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
       addTo${relationship.capitalizedName}(object);
     }
@@ -197,7 +197,7 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   }
 
   public void removeFrom${relationship.capitalizedName}Relationship($relationship.actualDestination.classNameWithDefault object) {
-    log.debug("removing {} from ${relationship.name} relationship", object);
+    LOG.debug("removing {} from ${relationship.name} relationship", object);
     if (er.extensions.eof.ERXGenericRecord.InverseRelationshipUpdater.updateInverseRelationships()) {
       removeFrom${relationship.capitalizedName}(object);
     }
