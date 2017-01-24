@@ -10,6 +10,7 @@ import java.math.*;
 import java.util.*;
 
 import er.extensions.eof.*;
+import er.extensions.eof.ERXKey.Type;
 import er.extensions.foundation.*;
 
 import org.slf4j.Logger;
@@ -26,14 +27,14 @@ public abstract class ${entity.prefixClassNameWithoutPackage} extends #if ($enti
   // Attribute Keys
 #foreach ($attribute in $entity.sortedClassAttributes)
 #if (!$attribute.inherited)
-  public static final ERXKey<$attribute.javaClassName> ${attribute.uppercaseUnderscoreName} = new ERXKey<$attribute.javaClassName>("$attribute.name");
+  public static final ERXKey<$attribute.javaClassName> ${attribute.uppercaseUnderscoreName} = new ERXKey<$attribute.javaClassName>("$attribute.name", Type.Attribute);
 #end
 #end
 
   // Relationship Keys
 #foreach ($relationship in $entity.sortedClassRelationships)
 #if (!$relationship.inherited)
-  public static final ERXKey<$relationship.actualDestination.classNameWithDefault> ${relationship.uppercaseUnderscoreName} = new ERXKey<$relationship.actualDestination.classNameWithDefault>("$relationship.name");
+  public static final ERXKey<$relationship.actualDestination.classNameWithDefault> ${relationship.uppercaseUnderscoreName} = new ERXKey<$relationship.actualDestination.classNameWithDefault>("$relationship.name",#if($relationship.toMany) Type.ToManyRelationship#else Type.ToOneRelationship#end);
 #end
 #end
 
