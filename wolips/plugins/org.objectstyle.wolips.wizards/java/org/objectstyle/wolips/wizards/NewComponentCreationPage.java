@@ -751,7 +751,7 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 			if (resType == IResource.PROJECT || resType == IResource.FOLDER) {
 				IProject proj = res.getProject();
 				if (!proj.isOpen()) {
-					status.setError(Messages.format(NewWizardMessages.NewContainerWizardPage_error_ProjectClosed, BasicElementLabels.getPathLabel(proj.getFullPath(), false)));
+					status.setError(Messages.format(NewWizardMessages.NewContainerWizardPage_error_ProjectClosed, proj.getName()));
 					return status;
 				}
 				IJavaProject jproject = JavaCore.create(proj);
@@ -768,14 +768,14 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 							return status;
 						}
 						if (fragmentRoot.isArchive()) {
-							status.setError(Messages.format(NewWizardMessages.NewContainerWizardPage_error_ContainerIsBinary, BasicElementLabels.getPathLabel(path, false)));
+							status.setError(Messages.format(NewWizardMessages.NewContainerWizardPage_error_ContainerIsBinary, str));
 							return status;
 						}
 						// now throws a JavaModelException if not a source folder
 						if (fragmentRoot.getKind() == IPackageFragmentRoot.K_BINARY) {
-							status.setWarning(Messages.format(NewWizardMessages.NewContainerWizardPage_warning_inside_classfolder, BasicElementLabels.getPathLabel(path, false)));
+							status.setWarning(Messages.format(NewWizardMessages.NewContainerWizardPage_warning_inside_classfolder, str));
 						} else if (!jproject.isOnClasspath(fragmentRoot)) {
-							status.setWarning(Messages.format(NewWizardMessages.NewContainerWizardPage_warning_NotOnClassPath, BasicElementLabels.getPathLabel(path, false)));
+							status.setWarning(Messages.format(NewWizardMessages.NewContainerWizardPage_warning_NotOnClassPath, str));
 						}
 					} catch (JavaModelException e) {
 						// no problems. Just a standard components folder.
@@ -788,10 +788,10 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 				}
 				return status;
 			}
-			status.setError(Messages.format(NewWizardMessages.NewContainerWizardPage_error_NotAFolder, BasicElementLabels.getPathLabel(path, false)));
+			status.setError(Messages.format(NewWizardMessages.NewContainerWizardPage_error_NotAFolder, str));
 			return status;
 		}
-		status.setError(Messages.format(NewWizardMessages.NewContainerWizardPage_error_ContainerDoesNotExist, BasicElementLabels.getPathLabel(path, false)));
+		status.setError(Messages.format(NewWizardMessages.NewContainerWizardPage_error_ContainerDoesNotExist, str));
 		return status;
     }
 	
