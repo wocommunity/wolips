@@ -138,4 +138,8 @@ public class FilesystemProject extends FilesystemFolder implements IProject {
 	public boolean hasBuildConfig(String configName) throws CoreException {
 		throw new UnsupportedOperationException();
 	}
+
+	public void clearCachedDynamicReferences() {
+		throw new UnsupportedOperationException();
+	}
 }
