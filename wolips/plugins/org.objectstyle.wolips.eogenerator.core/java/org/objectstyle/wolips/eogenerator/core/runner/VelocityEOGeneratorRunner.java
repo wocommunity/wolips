@@ -73,6 +73,8 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		boolean showResults = false;
 
 		String superclassTemplateName = eogeneratorModel.getJavaTemplate();
+		String superclassTemplate2Name = eogeneratorModel.getJavaTemplate2();
+		String superclassTemplate3Name = eogeneratorModel.getJavaTemplate3();
 		String subclassTemplateName = eogeneratorModel.getSubclassJavaTemplate();
 
 		boolean eogeneratorJava14 = eogeneratorModel.isJava14();
@@ -185,6 +187,38 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 					throw new IOException("Failed to create subclass destination '" + subclassDestination + "'.");
 				}
 			}
+			
+			File superclass2Destination = null;
+			if (eogeneratorModel.getDestination2() != null) {
+				superclass2Destination = new File(eogeneratorModel.getDestination2());
+				if (!superclass2Destination.isAbsolute()) {
+					IPath projectPath = eogeneratorModel.getProjectPath();
+					if (projectPath != null) {
+						superclass2Destination = new File(projectPath.toFile(), eogeneratorModel.getDestination2());
+					}
+				}
+				if (!superclass2Destination.exists()) {
+					if (!superclass2Destination.mkdirs()) {
+						throw new IOException("Failed to create destination2 '" + superclass2Destination + "'.");
+					}
+				}
+			}
+			
+			File superclass3Destination = null;
+			if (eogeneratorModel.getDestination3() != null) {
+				superclass3Destination = new File(eogeneratorModel.getDestination3());
+				if (!superclass3Destination.isAbsolute()) {
+					IPath projectPath = eogeneratorModel.getProjectPath();
+					if (projectPath != null) {
+						superclass3Destination = new File(projectPath.toFile(), eogeneratorModel.getDestination3());
+					}
+				}
+				if (!superclass3Destination.exists()) {
+					if (!superclass3Destination.mkdirs()) {
+						throw new IOException("Failed to create destination3 '" + superclass3Destination + "'.");
+					}
+				}
+			}
 
 			// String filePathTemplate = eogeneratorModel.getFilenameTemplate();
 			// if (filePathTemplate == null || filePathTemplate.trim().length()
@@ -239,6 +273,12 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 						if (_useStdout) {
 							WOLipsVelocityUtils.writeTemplate(velocityEngine, context, superclassTemplateName, System.out);
 							WOLipsVelocityUtils.writeTemplate(velocityEngine, context, subclassTemplateName, System.out);
+							if (superclassTemplate2Name != null) {
+								WOLipsVelocityUtils.writeTemplate(velocityEngine, context, superclassTemplate2Name, System.out);
+							}
+							if (superclassTemplate3Name != null) {
+								WOLipsVelocityUtils.writeTemplate(velocityEngine, context, superclassTemplate3Name, System.out);
+							}
 						}
 						else {
 							String superclassFileTemplate;
@@ -285,6 +325,30 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 							}
 							if (!subclassFile.exists()) {
 								WOLipsVelocityUtils.writeTemplate(velocityEngine, context, subclassTemplateName, subclassFile);
+							}
+							
+							if (superclass2Destination != null) {
+								File superclass2File = new File(superclass2Destination, superclassFilePath);
+								File superclass2Folder = superclass2File.getParentFile();
+								if (!superclass2Folder.exists()) {
+									if (!superclass2Folder.mkdirs()) {
+										throw new IOException("Unable to make superclass folder2 '" + superclass2Folder + "'.");
+									}
+								}
+								
+								WOLipsVelocityUtils.writeTemplateToDirectory(velocityEngine, context, superclassTemplate2Name, superclass2Folder);
+							}
+							
+							if (superclass3Destination != null) {
+								File superclass3File = new File(superclass3Destination, superclassFilePath);
+								File superclass3Folder = superclass3File.getParentFile();
+								if (!superclass3Folder.exists()) {
+									if (!superclass3Folder.mkdirs()) {
+										throw new IOException("Unable to make superclass folder3 '" + superclass3Folder + "'.");
+									}
+								}
+								
+								WOLipsVelocityUtils.writeTemplateToDirectory(velocityEngine, context, superclassTemplate3Name, superclass3Folder);
 							}
 						}
 					}

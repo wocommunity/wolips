@@ -5,12 +5,15 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -136,6 +139,20 @@ public class WOLipsVelocityUtils {
 	public static void writeTemplate(VelocityEngine engine, VelocityContext context, String templateName, File outputFile) throws ResourceNotFoundException, ParseErrorException, MethodInvocationException, Exception {
 		ByteArrayOutputStream newFileContentsStream = new ByteArrayOutputStream();
 		String newFileContentsStr = WOLipsVelocityUtils.writeTemplateToString(engine, context, templateName, newFileContentsStream);
+		writeToFile(outputFile, newFileContentsStream, newFileContentsStr);
+	}
+	
+	public static void writeTemplateToDirectory(VelocityEngine engine, VelocityContext context, String templateName, File outputDirectory) throws ResourceNotFoundException, ParseErrorException, MethodInvocationException, Exception {
+		ByteArrayOutputStream newFileContentsStream = new ByteArrayOutputStream();
+		String newFileContentsStr = WOLipsVelocityUtils.writeTemplateToString(engine, context, templateName, newFileContentsStream);
+		int beginIndex = newFileContentsStr.indexOf("class ") + 6;
+		int endIndex = newFileContentsStr.substring(beginIndex).indexOf(" ") + beginIndex;
+		String filename = newFileContentsStr.substring(beginIndex, endIndex);
+		File outputFile = new File(outputDirectory, filename+".java");
+		writeToFile(outputFile, newFileContentsStream, newFileContentsStr);
+	}
+
+	private static void writeToFile(File outputFile, ByteArrayOutputStream newFileContentsStream, String newFileContentsStr) throws IOException, UnsupportedEncodingException, FileNotFoundException, NoSuchAlgorithmException {
 		if (!outputFile.getParentFile().exists()) {
 			if (!outputFile.getParentFile().mkdirs()) {
 				throw new IOException("Unable to create the folder " + outputFile.getParentFile() + ".");
