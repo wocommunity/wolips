@@ -145,7 +145,7 @@ public class WOLipsVelocityUtils {
 	public static void writeTemplateToDirectory(VelocityEngine engine, VelocityContext context, String templateName, File outputDirectory) throws ResourceNotFoundException, ParseErrorException, MethodInvocationException, Exception {
 		ByteArrayOutputStream newFileContentsStream = new ByteArrayOutputStream();
 		String newFileContentsStr = WOLipsVelocityUtils.writeTemplateToString(engine, context, templateName, newFileContentsStream);
-		int beginIndex = newFileContentsStr.indexOf("class ") + 6;
+		int beginIndex = newFileContentsStr.indexOf(" class ") + 7;
 		int endIndex = newFileContentsStr.substring(beginIndex).indexOf(" ") + beginIndex;
 		String filename = newFileContentsStr.substring(beginIndex, endIndex);
 		File outputFile = new File(outputDirectory, filename+".java");

@@ -75,6 +75,7 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 		String superclassTemplateName = eogeneratorModel.getJavaTemplate();
 		String superclassTemplate2Name = eogeneratorModel.getJavaTemplate2();
 		String superclassTemplate3Name = eogeneratorModel.getJavaTemplate3();
+		String superclassTemplate4Name = eogeneratorModel.getJavaTemplate4();
 		String subclassTemplateName = eogeneratorModel.getSubclassJavaTemplate();
 
 		boolean eogeneratorJava14 = eogeneratorModel.isJava14();
@@ -219,6 +220,22 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 					}
 				}
 			}
+			
+			File superclass4Destination = null;
+			if (eogeneratorModel.getDestination4() != null) {
+				superclass4Destination = new File(eogeneratorModel.getDestination4());
+				if (!superclass4Destination.isAbsolute()) {
+					IPath projectPath = eogeneratorModel.getProjectPath();
+					if (projectPath != null) {
+						superclass4Destination = new File(projectPath.toFile(), eogeneratorModel.getDestination4());
+					}
+				}
+				if (!superclass4Destination.exists()) {
+					if (!superclass4Destination.mkdirs()) {
+						throw new IOException("Failed to create destination4 '" + superclass4Destination + "'.");
+					}
+				}
+			}
 
 			// String filePathTemplate = eogeneratorModel.getFilenameTemplate();
 			// if (filePathTemplate == null || filePathTemplate.trim().length()
@@ -278,6 +295,9 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 							}
 							if (superclassTemplate3Name != null) {
 								WOLipsVelocityUtils.writeTemplate(velocityEngine, context, superclassTemplate3Name, System.out);
+							}
+							if (superclassTemplate4Name != null) {
+								WOLipsVelocityUtils.writeTemplate(velocityEngine, context, superclassTemplate4Name, System.out);
 							}
 						}
 						else {
@@ -349,6 +369,18 @@ public class VelocityEOGeneratorRunner implements IEOGeneratorRunner {
 								}
 								
 								WOLipsVelocityUtils.writeTemplateToDirectory(velocityEngine, context, superclassTemplate3Name, superclass3Folder);
+							}
+							
+							if (superclass4Destination != null) {
+								File superclass4File = new File(superclass4Destination, superclassFilePath);
+								File superclass4Folder = superclass4File.getParentFile();
+								if (!superclass4Folder.exists()) {
+									if (!superclass4Folder.mkdirs()) {
+										throw new IOException("Unable to make superclass folder4 '" + superclass4Folder + "'.");
+									}
+								}
+								
+								WOLipsVelocityUtils.writeTemplateToDirectory(velocityEngine, context, superclassTemplate4Name, superclass4Folder);
 							}
 						}
 					}
