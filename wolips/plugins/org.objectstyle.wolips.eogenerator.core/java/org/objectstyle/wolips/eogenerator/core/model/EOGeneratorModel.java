@@ -85,6 +85,8 @@ public class EOGeneratorModel {
 	public static final String DESTINATION2 = "destination2";
 	
 	public static final String DESTINATION3 = "destination3";
+	
+	public static final String DESTINATION4 = "destination4";
 
 	public static final String SUBCLASS_DESTINATION = "subclassDestination";
 
@@ -95,6 +97,8 @@ public class EOGeneratorModel {
 	public static final String JAVA_TEMPLATE2 = "javaTemplate2";
 	
 	public static final String JAVA_TEMPLATE3 = "javaTemplate3";
+	
+	public static final String JAVA_TEMPLATE4 = "javaTemplate4";
 
 	public static final String SUBCLASS_JAVA_TEMPLATE = "subclassJavaTemplate";
 
@@ -140,6 +144,8 @@ public class EOGeneratorModel {
 	
 	private String _destination3;
 	
+	private String _destination4;
+	
 	private String _subclassDestination;
 
 	private String _templateDir;
@@ -149,6 +155,8 @@ public class EOGeneratorModel {
 	private String _javaTemplate2;
 	
 	private String _javaTemplate3;
+	
+	private String _javaTemplate4;
 
 	private String _subclassJavaTemplate;
 
@@ -319,6 +327,7 @@ public class EOGeneratorModel {
 		append(sb, "-destination", EOGeneratorModel.toFullPath(workingDirectory, _destination));
 		append(sb, "-destination2", EOGeneratorModel.toFullPath(workingDirectory, _destination2));
 		append(sb, "-destination3", EOGeneratorModel.toFullPath(workingDirectory, _destination3));
+		append(sb, "-destination4", EOGeneratorModel.toFullPath(workingDirectory, _destination4));
 		append(sb, "-extension", getExtension());
 		append(sb, "-filenameTemplate", _filenameTemplate);
 		append(sb, "-java", _java);
@@ -327,6 +336,7 @@ public class EOGeneratorModel {
 		append(sb, "-javaTemplate", getJavaTemplate());
 		append(sb, "-javaTemplate2", getJavaTemplate2());
 		append(sb, "-javaTemplate3", getJavaTemplate3());
+		append(sb, "-javaTemplate4", getJavaTemplate4());
 
 		Iterator modelsIter = _models.iterator();
 		while (modelsIter.hasNext()) {
@@ -383,6 +393,8 @@ public class EOGeneratorModel {
 					_destination2 = workingDir == null ? nextTokenValue(token, tokenizer) : PathUtils.getAbsolutePath(nextTokenValue(token, tokenizer), workingDir);
 				} else if ("-destination3".equalsIgnoreCase(token)) {
 					_destination3 = workingDir == null ? nextTokenValue(token, tokenizer) : PathUtils.getAbsolutePath(nextTokenValue(token, tokenizer), workingDir);
+				} else if ("-destination4".equalsIgnoreCase(token)) {
+					_destination4 = workingDir == null ? nextTokenValue(token, tokenizer) : PathUtils.getAbsolutePath(nextTokenValue(token, tokenizer), workingDir);
 				} else if ("-extension".equalsIgnoreCase(token)) {
 					_extension = nextTokenValue(token, tokenizer);
 				} else if ("-filenameTemplate".equalsIgnoreCase(token)) {
@@ -399,6 +411,8 @@ public class EOGeneratorModel {
 					_javaTemplate2 = nextTokenValue(token, tokenizer);
 				} else if ("-javaTemplate3".equalsIgnoreCase(token)) {
 					_javaTemplate3 = nextTokenValue(token, tokenizer);
+				} else if ("-javaTemplate4".equalsIgnoreCase(token)) {
+					_javaTemplate4 = nextTokenValue(token, tokenizer);
 				} else if ("-model".equalsIgnoreCase(token)) {
 					String modelPath = workingDir == null ? nextTokenValue(token, tokenizer) : PathUtils.getAbsolutePath(nextTokenValue(token, tokenizer), workingDir);
 					_models.add(new EOModelReference(new Path(modelPath)));
@@ -567,7 +581,19 @@ public class EOGeneratorModel {
 			setDirty(true);
 		}
 	}
+	
+	public String getDestination4() {
+		return _destination4;
+	}
 
+	public void setDestination4(String destination4) {
+		if (isNew(_destination4, destination4)) {
+			String oldDestination4 = _destination4;
+			_destination4 = destination4;
+			_propertyChangeSupport.firePropertyChange(EOGeneratorModel.DESTINATION4, oldDestination4, _destination4);
+			setDirty(true);
+		}
+	}
 
 	public String getEOGeneratorPath() {
 		String eoGeneratorPath = _eogeneratorPath;
@@ -674,6 +700,19 @@ public class EOGeneratorModel {
 			String oldJavaTemplate3 = _javaTemplate3;
 			_javaTemplate3 = javaTemplate3;
 			_propertyChangeSupport.firePropertyChange(EOGeneratorModel.JAVA_TEMPLATE3, oldJavaTemplate3, _javaTemplate3);
+			setDirty(true);
+		}
+	}
+	
+	public String getJavaTemplate4() {
+		return _javaTemplate4;
+	}
+
+	public void setJavaTemplate4(String javaTemplate4) {
+		if (isNew(_javaTemplate4, javaTemplate4)) {
+			String oldJavaTemplate4 = _javaTemplate4;
+			_javaTemplate4 = javaTemplate4;
+			_propertyChangeSupport.firePropertyChange(EOGeneratorModel.JAVA_TEMPLATE4, oldJavaTemplate4, _javaTemplate4);
 			setDirty(true);
 		}
 	}
