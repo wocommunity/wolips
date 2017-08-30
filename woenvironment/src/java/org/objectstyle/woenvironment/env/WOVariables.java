@@ -544,7 +544,7 @@ public class WOVariables {
     	if (!filepath.isAbsolute()) {
       		filepath = new File(_wolipsPropertiesFile.getParentFile(), path);
     	}
-    return filepath.toString();
+    return convertWindowsPath(filepath.toString());
   }
 
   public String getProperty(String aKey) {
