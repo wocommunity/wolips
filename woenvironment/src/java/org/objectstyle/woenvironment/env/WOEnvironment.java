@@ -57,8 +57,6 @@
 package org.objectstyle.woenvironment.env;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -75,19 +73,11 @@ public final class WOEnvironment {
     this.woVariables = new WOVariables(null);
   }
   
-  public WOEnvironment(Map<Object, Object> existingProperties) {
+  public WOEnvironment(Map<?, ?> existingProperties) {
     this.woVariables = new WOVariables(existingProperties);
   }
   
-  public WOEnvironment(Hashtable<String, Object> existingProperties) {
-    Map<Object, Object> propertiesMap = new HashMap<Object, Object>();
-    for (String key : existingProperties.keySet()) {
-      propertiesMap.put(key, existingProperties.get(key));
-    }
-    this.woVariables = new WOVariables(propertiesMap);
-  }
-  
-  public WOEnvironment(WOVariables variables, Map<Object, Object> existingProperties) {
+  public WOEnvironment(WOVariables variables, Map<?, ?> existingProperties) {
     this.woVariables = new WOVariables(variables, existingProperties);
   }
 
