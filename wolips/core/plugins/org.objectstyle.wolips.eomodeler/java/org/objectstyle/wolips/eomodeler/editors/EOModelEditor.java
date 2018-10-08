@@ -135,6 +135,8 @@ import org.objectstyle.wolips.eomodeler.preferences.PreferenceConstants;
 import org.objectstyle.wolips.eomodeler.utils.AbstractAddRemoveChangeRefresher;
 import org.objectstyle.wolips.eomodeler.utils.EclipseFileUtils;
 
+import ch.rucotec.wolips.DiagramViewPart;
+
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener, ITabbedPropertySheetPageContributor, ISelectionProvider, IEOModelEditor {
 	protected class ArgumentDeletedRefresher extends AbstractAddRemoveChangeRefresher<EOArgument> {
 		public ArgumentDeletedRefresher() {
@@ -404,6 +406,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	private final Object myCreatePagesLock = new Object();
 
 	private int _failuresHashCode;
+	
+	private DiagramViewPart diagramView;
 
 	public EOModelEditor() {
 		mySelectionChangedListeners = new ListenerList();
@@ -595,6 +599,15 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				myStoredProcedureEditor = new EOArgumentsTableEditor();
 				EOArgumentSelectionChangedListener argumentSelectionChangedListener = new EOArgumentSelectionChangedListener();
 				myStoredProcedureEditor.addSelectionChangedListener(argumentSelectionChangedListener);
+				
+				// XXX: Hier wird ein extra Tab erstellt fürs Diagramm
+
+				diagramView = new DiagramViewPart();
+//				diagramView.setModel(myModel);
+				
+				addPage(diagramView, getEditorInput());
+				setPageText(1,"meinTab");
+//				//diagramView.addSelectionChangedListener(modelSelectionChangedListener);
 
 			} catch (PartInitException e) {
 				ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
@@ -1220,6 +1233,9 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 						getContentOutlinePage().setSelection(selection);
 					}
 					fireSelectionChanged(selection);
+					
+					updateEntitiesTab(selectedObject);
+					updatePartName();
 				}
 			}
 		} finally {
@@ -1329,5 +1345,31 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			partName = Messages.getString("EOModelEditor.partName");
 		}
 		setPartName(partName);
+	}
+	
+	// XXX Hier wird das gewählte Model dem EOmodeller und meinem Tab weitergegeben.
+	private void updateEntitiesTab(Object selectedObject) {
+		
+		if (selectedObject instanceof EOModel) {
+			myModel = (EOModel) selectedObject;
+		} else if (selectedObject instanceof EOEntity) {
+			myModel = ((EOEntity) selectedObject)._getModelParent();
+		} else if (selectedObject instanceof EOAttribute) {
+			myModel = ((EOAttribute) selectedObject).getEntity()._getModelParent();
+		} else if (selectedObject instanceof EORelationship) {
+			myModel = ((EORelationship) selectedObject).getEntity()._getModelParent();
+		} else if (selectedObject instanceof EOFetchSpecification) {
+			myModel = ((EOFetchSpecification) selectedObject).getEntity()._getModelParent();
+		} else if (selectedObject instanceof AbstractEOAttributePath) {
+			myModel = ((AbstractEOAttributePath) selectedObject).getChildIEOAttribute().getEntity()._getModelParent();
+		}else if (selectedObject instanceof EODatabaseConfig) {
+			myModel = ((EODatabaseConfig) selectedObject)._getModelParent();
+			setActivePage(0);
+		}
+		
+		if (myEntitiesTableEditor != null) {
+			myEntitiesTableEditor.setModel(myModel);
+		}
+		diagramView.setModel(myModel);
 	}
 }

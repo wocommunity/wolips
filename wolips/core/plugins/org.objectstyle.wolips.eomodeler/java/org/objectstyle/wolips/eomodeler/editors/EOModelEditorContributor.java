@@ -55,6 +55,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.operations.UndoRedoActionGroup;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 
+import ch.rucotec.wolips.DiagramViewPart;
+
 public class EOModelEditorContributor extends MultiPageEditorActionBarContributor {
 	private IEditorPart _activeEditor;
 
@@ -90,8 +92,13 @@ public class EOModelEditorContributor extends MultiPageEditorActionBarContributo
 		IActionBars actionBars = getActionBars();
 		_clipboardHandler.attach(actionBars, modelEditor);
 		if (modelEditor != null) {
-			UndoRedoActionGroup undoRedoGroup = new UndoRedoActionGroup(editor.getSite(), modelEditor.getUndoContext(), false);
-			undoRedoGroup.fillActionBars(actionBars);
+			// XXX Savas hinzugefügt
+			if (modelEditor.getSelectedPage() instanceof DiagramViewPart) {
+				// Hier sollte noch die undo und redo Funktion eingebunden werden.
+			} else {
+				UndoRedoActionGroup undoRedoGroup = new UndoRedoActionGroup(editor.getSite(), modelEditor.getUndoContext(), false);
+				undoRedoGroup.fillActionBars(actionBars);
+			}
 		}
 	}
 }

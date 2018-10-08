@@ -1,0 +1,9 @@
+[2018-10-08 12:28:06] Executing startup tasks
+[2018-10-08 12:28:06] Java(TM) SE Runtime Environment 1.8.0_112-b16
+[2018-10-08 12:28:06] Product self.product.version
+[2018-10-08 12:28:06] Workspace /Users/celik/WOlips_Development/runtime-EclipseApplication
+[2018-10-08 12:28:06] Bundle org.eclipse.oomph.setup 1.9.0.v20180529-0916, build=3551, branch=5a7202105cdec0e9bc9553799ba330ea58714ce5
+[2018-10-08 12:28:06] Bundle org.eclipse.oomph.setup.core 1.9.0.v20180529-0916, build=3551, branch=5a7202105cdec0e9bc9553799ba330ea58714ce5
+[2018-10-08 12:28:06] Bundle org.eclipse.oomph.setup.p2 1.9.0.v20180529-0916, build=3551, branch=5a7202105cdec0e9bc9553799ba330ea58714ce5
+[2018-10-08 12:28:06] Performing Preference /instance/org.objectstyle.wolips.eomodeler/EntityModelerOpenInWindow = false
+[2018-10-08 12:28:06] 
