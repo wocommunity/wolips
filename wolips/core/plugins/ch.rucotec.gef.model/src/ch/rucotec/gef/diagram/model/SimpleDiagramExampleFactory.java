@@ -74,7 +74,7 @@ public class SimpleDiagramExampleFactory {
 	}
 
 	public SimpleDiagram createErd(Object model) {
-		SimpleDiagram mindMap = new SimpleDiagram();
+		SimpleDiagram myERD = new SimpleDiagram();
 
 		Object[] entitiesObjectArray = ((EOModel) model).getEntities().toArray();
 		Iterator<EOEntity> entityIterator = ((EOModel) model).getEntities().iterator();
@@ -145,7 +145,7 @@ public class SimpleDiagramExampleFactory {
 								conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
 
 								System.out.println("sourceEntity = " + sourceEntity.getName() + " is optional = " + relationship.isOptional() + "[ to Entity = " + relationship.getDestination().getName() + " ]");
-								mindMap.addChildElement(conn);
+								myERD.addChildElement(conn);
 							}
 						}
 					}
@@ -154,9 +154,9 @@ public class SimpleDiagramExampleFactory {
 
 			}
 			// add nodes to mindMap
-			mindMap.addChildElement(node);
+			myERD.addChildElement(node);
 		}
 
-		return mindMap;
+		return myERD;
 	}
 }

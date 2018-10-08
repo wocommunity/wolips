@@ -35,7 +35,7 @@ import javafx.scene.layout.VBox;
  */
 public class SimpleDiagramApplication{
 
-	private SimpleDiagram mindMap;
+	private SimpleDiagram diagram;
 	private EmbeddedWindow primaryStage;
 	private HistoricizingDomain domain;
 	private SimpleDiagramExampleFactory fac = new SimpleDiagramExampleFactory();
@@ -75,13 +75,12 @@ public class SimpleDiagramApplication{
 	 * Creates the example mind map and sets it as content to the viewer.
 	 */
 	private void populateViewerContents() {
-		//SimpleMindMapExampleFactory fac = new SimpleMindMapExampleFactory();
 
-		if (mindMap == null) {
-			mindMap = fac.createSingleNodeExample();
+		if (diagram == null) {
+			diagram = fac.createSingleNodeExample();
 		}
 		IViewer viewer = getContentViewer();
-		viewer.getContents().setAll(mindMap);
+		viewer.getContents().setAll(diagram);
 	}
 
 	public void start(EmbeddedWindow ss) throws Exception {
@@ -206,20 +205,12 @@ public class SimpleDiagramApplication{
 	}
 	
 	public void generateErd(Object _model) {
-		mindMap = fac.createErd(_model);
+		diagram = fac.createErd(_model);
 		populateViewerContents();
 	}
 
 	public IUndoContext getUndoContext() {
 		return domain.getUndoContext();
-	}
-
-	public SimpleDiagram getMindMap() {
-		return mindMap;
-	}
-
-	public void setMindMap(SimpleDiagram mindMap) {
-		this.mindMap = mindMap;
 	}
 	
 }

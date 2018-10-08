@@ -36,7 +36,7 @@ public class SimpleDiagramModule extends MvcFxModule {
 
 	@Override
 	protected void bindIContentPartFactoryAsContentViewerAdapter(MapBinder<AdapterKey<?>, Object> adapterMapBinder) {
-		// bind MindMapPartsFactory adapter to the content viewer
+		// bind DiagramPartsFactory adapter to the content viewer
 		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(DiagramPartsFactory.class);
 	}
 
@@ -44,7 +44,7 @@ public class SimpleDiagramModule extends MvcFxModule {
 	 *
 	 * @param adapterMapBinder
 	 */
-	protected void bindMindMapNodePartAdapters(MapBinder<AdapterKey<?>, Object> adapterMapBinder) {
+	protected void bindDiagramNodePartAdapters(MapBinder<AdapterKey<?>, Object> adapterMapBinder) {
 		// bind anchor provider used to create the connection anchors
 		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(SimpleDiagramAnchorProvider.class);
 
@@ -93,7 +93,7 @@ public class SimpleDiagramModule extends MvcFxModule {
         // start the default configuration
         super.configure();
 
-        bindMindMapNodePartAdapters(AdapterMaps.getAdapterMapBinder(binder(), DiagramNodePart.class));
+        bindDiagramNodePartAdapters(AdapterMaps.getAdapterMapBinder(binder(), DiagramNodePart.class));
 
         // with this binding we create the handles
         bindSquareSegmentHandlePartPartAdapter(

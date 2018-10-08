@@ -5,7 +5,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 /**
- * The SimpleMindMap contains the list of children, be it nodes or connection.
+ * The SimpleDiagram contains the list of children, be it nodes or connection.
  */
 public class SimpleDiagram extends AbstractDiagramItem {
 

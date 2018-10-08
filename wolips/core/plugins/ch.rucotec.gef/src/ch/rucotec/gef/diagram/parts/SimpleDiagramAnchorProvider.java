@@ -37,7 +37,7 @@ public class SimpleDiagramAnchorProvider extends IAdaptable.Bound.Impl<IVisualPa
     @Override
     public IAnchor get() {
         if (anchor == null) {
-            // get the visual from the host (MindMapNodePart)
+            // get the visual from the host (DiagramNodePart)
             Node anchorage = getAdaptable().getVisual();
             // create a new anchor instance
             anchor = new DynamicAnchor(anchorage);

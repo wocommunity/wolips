@@ -5,7 +5,7 @@ import java.beans.PropertyChangeSupport;
 import java.io.Serializable;
 
 /**
- * This class provides the {@link PropertyChangeSupport} for the MindMapitems
+ * This class provides the {@link PropertyChangeSupport} for the Diagramitems
  *
  */
 public class AbstractDiagramItem implements Serializable {
