@@ -2747,4 +2747,8 @@ public class EOEntity extends UserInfoableEOModelObject<EOModel> implements IEOE
 	public int compareTo(EOEntity otherEntity) {
 		return myName.compareTo(otherEntity.getName());
 	}
+	
+	public void setLastModified(EOLastModified _lastModified) {
+		this._lastModified = _lastModified;
+	}
 }

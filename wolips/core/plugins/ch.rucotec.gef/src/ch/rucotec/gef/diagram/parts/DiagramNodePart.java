@@ -8,12 +8,11 @@ import org.eclipse.gef.geometry.planar.Rectangle;
 import org.eclipse.gef.mvc.fx.parts.AbstractContentPart;
 import org.eclipse.gef.mvc.fx.parts.IResizableContentPart;
 import org.eclipse.gef.mvc.fx.parts.ITransformableContentPart;
-import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
-import ch.rucotec.gef.diagram.model.DiagramNode;
 import ch.rucotec.gef.diagram.visuals.DiagramNodeVisual;
+import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Translate;
 
@@ -47,10 +46,11 @@ implements ITransformableContentPart<DiagramNodeVisual>, IResizableContentPart<D
 	protected void doRefreshVisual(DiagramNodeVisual visual) {
 		// updating the visual's texts
 		DiagramNode node = getContent();
+		
 		visual.setTitle(node.getTitle());
 		visual.setDescription(node.getDescription());
 		visual.setColor(node.getColor());
-//		visual.setAttributeList(node.getAttributeList());
+		
 		// use the IResizableContentPart API to resize the visual
 		setVisualSize(getContentSize());
 		

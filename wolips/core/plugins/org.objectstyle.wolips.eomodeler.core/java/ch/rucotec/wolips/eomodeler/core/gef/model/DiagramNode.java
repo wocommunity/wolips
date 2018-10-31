@@ -1,4 +1,4 @@
-package ch.rucotec.gef.diagram.model;
+package ch.rucotec.wolips.eomodeler.core.gef.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,8 +10,10 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 
 import com.google.common.collect.Lists;
 
-import ch.rucotec.gef.diagram.model.AbstractDiagramItem;
-import ch.rucotec.gef.diagram.model.DiagramConnection;
+import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.AbstractEOEntityDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.EOEntityERDiagram;
 import javafx.scene.paint.Color;
 
 public class DiagramNode extends AbstractDiagramItem implements Serializable {
@@ -29,9 +31,21 @@ public class DiagramNode extends AbstractDiagramItem implements Serializable {
     public static final String PROP_OUTGOGING_CONNECTIONS = "outgoingConnections";
     
     // TODO: Savas hinzugefügt
+    
     public static final String PROP_ATTRIBUTELIST = "attributeList";
     private List<EOAttribute> attributeList;
+    private AbstractEOEntityDiagram entityDiagram;
+    private String selectedDiagram;
 
+    public DiagramNode() {
+    }
+    
+    public DiagramNode(AbstractEOEntityDiagram entityDiagram, String selectedDiagram) {
+    	this.entityDiagram = entityDiagram;
+    	this.selectedDiagram = selectedDiagram;
+    }
+    
+    
 //    public void addAttribute(String name) {
 //    	attributeList.add(name);
 //    	pcs.firePropertyChange(PROP_ATTRIBUTELIST, null, name);
@@ -129,6 +143,9 @@ public class DiagramNode extends AbstractDiagramItem implements Serializable {
     }
 
     public void setBounds(Rectangle bounds) {
+    	if (this.bounds != null && entityDiagram != null && !this.bounds.equals(bounds)) { 
+    		((EOEntityERDiagram) entityDiagram).refresh(selectedDiagram, bounds);
+    	}
         pcs.firePropertyChange(PROP_BOUNDS, this.bounds, (this.bounds = bounds.getCopy()));
     }
 

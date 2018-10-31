@@ -9,8 +9,8 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.SetMultimap;
 
-import ch.rucotec.gef.diagram.model.AbstractDiagramItem;
-import ch.rucotec.gef.diagram.model.SimpleDiagram;
+import ch.rucotec.wolips.eomodeler.core.gef.model.AbstractDiagramItem;
+import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
 import javafx.scene.Group;
 import javafx.scene.Node;
 

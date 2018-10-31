@@ -53,12 +53,15 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.velocity.runtime.parser.node.GetExecutor;
 import org.objectstyle.woenvironment.plist.PropertyListParserException;
 import org.objectstyle.woenvironment.plist.WOLPropertyListSerialization;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
@@ -67,6 +70,12 @@ import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityAddedEvent;
 import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityDeletedEvent;
 import org.objectstyle.wolips.eomodeler.core.model.history.ModelEvents;
 import org.objectstyle.wolips.eomodeler.core.utils.NamingConvention;
+
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
+//import ch.rucotec.wolips.eomodeler.core.model.AbstractEOEntityDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramGroup;
+//import ch.rucotec.wolips.eomodeler.core.model.EOEntityERDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.EOEntityERDiagram;
 
 public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements ISortableEOModelObject {
 	public static final String CURRENT_VERSION = "1.0.1";
@@ -144,6 +153,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		myEntities = new HashSet<EOEntity>();
 		myStoredProcedures = new HashSet<EOStoredProcedure>();
 		myDatabaseConfigs = new HashSet<EODatabaseConfig>();
+		// SAVAS myERD und myDeletedERDNames
+		myERDiagramGroup = addBlankERDiagramGroup("ERDiagramGroup");
 		myDeletedEntityNamesInObjectStore = new PropertyListSet<String>();
 		myDeletedEntityNames = new PropertyListSet<String>();
 		myDeletedStoredProcedureNames = new PropertyListSet<String>();
@@ -273,7 +284,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 
 		return entity;
 	}
-
+	
 	public boolean isEditing() {
 		EOModelGroup modelGroup = getModelGroup();
 		boolean editing = (modelGroup == null || getName().equals(modelGroup.getEditingModelName()));
@@ -325,7 +336,31 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			clearCachedPrototypes(null, false);
 		}
 	}
-
+	
+	// SAVAS hinzugefuegt (meiner ist nicht protected weil es nicht im gleichen package ist)
+	
+	public static final String ERDIAGRAMGROUP = "erdiagramGroup";
+	public static final String ERDIAGRAMS = "erdiagrams"; // DELETE THIS
+	private EOERDiagramGroup myERDiagramGroup;
+	
+	public EOERDiagramGroup getERDiagramGroup() {
+		return myERDiagramGroup;
+	}
+	
+	public void _ERDiagramChanged(EOERDiagramGroup _erdiagram, String _propertyName, Object _oldValue, Object _newValue) {
+		firePropertyChange(EOModel.ERDIAGRAMGROUP + "." + _propertyName, _oldValue, _newValue);
+		firePropertyChange(EOModel.ERDIAGRAMGROUP, null, _erdiagram);
+		
+	}
+	
+	public EOERDiagramGroup addBlankERDiagramGroup(String name) {
+		EOERDiagramGroup erdiagram = new EOERDiagramGroup(name);
+		erdiagram._setModel(this);
+		return erdiagram;
+	}
+	
+	// ********************************************************************************
+	
 	public EODatabaseConfig getDatabaseConfigNamed(String _name) {
 		EODatabaseConfig matchingDatabaseConfig = null;
 		Iterator<EODatabaseConfig> databaseConfigsIter = myDatabaseConfigs.iterator();
@@ -859,7 +894,21 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			throw new IllegalArgumentException("Unknown version format:" + version);
 		}
 		loadUserInfo(modelMap);
-
+		
+//		Set<String> erdiagramNames = modelMap.getSet("ERDiagrams"); // SAVAS myERDs werden im index.eomodeld rausgelesen und erstellt.
+//		if (erdiagramNames != null) {
+//			for (String erdiagramName : erdiagramNames) {
+//				EOERDiagramGroup erdiagram = new EOERDiagramGroup();
+//				URL erdiagramURL = new URL(_modelFolder, erdiagramName + ".rucotec");
+//				if (URLUtils.exists(erdiagramURL)) {
+//					erdiagram.loadFromURL(erdiagramURL, _failures);
+////					addERDiagram(erdiagram, false, _failures);
+//				} else {
+//					_failures.add(new EOModelVerificationFailure(this, this, "The stored procedure file " + erdiagramURL + " was missing.", false));
+//				}
+//			}
+//		}
+		
 		Set<Map> entities = modelMap.getSet("entities");
 		if (entities != null) {
 			for (Map entitiesMap : entities) {
@@ -870,6 +919,19 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 				if (URLUtils.exists(entityURL)) {
 					entity.loadFromURL(entityURL, _failures);
 					URL fspecURL = new URL(_modelFolder, entityName + ".fspec");
+					
+					// SAVAS hier werden alle diagramme anhand vom entity erstellt.
+					if (entity._getEntityMap() != null) {
+						List erds = null;
+						if (entity._getEntityMap().get("ERDiagrams") instanceof List) {
+							erds = entity._getEntityMap().getList("ERDiagrams");
+						}
+//						Map erds = entity._getEntityMap().getMap("ERDs");
+						if (erds != null) {
+							myERDiagramGroup.loadDiagramFromEntity(entity, erds);
+						}
+					}
+					
 					if (URLUtils.exists(fspecURL)) {
 						entity.loadFetchSpecsFromURL(fspecURL, _failures);
 					}
@@ -978,6 +1040,16 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 				setActiveDatabaseConfig(activeDatabaseConfig, false);
 			}
 		}
+		
+		// SAVAS Falls es noch keine ERDGruppe gibt erstell eine automatisch.
+//		if (myERDiagrams.size() == 0 && !(this.myName.equals("erprototypes"))) {
+//			this.addBlankERDiagram("newERDiagram");
+//			try {
+//				this.save();
+//			} catch (Exception e) {
+//				System.out.println(e);
+//			}
+//		}
 
 		_lastModified = new EOLastModified(indexURL);
 	}
@@ -1028,6 +1100,13 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			storedProcedures.add(storedProcedure.getName());
 		}
 		modelMap.setSet("storedProcedures", storedProcedures, true);
+		
+		// SAVAS hier werden myERDs inhalt ins index.eomodeld gespeichert.
+//		Set<String> erdiagrams = new PropertyListSet<String>(EOModelMap.asArray(myModelMap.get("ERDiagrams")));
+//		for (EOERDiagramGroup erdiagram : myERDiagrams) {
+//			erdiagrams.add(erdiagram.getName());
+//		}
+//		modelMap.setSet("ERDiagrams", erdiagrams, true);
 
 		EOModelMap entityModelerMap = getEntityModelerMap(true);
 		boolean canConvertDatabaseConfigsToSingleConnectionDictionary = canConvertDatabaseConfigsToSingleConnectionDictionary();
@@ -1194,6 +1273,32 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 					File storedProcedureFile = new File(modelFolder, storedProcedureName + ".storedProcedure");
 					storedProcedure.saveToFile(storedProcedureFile);
 				}
+			}
+			
+			// SAVAS hier werden alle gelöschten die nicht existierenden ERDs ihren File verlieren.
+			
+//			if (myDeletedERDiagramNames != null) {
+//				for (String erdiagramName : myDeletedERDiagramNames) {
+//					if (getERDiagramNamed(erdiagramName) == null) {
+//						File storedProcedureFile = new File(modelFolder, erdiagramName + ".rucotec");
+//						if (storedProcedureFile.exists()) {
+//							storedProcedureFile.delete();
+//						}
+//					}
+//				}
+//			}
+//			
+//			// SAVAS hier wird für jedes ERD ein File erstellt.
+//			for (EOERDiagramGroup erdiagram : myERDiagrams) {
+//				if (erdiagram.isERDiagramDirty()) {
+//					String erdiagramName = erdiagram.getName();
+//					File erdiagramFile = new File(modelFolder, erdiagramName + ".rucotec");
+//					erdiagram.saveToFile(erdiagramFile);
+//				}
+//			}
+			
+			if (myERDiagramGroup.isDiagramGroupDirty()) {
+				myERDiagramGroup.saveToFile(modelFolder);
 			}
 	
 			setDirty(false);

@@ -59,6 +59,8 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractEOAttributePath;
 import org.objectstyle.wolips.eomodeler.core.model.EOArgument;
@@ -74,6 +76,9 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.core.model.IEOAttribute;
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
+
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramGroup;
 
 public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvider, IColorProvider {
 	private TreeViewer _treeViewer;
@@ -135,6 +140,10 @@ public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvide
 			image = Activator.getDefault().getImageRegistry().get(Activator.EODATABASECONFIG_ICON);
 		} else if (element instanceof EOEntityIndex) {
 			image = Activator.getDefault().getImageRegistry().get(Activator.EOENTITYINDEX_ICON);
+		} else if (element instanceof EOERDiagramGroup) { // SAVAS das Image für EOERD
+			image = Activator.getDefault().getImageRegistry().get(Activator.EOSTOREDPROCEDURE_ICON);
+		} else if (element instanceof EOERDiagram) {
+			image = Activator.getDefault().getImageRegistry().get(Activator.EORELATIONSHIP_ICON);
 		} else {
 			image = null;
 		}
@@ -181,6 +190,12 @@ public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvide
 		} else if (_element instanceof EOEntityIndex) {
 			EOEntityIndex entityIndex = (EOEntityIndex) _element;
 			text = entityIndex.getName();
+		} else if (_element instanceof EOERDiagramGroup){ // SAVAS Name im TreeView, die sich im Outline befindet
+			EOERDiagramGroup erdGroup = (EOERDiagramGroup) _element;
+			text = erdGroup.getName();
+		} else if (_element instanceof EOERDiagram){
+			EOERDiagram erd = (EOERDiagram) _element;
+			text = erd.getName();
 		} else {
 			text = null;
 		}

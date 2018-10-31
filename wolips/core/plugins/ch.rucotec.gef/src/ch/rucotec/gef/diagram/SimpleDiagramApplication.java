@@ -1,5 +1,7 @@
 package ch.rucotec.gef.diagram;
 
+import java.util.ArrayList;
+
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.gef.common.adapt.AdapterKey;
@@ -11,19 +13,19 @@ import org.eclipse.gef.mvc.fx.viewer.IViewer;
 import com.google.inject.Guice;
 import com.sun.javafx.stage.EmbeddedWindow;
 
-import ch.rucotec.gef.diagram.model.SimpleDiagram;
-import ch.rucotec.gef.diagram.model.SimpleDiagramExampleFactory;
 import ch.rucotec.gef.diagram.models.ItemCreationModel;
 import ch.rucotec.gef.diagram.models.ItemCreationModel.Type;
 import ch.rucotec.gef.diagram.visuals.DiagramNodeVisual;
-import javafx.event.EventHandler;
+import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
+import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagramExampleFactory;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramGroup;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -77,15 +79,16 @@ public class SimpleDiagramApplication{
 	private void populateViewerContents() {
 
 		if (diagram == null) {
-			diagram = fac.createSingleNodeExample();
+//			diagram = fac.createSingleNodeExample();
+			diagram = new SimpleDiagram();
 		}
 		IViewer viewer = getContentViewer();
 		viewer.getContents().setAll(diagram);
 	}
 
-	public void start(EmbeddedWindow ss) throws Exception {
+	public void start(EmbeddedWindow stage) throws Exception {
 		SimpleDiagramModule module = new SimpleDiagramModule();
-		this.primaryStage = ss;
+		this.primaryStage = stage;
 		// create domain using guice
 		this.domain = (HistoricizingDomain) Guice.createInjector(module).getInstance(IDomain.class);
 
@@ -101,8 +104,8 @@ public class SimpleDiagramApplication{
 		// set-up stage
 //		primaryStage.setResizable(true);
 //		primaryStage.setTitle("GEF Simple Mindmap");
-		ss.sizeToScene();
-		ss.show();
+		primaryStage.sizeToScene();
+		primaryStage.show();
 	}
 
 	/**
@@ -169,7 +172,7 @@ public class SimpleDiagramApplication{
 	private Node createToolPalette() {
 		ItemCreationModel creationModel = getContentViewer().getAdapter(ItemCreationModel.class);
 
-		DiagramNodeVisual graphic = new DiagramNodeVisual();
+		DiagramNodeVisual graphic = new DiagramNodeVisual(new ArrayList<>());
 		graphic.setTitle("New Node");
 
 		// the toggleGroup makes sure, we only select one 
@@ -207,6 +210,13 @@ public class SimpleDiagramApplication{
 	public void generateErd(Object _model) {
 		diagram = fac.createErd(_model);
 		populateViewerContents();
+	}
+	
+	public void generateDiagram(Object selectedDiagram) {
+		if (selectedDiagram instanceof EOERDiagram) {
+			diagram = ((EOERDiagram) selectedDiagram).drawDiagram();
+		}
+		populateViewerContents(); // Refresh content
 	}
 
 	public IUndoContext getUndoContext() {

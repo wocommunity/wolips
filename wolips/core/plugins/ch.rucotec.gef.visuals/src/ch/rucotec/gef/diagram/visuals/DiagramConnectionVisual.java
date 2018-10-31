@@ -7,7 +7,7 @@ import org.eclipse.gef.fx.nodes.IConnectionRouter;
 import org.eclipse.gef.fx.nodes.OrthogonalRouter;
 import org.eclipse.gef.fx.nodes.StraightRouter;
 
-import ch.rucotec.gef.diagram.model.DiagramConnection;
+import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramConnection;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
@@ -27,104 +27,70 @@ public class DiagramConnectionVisual extends Connection {
     private StraightRouter straightRouter = new StraightRouter();
     private OrthogonalRouter orthogonalRouter = new OrthogonalRouter();
     private boolean orthogonal = true;
-    private Text toOne;
-    private Text toMany;
+    private Text targetCardinality;
+    private Text sourceCardinality;
     
     public DiagramConnectionVisual() {
         ArrowHead endDecoration = new ArrowHead();
-        
+
         endDecoration.setFill(Color.BLACK);
-//        Text TODO
-        List<String> list = Font.getFamilies();
-        
-        Text toOne =  new Text("||");
-        toOne.setFont(new Font(list.get(184),23));
-        toOne.setTranslateY(toOne.getTranslateY()-13);
-        toOne.setTranslateX(toOne.getTranslateX()+5);
-        
-        Text toMany =  new Text(">|");
-        fontnumber = 0;
-        // 33, 
-        toMany.setFont(new Font(list.get(184),23));
-        toMany.setOnMouseClicked( e-> {
-        	fontnumber++;
-        	toMany.setFont(new Font(list.get(fontnumber),23));
-        	System.out.println(list.get(fontnumber) + " " + fontnumber);
-        	orthogonal = !orthogonal;
-        	setRouter(getRouter(orthogonal));
-        });
-        
-        toMany.setTranslateY(toMany.getTranslateY()-15);
-        
-        
-        HBox hboxStart = new HBox();
-        hboxStart.getChildren().addAll(toOne);
-        
-        HBox hboxEnd = new HBox();
-        hboxEnd.getChildren().addAll(toMany);
-        
-        setStartDecoration(hboxStart);
-        setEndDecoration(hboxEnd);
-        setRouter(getRouter(orthogonal));
-        
+        setEndDecoration(endDecoration);
     }
     
-    public void temp() {
+    public DiagramConnectionVisual(int sourceToTargetCardinality, int targetToSourceCardinality) {
+    	if (sourceToTargetCardinality == (DiagramConnection.TOMANY | DiagramConnection.OPTIONAL)) {
+    		sourceCardinality =  new Text(">O");
+    	} else if (sourceToTargetCardinality == DiagramConnection.TOMANY) {
+    		sourceCardinality =  new Text(">|");
+    	} else if (sourceToTargetCardinality == (DiagramConnection.TOONE | DiagramConnection.OPTIONAL)) {
+    		sourceCardinality =  new Text("|O");
+    	} else if (sourceToTargetCardinality == DiagramConnection.TOONE) {
+    		sourceCardinality =  new Text("||");
+    	}
+    	
+    	if (targetToSourceCardinality == (DiagramConnection.TOMANY | DiagramConnection.OPTIONAL)) {
+    		targetCardinality =  new Text(">O");
+    	} else if (targetToSourceCardinality == DiagramConnection.TOMANY) {
+    		targetCardinality =  new Text(">|");
+    	} else if (targetToSourceCardinality == (DiagramConnection.TOONE | DiagramConnection.OPTIONAL)) {
+    		targetCardinality =  new Text("|O");
+    	} else if (targetToSourceCardinality == DiagramConnection.TOONE) {
+    		targetCardinality =  new Text("||");
+    	}
+    	
+    	addCardinalities();
+    }
+    
+    private void addCardinalities() {
     	 List<String> list = Font.getFamilies();
          
-//       Text toOne =  new Text("||");
-       toOne.setFont(new Font(list.get(184),23));
-       toOne.setTranslateY(toOne.getTranslateY()-13);
-       toOne.setTranslateX(toOne.getTranslateX()+5);
+       targetCardinality.setFont(new Font(list.get(184),23));
+       targetCardinality.setTranslateY(targetCardinality.getTranslateY()-13);
+       targetCardinality.setTranslateX(targetCardinality.getTranslateX()+5);
        
-//       Text toMany =  new Text(">|");
        fontnumber = 0;
        // 33, 
-       toMany.setFont(new Font(list.get(184),23));
-       toMany.setOnMouseClicked( e-> {
+       sourceCardinality.setFont(new Font(list.get(184),23));
+       sourceCardinality.setOnMouseClicked( e-> {
        	fontnumber++;
-       	toMany.setFont(new Font(list.get(fontnumber),23));
+       	sourceCardinality.setFont(new Font(list.get(fontnumber),23));
        	System.out.println(list.get(fontnumber) + " " + fontnumber);
        	orthogonal = !orthogonal;
        	setRouter(getRouter(orthogonal));
        });
        
-       toMany.setTranslateY(toMany.getTranslateY()-15);
+       sourceCardinality.setTranslateY(sourceCardinality.getTranslateY()-15);
        
        
        HBox hboxStart = new HBox();
-       hboxStart.getChildren().addAll(toOne);
+       hboxStart.getChildren().addAll(targetCardinality);
        
        HBox hboxEnd = new HBox();
-       hboxEnd.getChildren().addAll(toMany);
+       hboxEnd.getChildren().addAll(sourceCardinality);
        
        setStartDecoration(hboxStart);
        setEndDecoration(hboxEnd);
        setRouter(getRouter(orthogonal));
-    }
-    
-    public DiagramConnectionVisual(int sourceToTargetCardinality, int targetToSourceCardinality) {
-        if (sourceToTargetCardinality == (DiagramConnection.TOMANY | DiagramConnection.OPTIONAL)) {
-        	toMany =  new Text(">O");
-        } else if (sourceToTargetCardinality == DiagramConnection.TOMANY) {
-        	toMany =  new Text(">|");
-        } else if (sourceToTargetCardinality == (DiagramConnection.TOONE | DiagramConnection.OPTIONAL)) {
-        	toMany =  new Text("|O");
-        } else if (sourceToTargetCardinality == DiagramConnection.TOONE) {
-        	toMany =  new Text("||");
-        }
-        
-        if (targetToSourceCardinality == (DiagramConnection.TOMANY | DiagramConnection.OPTIONAL)) {
-        	toOne =  new Text(">O");
-        } else if (targetToSourceCardinality == DiagramConnection.TOMANY) {
-        	toOne =  new Text(">|");
-        } else if (targetToSourceCardinality == (DiagramConnection.TOONE | DiagramConnection.OPTIONAL)) {
-        	toOne =  new Text("|O");
-        } else if (targetToSourceCardinality == DiagramConnection.TOONE) {
-        	toOne =  new Text("||");
-        }
-        
-        temp();
     }
     
     public IConnectionRouter getRouter(boolean isOrthogonal) {

@@ -14,8 +14,8 @@ import com.google.common.collect.SetMultimap;
 import com.google.common.reflect.TypeToken;
 import com.google.inject.Provider;
 
-import ch.rucotec.gef.diagram.model.DiagramConnection;
 import ch.rucotec.gef.diagram.visuals.DiagramConnectionVisual;
+import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramConnection;
 import javafx.scene.Node;
 
 /**

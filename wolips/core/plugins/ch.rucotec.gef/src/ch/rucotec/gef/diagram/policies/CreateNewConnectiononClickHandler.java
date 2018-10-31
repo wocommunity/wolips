@@ -18,11 +18,11 @@ import org.eclipse.gef.mvc.fx.viewer.IViewer;
 import com.google.common.collect.HashMultimap;
 import com.google.common.reflect.TypeToken;
 
-import ch.rucotec.gef.diagram.model.DiagramConnection;
 import ch.rucotec.gef.diagram.models.ItemCreationModel;
 import ch.rucotec.gef.diagram.models.ItemCreationModel.Type;
 import ch.rucotec.gef.diagram.parts.DiagramNodePart;
 import ch.rucotec.gef.diagram.parts.SimpleDiagramPart;
+import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramConnection;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 

@@ -71,6 +71,9 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramGroup;
+
 public class EOModelOutlineContentProvider implements ITreeContentProvider {
 	private Object _modelContainer;
 
@@ -144,6 +147,8 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 			if (_showDatabaseConfigs) {
 				modelChildren.addAll(model.getDatabaseConfigs());
 			}
+			modelChildren.add(model.getERDiagramGroup()); // SAVAS ERD wird im Outline dem TreeView als children hinzugefuegt (TreeView befindet sich im OutlineView)
+			
 			children = modelChildren.toArray();
 		} else if (_parentElement instanceof EOEntity) {
 			EOEntity entity = (EOEntity) _parentElement;
@@ -187,6 +192,11 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 			Set<EOArgument> arguments = new TreeSet<EOArgument>(new EOSortableEOModelObjectComparator());
 			arguments.addAll(storedProcedure.getArguments());
 			children = arguments.toArray();
+		} else if (_parentElement instanceof EOERDiagramGroup) { // SAVAS Erdiagramme werden unterhalb vom ERDGroup angezeigt.
+			EOERDiagramGroup erdiagramGroup = (EOERDiagramGroup) _parentElement;
+			Set<EOERDiagram> erdiagrams = new TreeSet<EOERDiagram>(new EOSortableEOModelObjectComparator());
+			erdiagrams.addAll(erdiagramGroup.getDiagrams());
+			children = erdiagrams.toArray();
 		} else {
 			children = new Object[0];
 		}
@@ -234,6 +244,8 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 			}
 		} else if (_element instanceof EOEntityIndex) {
 			parent = ((EOEntityIndex) _element).getEntity();
+		} else if (_element instanceof EOERDiagramGroup) { // SAVAS der parent von EOERD wird gespeichert
+			parent = ((EOERDiagramGroup) _element).getModel();
 		} else {
 			parent = null;
 		}

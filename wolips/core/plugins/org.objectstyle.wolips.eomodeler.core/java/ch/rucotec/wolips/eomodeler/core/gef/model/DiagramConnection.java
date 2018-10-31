@@ -1,7 +1,4 @@
-package ch.rucotec.gef.diagram.model;
-
-import ch.rucotec.gef.diagram.model.AbstractDiagramItem;
-import ch.rucotec.gef.diagram.model.DiagramNode;
+package ch.rucotec.wolips.eomodeler.core.gef.model;
 
 public class DiagramConnection extends AbstractDiagramItem {
 	

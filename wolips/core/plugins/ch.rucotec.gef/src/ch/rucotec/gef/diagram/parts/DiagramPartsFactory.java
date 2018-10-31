@@ -8,9 +8,9 @@ import org.eclipse.gef.mvc.fx.parts.IContentPartFactory;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
-import ch.rucotec.gef.diagram.model.DiagramConnection;
-import ch.rucotec.gef.diagram.model.DiagramNode;
-import ch.rucotec.gef.diagram.model.SimpleDiagram;
+import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramConnection;
+import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
+import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
 import javafx.scene.Node;
 
 /**

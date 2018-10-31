@@ -30,6 +30,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -47,10 +48,9 @@ public class DiagramNodeVisual extends Region {
     private GeometryNode<Rectangle> shape;
     private VBox labelVBox;
     
-    //TODO: Savas hinzugefügt
+    //SAVAS: Das hier muss noch angepasst werden
     private List<EOAttribute> attributeList;
     private GridPane gridPane = new GridPane();
-    private ArrayList<HashMap<String, Label>> lblAttribute = new ArrayList<>();
     private Label lblAttributeName;
     private Label lblAttributePrivateKey;
     private Label lblAttributeClassProperty;
@@ -63,45 +63,43 @@ public class DiagramNodeVisual extends Region {
 		this.attributeList = attributeList;
 		for (int i = 0; i < attributeList.size(); i++) {
 			EOAttribute attribute = attributeList.get(i);
-			//data.add(new TableAttribute(attribute));
-			HashMap<String, Label> attributeProperties = null;
+			HashMap<String, Label> attributeValuesAsLabels = null;
+
+			attributeValuesAsLabels = new HashMap<String, Label>();
+			lblAttributeName = new Label(attribute.getName());
+			lblAttributeName.setPadding(new Insets(0, 0, 0, 10));
 			
-			if (lblAttribute.size() <= i) {
-				attributeProperties = new HashMap<String, Label>();
-				lblAttributeName = new Label(attribute.getName());
-				lblAttributeName.setPadding(new Insets(0, 0, 0, 10));
-				
 //				lblAttributePrivateKey = new Label(attribute.isPrimaryKey() ? "Yes" : "");
 //				lblAttributeClassProperty = new Label(attribute.isClassProperty() ? "Yes" : "");
 //				lblAttributeLocking = new Label(attribute.isUsedForLocking() ? "Yes" : "");
-				if (attribute.isPrimaryKey()) {
+			if (attribute.isPrimaryKey()) {
 //					lblAttributeName.setFont(new Font("System Bold", lblAttributeName.getFont().getSize()));
-					lblAttributeName.setUnderline(true);
-				} else {
-					lblAttributeName.setUnderline(false);
-				}
-				
-				if (attribute.isAllowsNull() != null) {
-					lblAttributeAllowsNull = new Label(attribute.isAllowsNull() ? "O" : "Ø");
-				} else {
-					lblAttributeAllowsNull = new Label("Ø");
-				}
-				
-				attributeProperties.put("attributeName", lblAttributeName);
-				attributeProperties.put("attributePrivateKey", lblAttributePrivateKey);
-				attributeProperties.put("attributeClassProperty", lblAttributeClassProperty);
-				attributeProperties.put("attributeLocking", lblAttributeLocking);
-				attributeProperties.put("attributeAllowsNull", lblAttributeAllowsNull);
-				
-				lblAttribute.add(attributeProperties);
+				lblAttributeName.setUnderline(true);
+			} else {
+				lblAttributeName.setUnderline(false);
 			}
 			
+			if (attribute.isAllowsNull() != null) {
+				lblAttributeAllowsNull = new Label(attribute.isAllowsNull() ? "O" : "Ø");
+			} else {
+				lblAttributeAllowsNull = new Label("Ø");
+			}
+			
+			attributeValuesAsLabels.put("attributeName", lblAttributeName);
+			attributeValuesAsLabels.put("attributePrivateKey", lblAttributePrivateKey);
+			attributeValuesAsLabels.put("attributeClassProperty", lblAttributeClassProperty);
+			attributeValuesAsLabels.put("attributeLocking", lblAttributeLocking);
+			attributeValuesAsLabels.put("attributeAllowsNull", lblAttributeAllowsNull);
+			
+			gridPane.add(attributeValuesAsLabels.get("attributeName"), 0, i+1);
+			gridPane.add(attributeValuesAsLabels.get("attributeAllowsNull"), 1, i+1);
+		
 //			} else if((gridPane.getChildren().size()- (i*2)) <= lblAttribute.size()) {
-				gridPane.add(lblAttribute.get(i).get("attributeName"), 0, i+1);
+//				gridPane.add(lblAttribute.get(i).get("attributeName"), 0, i+1);
 //				gridPane.add(lblAttribute.get(i).get("attributePrivateKey"), 1, i+1);
 //				gridPane.add(lblAttribute.get(i).get("attributeClassProperty"), 2, i+1);
 //				gridPane.add(lblAttribute.get(i).get("attributeLocking"), 3, i+1);
-				gridPane.add(lblAttribute.get(i).get("attributeAllowsNull"), 1, i+1);
+//				gridPane.add(lblAttribute.get(i).get("attributeAllowsNull"), 1, i+1);
 //			} 
 		}
 	}
@@ -110,61 +108,62 @@ public class DiagramNodeVisual extends Region {
 		return attributeList;
 	}
 
-	public DiagramNodeVisual() {
-        // create background shape
-//        shape = new GeometryNode<>(new RoundedRectangle(0, 0, 70, 30, 8, 8));
-        shape.setFill(Color.LIGHTGREEN);
-        shape.setStroke(Color.BLACK);
-
-        // create vertical box for title and description
-        labelVBox = new VBox(VERTICAL_SPACING);
-        labelVBox.setPadding(new Insets(VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING));
-
-        // ensure shape and labels are resized to fit this visual
-        shape.prefWidthProperty().bind(widthProperty());
-        shape.prefHeightProperty().bind(heightProperty());
-        labelVBox.prefWidthProperty().bind(widthProperty());
-        labelVBox.prefHeightProperty().bind(heightProperty());
-
-        // create title text
-        titleText = new Text();
-        titleText.setTextOrigin(VPos.TOP);
-
-        // create description text
-        descriptionText = new Text();
-        descriptionText.setTextOrigin(VPos.TOP);
-
-        // use TextFlow to enable wrapping of the description text within the
-        // label bounds
-        descriptionFlow = new TextFlow(descriptionText);
-        // only constrain the width, so that the height is computed in
-        // dependence on the width
-        descriptionFlow.maxWidthProperty().bind(shape.widthProperty().subtract(HORIZONTAL_PADDING * 2));
-
-        // vertically lay out title and description
-        labelVBox.getChildren().addAll(titleText, descriptionFlow);
-
-        // ensure title is always visible (see also #computeMinWidth(double) and
-        // #computeMinHeight(double) methods)
-        setMinSize(USE_COMPUTED_SIZE, USE_COMPUTED_SIZE);
-
-        // wrap shape and VBox in Groups so that their bounds-in-parent is
-        // considered when determining the layout-bounds of this visual
-        getChildren().addAll(new Group(shape), new Group(labelVBox));
-    }
+//	public DiagramNodeVisual() {
+//        // create background shape
+////        shape = new GeometryNode<>(new RoundedRectangle(0, 0, 70, 30, 8, 8));
+//        shape.setFill(Color.LIGHTGREEN);
+//        shape.setStroke(Color.BLACK);
+//
+//        // create vertical box for title and description
+//        labelVBox = new VBox(VERTICAL_SPACING);
+//        labelVBox.setPadding(new Insets(VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING));
+//
+//        // ensure shape and labels are resized to fit this visual
+//        shape.prefWidthProperty().bind(widthProperty());
+//        shape.prefHeightProperty().bind(heightProperty());
+//        labelVBox.prefWidthProperty().bind(widthProperty());
+//        labelVBox.prefHeightProperty().bind(heightProperty());
+//
+//        // create title text
+//        titleText = new Text();
+//        titleText.setTextOrigin(VPos.TOP);
+//
+//        // create description text
+//        descriptionText = new Text();
+//        descriptionText.setTextOrigin(VPos.TOP);
+//
+//        // use TextFlow to enable wrapping of the description text within the
+//        // label bounds
+//        descriptionFlow = new TextFlow(descriptionText);
+//        // only constrain the width, so that the height is computed in
+//        // dependence on the width
+//        descriptionFlow.maxWidthProperty().bind(shape.widthProperty().subtract(HORIZONTAL_PADDING * 2));
+//
+//        // vertically lay out title and description
+//        labelVBox.getChildren().addAll(titleText, descriptionFlow);
+//
+//        // ensure title is always visible (see also #computeMinWidth(double) and
+//        // #computeMinHeight(double) methods)
+//        setMinSize(USE_COMPUTED_SIZE, USE_COMPUTED_SIZE);
+//
+//        // wrap shape and VBox in Groups so that their bounds-in-parent is
+//        // considered when determining the layout-bounds of this visual
+//        getChildren().addAll(new Group(shape), new Group(labelVBox));
+//    }
     
     public DiagramNodeVisual(List<EOAttribute> attributeList) {
     	// create background shape
         shape = new GeometryNode<>(new Rectangle(0, 0, 70, 30));
         shape.setFill(Color.LIGHTGREEN);
         shape.setStroke(Color.BLACK);
+        shape.setStrokeType(StrokeType.INSIDE);
         
         // create vertical box for title and description
         labelVBox = new VBox(VERTICAL_SPACING);
         labelVBox.setPadding(new Insets(VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING));
 
-        // TODO
-//        labelVBox.setOnMouseReleased(e -> {System.gc(); System.out.println("realeased");});
+        // TODO Savas activate GC
+        labelVBox.setOnMouseReleased(e -> {System.gc();});
         ColumnConstraints colmn = new ColumnConstraints();
         colmn.setHgrow(Priority.SOMETIMES);
         colmn.setMinWidth(100);
@@ -179,10 +178,6 @@ public class DiagramNodeVisual extends Region {
         // ensure shape and labels are resized to fit this visual
         shape.prefWidthProperty().bind(widthProperty());
         shape.prefHeightProperty().bind(heightProperty());
-        gridPane.prefWidthProperty().bind(widthProperty());
-        gridPane.prefHeightProperty().bind(heightProperty());
-        
-        
         labelVBox.prefWidthProperty().bind(widthProperty());
         labelVBox.prefHeightProperty().bind(heightProperty());
 
@@ -241,7 +236,7 @@ public class DiagramNodeVisual extends Region {
     		minWidth = new Double(0);
     		gridPane.getColumnConstraints().forEach(e -> minWidth += e.getPrefWidth());
     	}
-        return Math.max(minWidth+52,titleText.getLayoutBounds().getWidth() + HORIZONTAL_PADDING * 2);
+        return Math.max(minWidth+52, titleText.getLayoutBounds().getWidth() + HORIZONTAL_PADDING * 2);
     }
 
     @Override

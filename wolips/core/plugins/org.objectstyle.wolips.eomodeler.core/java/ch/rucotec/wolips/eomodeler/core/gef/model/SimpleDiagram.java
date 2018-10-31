@@ -1,10 +1,8 @@
-package ch.rucotec.gef.diagram.model;
+package ch.rucotec.wolips.eomodeler.core.gef.model;
 
 import java.util.List;
 
 import com.google.common.collect.Lists;
-
-import ch.rucotec.gef.diagram.model.AbstractDiagramItem;
 
 /**
  * The SimpleDiagram contains the list of children, be it nodes or connection.

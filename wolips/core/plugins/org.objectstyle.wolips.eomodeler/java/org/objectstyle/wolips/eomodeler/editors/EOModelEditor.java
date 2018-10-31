@@ -85,6 +85,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -135,7 +136,11 @@ import org.objectstyle.wolips.eomodeler.preferences.PreferenceConstants;
 import org.objectstyle.wolips.eomodeler.utils.AbstractAddRemoveChangeRefresher;
 import org.objectstyle.wolips.eomodeler.utils.EclipseFileUtils;
 
-import ch.rucotec.wolips.DiagramViewPart;
+import ch.rucotec.wolips.eomodeler.DiagramTab;
+import ch.rucotec.wolips.eomodeler.actions.NewERDiagramGroupAction_IS_NOT_USED;
+import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramGroup;
 
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener, ITabbedPropertySheetPageContributor, ISelectionProvider, IEOModelEditor {
 	protected class ArgumentDeletedRefresher extends AbstractAddRemoveChangeRefresher<EOArgument> {
@@ -350,12 +355,38 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
 		}
 	}
+	
+	// SAVAS sobald ein neues ERD erstellt wird, ist das neue ERD selektiert im Outline Tab
+	protected class ERDsChangeRefresher extends AbstractAddRemoveChangeRefresher<EOERDiagramGroup> {
+		public ERDsChangeRefresher() {
+			super("ERDiagramsChange");
+		}
+
+		public void changeSelection(final ISelection selection) {
+			EOModelEditor.this.setSelection(selection);
+			EOModelEditor.this.setActivePage(1);
+		}
+
+		@Override
+		protected void objectsAdded(List<EOERDiagramGroup> _addedObjects) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		protected void objectsRemoved(List<EOERDiagramGroup> _removedObjects) {
+			// TODO Auto-generated method stub
+			
+		}
+	}
 
 	public static final String EOMODEL_EDITOR_ID = "org.objectstyle.wolips.eomodeler.editors.EOModelEditor";
 
 	public static final String EOMODEL_PAGE = "eomodel";
 
 	public static final String EOENTITY_PAGE = "eoentity";
+	
+	public static final String EOERD_PAGE = "eoerd";
 
 	public static final String EOSTOREDPROCEDURE_PAGE = "eostoredprocedure";
 
@@ -380,6 +411,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	private final EntityIndexesChangeRefresher myEntityIndexesChangeListener;
 
 	private final StoredProceduresChangeRefresher myStoredProceduresChangeListener;
+	
+	private final ERDsChangeRefresher myERDsChangeRefresher;
 
 	private final DatabaseConfigsChangeRefresher myDatabaseConfigsChangeListener;
 
@@ -407,7 +440,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 	private int _failuresHashCode;
 	
-	private DiagramViewPart diagramView;
+	private DiagramTab diagramTab;
 
 	public EOModelEditor() {
 		mySelectionChangedListeners = new ListenerList();
@@ -416,6 +449,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		myFetchSpecsChangeListener = new FetchSpecsChangeRefresher();
 		myEntityIndexesChangeListener = new EntityIndexesChangeRefresher();
 		myStoredProceduresChangeListener = new StoredProceduresChangeRefresher();
+		myERDsChangeRefresher = new ERDsChangeRefresher();
 		myDatabaseConfigsChangeListener = new DatabaseConfigsChangeRefresher();
 		myAttributeAndRelationshipListener = new AttributeAndRelationshipDeletedRefresher();
 		myArgumentListener = new ArgumentDeletedRefresher();
@@ -458,6 +492,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				myModel.removePropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
 				myStoredProceduresChangeListener.stop();
 				myModel.removePropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProceduresChangeListener);
+				myERDsChangeRefresher.stop();
+				myModel.removePropertyChangeListener(EOModel.ERDIAGRAMGROUP, myERDsChangeRefresher);
 				myDatabaseConfigsChangeListener.stop();
 				myModel.removePropertyChangeListener(EOModel.DATABASE_CONFIGS, myDatabaseConfigsChangeListener);
 				myFetchSpecsChangeListener.stop();
@@ -511,6 +547,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				model.addPropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
 				myStoredProceduresChangeListener.start();
 				model.addPropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProceduresChangeListener);
+				myERDsChangeRefresher.start();
+				model.addPropertyChangeListener(EOModel.ERDIAGRAMS, myERDsChangeRefresher);
 				myDatabaseConfigsChangeListener.start();
 				model.addPropertyChangeListener(EOModel.DATABASE_CONFIGS, myDatabaseConfigsChangeListener);
 				myFetchSpecsChangeListener.start();
@@ -600,12 +638,12 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				EOArgumentSelectionChangedListener argumentSelectionChangedListener = new EOArgumentSelectionChangedListener();
 				myStoredProcedureEditor.addSelectionChangedListener(argumentSelectionChangedListener);
 				
-				// XXX: Hier wird ein extra Tab erstellt fürs Diagramm
+				// SAVAS: Hier wird ein extra Tab erstellt fürs Diagramm
 
-				diagramView = new DiagramViewPart();
+				diagramTab = new DiagramTab();
 //				diagramView.setModel(myModel);
 				
-				addPage(diagramView, getEditorInput());
+				addPage(diagramTab, getEditorInput());
 				setPageText(1,"meinTab");
 //				//diagramView.addSelectionChangedListener(modelSelectionChangedListener);
 
@@ -621,6 +659,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 		myEntitiesChangeListener.stop();
 		myStoredProceduresChangeListener.stop();
+		myERDsChangeRefresher.stop();
 		myDatabaseConfigsChangeListener.stop();
 		myFetchSpecsChangeListener.stop();
 		myEntityIndexesChangeListener.stop();
@@ -1193,7 +1232,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 					} else if (selectedObject instanceof EOEntity) {
 						EOEntity selectedEntity = (EOEntity) selectedObject;
 						setSelectedEntity(selectedEntity);
-						// setActivePage(EOModelEditor.EOENTITY_PAGE);
+//						 setActivePage(EOModelEditor.EOENTITY_PAGE);
 					} else if (selectedObject instanceof EOAttribute) {
 						EOAttribute selectedAttribute = (EOAttribute) selectedObject;
 						setSelectedEntity(selectedAttribute.getEntity());
@@ -1228,6 +1267,15 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 						// (EODatabaseConfig) selectedObject;
 						setSelectedEntity(null);
 						setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
+					} else if (selectedObject instanceof EOERDiagramGroup) { // SAVAS selection handle
+//						setSelectedEntity(null);
+//						setSelectedStoredProcedure(null);
+//						setActivePage(1);
+					} else if (selectedObject instanceof AbstractDiagram) {
+						diagramTab.setSelectedDiagram(selectedObject);
+						setSelectedEntity(null);
+						setSelectedStoredProcedure(null);
+						setActivePage(1);
 					}
 					if (_updateOutline) {
 						getContentOutlinePage().setSelection(selection);
@@ -1347,7 +1395,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		setPartName(partName);
 	}
 	
-	// XXX Hier wird das gewählte Model dem EOmodeller und meinem Tab weitergegeben.
+	// SAVAS Hier wird das gewählte Model dem EOmodeller und meinem Tab weitergegeben.
 	private void updateEntitiesTab(Object selectedObject) {
 		
 		if (selectedObject instanceof EOModel) {
@@ -1364,12 +1412,27 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			myModel = ((AbstractEOAttributePath) selectedObject).getChildIEOAttribute().getEntity()._getModelParent();
 		}else if (selectedObject instanceof EODatabaseConfig) {
 			myModel = ((EODatabaseConfig) selectedObject)._getModelParent();
-			setActivePage(0);
+//			setActivePage(0);
 		}
 		
-		if (myEntitiesTableEditor != null) {
+		else if (selectedObject instanceof EOERDiagramGroup) {
+//			EOERDiagramGroup erdiagram = ((EOERDiagramGroup) selectedObject);
+//			diagramView.setSelectedDiagram(erdiagram);
+		} else if (selectedObject instanceof AbstractDiagram) {
+//			diagramTab.setSelectedDiagram(selectedObject);
+//			setSelectedEntity(null);
+//			setSelectedStoredProcedure(null);
+//			setActivePage(1);
+		} else {
+			diagramTab.setSelectedDiagram(null);
+		}
+		
+		// Erneuert die Entitäten Tabele (wird gebraucht, wenn man mehrere Models hat)
+		if (myEntitiesTableEditor != null) { 
 			myEntitiesTableEditor.setModel(myModel);
 		}
-		diagramView.setModel(myModel);
+		
+		
+//		diagramView.setModel(myModel);
 	}
 }

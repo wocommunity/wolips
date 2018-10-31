@@ -1,4 +1,4 @@
-package ch.rucotec.wolips;
+package ch.rucotec.wolips.eomodeler;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
@@ -13,13 +13,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 
-public class DiagramViewPart extends MyFXViewPart implements ISelectionProvider {
+public class DiagramTab extends MyFXViewPart implements ISelectionProvider {
 
 	@Override
 	protected Scene createFxScene() {
 		AnchorPane pane = new AnchorPane();
 		Scene myScene = new Scene(pane);
-		Label lblError = new Label("There was an error while generating the diagram for "/* + getModel().getName()*/);
+		Label lblError = new Label("There was a problem while generating the diagram");
 		pane.getChildren().add(lblError);
 		return myScene;
 	}
@@ -55,8 +55,7 @@ public class DiagramViewPart extends MyFXViewPart implements ISelectionProvider 
 
 	@Override
 	public boolean isSaveAsAllowed() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
@@ -76,7 +75,6 @@ public class DiagramViewPart extends MyFXViewPart implements ISelectionProvider 
 
 	public void setSelection(ISelection selection) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

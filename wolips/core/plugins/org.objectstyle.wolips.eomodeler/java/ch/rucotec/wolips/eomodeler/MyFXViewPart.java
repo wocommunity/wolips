@@ -1,4 +1,4 @@
-package ch.rucotec.wolips;
+package ch.rucotec.wolips.eomodeler;
 
 import java.lang.reflect.Field;
 
@@ -10,6 +10,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import com.sun.javafx.stage.EmbeddedWindow;
 
 import ch.rucotec.gef.diagram.SimpleDiagramApplication;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramGroup;
 import javafx.embed.swt.FXCanvas;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -26,11 +27,11 @@ public abstract class MyFXViewPart extends EditorPart {
 
 		try {
 			Class canvasClass = Class.forName("javafx.embed.swt.FXCanvas");
-			Field stage = canvasClass.getDeclaredField("stage");
-			stage.setAccessible(true);
-			EmbeddedWindow ss = (EmbeddedWindow) stage.get(canvas);
+			Field stageField = canvasClass.getDeclaredField("stage");
+			stageField.setAccessible(true);
+			EmbeddedWindow stage = (EmbeddedWindow) stageField.get(canvas);
 			gefApplication = new SimpleDiagramApplication();
-			gefApplication.start(ss);
+			gefApplication.start(stage);
 
 		} catch (Exception e) {
 			System.err.println("Error in MyFXViewPart: " + e.getCause());
@@ -57,6 +58,10 @@ public abstract class MyFXViewPart extends EditorPart {
 	public void setModel(EOModel _model) {
 		myModel = _model;
 		gefApplication.generateErd(myModel);
+	}
+	
+	public void setSelectedDiagram (Object selectedDiagram) {
+		gefApplication.generateDiagram(selectedDiagram);
 	}
 	
 	public EOModel getModel() {

@@ -8,10 +8,13 @@ Require-Bundle: org.eclipse.ui.views.properties.tabbed,
  org.objectstyle.wolips.baseforuiplugins,
  org.objectstyle.wolips.thirdparty.commonscollections,
  org.objectstyle.wolips.thirdparty.velocity,
- org.objectstyle.wolips.woproject
+ org.objectstyle.wolips.woproject,
+ org.eclipse.gef.geometry;bundle-version="5.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: objectstyle.org
-Export-Package: org.objectstyle.wolips.eomodeler.core,
+Export-Package: ch.rucotec.wolips.eomodeler.core.gef.model,
+ ch.rucotec.wolips.eomodeler.core.model,
+ org.objectstyle.wolips.eomodeler.core,
  org.objectstyle.wolips.eomodeler.core.kvc,
  org.objectstyle.wolips.eomodeler.core.model,
  org.objectstyle.wolips.eomodeler.core.model.history,
@@ -21,3 +24,4 @@ Export-Package: org.objectstyle.wolips.eomodeler.core,
 Bundle-ClassPath: .,
  lib/EOFSQLUtils.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: com.google.common.collect

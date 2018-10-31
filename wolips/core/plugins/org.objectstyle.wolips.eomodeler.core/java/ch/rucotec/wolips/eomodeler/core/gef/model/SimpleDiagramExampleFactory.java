@@ -1,10 +1,9 @@
-package ch.rucotec.gef.diagram.model;
+package ch.rucotec.wolips.eomodeler.core.gef.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.gef.geometry.planar.Rectangle;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
@@ -12,10 +11,6 @@ import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 
-import ch.rucotec.gef.diagram.model.DiagramConnection;
-import ch.rucotec.gef.diagram.model.DiagramNode;
-import ch.rucotec.gef.diagram.model.SimpleDiagram;
-import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
 import javafx.scene.paint.Color;
 
 public class SimpleDiagramExampleFactory {
@@ -64,13 +59,12 @@ public class SimpleDiagramExampleFactory {
 
 	public SimpleDiagram createSingleNodeExample() {
 		SimpleDiagram mindMap = new SimpleDiagram();
+
 		DiagramNode center = new DiagramNode();
-		
 		List<EOAttribute> attributeList = new ArrayList<EOAttribute>();
 		center.setAttributeList(attributeList);
-		
 		center.setTitle("Test Entity");
-		center.setDescription("Das hier ist ein test Entity");
+		center.setDescription("Das Hier ist ein test Entity");
 		center.setColor(Color.GREENYELLOW);
 		center.setBounds(new Rectangle(20, 50, WIDTH, 100));
 
@@ -78,41 +72,11 @@ public class SimpleDiagramExampleFactory {
 
 		return mindMap;
 	}
-	
-//	public SimpleDiagram testERD (EOERDiagram erdiagram) {
-//		SimpleDiagram myERD = new SimpleDiagram();
-//		DiagramNode entityNode = null;
-//		HashMap<String, DiagramNode> entityNodeMap = new HashMap<String, DiagramNode>();
-//		
-//		Iterator<EOEntityERDiagram> entityERDIterator = erdiagram.getDiagramEntities().iterator();
-//		while (entityERDIterator.hasNext()) {
-//			EOEntityERDiagram entityERD = entityERDIterator.next();
-//			entityNode = new DiagramNode();
-//			List<EOAttribute> attributeList = new ArrayList<EOAttribute>();
-//			List<EORelationship> relationshipsList = new ArrayList<EORelationship>();
-//			relationshipsList.addAll(entityERD.getEntity().getRelationships());
-//			
-//			Iterator<EOAttribute> attributeIterator = entityERD.getEntity().getAttributes().iterator();
-//			while (attributeIterator.hasNext()) {
-//				EOAttribute attribute = attributeIterator.next();
-//				attributeList.add(attribute);
-//			}
-//
-//			entityNode.setAttributeList(attributeList);
-//			entityNode.setRelationshipsList(relationshipsList);
-//			entityNode.setTitle(entityERD.getEntity().getExternalName());
-//			entityNode.setDescription("Beschreibung");
-//			entityNode.setColor(Color.AZURE);
-//			entityNode.setBounds(new Rectangle(erdiagram.getDiagramEntities().get(0).getDiagramDimensionForKey(erdiagram.getName()).getxPos(), 50, WIDTH, 100));
-//			entityNodeMap.put(entityERD.getEntity().getName(), entityNode);
-//		}
-//		myERD.addChildElement(entityNode);
-//		return myERD;
-//	}
 
 	public SimpleDiagram createErd(Object model) {
 		SimpleDiagram myERD = new SimpleDiagram();
 
+		Object[] entitiesObjectArray = ((EOModel) model).getEntities().toArray();
 		Iterator<EOEntity> entityIterator = ((EOModel) model).getEntities().iterator();
 
 		DiagramNode center = null;
@@ -126,27 +90,6 @@ public class SimpleDiagramExampleFactory {
 			List<EORelationship> relationshipsList = new ArrayList<EORelationship>();
 			//	NotificationMap<Object, Object> userInfo = new NotificationMap<>();
 			//	entity.setUserInfo(userInfo);
-			
-			//SAVAS Delete this
-//			Map erds = entity._getEntityMap().getMap("ERDs");
-//			
-//			if (erds != null) {
-//				Iterator<?> erdKeyIterator = erds.keySet().iterator();
-//				while (erdKeyIterator.hasNext()) {
-//					String erdName = String.valueOf(erdKeyIterator.next());
-//					Object erdProperties = erds.get(erdName);
-//					if (erdProperties instanceof Map) {
-//						int xPos = Integer.parseInt(((String)((Map) erdProperties).get("xPos")));
-//						int yPos = Integer.parseInt(((String)((Map) erdProperties).get("yPos")));
-//						int width = Integer.parseInt(((String)((Map) erdProperties).get("width")));
-//						int height = Integer.parseInt(((String)((Map) erdProperties).get("height")));
-//						
-////						DiagramDimension erdDimension = new DiagramDimension(xPos, yPos, width, height);
-//						System.err.println(xPos);
-//					}
-//				}
-//			}
-			
 			relationshipsList.addAll(entity.getRelationships());
 
 			Iterator<EOAttribute> attributeIterator = entity.getAttributes().iterator();
@@ -198,8 +141,10 @@ public class SimpleDiagramExampleFactory {
 							if (!manyToManyConnection) {
 								DiagramConnection conn = new DiagramConnection();
 								conn.connect(node, entityNodeMap.get(relationship.getDestination().getName()));
+
 								conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
 
+								System.out.println("sourceEntity = " + sourceEntity.getName() + " is optional = " + relationship.isOptional() + "[ to Entity = " + relationship.getDestination().getName() + " ]");
 								myERD.addChildElement(conn);
 							}
 						}

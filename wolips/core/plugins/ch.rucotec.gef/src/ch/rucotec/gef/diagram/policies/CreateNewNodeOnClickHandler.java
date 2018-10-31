@@ -12,10 +12,10 @@ import org.eclipse.gef.mvc.fx.viewer.IViewer;
 import com.google.common.collect.HashMultimap;
 import com.google.common.reflect.TypeToken;
 
-import ch.rucotec.gef.diagram.model.DiagramNode;
 import ch.rucotec.gef.diagram.models.ItemCreationModel;
 import ch.rucotec.gef.diagram.models.ItemCreationModel.Type;
 import ch.rucotec.gef.diagram.parts.SimpleDiagramPart;
+import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;

@@ -73,6 +73,9 @@
          <propertyCategory
                category="eoentityIndex">
          </propertyCategory>
+         <propertyCategory
+               category="eoerd">
+         </propertyCategory>
       </propertyContributor>
    </extension>
    <extension
@@ -247,6 +250,11 @@
                category="eoentityIndex"
                id="org.objectstyle.wolips.eomodeler.tabs.eoentityIndexDocs"
                label="Docs">
+         </propertyTab>
+         <propertyTab
+               category="eoerd"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoerdBasic"
+               label="Basic">
          </propertyTab>
       </propertyTabs>
    </extension>
@@ -495,6 +503,13 @@
                tab="org.objectstyle.wolips.eomodeler.tabs.eoentityIndexDocs">
             <input type="org.objectstyle.wolips.eomodeler.core.model.EOEntityIndex"/>
          </propertySection>
+         <propertySection
+               class="ch.rucotec.wolips.eomodeler.editors.eoerd.EOERDBasicEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eoerdBasic"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoerdBasic">
+            <input type="ch.rucotec.wolips.eomodeler.core.model.EOERD"/>
+         </propertySection>
       </propertySections>
    </extension>
    <extension
@@ -689,6 +704,19 @@
                id="org.objectstyle.wolips.eomodeler.outline.popup.delete"
                label="Delete"
                menubarPath="group4"/>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.objectstyle.wolips.eomodeler.outline.eoerdiagramgroup"
+            objectClass="ch.rucotec.wolips.eomodeler.core.model.EOERDiagramGroup">
+         <action
+               class="ch.rucotec.wolips.eomodeler.actions.NewERDiagram"
+               enablesFor="1"
+               icon="icons/reverseEngineer.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.NewERDiagram"
+               label="New ERDiagram"
+               menubarPath="group1">
+         </action>
       </objectContribution>
    </extension>
    <extension

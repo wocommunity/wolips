@@ -16,6 +16,10 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelReferenceFailure;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.core.model.IEOEntityRelative;
 
+import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagramGroup;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
+
 public class EOModelUtils {
 	public static String getOperationLabel(String operation, List objs) {
 		StringBuffer operationLabel = new StringBuffer();
@@ -113,6 +117,14 @@ public class EOModelUtils {
 				relatedObj = obj;
 			} else if (obj instanceof EOArgument) {
 				relatedObj = ((EOArgument) obj).getStoredProcedure();
+			} else {
+				relatedObj = null;
+			}
+		} else if (AbstractDiagramGroup.class.isAssignableFrom(type)) { //SAVAS somit weiss der Selector zu wem das selektierte objekt gehoert (wird beim contextmenu vom DiagramGroup gebraucht).
+			if (obj instanceof AbstractDiagramGroup) {
+				relatedObj = obj;
+			} else if (obj instanceof AbstractDiagram) {
+				relatedObj = ((AbstractDiagram) obj)._getModelParent(); 
 			} else {
 				relatedObj = null;
 			}
