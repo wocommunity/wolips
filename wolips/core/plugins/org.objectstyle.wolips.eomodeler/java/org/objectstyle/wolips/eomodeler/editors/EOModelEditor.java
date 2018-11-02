@@ -640,7 +640,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				
 				// SAVAS: Hier wird ein extra Tab erstellt fürs Diagramm
 
-				diagramTab = new DiagramTab();
+				diagramTab = DiagramTab.getInstance();
 //				diagramView.setModel(myModel);
 				
 				addPage(diagramTab, getEditorInput());
@@ -1410,20 +1410,13 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			myModel = ((EOFetchSpecification) selectedObject).getEntity()._getModelParent();
 		} else if (selectedObject instanceof AbstractEOAttributePath) {
 			myModel = ((AbstractEOAttributePath) selectedObject).getChildIEOAttribute().getEntity()._getModelParent();
-		}else if (selectedObject instanceof EODatabaseConfig) {
+		} else if (selectedObject instanceof EODatabaseConfig) {
 			myModel = ((EODatabaseConfig) selectedObject)._getModelParent();
 //			setActivePage(0);
-		}
-		
-		else if (selectedObject instanceof EOERDiagramGroup) {
-//			EOERDiagramGroup erdiagram = ((EOERDiagramGroup) selectedObject);
-//			diagramView.setSelectedDiagram(erdiagram);
+		} else if (selectedObject instanceof EOERDiagramGroup) {
+			myModel = ((EOERDiagramGroup) selectedObject)._getModelParent();
 		} else if (selectedObject instanceof AbstractDiagram) {
-//			diagramTab.setSelectedDiagram(selectedObject);
-//			setSelectedEntity(null);
-//			setSelectedStoredProcedure(null);
-//			setActivePage(1);
-		} else {
+			myModel = ((AbstractDiagram) selectedObject).getDiagramGroup().getModel();
 			diagramTab.setSelectedDiagram(null);
 		}
 		

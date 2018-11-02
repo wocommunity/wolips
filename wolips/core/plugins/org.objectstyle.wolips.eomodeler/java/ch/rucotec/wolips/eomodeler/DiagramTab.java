@@ -14,6 +14,18 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 
 public class DiagramTab extends MyFXViewPart implements ISelectionProvider {
+	
+	private static DiagramTab instance; 
+
+	private DiagramTab() {
+	}
+	
+	public static DiagramTab getInstance() {
+		if (instance == null) {
+			instance = new DiagramTab();
+		}
+		return instance;
+	}
 
 	@Override
 	protected Scene createFxScene() {

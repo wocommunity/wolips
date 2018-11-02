@@ -2,6 +2,7 @@ package ch.rucotec.wolips.eomodeler.core.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -21,10 +22,12 @@ public abstract class AbstractDiagram<T extends AbstractDiagramGroup> extends Us
 	private String myName;
 	private Set<EOEntity> myEntities;
 	private Set<AbstractEOEntityDiagram> myDiagramEntities;
+	private Set<AbstractEOEntityDiagram> myDeletedDiagramEntities;
 	private T myDiagramGroup;
 	
 	public AbstractDiagram() {
 		myDiagramEntities = new LinkedHashSet<AbstractEOEntityDiagram>();
+		myDeletedDiagramEntities = new LinkedHashSet<AbstractEOEntityDiagram>();
 		myEntities = new LinkedHashSet<EOEntity>();
 	}
 	
@@ -36,14 +39,31 @@ public abstract class AbstractDiagram<T extends AbstractDiagramGroup> extends Us
 	public abstract void addEntityDiagram(EOEntity entity);
 	
 	public void addEntityDiagram(AbstractEOEntityDiagram entityDiagram) {
+		if (myDeletedDiagramEntities.contains(entityDiagram)) {
+			myDeletedDiagramEntities.remove(entityDiagram);
+		}
 		myDiagramEntities.add(entityDiagram);
+	}
+	
+	public AbstractEOEntityDiagram getEntityDiagramWithEntity(EOEntity entity) {
+		AbstractEOEntityDiagram foundEntityDiagram = null;
+		for (AbstractDiagram diagram : (Set<AbstractDiagram>)myDiagramGroup.getDiagrams()) {
+			for (AbstractEOEntityDiagram entityDiagram : (Set<AbstractEOEntityDiagram>)diagram.getDiagramEntities()) {
+				if (entityDiagram.getEntity() == entity) {
+					foundEntityDiagram = entityDiagram;
+				}
+			}
+		}
+		return foundEntityDiagram;
 	}
 	
 	public void removeEntityDiagram(EOEntity entity) {
 		for (AbstractEOEntityDiagram entityDiagram : myDiagramEntities) {
 			if (entity == entityDiagram.getEntity()) {
+				myDeletedDiagramEntities.add(entityDiagram);
 				myEntities.remove(entity);
 				myDiagramEntities.remove(entityDiagram);
+				break;
 			}
 		}
 	}
@@ -55,6 +75,14 @@ public abstract class AbstractDiagram<T extends AbstractDiagramGroup> extends Us
 	protected abstract AbstractDiagram createDiagram(String name);
 	
 	public void saveToFile(File modelFolder) throws PropertyListParserException, IOException {
+		Iterator<AbstractEOEntityDiagram> deletedEntityDiagramIterator = myDeletedDiagramEntities.iterator();
+		while (deletedEntityDiagramIterator.hasNext()) {
+			AbstractEOEntityDiagram deletedEntityDiagram = deletedEntityDiagramIterator.next();
+			deletedEntityDiagram.removeFromEntityPlist(this.getName());
+			deletedEntityDiagram.saveToFile(modelFolder);
+			myDiagramEntities.remove(deletedEntityDiagram);
+		}
+		
 		for (AbstractEOEntityDiagram entityDiagram : myDiagramEntities) {
 			entityDiagram.saveToFile(modelFolder);
 		}
@@ -100,8 +128,10 @@ public abstract class AbstractDiagram<T extends AbstractDiagramGroup> extends Us
 		myDiagramGroup = diagramGroup;
 	}
 	
-	
-	
+	public T getDiagramGroup() {
+		return myDiagramGroup;
+	}
+
 	@Override
 	public String getName() {
 		return myName;

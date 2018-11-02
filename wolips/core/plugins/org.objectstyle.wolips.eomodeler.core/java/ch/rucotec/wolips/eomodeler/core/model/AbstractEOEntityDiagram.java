@@ -25,6 +25,7 @@ public abstract class AbstractEOEntityDiagram {
 	private EOEntity myEntity;
 	private HashMap<String, EOEntityDiagramDimension> myDiagramDimensions;
 	private AbstractDiagramGroup myGroup;
+	private String mySelectedDiagramName;
 	
 	public AbstractEOEntityDiagram(EOEntity entity, AbstractDiagramGroup group) {
 		myEntity = entity;
@@ -78,10 +79,15 @@ public abstract class AbstractEOEntityDiagram {
 		String entityName = entity.getName();
 		File entityFile = new File(modelFolder, entityName + ".plist");
 		EOModelMap entityMap = entity.toEntityMap();
+		System.out.println();
 		EOModelMap entityMapWithDiagrams = toMap(entityMap);
 		WOLPropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, entityFile, entityMapWithDiagrams);
 		
 		myEntity.setLastModified(new EOLastModified(entityFile));
+	}
+	
+	public void removeFromEntityPlist(String selectedDiagramName) {
+		getDiagramDimensions().remove(selectedDiagramName);
 	}
 	
 	public abstract EOModelMap toMap(EOModelMap entityMap);
@@ -106,5 +112,12 @@ public abstract class AbstractEOEntityDiagram {
 	public HashMap<String, EOEntityDiagramDimension> getDiagramDimensions() {
 		return myDiagramDimensions;
 	}
-	
+
+	public String getSelectedDiagramName() {
+		return mySelectedDiagramName;
+	}
+
+	public void setSelectedDiagramName(String mySelectedDiagramName) {
+		this.mySelectedDiagramName = mySelectedDiagramName;
+	}
 }

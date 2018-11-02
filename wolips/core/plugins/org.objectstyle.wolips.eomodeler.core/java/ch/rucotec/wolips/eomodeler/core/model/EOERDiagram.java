@@ -25,11 +25,13 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramGroup>{
 	
 	@Override
 	public void addEntityDiagram(EOEntity entity) {
-		EOEntityERDiagram entityERDiagram = new EOEntityERDiagram(entity, _getModelParent());
+		EOEntityERDiagram entityERDiagram = (EOEntityERDiagram) getEntityDiagramWithEntity(entity);
+		if (entityERDiagram == null) {
+			entityERDiagram = new EOEntityERDiagram(entity, _getModelParent());
+		}
 		EOEntityDiagramDimension dimension = new EOEntityDiagramDimension(100, 100, 100, 100);
 		entityERDiagram.getDiagramDimensions().put(getName(), dimension);
 		super.addEntityDiagram(entityERDiagram);
-		drawDiagram();
 	}
 	
 	@Override

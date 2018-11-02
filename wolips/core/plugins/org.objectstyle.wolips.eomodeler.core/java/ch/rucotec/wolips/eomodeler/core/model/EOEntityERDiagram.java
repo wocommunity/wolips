@@ -29,6 +29,7 @@ public class EOEntityERDiagram extends AbstractEOEntityDiagram{
 	@Override
 	public EOModelMap toMap(EOModelMap entityMap) {
 		EOModelMap entityMapWithDiagrams = entityMap;
+		entityMapWithDiagrams.remove("ERDiagrams");
 		List<Map> diagrams = new LinkedList<Map>();
 		HashMap<String, EOEntityDiagramDimension> diagramDimensions = getDiagramDimensions();
 		Iterator<String> diagramIterator = diagramDimensions.keySet().iterator();
@@ -46,9 +47,27 @@ public class EOEntityERDiagram extends AbstractEOEntityDiagram{
 		entityMapWithDiagrams.setList("ERDiagrams", diagrams, true);
 		return entityMapWithDiagrams;
 	}
+	
+//	@Override
+//	public EOModelMap removeFromEntityPlist(EOModelMap entityMap) {
+////		EOModelMap entityMapWithoutDiagrams = entityMap;
+////		List diagramList = entityMapWithoutDiagrams.getList("ERDiagrams");
+////		for (int index = 0; index < diagramList.size(); index++) {
+////			Object digram = diagramList.get(index);
+////			if (digram instanceof Map) {
+////				Map diagramMap = (Map)digram;
+////				String diagramName = (String)diagramMap.get("diagramName");
+////				if (diagramName.equals(getSelectedDiagramName())) {
+////					
+////				}
+////			}
+////		}
+//		getDiagramDimensions().remove(getSelectedDiagramName());
+//	}
 
 	@Override
 	public DiagramNode draw(String selectedDiagramName) {
+		setSelectedDiagramName(selectedDiagramName);
 		DiagramNode entityNode = new DiagramNode(this, selectedDiagramName);
 		List<EOAttribute> attributeList = new ArrayList<EOAttribute>();
 		List<EORelationship> relationshipsList = new ArrayList<EORelationship>();

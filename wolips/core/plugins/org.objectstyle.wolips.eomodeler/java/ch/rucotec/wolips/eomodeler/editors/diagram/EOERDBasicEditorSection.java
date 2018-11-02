@@ -1,6 +1,7 @@
 package ch.rucotec.wolips.eomodeler.editors.diagram;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
@@ -24,10 +25,12 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.utils.FormUtils;
 import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
+import ch.rucotec.wolips.eomodeler.DiagramTab;
 import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
 import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramGroup;
 
@@ -39,6 +42,7 @@ public class EOERDBasicEditorSection extends AbstractPropertySection {
 	
 	
 	private AbstractDiagram myDiagram;
+	private EOModel myCurrentModel;
 	
 	private Text myNameText;
 	
@@ -46,7 +50,7 @@ public class EOERDBasicEditorSection extends AbstractPropertySection {
 	
 	private Composite parent;
 	
-	private ArrayList<Button> buttons = new ArrayList<Button>();
+	private ArrayList<Button> checkBoxes = new ArrayList<Button>();
 	
 	//---------------------------------------------------------------------------
 	// ### Construction
@@ -73,9 +77,9 @@ public class EOERDBasicEditorSection extends AbstractPropertySection {
 		getWidgetFactory().createCLabel(_parent, "Diagram Name", SWT.NONE);
 		myNameText = new Text(_parent, SWT.BORDER);
 //		GridData nameFieldLayoutData = new GridData(GridData.FILL);
-//		myNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 0));
+		myNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 0));
 //		myNameText.setLayoutData(nameFieldLayoutData);
-//		UglyFocusHackWorkaroundListener.addListener(myNameText);
+		UglyFocusHackWorkaroundListener.addListener(myNameText);
 		
 		
 //		Button entity = new Button(_parent, SWT.CHECK);
@@ -84,41 +88,54 @@ public class EOERDBasicEditorSection extends AbstractPropertySection {
 	}
 	
 	private void createEntityCheckBoxes() {
-		// die alten Checkboxen werden geloescht.
-		for (Button b : buttons) {
-			b.dispose();
-			buttons.clear();
+		if (myCurrentModel == null) {
+			myCurrentModel = myDiagram._getModelParent().getModel();
+		} else if (myCurrentModel != myDiagram._getModelParent().getModel()) {
+			// die alten Checkboxen werden geloescht.
+			for (Button b : checkBoxes) {
+				b.dispose();
+			}
+			checkBoxes.clear();
+			myCurrentModel = myDiagram._getModelParent().getModel();
 		}
 		
 		// fuer jedes entity im EOModel wird ein Checkbox mit einem listener hinzugefuegt.
-		for (EOEntity entity : myDiagram._getModelParent().getModel().getEntities()) {
-			if (myDiagram._getModelParent().getModel() == entity.getModel()) {
-				final EOEntity hh = entity;
-				Button entity1 = new Button(parent, SWT.CHECK);
-				entity1.setText(entity.getName());
-				buttons.add(entity1);
-				if (myDiagram.getEntities().contains(entity)) {
-					entity1.setSelection(true);
+		Iterator<EOEntity> entityIterator = myCurrentModel.getEntities().iterator();
+		while (entityIterator.hasNext()) {
+			final EOEntity entity = entityIterator.next();
+			Button entityCheckBox = null;
+			for (Button checkbox : checkBoxes) {
+				if (entity.getName().equals(checkbox.getText())) {
+					entityCheckBox = checkbox;
+					break;
 				}
-				entity1.addSelectionListener(new SelectionAdapter() {
-	
-			        @Override
-			        public void widgetSelected(SelectionEvent event) {
-			            Button btn = (Button) event.getSource();
-			        	if (btn.getSelection()) {
-			        		myDiagram.addEntityDiagram(hh);
-			        		myDiagram._getModelParent().setModelDirty(true);
-			        	} else if (!btn.getSelection()) {
-			        		myDiagram.removeEntityDiagram(hh);
-			        	}
-			        }
-			    });
 			}
+			
+			if (entityCheckBox == null) {
+				entityCheckBox = new Button(parent, SWT.CHECK);
+				entityCheckBox.setText(entity.getName());
+				checkBoxes.add(entityCheckBox);
+			}
+			if (myDiagram.getEntities().contains(entity)) {
+				entityCheckBox.setSelection(true);
+			} else {
+				entityCheckBox.setSelection(false);
+			}
+			entityCheckBox.addSelectionListener(new SelectionAdapter() {
+
+		        @Override
+		        public void widgetSelected(SelectionEvent event) {
+		            Button btn = (Button) event.getSource();
+		        	if (btn.getSelection()) {
+		        		myDiagram.addEntityDiagram(entity);
+		        	} else if (!btn.getSelection()) {
+		        		myDiagram.removeEntityDiagram(entity);
+		        	}
+		        	DiagramTab.getInstance().setSelectedDiagram(myDiagram);
+		        	myDiagram._getModelParent().setModelDirty(true);
+		        }
+		    });
 		}
-//		Button entity = new Button(parent, SWT.CHECK);
-//		if (myDiagram != null) {
-//			entity.setText(myDiagram.getName());
-//		}
 	}
 	
 	/**
@@ -139,7 +156,7 @@ public class EOERDBasicEditorSection extends AbstractPropertySection {
 		myDiagram = (AbstractDiagram) selectedObject;
 		if (myDiagram != null) {
 			myBindingContext = new DataBindingContext();
-			myBindingContext.bindValue(SWTObservables.observeText(myNameText, SWT.Modify), BeansObservables.observeValue(myDiagram, EOERDiagramGroup.NAME), null, null);
+			myBindingContext.bindValue(SWTObservables.observeText(myNameText, SWT.Modify), BeansObservables.observeValue(myDiagram, AbstractDiagram.NAME), null, null);
 			createEntityCheckBoxes();
 		}
 	}
