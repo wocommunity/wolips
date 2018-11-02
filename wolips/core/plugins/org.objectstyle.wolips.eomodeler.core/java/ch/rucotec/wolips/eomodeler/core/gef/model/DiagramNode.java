@@ -144,7 +144,7 @@ public class DiagramNode extends AbstractDiagramItem implements Serializable {
 
     public void setBounds(Rectangle bounds) {
     	if (this.bounds != null && entityDiagram != null && !this.bounds.equals(bounds)) { 
-    		((EOEntityERDiagram) entityDiagram).refresh(selectedDiagram, bounds);
+    		((EOEntityERDiagram) entityDiagram).positionsChanged(selectedDiagram, bounds);
     	}
         pcs.firePropertyChange(PROP_BOUNDS, this.bounds, (this.bounds = bounds.getCopy()));
     }

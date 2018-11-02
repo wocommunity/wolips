@@ -74,7 +74,7 @@
                category="eoentityIndex">
          </propertyCategory>
          <propertyCategory
-               category="eoerd">
+               category="diagram">
          </propertyCategory>
       </propertyContributor>
    </extension>
@@ -252,8 +252,8 @@
                label="Docs">
          </propertyTab>
          <propertyTab
-               category="eoerd"
-               id="org.objectstyle.wolips.eomodeler.tabs.eoerdBasic"
+               category="diagram"
+               id="org.objectstyle.wolips.eomodeler.tabs.diagramBasic"
                label="Basic">
          </propertyTab>
       </propertyTabs>
@@ -504,11 +504,11 @@
             <input type="org.objectstyle.wolips.eomodeler.core.model.EOEntityIndex"/>
          </propertySection>
          <propertySection
-               class="ch.rucotec.wolips.eomodeler.editors.eoerd.EOERDBasicEditorSection"
+               class="ch.rucotec.wolips.eomodeler.editors.diagram.EOERDBasicEditorSection"
                enablesFor="1"
-               id="org.objectstyle.wolips.eomodeler.sections.eoerdBasic"
-               tab="org.objectstyle.wolips.eomodeler.tabs.eoerdBasic">
-            <input type="ch.rucotec.wolips.eomodeler.core.model.EOERD"/>
+               id="org.objectstyle.wolips.eomodeler.sections.diagramBasic"
+               tab="org.objectstyle.wolips.eomodeler.tabs.diagramBasic">
+            <input type="ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram"/>
          </propertySection>
       </propertySections>
    </extension>

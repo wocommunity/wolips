@@ -22,6 +22,10 @@ public class EOEntityERDiagram extends AbstractEOEntityDiagram{
 		super(entity, diagramList, group);
 	}
 	
+	public EOEntityERDiagram(EOEntity entity, AbstractDiagramGroup group) {  
+		super(entity, group);
+	}
+	
 	@Override
 	public EOModelMap toMap(EOModelMap entityMap) {
 		EOModelMap entityMapWithDiagrams = entityMap;
@@ -55,7 +59,7 @@ public class EOEntityERDiagram extends AbstractEOEntityDiagram{
 			EOAttribute attribute = attributeIterator.next();
 			attributeList.add(attribute);
 		}
-
+		
 		double xPos = getDiagramDimensionForKey(selectedDiagramName).getxPos();
 		double yPos = getDiagramDimensionForKey(selectedDiagramName).getyPos();
 		double width = getDiagramDimensionForKey(selectedDiagramName).getWidth();

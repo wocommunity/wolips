@@ -33,8 +33,19 @@ public abstract class AbstractDiagram<T extends AbstractDiagramGroup> extends Us
 		myName = name;
 	}
 	
+	public abstract void addEntityDiagram(EOEntity entity);
+	
 	public void addEntityDiagram(AbstractEOEntityDiagram entityDiagram) {
 		myDiagramEntities.add(entityDiagram);
+	}
+	
+	public void removeEntityDiagram(EOEntity entity) {
+		for (AbstractEOEntityDiagram entityDiagram : myDiagramEntities) {
+			if (entity == entityDiagram.getEntity()) {
+				myEntities.remove(entity);
+				myDiagramEntities.remove(entityDiagram);
+			}
+		}
 	}
 	
 	public Set<AbstractEOEntityDiagram> getDiagramEntities() {
@@ -88,6 +99,8 @@ public abstract class AbstractDiagram<T extends AbstractDiagramGroup> extends Us
 	public void _setModelParent(T diagramGroup) {
 		myDiagramGroup = diagramGroup;
 	}
+	
+	
 	
 	@Override
 	public String getName() {

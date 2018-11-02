@@ -24,6 +24,15 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramGroup>{
 	}
 	
 	@Override
+	public void addEntityDiagram(EOEntity entity) {
+		EOEntityERDiagram entityERDiagram = new EOEntityERDiagram(entity, _getModelParent());
+		EOEntityDiagramDimension dimension = new EOEntityDiagramDimension(100, 100, 100, 100);
+		entityERDiagram.getDiagramDimensions().put(getName(), dimension);
+		super.addEntityDiagram(entityERDiagram);
+		drawDiagram();
+	}
+	
+	@Override
 	protected AbstractDiagram createDiagram(String name) {
 		return new EOERDiagram(name);
 	}
@@ -85,6 +94,7 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramGroup>{
 		modelParent.addERDiagram(this);
 	}
 	
+	// Drawings
 	public SimpleDiagram drawDiagram () {
 	SimpleDiagram myERD = new SimpleDiagram();
 	HashMap<String, DiagramNode> entityNodeMap = new HashMap<String, DiagramNode>();

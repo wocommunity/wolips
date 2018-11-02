@@ -23,13 +23,17 @@ import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
 public abstract class AbstractEOEntityDiagram {
 	
 	private EOEntity myEntity;
-	private EOModelMap myEntityMap;
 	private HashMap<String, EOEntityDiagramDimension> myDiagramDimensions;
-	private EOERDiagramGroup myGroup;
+	private AbstractDiagramGroup myGroup;
 	
-	public AbstractEOEntityDiagram(EOEntity entity, List diagramList, EOERDiagramGroup group) {
+	public AbstractEOEntityDiagram(EOEntity entity, AbstractDiagramGroup group) {
 		myEntity = entity;
-		myEntityMap = entity._getEntityMap();
+		myDiagramDimensions = new HashMap<String, EOEntityDiagramDimension>();
+		myGroup = group;
+	}
+	
+	public AbstractEOEntityDiagram(EOEntity entity, List diagramList, AbstractDiagramGroup group) {
+		myEntity = entity;
 		myDiagramDimensions = new HashMap<String, EOEntityDiagramDimension>();
 		myGroup = group;
 		
@@ -82,7 +86,7 @@ public abstract class AbstractEOEntityDiagram {
 	
 	public abstract EOModelMap toMap(EOModelMap entityMap);
 	
-	public void refresh(String selectedDiagramName, Rectangle dimension) {
+	public void positionsChanged(String selectedDiagramName, Rectangle dimension) {
 		EOEntityDiagramDimension entityDimension = getDiagramDimensionForKey(selectedDiagramName);
 		entityDimension.setxPos(dimension.getX());
 		entityDimension.setyPos(dimension.getY());
@@ -93,10 +97,6 @@ public abstract class AbstractEOEntityDiagram {
 	
 	public EOEntity getEntity() {
 		return myEntity;
-	}
-
-	public EOModelMap getEntityMap() {
-		return myEntityMap;
 	}
 
 	public EOEntityDiagramDimension getDiagramDimensionForKey(String key) {
