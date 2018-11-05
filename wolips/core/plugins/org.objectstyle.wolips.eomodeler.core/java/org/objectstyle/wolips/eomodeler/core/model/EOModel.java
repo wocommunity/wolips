@@ -154,7 +154,9 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		myStoredProcedures = new HashSet<EOStoredProcedure>();
 		myDatabaseConfigs = new HashSet<EODatabaseConfig>();
 		// SAVAS myERD und myDeletedERDNames
-		myERDiagramGroup = addBlankERDiagramGroup("ERDiagramGroup");
+		if(!myName.equals("erprototypes")) {
+			myERDiagramGroup = addBlankERDiagramGroup("ERDiagramGroup");
+		}
 		myDeletedEntityNamesInObjectStore = new PropertyListSet<String>();
 		myDeletedEntityNames = new PropertyListSet<String>();
 		myDeletedStoredProcedureNames = new PropertyListSet<String>();
@@ -927,7 +929,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 							erds = entity._getEntityMap().getList("ERDiagrams");
 						}
 //						Map erds = entity._getEntityMap().getMap("ERDs");
-						if (erds != null) {
+						if (erds != null && myERDiagramGroup != null) {
 							myERDiagramGroup.loadDiagramFromEntity(entity, erds);
 						}
 					}
@@ -1297,8 +1299,10 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 //				}
 //			}
 			
-			if (myERDiagramGroup.isDiagramGroupDirty()) {
-				myERDiagramGroup.saveToFile(modelFolder);
+			if (myERDiagramGroup != null) {
+				if (myERDiagramGroup.isDiagramGroupDirty()) {
+					myERDiagramGroup.saveToFile(modelFolder);
+				}
 			}
 	
 			setDirty(false);

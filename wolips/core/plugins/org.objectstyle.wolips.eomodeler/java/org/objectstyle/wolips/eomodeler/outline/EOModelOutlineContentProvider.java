@@ -147,8 +147,9 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 			if (_showDatabaseConfigs) {
 				modelChildren.addAll(model.getDatabaseConfigs());
 			}
-			modelChildren.add(model.getERDiagramGroup()); // SAVAS ERD wird im Outline dem TreeView als children hinzugefuegt (TreeView befindet sich im OutlineView)
-			
+			if (model.getERDiagramGroup() != null) {
+				modelChildren.add(model.getERDiagramGroup()); // SAVAS ERD wird im Outline dem TreeView als children hinzugefuegt (TreeView befindet sich im OutlineView)
+			}
 			children = modelChildren.toArray();
 		} else if (_parentElement instanceof EOEntity) {
 			EOEntity entity = (EOEntity) _parentElement;
