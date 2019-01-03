@@ -56,6 +56,8 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.core.model.EOSortOrdering;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
+import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
+
 /**
  * @author mschrag
  */
@@ -78,5 +80,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     TableUtils.setColumnsForTableNamed(EOSortOrdering.class.getName(), new String[] { EOSortOrdering.KEY, EOSortOrdering.ASCENDING, EOSortOrdering.CASE_INSENSITIVE }, false);
     TableUtils.setColumnsForTableNamed(EOJoin.class.getName(), new String[] { EOJoin.SOURCE_ATTRIBUTE_NAME, EOJoin.DESTINATION_ATTRIBUTE_NAME }, false);
     TableUtils.setColumnsForTableNamed(EORelationship.class.getName(), new String[] { EORelationship.TO_MANY, EORelationship.CLASS_PROPERTY, EORelationship.OPTIONAL, EORelationship.NAME, EORelationship.DESTINATION, EOJoin.SOURCE_ATTRIBUTE, EOJoin.DESTINATION_ATTRIBUTE }, false);
+    // SAVAS tableViewer ColumnNames
+    TableUtils.setColumnsForTableNamed(AbstractDiagram.class.getName(), new String[] { AbstractDiagram.NAME, AbstractDiagram.ENTITYNAMES}, false);
   }
 }

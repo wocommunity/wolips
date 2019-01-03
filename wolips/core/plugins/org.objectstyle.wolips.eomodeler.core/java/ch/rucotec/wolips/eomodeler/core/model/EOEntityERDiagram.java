@@ -18,11 +18,11 @@ import javafx.scene.paint.Color;
 
 public class EOEntityERDiagram extends AbstractEOEntityDiagram{
 
-	public EOEntityERDiagram(EOEntity entity, List diagramList, EOERDiagramGroup group) {
+	public EOEntityERDiagram(EOEntity entity, List diagramList, EOERDiagramCollection group) {
 		super(entity, diagramList, group);
 	}
 	
-	public EOEntityERDiagram(EOEntity entity, AbstractDiagramGroup group) {  
+	public EOEntityERDiagram(EOEntity entity, EOERDiagramCollection group) {  
 		super(entity, group);
 	}
 	
@@ -69,23 +69,14 @@ public class EOEntityERDiagram extends AbstractEOEntityDiagram{
 	public DiagramNode draw(String selectedDiagramName) {
 		setSelectedDiagramName(selectedDiagramName);
 		DiagramNode entityNode = new DiagramNode(this, selectedDiagramName);
-		List<EOAttribute> attributeList = new ArrayList<EOAttribute>();
-		List<EORelationship> relationshipsList = new ArrayList<EORelationship>();
-		relationshipsList.addAll(getEntity().getRelationships());
-		
-		Iterator<EOAttribute> attributeIterator = getEntity().getAttributes().iterator();
-		while (attributeIterator.hasNext()) {
-			EOAttribute attribute = attributeIterator.next();
-			attributeList.add(attribute);
-		}
 		
 		double xPos = getDiagramDimensionForKey(selectedDiagramName).getxPos();
 		double yPos = getDiagramDimensionForKey(selectedDiagramName).getyPos();
 		double width = getDiagramDimensionForKey(selectedDiagramName).getWidth();
 		double height = getDiagramDimensionForKey(selectedDiagramName).getHeight();
 		
-		entityNode.setAttributeList(attributeList);
-		entityNode.setRelationshipsList(relationshipsList);
+//		entityNode.setAttributeList(attributeList);
+//		entityNode.setRelationshipsList(relationshipsList);
 		entityNode.setTitle(getEntity().getExternalName());
 		entityNode.setDescription("Beschreibung");
 		entityNode.setColor(Color.AZURE);

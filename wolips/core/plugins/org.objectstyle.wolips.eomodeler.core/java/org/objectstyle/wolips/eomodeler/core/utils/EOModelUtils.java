@@ -17,7 +17,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.core.model.IEOEntityRelative;
 
 import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
-import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagramGroup;
+import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagramCollection;
 import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
 
 public class EOModelUtils {
@@ -120,8 +120,8 @@ public class EOModelUtils {
 			} else {
 				relatedObj = null;
 			}
-		} else if (AbstractDiagramGroup.class.isAssignableFrom(type)) { //SAVAS somit weiss der Selector zu wem das selektierte objekt gehoert (wird beim contextmenu vom DiagramGroup gebraucht).
-			if (obj instanceof AbstractDiagramGroup) {
+		} else if (AbstractDiagramCollection.class.isAssignableFrom(type)) { //SAVAS somit weiss der Selector zu wem das selektierte objekt gehoert (wird beim contextmenu vom DiagramCollection gebraucht).
+			if (obj instanceof AbstractDiagramCollection) {
 				relatedObj = obj;
 			} else if (obj instanceof AbstractDiagram) {
 				relatedObj = ((AbstractDiagram) obj)._getModelParent(); 

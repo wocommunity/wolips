@@ -235,7 +235,7 @@ public class EOModelTreeViewUpdater {
 					_shouldRefresh = !saving.booleanValue();
 					refresh();
 				} // SAVAS hier wird der Outline refreshed.
-				else if (EOModel.ERDIAGRAMGROUP.equals(changedPropertyName) || EOModel.ENTITIES.equals(changedPropertyName) || EOModel.STORED_PROCEDURES.equals(changedPropertyName) || EOModel.DATABASE_CONFIGS.equals(changedPropertyName) || EOModel.DATABASE_CONFIG.equals(changedPropertyName)) {
+				else if (EOModel.ERDIAGRAMCOLLECTION.equals(changedPropertyName) || EOModel.ENTITIES.equals(changedPropertyName) || EOModel.STORED_PROCEDURES.equals(changedPropertyName) || EOModel.DATABASE_CONFIGS.equals(changedPropertyName) || EOModel.DATABASE_CONFIG.equals(changedPropertyName)) {
 					// getTreeViewer().refresh(true);
 					refresh();
 					refreshPropertyChangeListeners();

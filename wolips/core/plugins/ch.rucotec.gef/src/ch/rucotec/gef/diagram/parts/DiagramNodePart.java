@@ -12,7 +12,9 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
 import ch.rucotec.gef.diagram.visuals.DiagramNodeVisual;
+import ch.rucotec.gef.diagram.visuals.DiagramNodeVisual.DiagramTyp;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
+import ch.rucotec.wolips.eomodeler.core.model.EOEntityERDiagram;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Translate;
 
@@ -26,8 +28,14 @@ implements ITransformableContentPart<DiagramNodeVisual>, IResizableContentPart<D
 
 	@Override
 	protected DiagramNodeVisual doCreateVisual() {
+		DiagramNodeVisual nodeVisual = null;
 		DiagramNode node = getContent();
-		return new DiagramNodeVisual(node.getAttributeList());
+		if (node.getEntityDiagram() instanceof EOEntityERDiagram) {
+			nodeVisual = new DiagramNodeVisual(node, DiagramTyp.ERDIAGRAM);
+		} else {
+			nodeVisual = new DiagramNodeVisual(node, DiagramTyp.CLASSDIAGRAM);
+		}
+		return nodeVisual;
 	}
 
 	@Override

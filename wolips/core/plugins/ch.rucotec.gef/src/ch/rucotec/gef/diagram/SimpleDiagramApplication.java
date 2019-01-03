@@ -16,10 +16,13 @@ import com.sun.javafx.stage.EmbeddedWindow;
 import ch.rucotec.gef.diagram.models.ItemCreationModel;
 import ch.rucotec.gef.diagram.models.ItemCreationModel.Type;
 import ch.rucotec.gef.diagram.visuals.DiagramNodeVisual;
+import ch.rucotec.gef.diagram.visuals.DiagramNodeVisual.DiagramTyp;
+import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
 import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
 import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagramExampleFactory;
+import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
 import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
-import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramGroup;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramCollection;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -172,7 +175,7 @@ public class SimpleDiagramApplication{
 	private Node createToolPalette() {
 		ItemCreationModel creationModel = getContentViewer().getAdapter(ItemCreationModel.class);
 
-		DiagramNodeVisual graphic = new DiagramNodeVisual(new ArrayList<>());
+		DiagramNodeVisual graphic = new DiagramNodeVisual(new DiagramNode(), DiagramTyp.ERDIAGRAM);
 		graphic.setTitle("New Node");
 
 		// the toggleGroup makes sure, we only select one 
@@ -213,8 +216,8 @@ public class SimpleDiagramApplication{
 	}
 	
 	public void generateDiagram(Object selectedDiagram) {
-		if (selectedDiagram instanceof EOERDiagram) {
-			diagram = ((EOERDiagram) selectedDiagram).drawDiagram();
+		if (selectedDiagram instanceof AbstractDiagram) {
+			diagram = ((AbstractDiagram) selectedDiagram).drawDiagram();
 		}
 		populateViewerContents(); // Refresh content
 	}

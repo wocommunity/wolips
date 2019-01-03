@@ -19,7 +19,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 
-import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramGroup;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramCollection;
 
 public class EOModelOutlineViewerSorter extends ViewerSorter {
 	private static final int MAX_ORDER = 9;
@@ -38,7 +38,7 @@ public class EOModelOutlineViewerSorter extends ViewerSorter {
 		myOrder.put(EOFetchSpecification.class, Integer.valueOf(6));
 		myOrder.put(EOStoredProcedure.class, Integer.valueOf(7));
 		myOrder.put(EOEntityIndex.class, Integer.valueOf(20));
-		myOrder.put(EOERDiagramGroup.class, Integer.valueOf(25)); // SAVAS sortier priorität
+		myOrder.put(EOERDiagramCollection.class, Integer.valueOf(25)); // SAVAS sortier priorität
 		myOrder.put(EODatabaseConfig.class, Integer.valueOf(30)); 
 	}
 

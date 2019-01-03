@@ -24,16 +24,16 @@ public abstract class AbstractEOEntityDiagram {
 	
 	private EOEntity myEntity;
 	private HashMap<String, EOEntityDiagramDimension> myDiagramDimensions;
-	private AbstractDiagramGroup myGroup;
+	private AbstractDiagramCollection myGroup;
 	private String mySelectedDiagramName;
 	
-	public AbstractEOEntityDiagram(EOEntity entity, AbstractDiagramGroup group) {
+	public AbstractEOEntityDiagram(EOEntity entity, AbstractDiagramCollection group) {
 		myEntity = entity;
 		myDiagramDimensions = new HashMap<String, EOEntityDiagramDimension>();
 		myGroup = group;
 	}
 	
-	public AbstractEOEntityDiagram(EOEntity entity, List diagramList, AbstractDiagramGroup group) {
+	public AbstractEOEntityDiagram(EOEntity entity, List diagramList, AbstractDiagramCollection group) {
 		myEntity = entity;
 		myDiagramDimensions = new HashMap<String, EOEntityDiagramDimension>();
 		myGroup = group;

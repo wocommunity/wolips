@@ -10,7 +10,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import com.sun.javafx.stage.EmbeddedWindow;
 
 import ch.rucotec.gef.diagram.SimpleDiagramApplication;
-import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramGroup;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramCollection;
 import javafx.embed.swt.FXCanvas;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

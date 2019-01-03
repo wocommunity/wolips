@@ -76,86 +76,86 @@ public class SimpleDiagramExampleFactory {
 	public SimpleDiagram createErd(Object model) {
 		SimpleDiagram myERD = new SimpleDiagram();
 
-		Object[] entitiesObjectArray = ((EOModel) model).getEntities().toArray();
-		Iterator<EOEntity> entityIterator = ((EOModel) model).getEntities().iterator();
-
-		DiagramNode center = null;
-		HashMap<String, DiagramNode> entityNodeMap = new HashMap<String, DiagramNode>();
-
-		while (entityIterator.hasNext()) {
-			EOEntity entity = entityIterator.next();
-
-			center = new DiagramNode();
-			List<EOAttribute> attributeList = new ArrayList<EOAttribute>();
-			List<EORelationship> relationshipsList = new ArrayList<EORelationship>();
-			//	NotificationMap<Object, Object> userInfo = new NotificationMap<>();
-			//	entity.setUserInfo(userInfo);
-			relationshipsList.addAll(entity.getRelationships());
-
-			Iterator<EOAttribute> attributeIterator = entity.getAttributes().iterator();
-
-			while (attributeIterator.hasNext()) {
-				EOAttribute attribute = attributeIterator.next();
-				attributeList.add(attribute);
-			}
-
-			center.setAttributeList(attributeList);
-			center.setRelationshipsList(relationshipsList);
-
-			center.setTitle(entity.getExternalName());
-			center.setDescription("Beschreibung");
-			center.setColor(Color.AZURE);
-			center.setBounds(new Rectangle(20, 50, WIDTH, 100));
-			entityNodeMap.put(entity.getName(), center);
-		}
-
-
-		for (DiagramNode node : entityNodeMap.values()) {
-			for (EORelationship relationship : node.getRelationshipsList()) {
-				boolean manyToManyConnection = false;
-				//	List<MindMapConnection> connectionList = node.getIncomingConnections();
-
-
-				if (relationship.isToMany()) {
-					EOEntity sourceEntity = relationship.getEntity();
-					EOEntity destinationEntity = relationship.getDestination();
-					Iterator<EORelationship> destinationRelationshipIterator = destinationEntity.getRelationships().iterator();
-
-					int sourceToTargetCardinality = 0;
-					int targetToSourceCardinality = 0;
-
-					// löst das Many to Many Problem und fügt die notwendigen Kardinalitäten ein.
-					while (destinationRelationshipIterator.hasNext()) {
-						EORelationship destinationRelationship = destinationRelationshipIterator.next();
-
-						if (destinationRelationship.getDestination() == sourceEntity) {
-							if (destinationRelationship.isToMany()) {
-								manyToManyConnection = true;
-							} else {
-								manyToManyConnection = false;
-								// Hier werden die Kardinalitäten erstellt..
-								sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
-								targetToSourceCardinality = DiagramConnection.TOONE + (destinationRelationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
-							}
-
-							if (!manyToManyConnection) {
-								DiagramConnection conn = new DiagramConnection();
-								conn.connect(node, entityNodeMap.get(relationship.getDestination().getName()));
-
-								conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
-
-								System.out.println("sourceEntity = " + sourceEntity.getName() + " is optional = " + relationship.isOptional() + "[ to Entity = " + relationship.getDestination().getName() + " ]");
-								myERD.addChildElement(conn);
-							}
-						}
-					}
-
-				}
-
-			}
-			// add nodes to mindMap
-			myERD.addChildElement(node);
-		}
+//		Object[] entitiesObjectArray = ((EOModel) model).getEntities().toArray();
+//		Iterator<EOEntity> entityIterator = ((EOModel) model).getEntities().iterator();
+//
+//		DiagramNode center = null;
+//		HashMap<String, DiagramNode> entityNodeMap = new HashMap<String, DiagramNode>();
+//
+//		while (entityIterator.hasNext()) {
+//			EOEntity entity = entityIterator.next();
+//
+//			center = new DiagramNode();
+//			List<EOAttribute> attributeList = new ArrayList<EOAttribute>();
+//			List<EORelationship> relationshipsList = new ArrayList<EORelationship>();
+//			//	NotificationMap<Object, Object> userInfo = new NotificationMap<>();
+//			//	entity.setUserInfo(userInfo);
+//			relationshipsList.addAll(entity.getRelationships());
+//
+//			Iterator<EOAttribute> attributeIterator = entity.getAttributes().iterator();
+//
+//			while (attributeIterator.hasNext()) {
+//				EOAttribute attribute = attributeIterator.next();
+//				attributeList.add(attribute);
+//			}
+//
+//			center.setAttributeList(attributeList);
+//			center.setRelationshipsList(relationshipsList);
+//
+//			center.setTitle(entity.getExternalName());
+//			center.setDescription("Beschreibung");
+//			center.setColor(Color.AZURE);
+//			center.setBounds(new Rectangle(20, 50, WIDTH, 100));
+//			entityNodeMap.put(entity.getName(), center);
+//		}
+//
+//
+//		for (DiagramNode node : entityNodeMap.values()) {
+//			for (EORelationship relationship : node.getRelationshipsList()) {
+//				boolean manyToManyConnection = false;
+//				//	List<MindMapConnection> connectionList = node.getIncomingConnections();
+//
+//
+//				if (relationship.isToMany()) {
+//					EOEntity sourceEntity = relationship.getEntity();
+//					EOEntity destinationEntity = relationship.getDestination();
+//					Iterator<EORelationship> destinationRelationshipIterator = destinationEntity.getRelationships().iterator();
+//
+//					int sourceToTargetCardinality = 0;
+//					int targetToSourceCardinality = 0;
+//
+//					// löst das Many to Many Problem und fügt die notwendigen Kardinalitäten ein.
+//					while (destinationRelationshipIterator.hasNext()) {
+//						EORelationship destinationRelationship = destinationRelationshipIterator.next();
+//
+//						if (destinationRelationship.getDestination() == sourceEntity) {
+//							if (destinationRelationship.isToMany()) {
+//								manyToManyConnection = true;
+//							} else {
+//								manyToManyConnection = false;
+//								// Hier werden die Kardinalitäten erstellt..
+//								sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+//								targetToSourceCardinality = DiagramConnection.TOONE + (destinationRelationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+//							}
+//
+//							if (!manyToManyConnection) {
+//								DiagramConnection conn = new DiagramConnection();
+//								conn.connect(node, entityNodeMap.get(relationship.getDestination().getName()));
+//
+//								conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
+//
+//								System.out.println("sourceEntity = " + sourceEntity.getName() + " is optional = " + relationship.isOptional() + "[ to Entity = " + relationship.getDestination().getName() + " ]");
+//								myERD.addChildElement(conn);
+//							}
+//						}
+//					}
+//
+//				}
+//
+//			}
+//			// add nodes to mindMap
+//			myERD.addChildElement(node);
+//		}
 
 		return myERD;
 	}

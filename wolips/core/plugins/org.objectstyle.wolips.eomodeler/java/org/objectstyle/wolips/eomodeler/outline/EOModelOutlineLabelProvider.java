@@ -77,8 +77,10 @@ import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.core.model.IEOAttribute;
 import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
 
+import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagramCollection;
 import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
-import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramGroup;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramCollection;
 
 public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvider, IColorProvider {
 	private TreeViewer _treeViewer;
@@ -140,9 +142,9 @@ public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvide
 			image = Activator.getDefault().getImageRegistry().get(Activator.EODATABASECONFIG_ICON);
 		} else if (element instanceof EOEntityIndex) {
 			image = Activator.getDefault().getImageRegistry().get(Activator.EOENTITYINDEX_ICON);
-		} else if (element instanceof EOERDiagramGroup) { // SAVAS das Image für EOERD
+		} else if (element instanceof AbstractDiagramCollection) { // SAVAS das Image für EOERD
 			image = Activator.getDefault().getImageRegistry().get(Activator.EOSTOREDPROCEDURE_ICON);
-		} else if (element instanceof EOERDiagram) {
+		} else if (element instanceof AbstractDiagram) {
 			image = Activator.getDefault().getImageRegistry().get(Activator.EORELATIONSHIP_ICON);
 		} else {
 			image = null;
@@ -190,11 +192,11 @@ public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvide
 		} else if (_element instanceof EOEntityIndex) {
 			EOEntityIndex entityIndex = (EOEntityIndex) _element;
 			text = entityIndex.getName();
-		} else if (_element instanceof EOERDiagramGroup){ // SAVAS Name im TreeView, die sich im Outline befindet
-			EOERDiagramGroup erdGroup = (EOERDiagramGroup) _element;
+		} else if (_element instanceof AbstractDiagramCollection){ // SAVAS Name im TreeView, die sich im Outline befindet
+			AbstractDiagramCollection erdGroup = (AbstractDiagramCollection) _element;
 			text = erdGroup.getName();
-		} else if (_element instanceof EOERDiagram){
-			EOERDiagram erd = (EOERDiagram) _element;
+		} else if (_element instanceof AbstractDiagram){
+			AbstractDiagram erd = (AbstractDiagram) _element;
 			text = erd.getName();
 		} else {
 			text = null;

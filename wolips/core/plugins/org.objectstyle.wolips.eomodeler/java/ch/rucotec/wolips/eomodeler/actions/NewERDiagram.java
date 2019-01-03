@@ -8,25 +8,25 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 
 import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
-import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramGroup;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramCollection;
 
-public class NewERDiagram extends AbstractNewObjectAction<EOERDiagramGroup, EOERDiagram>{
+public class NewERDiagram extends AbstractNewObjectAction<EOERDiagramCollection, EOERDiagram>{
 	public NewERDiagram() {
-		super(EOERDiagramGroup.class, "HI");
+		super(EOERDiagramCollection.class, "newERDiagram");
 	}
 
 	@Override
-	protected EOERDiagram createChild(EOERDiagramGroup parent, Set<EOModelVerificationFailure> failures) throws EOModelException {
+	protected EOERDiagram createChild(EOERDiagramCollection parent, Set<EOModelVerificationFailure> failures) throws EOModelException {
 		return parent.addBlankERDiagram(Messages.getString("EOERDiagram.newName"));
 	}
 
 	@Override
 	protected String getNoSelectionMessage() {
-		return Messages.getString("EOERDiagram.noERDiagramGroupSelectedMessage");
+		return Messages.getString("EOERDiagram.noERDiagramCollectionSelectedMessage");
 	}
 
 	@Override
 	protected String getNoSelectionTitle() {
-		return Messages.getString("EOERDiagram.noERDiagramGroupSelectedTitle");
+		return Messages.getString("EOERDiagram.noERDiagramCollectionSelectedTitle");
 	}
 }

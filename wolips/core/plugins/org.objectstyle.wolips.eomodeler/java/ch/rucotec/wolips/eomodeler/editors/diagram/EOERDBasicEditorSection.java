@@ -115,9 +115,9 @@ public class EOERDBasicEditorSection extends AbstractPropertySection {
 		        public void widgetSelected(SelectionEvent event) {
 		            Button btn = (Button) event.getSource();
 		        	if (btn.getSelection()) {
-		        		myDiagram.addEntityDiagram(entity);
+		        		myDiagram.addEntityToDiagram(entity);
 		        	} else if (!btn.getSelection()) {
-		        		myDiagram.removeEntityDiagram(entity);
+		        		myDiagram.removeEntityFromDiagram(entity);
 		        	}
 		        	DiagramTab.getInstance().setSelectedDiagram(myDiagram);
 		        	myDiagram._getModelParent().setModelDirty(true);

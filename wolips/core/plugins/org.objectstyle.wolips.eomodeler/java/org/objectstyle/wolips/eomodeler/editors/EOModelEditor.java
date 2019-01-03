@@ -137,10 +137,11 @@ import org.objectstyle.wolips.eomodeler.utils.AbstractAddRemoveChangeRefresher;
 import org.objectstyle.wolips.eomodeler.utils.EclipseFileUtils;
 
 import ch.rucotec.wolips.eomodeler.DiagramTab;
-import ch.rucotec.wolips.eomodeler.actions.NewERDiagramGroupAction_IS_NOT_USED;
 import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagramCollection;
 import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
-import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramGroup;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramCollection;
+import ch.rucotec.wolips.eomodeler.editors.diagrams.EODiagramsTableEditor;
 
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener, ITabbedPropertySheetPageContributor, ISelectionProvider, IEOModelEditor {
 	protected class ArgumentDeletedRefresher extends AbstractAddRemoveChangeRefresher<EOArgument> {
@@ -357,26 +358,54 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	}
 	
 	// SAVAS sobald ein neues ERD erstellt wird, ist das neue ERD selektiert im Outline Tab
-	protected class ERDsChangeRefresher extends AbstractAddRemoveChangeRefresher<EOERDiagramGroup> {
-		public ERDsChangeRefresher() {
-			super("ERDiagramsChange");
+//	protected class ERDsChangeRefresher extends AbstractAddRemoveChangeRefresher<EOERDiagramCollection> {
+//		public ERDsChangeRefresher() {
+//			super("ERDiagramsChange");
+//		}
+//
+//		public void changeSelection(final ISelection selection) {
+//			EOModelEditor.this.setSelection(selection);
+//			EOModelEditor.this.setActivePage(1);
+//		}
+//
+//		@Override
+//		protected void objectsAdded(List<EOERDiagramCollection> _addedObjects) {
+//			// TODO Auto-generated method stub
+//			
+//		}
+//
+//		@Override
+//		protected void objectsRemoved(List<EOERDiagramCollection> _removedObjects) {
+//			// TODO Auto-generated method stub
+//			
+//		}
+//	}
+	
+	protected class DiagramDeletedRefresher extends AbstractAddRemoveChangeRefresher<EOERDiagram> {
+		public DiagramDeletedRefresher() {
+			super("DiagramDeleted");
 		}
 
 		public void changeSelection(final ISelection selection) {
 			EOModelEditor.this.setSelection(selection);
-			EOModelEditor.this.setActivePage(1);
 		}
 
 		@Override
-		protected void objectsAdded(List<EOERDiagramGroup> _addedObjects) {
-			// TODO Auto-generated method stub
-			
+		protected void objectsAdded(final List<EOERDiagram> _addedObjects) {
+			// DO NOTHING
 		}
 
 		@Override
-		protected void objectsRemoved(List<EOERDiagramGroup> _removedObjects) {
-			// TODO Auto-generated method stub
-			
+		protected void objectsRemoved(final List<EOERDiagram> _removedObjects) {
+			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getMySelectedDiagramCollection()));
+			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EODIAGRAMCOLLECTION_PAGE));
+		}
+	}
+	
+	protected class EODiagramSelectionChangedListener implements ISelectionChangedListener {
+		public void selectionChanged(final SelectionChangedEvent _event) {
+			IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
+			setSelection(selection);
 		}
 	}
 
@@ -411,8 +440,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	private final EntityIndexesChangeRefresher myEntityIndexesChangeListener;
 
 	private final StoredProceduresChangeRefresher myStoredProceduresChangeListener;
-	
-	private final ERDsChangeRefresher myERDsChangeRefresher;
 
 	private final DatabaseConfigsChangeRefresher myDatabaseConfigsChangeListener;
 
@@ -440,8 +467,19 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 	private int _failuresHashCode;
 	
+	// SAVAS variablen
+	public static final String EODIAGRAMCOLLECTION_PAGE = "eodiagramcollection";
+	public static final String EODIAGRAM_PAGE = "eodiagram";
+	
 	private DiagramTab diagramTab;
-
+	private EODiagramsTableEditor myDiagramCollectionEditor;
+	private AbstractDiagramCollection mySelectedDiagramCollection;
+	private final DiagramDeletedRefresher myDiagramListener;
+	private AbstractDiagram mySelectedDiagram;
+	private boolean myDiagramCollectionPageVisible;
+	private boolean myDiagramPageVisible;
+	
+	
 	public EOModelEditor() {
 		mySelectionChangedListeners = new ListenerList();
 		myDirtyModelListener = new DirtyModelListener();
@@ -449,10 +487,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		myFetchSpecsChangeListener = new FetchSpecsChangeRefresher();
 		myEntityIndexesChangeListener = new EntityIndexesChangeRefresher();
 		myStoredProceduresChangeListener = new StoredProceduresChangeRefresher();
-		myERDsChangeRefresher = new ERDsChangeRefresher();
 		myDatabaseConfigsChangeListener = new DatabaseConfigsChangeRefresher();
 		myAttributeAndRelationshipListener = new AttributeAndRelationshipDeletedRefresher();
 		myArgumentListener = new ArgumentDeletedRefresher();
+		myDiagramListener = new DiagramDeletedRefresher();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 	}
 
@@ -492,14 +530,14 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				myModel.removePropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
 				myStoredProceduresChangeListener.stop();
 				myModel.removePropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProceduresChangeListener);
-				myERDsChangeRefresher.stop();
-				myModel.removePropertyChangeListener(EOModel.ERDIAGRAMGROUP, myERDsChangeRefresher);
 				myDatabaseConfigsChangeListener.stop();
 				myModel.removePropertyChangeListener(EOModel.DATABASE_CONFIGS, myDatabaseConfigsChangeListener);
 				myFetchSpecsChangeListener.stop();
 				myModel.removePropertyChangeListener(EOModel.ENTITY + "." + EOEntity.FETCH_SPECIFICATIONS, myFetchSpecsChangeListener);
 				myEntityIndexesChangeListener.stop();
 				myModel.removePropertyChangeListener(EOModel.ENTITY + "." + EOEntity.ENTITY_INDEXES, myEntityIndexesChangeListener);
+				myDiagramListener.stop();
+				myModel.removePropertyChangeListener(AbstractDiagramCollection.DIAGRAMS, myDiagramListener);
 			}
 
 			String openingEntityName = null;
@@ -547,14 +585,14 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				model.addPropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
 				myStoredProceduresChangeListener.start();
 				model.addPropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProceduresChangeListener);
-				myERDsChangeRefresher.start();
-				model.addPropertyChangeListener(EOModel.ERDIAGRAMS, myERDsChangeRefresher);
 				myDatabaseConfigsChangeListener.start();
 				model.addPropertyChangeListener(EOModel.DATABASE_CONFIGS, myDatabaseConfigsChangeListener);
 				myFetchSpecsChangeListener.start();
 				model.addPropertyChangeListener(EOModel.ENTITY + "." + EOEntity.FETCH_SPECIFICATIONS, myFetchSpecsChangeListener);
 				myEntityIndexesChangeListener.start();
 				model.addPropertyChangeListener(EOModel.ENTITY + "." + EOEntity.ENTITY_INDEXES, myEntityIndexesChangeListener);
+				myDiagramListener.start();
+				model.addPropertyChangeListener(AbstractDiagramCollection.DIAGRAMS, myDiagramListener);
 				// setInput(new EOModelEditorInput(fileEditorInput));
 				// init(getEditorSite(), new
 				// EOModelEditorInput(fileEditorInput));
@@ -641,11 +679,14 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				// SAVAS: Hier wird ein extra Tab erstellt fürs Diagramm
 
 				diagramTab = DiagramTab.getInstance();
-//				diagramView.setModel(myModel);
 				
+				// das ist nicht notwendig aber wenn ich es mache werden diagramme schneller generiert.
 				addPage(diagramTab, getEditorInput());
-				setPageText(1,"meinTab");
-//				//diagramView.addSelectionChangedListener(modelSelectionChangedListener);
+				removePage(getPageNum(EOModelEditor.EODIAGRAM_PAGE));
+				
+				myDiagramCollectionEditor = new EODiagramsTableEditor();
+				EODiagramSelectionChangedListener diagramSelectionChangedListener = new EODiagramSelectionChangedListener();
+				myDiagramCollectionEditor.addSelectionChangedListener(diagramSelectionChangedListener);
 
 			} catch (PartInitException e) {
 				ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
@@ -659,10 +700,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 		myEntitiesChangeListener.stop();
 		myStoredProceduresChangeListener.stop();
-		myERDsChangeRefresher.stop();
 		myDatabaseConfigsChangeListener.stop();
 		myFetchSpecsChangeListener.stop();
 		myEntityIndexesChangeListener.stop();
+		myDiagramListener.stop();
 
 		super.dispose();
 
@@ -861,7 +902,11 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			pageNum = getPageNum(myEntitiesTableEditor);
 		} else if (_pageType == EOModelEditor.EOSTOREDPROCEDURE_PAGE) {
 			pageNum = getPageNum(myStoredProcedureEditor);
-		} else {
+		} else if(_pageType == EOModelEditor.EODIAGRAMCOLLECTION_PAGE) {
+			pageNum = getPageNum(myDiagramCollectionEditor);
+		} else if (_pageType == EOModelEditor.EODIAGRAM_PAGE) {
+			pageNum = getPageNum(diagramTab);
+		}else {
 			pageNum = -1;
 		}
 		return pageNum;
@@ -1267,16 +1312,26 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 						// (EODatabaseConfig) selectedObject;
 						setSelectedEntity(null);
 						setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
-					} else if (selectedObject instanceof EOERDiagramGroup) { // SAVAS selection handle
-//						setSelectedEntity(null);
-//						setSelectedStoredProcedure(null);
-//						setActivePage(1);
-					} else if (selectedObject instanceof AbstractDiagram) {
-						diagramTab.setSelectedDiagram(selectedObject);
+					}
+					// SAVAS selection handle
+					if (selectedObject instanceof AbstractDiagram) {
+						AbstractDiagram selectedDiagram = (AbstractDiagram) selectedObject;
+						setSelectedDiagram(selectedDiagram);
 						setSelectedEntity(null);
 						setSelectedStoredProcedure(null);
-						setActivePage(1);
+						setActivePage(getPageNum(EOModelEditor.EODIAGRAM_PAGE));
+					} else {
+						setSelectedDiagram(null);
 					}
+					
+					if (selectedObject instanceof AbstractDiagramCollection) {
+						AbstractDiagramCollection selectedDiagramCollection = (AbstractDiagramCollection) selectedObject;
+						setSelectedDiagramCollection(selectedDiagramCollection);
+						setActivePage(getPageNum(EOModelEditor.EODIAGRAMCOLLECTION_PAGE));
+					} else {
+						setSelectedDiagramCollection(null);
+					}
+					
 					if (_updateOutline) {
 						getContentOutlinePage().setSelection(selection);
 					}
@@ -1413,10 +1468,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		} else if (selectedObject instanceof EODatabaseConfig) {
 			myModel = ((EODatabaseConfig) selectedObject)._getModelParent();
 //			setActivePage(0);
-		} else if (selectedObject instanceof EOERDiagramGroup) {
-			myModel = ((EOERDiagramGroup) selectedObject)._getModelParent();
+		} else if (selectedObject instanceof EOERDiagramCollection) {
+			myModel = ((EOERDiagramCollection) selectedObject)._getModelParent();
 		} else if (selectedObject instanceof AbstractDiagram) {
-			myModel = ((AbstractDiagram) selectedObject).getDiagramGroup().getModel();
+			myModel = ((AbstractDiagram) selectedObject).getDiagramCollection().getModel();
 			diagramTab.setSelectedDiagram(null);
 		}
 		
@@ -1427,5 +1482,88 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		
 		
 //		diagramView.setModel(myModel);
+	}
+	
+	public void setSelectedDiagram(final AbstractDiagram _selectedDiagram) {
+		if (!ComparisonUtils.equals(mySelectedDiagram, _selectedDiagram)) {
+			mySelectedDiagram = _selectedDiagram;
+			if (_selectedDiagram == null) {
+				setDiagramPageVisible(false);
+			} else {
+				setDiagramPageVisible(true);
+			}
+			updatePartName();
+		}
+		if (_selectedDiagram != null) {
+			setSelectedEntity(null);
+		}
+	}
+	
+	protected void setDiagramPageVisible(final boolean _setDiagramPageVisible) {
+		try {
+			if (_setDiagramPageVisible) {
+				if (!myDiagramPageVisible) {
+					addPage(diagramTab, getEditorInput());
+				}
+				// Hier wird festgelegt welches Diagramm angezeigt werden soll.
+				diagramTab.setSelectedDiagram(mySelectedDiagram);
+				String diagramName = mySelectedDiagram.getName();
+				if (diagramName == null) {
+					diagramName = "?";
+				}
+				setPageText(getPageNum(EOModelEditor.EODIAGRAM_PAGE), diagramName);
+			} else if (myDiagramPageVisible) {
+				removePage(getPageNum(EOModelEditor.EODIAGRAM_PAGE));
+			}
+			myDiagramPageVisible = _setDiagramPageVisible;
+		} catch (PartInitException e) {
+			ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
+		}
+	}
+	
+	public void setSelectedDiagramCollection(final AbstractDiagramCollection _selectedDiagramCollection) {
+		if (!ComparisonUtils.equals(mySelectedDiagramCollection, _selectedDiagramCollection)) {
+			if (mySelectedDiagramCollection != null) {
+				mySelectedDiagramCollection.removePropertyChangeListener(AbstractDiagramCollection.DIAGRAMS, myDiagramListener);
+			}
+			mySelectedDiagramCollection = _selectedDiagramCollection;
+			if (mySelectedDiagramCollection != null) {
+				mySelectedDiagramCollection.addPropertyChangeListener(AbstractDiagramCollection.DIAGRAMS, myDiagramListener);
+			}
+			if (_selectedDiagramCollection == null) {
+				setDiagramCollectionPageVisible(false);
+			} else {
+				setDiagramCollectionPageVisible(true);
+			}
+			myDiagramCollectionEditor.setMyDiagramCollection(_selectedDiagramCollection);
+			updatePartName();
+		}
+		if (_selectedDiagramCollection != null) {
+			setSelectedEntity(null);
+		}
+	}
+	
+	protected void setDiagramCollectionPageVisible(final boolean _setDiagramCollectionPageVisible) {
+		try {
+			if (_setDiagramCollectionPageVisible) {
+				if (!myDiagramCollectionPageVisible) {
+					addPage(myDiagramCollectionEditor, getEditorInput());
+				}
+				String diagramCollectionName = mySelectedDiagramCollection.getName();
+				if (diagramCollectionName == null) {
+					diagramCollectionName = "?";
+				}
+				setPageText(getPageNum(EOModelEditor.EODIAGRAMCOLLECTION_PAGE), diagramCollectionName);
+			} else if (myDiagramCollectionPageVisible) {
+				removePage(getPageNum(EOModelEditor.EODIAGRAMCOLLECTION_PAGE));
+			}
+			myDiagramCollectionPageVisible = _setDiagramCollectionPageVisible;
+		} catch (PartInitException e) {
+			ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
+		}
+	}
+
+	public AbstractDiagramCollection getMySelectedDiagramCollection() {
+		return mySelectedDiagramCollection;
 	}
 }

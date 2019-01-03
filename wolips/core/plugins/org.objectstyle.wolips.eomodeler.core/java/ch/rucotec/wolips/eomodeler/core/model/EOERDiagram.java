@@ -17,21 +17,21 @@ import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramConnection;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
 import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
 
-public class EOERDiagram extends AbstractDiagram<EOERDiagramGroup>{
+public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 	
 	public EOERDiagram(String name) {
 		super(name);
 	}
 	
 	@Override
-	public void addEntityDiagram(EOEntity entity) {
+	public void addEntityToDiagram(EOEntity entity) {
 		EOEntityERDiagram entityERDiagram = (EOEntityERDiagram) getEntityDiagramWithEntity(entity);
 		if (entityERDiagram == null) {
 			entityERDiagram = new EOEntityERDiagram(entity, _getModelParent());
 		}
 		EOEntityDiagramDimension dimension = new EOEntityDiagramDimension(100, 100, 100, 100);
 		entityERDiagram.getDiagramDimensions().put(getName(), dimension);
-		super.addEntityDiagram(entityERDiagram);
+		super.addEntityToDiagram(entityERDiagram);
 	}
 	
 	@Override
@@ -79,8 +79,8 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramGroup>{
 	}
 
 	@Override
-	public Class<EOERDiagramGroup> _getModelParentType() {
-		return EOERDiagramGroup.class;
+	public Class<EOERDiagramCollection> _getModelParentType() {
+		return EOERDiagramCollection.class;
 	}
 
 	@Override
@@ -89,15 +89,16 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramGroup>{
 	}
 
 	@Override
-	public void _addToModelParent(EOERDiagramGroup modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
+	public void _addToModelParent(EOERDiagramCollection modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
 		if (findUniqueName) {
-			setName(modelParent.findUnusedERDiagramName(getName()));
+			setName(modelParent.findUnusedDiagramName(getName()));
 		}
 		modelParent.addERDiagram(this);
 	}
 	
 	// Drawings
-	public SimpleDiagram drawDiagram () {
+	@Override
+	public SimpleDiagram drawDiagram() {
 	SimpleDiagram myERD = new SimpleDiagram();
 	HashMap<String, DiagramNode> entityNodeMap = new HashMap<String, DiagramNode>();
 	
@@ -105,7 +106,6 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramGroup>{
 		DiagramNode entityNode = entityERD.draw(getName());
 		EOEntity entity = entityERD.getEntity();
 		entityNodeMap.put(entity.getName(), entityNode);
-		getEntities().add(entity);
 	}
 	
 	for (DiagramNode node : entityNodeMap.values()) {

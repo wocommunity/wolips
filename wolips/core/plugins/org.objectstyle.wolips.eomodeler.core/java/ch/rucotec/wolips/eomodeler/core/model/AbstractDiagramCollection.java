@@ -1,9 +1,11 @@
 package ch.rucotec.wolips.eomodeler.core.model;
 
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
@@ -11,21 +13,23 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.UserInfoableEOModelObject;
 
-public abstract class AbstractDiagramGroup <T extends EOModelObject, U extends AbstractDiagram> extends UserInfoableEOModelObject<T>{
+public abstract class AbstractDiagramCollection <T extends EOModelObject, U extends AbstractDiagram> extends UserInfoableEOModelObject<T>{
 	
 	public static final String NAME = "name";
+	public static final String DIAGRAM = "diagram";
+	public static final String DIAGRAMS = "diagrams";
 	
 	private Set<U> myDiagrams;
 	private String myName;
 	private EOModel myModel;
-	private boolean diagramGroupDirty;
+	private boolean diagramCollectionDirty;
 	
-	public AbstractDiagramGroup() {
+	private AbstractDiagramCollection() {
 		myDiagrams = new LinkedHashSet<U>();
-		diagramGroupDirty = true;
+		diagramCollectionDirty = true;
 	}
 	
-	public AbstractDiagramGroup(String _name) {
+	public AbstractDiagramCollection(String _name) {
 		this();
 		myName = _name;
 	}
@@ -34,7 +38,23 @@ public abstract class AbstractDiagramGroup <T extends EOModelObject, U extends A
 	
 	public void setModelDirty(boolean dirty) {
 		myModel.setDirty(dirty);
-		diagramGroupDirty = dirty;
+		diagramCollectionDirty = dirty;
+	}
+	
+	public String findUnusedDiagramName(String _newName) {
+		return _findUnusedName(_newName, "getDiagramNamed");
+	}
+	
+	public U getDiagramNamed(String _name) {
+		U matchingDiagram = null;
+		Iterator<U> diagramIterator = myDiagrams.iterator();
+		while (matchingDiagram == null && diagramIterator.hasNext()) {
+			U diagram = diagramIterator.next();
+			if (ComparisonUtils.equals(diagram.getName(), _name)) {
+				matchingDiagram = diagram;
+			}
+		}
+		return matchingDiagram;
 	}
 	
 	@Override
@@ -64,12 +84,12 @@ public abstract class AbstractDiagramGroup <T extends EOModelObject, U extends A
 		return myModel;
 	}
 
-	public boolean isDiagramGroupDirty() {
-		return diagramGroupDirty;
+	public boolean isDiagramCollectionDirty() {
+		return diagramCollectionDirty;
 	}
 
-	public void setDiagramGroupDirty(boolean diagramGroupDirty) {
-		this.diagramGroupDirty = diagramGroupDirty;
+	public void setDiagramCollectionDirty(boolean diagramCollectionDirty) {
+		this.diagramCollectionDirty = diagramCollectionDirty;
 	}
 
 	public Set<U> getDiagrams() {

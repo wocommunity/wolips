@@ -71,9 +71,10 @@ import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityDeletedEvent;
 import org.objectstyle.wolips.eomodeler.core.model.history.ModelEvents;
 import org.objectstyle.wolips.eomodeler.core.utils.NamingConvention;
 
+import ch.rucotec.wolips.eomodeler.core.model.EOClassDiagramCollection;
 import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
 //import ch.rucotec.wolips.eomodeler.core.model.AbstractEOEntityDiagram;
-import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramGroup;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramCollection;
 //import ch.rucotec.wolips.eomodeler.core.model.EOEntityERDiagram;
 import ch.rucotec.wolips.eomodeler.core.model.EOEntityERDiagram;
 
@@ -155,7 +156,8 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		myDatabaseConfigs = new HashSet<EODatabaseConfig>();
 		// SAVAS myERD und myDeletedERDNames
 		if(!myName.equals("erprototypes")) {
-			myERDiagramGroup = addBlankERDiagramGroup("ERDiagramGroup");
+			myERDiagramCollection = addBlankERDiagramCollection(EOERDiagramCollection.DISPLAYNAME);
+			myClassDiagramCollection = addBlankClassDiagramCollection(EOClassDiagramCollection.DISPLAYNAME);
 		}
 		myDeletedEntityNamesInObjectStore = new PropertyListSet<String>();
 		myDeletedEntityNames = new PropertyListSet<String>();
@@ -341,24 +343,41 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	
 	// SAVAS hinzugefuegt (meiner ist nicht protected weil es nicht im gleichen package ist)
 	
-	public static final String ERDIAGRAMGROUP = "erdiagramGroup";
-	public static final String ERDIAGRAMS = "erdiagrams"; // DELETE THIS
-	private EOERDiagramGroup myERDiagramGroup;
+	public static final String ERDIAGRAMCOLLECTION = "erdiagramCollection";
+	public static final String CLASSDIAGRAMCOLLECTION = "classdiagramCollection";
+	private EOERDiagramCollection myERDiagramCollection;
+	private EOClassDiagramCollection myClassDiagramCollection;
 	
-	public EOERDiagramGroup getERDiagramGroup() {
-		return myERDiagramGroup;
+	public EOERDiagramCollection getERDiagramCollection() {
+		return myERDiagramCollection;
 	}
 	
-	public void _ERDiagramChanged(EOERDiagramGroup _erdiagram, String _propertyName, Object _oldValue, Object _newValue) {
-		firePropertyChange(EOModel.ERDIAGRAMGROUP + "." + _propertyName, _oldValue, _newValue);
-		firePropertyChange(EOModel.ERDIAGRAMGROUP, null, _erdiagram);
+	public EOClassDiagramCollection getClassDiagramCollection() {
+		return myClassDiagramCollection;
+	}
+	
+	public void _ERDiagramChanged(EOERDiagramCollection _erdiagrams, String _propertyName, Object _oldValue, Object _newValue) {
+		firePropertyChange(EOModel.ERDIAGRAMCOLLECTION + "." + _propertyName, _oldValue, _newValue);
+		firePropertyChange(EOModel.ERDIAGRAMCOLLECTION, null, _erdiagrams);
 		
 	}
 	
-	public EOERDiagramGroup addBlankERDiagramGroup(String name) {
-		EOERDiagramGroup erdiagram = new EOERDiagramGroup(name);
-		erdiagram._setModel(this);
-		return erdiagram;
+	public EOERDiagramCollection addBlankERDiagramCollection(String name) {
+		EOERDiagramCollection erdiagrams = new EOERDiagramCollection(name);
+		erdiagrams._setModel(this);
+		return erdiagrams;
+	}
+	
+	public void _ClassDiagramChanged(EOClassDiagramCollection _classdiagrams, String _propertyName, Object _oldValue, Object _newValue) {
+		firePropertyChange(EOModel.CLASSDIAGRAMCOLLECTION + "." + _propertyName, _oldValue, _newValue);
+		firePropertyChange(EOModel.CLASSDIAGRAMCOLLECTION, null, _classdiagrams);
+		
+	}
+	
+	public EOClassDiagramCollection addBlankClassDiagramCollection(String name) {
+		EOClassDiagramCollection classdiagrams = new EOClassDiagramCollection(name);
+		classdiagrams._setModel(this);
+		return classdiagrams;
 	}
 	
 	// ********************************************************************************
@@ -925,12 +944,21 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 					// SAVAS hier werden alle diagramme anhand vom entity erstellt.
 					if (entity._getEntityMap() != null) {
 						List erds = null;
+						List classdiagrams = null;
 						if (entity._getEntityMap().get("ERDiagrams") instanceof List) {
 							erds = entity._getEntityMap().getList("ERDiagrams");
 						}
+						if (entity._getEntityMap().get("ClassDiagrams") instanceof List) {
+							classdiagrams = entity._getEntityMap().getList("ClassDiagrams");
+						}
+						
 //						Map erds = entity._getEntityMap().getMap("ERDs");
-						if (erds != null && myERDiagramGroup != null) {
-							myERDiagramGroup.loadDiagramFromEntity(entity, erds);
+						if (erds != null && myERDiagramCollection != null) {
+							myERDiagramCollection.loadDiagramFromEntity(entity, erds);
+						}
+						
+						if (classdiagrams != null && myClassDiagramCollection != null) {
+							myClassDiagramCollection.loadDiagramFromEntity(entity, classdiagrams);
 						}
 					}
 					
@@ -1299,9 +1327,15 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 //				}
 //			}
 			
-			if (myERDiagramGroup != null) {
-				if (myERDiagramGroup.isDiagramGroupDirty()) {
-					myERDiagramGroup.saveToFile(modelFolder);
+			if (myERDiagramCollection != null) {
+				if (myERDiagramCollection.isDiagramCollectionDirty()) {
+					myERDiagramCollection.saveToFile(modelFolder);
+				}
+			}
+			
+			if (myClassDiagramCollection != null) {
+				if (myClassDiagramCollection.isDiagramCollectionDirty()) {
+					myClassDiagramCollection.saveToFile(modelFolder);
 				}
 			}
 	

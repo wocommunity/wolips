@@ -4,7 +4,12 @@ import org.eclipse.gef.fx.nodes.GeometryNode;
 import org.eclipse.gef.geometry.planar.Rectangle;
 import org.eclipse.gef.geometry.planar.RoundedRectangle;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
+
 import com.google.common.collect.Lists;
+
+import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +41,10 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 public class DiagramNodeVisual extends Region {
+	
+	public enum DiagramTyp {
+		ERDIAGRAM, CLASSDIAGRAM;
+	}
 
     private static final double HORIZONTAL_PADDING = 20d;
     private static final double VERTICAL_PADDING = 10d;
@@ -49,31 +58,25 @@ public class DiagramNodeVisual extends Region {
     private VBox labelVBox;
     
     //SAVAS: Das hier muss noch angepasst werden
+    private DiagramTyp diagramTyp;
+    private DiagramNode myNode;
     private List<EOAttribute> attributeList;
     private GridPane gridPane = new GridPane();
-    private Label lblAttributeName;
-    private Label lblAttributePrivateKey;
-    private Label lblAttributeClassProperty;
-    private Label lblAttributeLocking;
-    private Label lblAttributeAllowsNull;
     
 //    private final ObservableList<TableAttribute> data = FXCollections.observableArrayList();
 
-    public void setAttributeList(List<EOAttribute> attributeList) {
-		this.attributeList = attributeList;
+    public void initAttributeListForERDiagram() {
+    	Label lblAttributeName = null;
+    	Label lblAttributeAllowsNull = null;
+    	
 		for (int i = 0; i < attributeList.size(); i++) {
 			EOAttribute attribute = attributeList.get(i);
-			HashMap<String, Label> attributeValuesAsLabels = null;
-
-			attributeValuesAsLabels = new HashMap<String, Label>();
+			
 			lblAttributeName = new Label(attribute.getName());
 			lblAttributeName.setPadding(new Insets(0, 0, 0, 10));
 			
-//				lblAttributePrivateKey = new Label(attribute.isPrimaryKey() ? "Yes" : "");
-//				lblAttributeClassProperty = new Label(attribute.isClassProperty() ? "Yes" : "");
-//				lblAttributeLocking = new Label(attribute.isUsedForLocking() ? "Yes" : "");
 			if (attribute.isPrimaryKey()) {
-//					lblAttributeName.setFont(new Font("System Bold", lblAttributeName.getFont().getSize()));
+//				lblAttributeName.setFont(new Font("System Bold", lblAttributeName.getFont().getSize()));
 				lblAttributeName.setUnderline(true);
 			} else {
 				lblAttributeName.setUnderline(false);
@@ -85,24 +88,41 @@ public class DiagramNodeVisual extends Region {
 				lblAttributeAllowsNull = new Label("Ø");
 			}
 			
-			attributeValuesAsLabels.put("attributeName", lblAttributeName);
-			attributeValuesAsLabels.put("attributePrivateKey", lblAttributePrivateKey);
-			attributeValuesAsLabels.put("attributeClassProperty", lblAttributeClassProperty);
-			attributeValuesAsLabels.put("attributeLocking", lblAttributeLocking);
-			attributeValuesAsLabels.put("attributeAllowsNull", lblAttributeAllowsNull);
-			
-			gridPane.add(attributeValuesAsLabels.get("attributeName"), 0, i+1);
-			gridPane.add(attributeValuesAsLabels.get("attributeAllowsNull"), 1, i+1);
-		
-//			} else if((gridPane.getChildren().size()- (i*2)) <= lblAttribute.size()) {
-//				gridPane.add(lblAttribute.get(i).get("attributeName"), 0, i+1);
-//				gridPane.add(lblAttribute.get(i).get("attributePrivateKey"), 1, i+1);
-//				gridPane.add(lblAttribute.get(i).get("attributeClassProperty"), 2, i+1);
-//				gridPane.add(lblAttribute.get(i).get("attributeLocking"), 3, i+1);
-//				gridPane.add(lblAttribute.get(i).get("attributeAllowsNull"), 1, i+1);
-//			} 
+			gridPane.add(lblAttributeName, 0, i+1);
+			gridPane.add(lblAttributeAllowsNull, 1, i+1);
 		}
 	}
+    
+    public void initAttributeListForClassDiagram() {
+    	Label lblAttributeName = null;
+    	Label lblRelationshipName = null;
+    	List<EORelationship> relationshipList = myNode.getRelationshipsList();
+    	int attributesCount = 0;
+    	
+    	for (int i = 0; i < attributeList.size(); i++) {
+			EOAttribute attribute = attributeList.get(i);
+			
+			if (attribute.isClassProperty()) { 
+				attributesCount++;
+				lblAttributeName = new Label(attribute.getName() + " : " + attribute.getJavaClassName());
+				
+				gridPane.add(new Label("-"), 0, i+1);
+				gridPane.add(lblAttributeName, 1, i+1);
+			}
+		}
+    	
+    	for (int i = 0; i < relationshipList.size(); i++) {
+    		EORelationship relationship = relationshipList.get(i);
+    		if (relationship.isToMany()) {
+    			lblRelationshipName = new Label(relationship.getName() + " : " + relationship.getDestination().getClassName()+"[]");
+    		} else if (relationship.isToOne()) {
+    			lblRelationshipName = new Label(relationship.getName() + " : " + relationship.getDestination().getClassName());
+    		}
+    		
+    		gridPane.add(new Label("-"), 0, attributesCount + i + 2);
+    		gridPane.add(lblRelationshipName, 1, attributesCount + i + 2);
+    	}
+    }
 
 	public List<EOAttribute> getAttributeList() {
 		return attributeList;
@@ -151,7 +171,18 @@ public class DiagramNodeVisual extends Region {
 //        getChildren().addAll(new Group(shape), new Group(labelVBox));
 //    }
     
-    public DiagramNodeVisual(List<EOAttribute> attributeList) {
+    public DiagramNodeVisual(DiagramNode node, DiagramTyp diagramTyp) {
+    	this.myNode = node;
+    	this.attributeList = node.getAttributeList();
+    	this.diagramTyp = diagramTyp;
+    	if (diagramTyp == DiagramTyp.ERDIAGRAM) {
+    		createERDiagram();
+    	} else if (diagramTyp == DiagramTyp.CLASSDIAGRAM) {
+    		createClassDiagram();
+    	}
+    }
+    
+    public void createERDiagram() {
     	// create background shape
         shape = new GeometryNode<>(new Rectangle(0, 0, 70, 30));
         shape.setFill(Color.LIGHTGREEN);
@@ -216,7 +247,79 @@ public class DiagramNodeVisual extends Region {
 
         // wrap shape and VBox in Groups so that their bounds-in-parent is
         // considered when determining the layout-bounds of this visual
-        setAttributeList(attributeList);
+        initAttributeListForERDiagram();
+        getChildren().addAll(new Group(shape), new Group(labelVBox));
+    }
+    
+    public void createClassDiagram() {
+    	// create background shape
+        shape = new GeometryNode<>(new Rectangle(0, 0, 70, 30));
+        shape.setFill(Color.LIGHTGREEN);
+        shape.setStroke(Color.BLACK);
+        shape.setStrokeType(StrokeType.INSIDE);
+        
+        // create vertical box for title and description
+        labelVBox = new VBox(VERTICAL_SPACING);
+        labelVBox.setPadding(new Insets(VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING));
+
+        // TODO Savas activate GC
+        labelVBox.setOnMouseReleased(e -> {System.gc();});
+        ColumnConstraints colmn = new ColumnConstraints();
+        colmn.setHgrow(Priority.SOMETIMES);
+        colmn.setMinWidth(10);
+        colmn.setPrefWidth(10);
+        colmn.setMaxWidth(10);
+        gridPane.getColumnConstraints().add(colmn);
+        gridPane.getColumnConstraints().add(new ColumnConstraints());
+        
+        
+        // ensure shape and labels are resized to fit this visual
+        shape.prefWidthProperty().bind(widthProperty());
+        shape.prefHeightProperty().bind(heightProperty());
+        labelVBox.prefWidthProperty().bind(widthProperty());
+        labelVBox.prefHeightProperty().bind(heightProperty());
+
+        // create title text
+        titleText = new Text();
+        titleText.setTextOrigin(VPos.TOP);
+        Font font = new Font(15);
+        titleText.setFont(font);
+        
+        InnerShadow innerShadow = new InnerShadow();
+        
+        Separator separator = new Separator();
+		separator.setEffect(innerShadow);
+		separator.setPadding(new Insets(0, -HORIZONTAL_PADDING, 0, -HORIZONTAL_PADDING));
+		separator.setMinWidth(1);
+        
+        Separator separator2 = new Separator();
+		separator2.setEffect(innerShadow);
+		separator2.setPadding(new Insets(0, -HORIZONTAL_PADDING, 0, -HORIZONTAL_PADDING));
+		separator2.setMinWidth(1);
+        
+
+        // create description text
+        descriptionText = new Text();
+        descriptionText.setTextOrigin(VPos.TOP);
+
+        // use TextFlow to enable wrapping of the description text within the
+        // label bounds
+        descriptionFlow = new TextFlow(descriptionText);
+        // only constrain the width, so that the height is computed in
+        // dependence on the width
+        descriptionFlow.maxWidthProperty().bind(shape.widthProperty().subtract(HORIZONTAL_PADDING * 2));
+        
+
+        // vertically lay out title and description
+        labelVBox.getChildren().addAll(titleText,separator2, gridPane, separator);
+
+        // ensure title is always visible (see also #computeMinWidth(double) and
+        // #computeMinHeight(double) methods)
+        setMinSize(USE_COMPUTED_SIZE, USE_COMPUTED_SIZE);
+
+        // wrap shape and VBox in Groups so that their bounds-in-parent is
+        // considered when determining the layout-bounds of this visual
+        initAttributeListForClassDiagram();
         getChildren().addAll(new Group(shape), new Group(labelVBox));
     }
 

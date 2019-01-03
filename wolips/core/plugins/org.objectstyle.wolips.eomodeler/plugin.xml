@@ -707,8 +707,8 @@
       </objectContribution>
       <objectContribution
             adaptable="false"
-            id="org.objectstyle.wolips.eomodeler.outline.eoerdiagramgroup"
-            objectClass="ch.rucotec.wolips.eomodeler.core.model.EOERDiagramGroup">
+            id="org.objectstyle.wolips.eomodeler.outline.eoerdiagramcollection"
+            objectClass="ch.rucotec.wolips.eomodeler.core.model.EOERDiagramCollection">
          <action
                class="ch.rucotec.wolips.eomodeler.actions.NewERDiagram"
                enablesFor="1"
@@ -716,6 +716,18 @@
                id="org.objectstyle.wolips.eomodeler.outline.popup.NewERDiagram"
                label="New ERDiagram"
                menubarPath="group1">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.objectstyle.wolips.eomodeler.outline.eoclassdiagramcollection"
+            objectClass="ch.rucotec.wolips.eomodeler.core.model.EOClassDiagramCollection">
+         <action
+               class="ch.rucotec.wolips.eomodeler.actions.NewClassDiagram"
+               enablesFor="1"
+               icon="icons/reverseEngineer.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.NewClassDiagram"
+               label="New ClassDiagram">
          </action>
       </objectContribution>
    </extension>

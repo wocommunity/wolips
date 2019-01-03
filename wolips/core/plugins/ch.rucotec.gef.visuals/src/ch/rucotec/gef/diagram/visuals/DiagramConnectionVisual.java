@@ -39,13 +39,15 @@ public class DiagramConnectionVisual extends Connection {
     
     public DiagramConnectionVisual(int sourceToTargetCardinality, int targetToSourceCardinality) {
     	if (sourceToTargetCardinality == (DiagramConnection.TOMANY | DiagramConnection.OPTIONAL)) {
-    		sourceCardinality =  new Text(">O");
+    		sourceCardinality = new Text(">O");
     	} else if (sourceToTargetCardinality == DiagramConnection.TOMANY) {
-    		sourceCardinality =  new Text(">|");
+    		sourceCardinality = new Text(">|");
     	} else if (sourceToTargetCardinality == (DiagramConnection.TOONE | DiagramConnection.OPTIONAL)) {
-    		sourceCardinality =  new Text("|O");
+    		sourceCardinality = new Text("|O");
     	} else if (sourceToTargetCardinality == DiagramConnection.TOONE) {
-    		sourceCardinality =  new Text("||");
+    		sourceCardinality = new Text("||");
+    	} else if (sourceToTargetCardinality == 1337) {
+    		sourceCardinality = new Text("");
     	}
     	
     	if (targetToSourceCardinality == (DiagramConnection.TOMANY | DiagramConnection.OPTIONAL)) {
@@ -56,6 +58,8 @@ public class DiagramConnectionVisual extends Connection {
     		targetCardinality =  new Text("|O");
     	} else if (targetToSourceCardinality == DiagramConnection.TOONE) {
     		targetCardinality =  new Text("||");
+    	} else if (targetToSourceCardinality == 1337) {
+    		targetCardinality = new Text("");
     	}
     	
     	addCardinalities();

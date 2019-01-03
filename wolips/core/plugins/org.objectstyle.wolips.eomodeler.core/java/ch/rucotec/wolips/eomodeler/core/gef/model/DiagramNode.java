@@ -33,7 +33,9 @@ public class DiagramNode extends AbstractDiagramItem implements Serializable {
     // TODO: Savas hinzugefügt
     
     public static final String PROP_ATTRIBUTELIST = "attributeList";
+    public static final String PROP_RELATIONSHIPSLIST = "relationshipsList";
     private List<EOAttribute> attributeList;
+    private List<EORelationship> relationshipsList;
     private AbstractEOEntityDiagram entityDiagram;
     private String selectedDiagram;
 
@@ -43,6 +45,8 @@ public class DiagramNode extends AbstractDiagramItem implements Serializable {
     public DiagramNode(AbstractEOEntityDiagram entityDiagram, String selectedDiagram) {
     	this.entityDiagram = entityDiagram;
     	this.selectedDiagram = selectedDiagram;
+    	setAttributeList(new ArrayList<EOAttribute>(entityDiagram.getEntity().getAttributes()));
+    	setRelationshipsList(new ArrayList<EORelationship>(entityDiagram.getEntity().getRelationships()));
     }
     
     
@@ -51,16 +55,17 @@ public class DiagramNode extends AbstractDiagramItem implements Serializable {
 //    	pcs.firePropertyChange(PROP_ATTRIBUTELIST, null, name);
 //    }
     
-    public List<EOAttribute> getAttributeList() {
+    public AbstractEOEntityDiagram getEntityDiagram() {
+		return entityDiagram;
+	}
+
+	public List<EOAttribute> getAttributeList() {
 		return attributeList;
 	}
 
 	public void setAttributeList(List<EOAttribute> attributeList) {
 		pcs.firePropertyChange(PROP_ATTRIBUTELIST, this.attributeList, (this.attributeList = attributeList));
 	}
-	
-    public static final String PROP_RELATIONSHIPSLIST = "relationshipsList";
-    private List<EORelationship> relationshipsList;
 
 //    public void addAttribute(String name) {
 //    	attributeList.add(name);
@@ -144,7 +149,7 @@ public class DiagramNode extends AbstractDiagramItem implements Serializable {
 
     public void setBounds(Rectangle bounds) {
     	if (this.bounds != null && entityDiagram != null && !this.bounds.equals(bounds)) { 
-    		((EOEntityERDiagram) entityDiagram).positionsChanged(selectedDiagram, bounds);
+    		entityDiagram.positionsChanged(selectedDiagram, bounds); // hier wird dem EOEntityDiagram mitgeteilt, dass sich die Position geändert hat.
     	}
         pcs.firePropertyChange(PROP_BOUNDS, this.bounds, (this.bounds = bounds.getCopy()));
     }

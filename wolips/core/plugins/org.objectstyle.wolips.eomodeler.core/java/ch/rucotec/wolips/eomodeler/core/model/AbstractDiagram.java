@@ -14,16 +14,20 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.ISortableEOModelObject;
 import org.objectstyle.wolips.eomodeler.core.model.UserInfoableEOModelObject;
 
-public abstract class AbstractDiagram<T extends AbstractDiagramGroup> extends UserInfoableEOModelObject<T> implements ISortableEOModelObject {
+import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
+import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
+
+public abstract class AbstractDiagram<T extends AbstractDiagramCollection> extends UserInfoableEOModelObject<T> implements ISortableEOModelObject {
 
 	public static final String NAME = "name";
+	public static final String ENTITYNAMES = "entityNames";
 	public static final String DIAGRAMS = "diagrams";
 	
 	private String myName;
 	private Set<EOEntity> myEntities;
 	private Set<AbstractEOEntityDiagram> myDiagramEntities;
 	private Set<AbstractEOEntityDiagram> myDeletedDiagramEntities;
-	private T myDiagramGroup;
+	private T myDiagramCollection;
 	
 	public AbstractDiagram() {
 		myDiagramEntities = new LinkedHashSet<AbstractEOEntityDiagram>();
@@ -36,18 +40,19 @@ public abstract class AbstractDiagram<T extends AbstractDiagramGroup> extends Us
 		myName = name;
 	}
 	
-	public abstract void addEntityDiagram(EOEntity entity);
+	public abstract void addEntityToDiagram(EOEntity entity);
 	
-	public void addEntityDiagram(AbstractEOEntityDiagram entityDiagram) {
+	public void addEntityToDiagram(AbstractEOEntityDiagram entityDiagram) {
 		if (myDeletedDiagramEntities.contains(entityDiagram)) {
 			myDeletedDiagramEntities.remove(entityDiagram);
 		}
 		myDiagramEntities.add(entityDiagram);
+		myEntities.add(entityDiagram.getEntity());
 	}
 	
 	public AbstractEOEntityDiagram getEntityDiagramWithEntity(EOEntity entity) {
 		AbstractEOEntityDiagram foundEntityDiagram = null;
-		for (AbstractDiagram diagram : (Set<AbstractDiagram>)myDiagramGroup.getDiagrams()) {
+		for (AbstractDiagram diagram : (Set<AbstractDiagram>)myDiagramCollection.getDiagrams()) {
 			for (AbstractEOEntityDiagram entityDiagram : (Set<AbstractEOEntityDiagram>)diagram.getDiagramEntities()) {
 				if (entityDiagram.getEntity() == entity) {
 					foundEntityDiagram = entityDiagram;
@@ -57,7 +62,7 @@ public abstract class AbstractDiagram<T extends AbstractDiagramGroup> extends Us
 		return foundEntityDiagram;
 	}
 	
-	public void removeEntityDiagram(EOEntity entity) {
+	public void removeEntityFromDiagram(EOEntity entity) {
 		for (AbstractEOEntityDiagram entityDiagram : myDiagramEntities) {
 			if (entity == entityDiagram.getEntity()) {
 				myDeletedDiagramEntities.add(entityDiagram);
@@ -119,17 +124,31 @@ public abstract class AbstractDiagram<T extends AbstractDiagramGroup> extends Us
 		}
 	}
 	
+	// Diese Methode wird durch den Column ersteller des TableViews aufgerufen (weil die Konstante 
+	//	AbstractDiagram.ENTITYNAMES als column mit gegeben wird ) hier wird dann der gewünschte String zurueck gegeben.
+	public String getEntityNames() {
+		StringBuilder sb = new StringBuilder();
+		for (EOEntity entity : myEntities) {
+			if (sb.length() == 0) {
+				sb.append(entity.getName());
+			} else {
+				sb.append(", " + entity.getName());
+			}
+		}
+		return sb.toString();
+	}
+	
 	@Override
 	public T _getModelParent() {
-		return myDiagramGroup;
+		return myDiagramCollection;
 	}
 	
-	public void _setModelParent(T diagramGroup) {
-		myDiagramGroup = diagramGroup;
+	public void _setModelParent(T diagramCollection) {
+		myDiagramCollection = diagramCollection;
 	}
 	
-	public T getDiagramGroup() {
-		return myDiagramGroup;
+	public T getDiagramCollection() {
+		return myDiagramCollection;
 	}
 
 	@Override
@@ -140,4 +159,6 @@ public abstract class AbstractDiagram<T extends AbstractDiagramGroup> extends Us
 	public Set<EOEntity> getEntities() {
 		return myEntities;
 	}
+	
+	public abstract SimpleDiagram drawDiagram();
 }
