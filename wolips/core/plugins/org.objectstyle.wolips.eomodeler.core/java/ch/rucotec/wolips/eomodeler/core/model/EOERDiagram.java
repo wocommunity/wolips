@@ -137,11 +137,14 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 						}
 
 						if (!manyToManyConnection) {
-							DiagramConnection conn = new DiagramConnection();
-							conn.connect(node, entityNodeMap.get(relationship.getDestination().getName()));
-							conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
-
-							myERD.addChildElement(conn);
+							// TODO rekursive beziehungen werden hier einfach uebersprungen, hier sollte das irgendwie gehandelt werden.
+							if (node != entityNodeMap.get(relationship.getDestination().getName())) {
+								DiagramConnection conn = new DiagramConnection();
+								conn.connect(node, entityNodeMap.get(relationship.getDestination().getName()));
+								conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
+	
+								myERD.addChildElement(conn);
+							}
 						}
 					}
 				}

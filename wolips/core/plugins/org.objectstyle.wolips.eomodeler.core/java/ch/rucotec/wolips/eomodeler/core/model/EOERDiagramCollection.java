@@ -23,7 +23,7 @@ public class EOERDiagramCollection extends AbstractDiagramCollection<EOModel, EO
 	//---------------------------------------------------------------------------
 	// ### Variables and Constants
 	//---------------------------------------------------------------------------
-	public static final String DISPLAYNAME = "Entity Relation Diagrams";
+	public static final String DISPLAYNAME = "Entity Relationship Diagrams";
 	
 	//---------------------------------------------------------------------------
 	// ### Construction

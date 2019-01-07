@@ -37,6 +37,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -68,19 +69,13 @@ public class DiagramNodeVisual extends Region {
     public void initAttributeListForERDiagram() {
     	Label lblAttributeName = null;
     	Label lblAttributeAllowsNull = null;
+    	List<EOAttribute> attributeListFilteredPK = attributeList;
     	
-		for (int i = 0; i < attributeList.size(); i++) {
-			EOAttribute attribute = attributeList.get(i);
+		for (int i = 0; i < attributeListFilteredPK.size(); i++) {
+			EOAttribute attribute = attributeListFilteredPK.get(i);
 			
 			lblAttributeName = new Label(attribute.getName());
 			lblAttributeName.setPadding(new Insets(0, 0, 0, 10));
-			
-			if (attribute.isPrimaryKey()) {
-//				lblAttributeName.setFont(new Font("System Bold", lblAttributeName.getFont().getSize()));
-				lblAttributeName.setUnderline(true);
-			} else {
-				lblAttributeName.setUnderline(false);
-			}
 			
 			if (attribute.isAllowsNull() != null) {
 				lblAttributeAllowsNull = new Label(attribute.isAllowsNull() ? "O" : "Ø");
@@ -88,8 +83,18 @@ public class DiagramNodeVisual extends Region {
 				lblAttributeAllowsNull = new Label("Ø");
 			}
 			
-			gridPane.add(lblAttributeName, 0, i+1);
-			gridPane.add(lblAttributeAllowsNull, 1, i+1);
+			if (attribute.isPrimaryKey()) {
+				lblAttributeName.setFont(Font.font(lblAttributeName.getFont().getFamily(), FontWeight.EXTRA_BOLD, 16));
+				lblAttributeName.setUnderline(true);
+				attributeListFilteredPK.remove(i);
+				i--;
+				gridPane.add(lblAttributeName, 0, 1);
+				gridPane.add(lblAttributeAllowsNull, 1, 1);
+			} else {
+				lblAttributeName.setUnderline(false);
+				gridPane.add(lblAttributeName, 0, i+2);
+				gridPane.add(lblAttributeAllowsNull, 1, i+2);
+			}
 		}
 	}
     

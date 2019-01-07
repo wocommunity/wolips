@@ -1,19 +1,17 @@
 package ch.rucotec.gef.diagram.visuals;
 
-import java.util.List;
-
 import org.eclipse.gef.fx.nodes.Connection;
 import org.eclipse.gef.fx.nodes.IConnectionRouter;
 import org.eclipse.gef.fx.nodes.OrthogonalRouter;
 import org.eclipse.gef.fx.nodes.StraightRouter;
 
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramConnection;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
+import javafx.scene.shape.Polyline;
+import javafx.scene.shape.Shape;
 
 public class DiagramConnectionVisual extends Connection {
 
@@ -23,78 +21,103 @@ public class DiagramConnectionVisual extends Connection {
         }
     }
     
-    private int fontnumber;
+    public static class CrowFoot extends Polyline {
+    	public CrowFoot() {
+    		super(  0, 7,  
+    				0, 0,  
+    				-14, 7,  
+    				0, 0,
+    				-10, 0,
+    				0, 0,
+    				-14, -7,
+    				-14, -7,  
+    				0, 0,
+    				0, -7
+    				);
+    	}
+    }
+    
+    public static class One extends Polyline {
+    	public One() {
+			super(0,10,0,-10);
+		}
+    }
+    
+    public static class Many extends Polyline {
+    	public Many() {
+    		super(-14,7, 0,0, -14,0, 0,0, -14,-7);
+		}
+    }
+    
+    public static class Zero extends Circle {
+    	public Zero() {
+    		super(7);
+		}
+    }
+    
     private StraightRouter straightRouter = new StraightRouter();
     private OrthogonalRouter orthogonalRouter = new OrthogonalRouter();
     private boolean orthogonal = true;
-    private Text targetCardinality;
-    private Text sourceCardinality;
     
-    public DiagramConnectionVisual() {
-        ArrowHead endDecoration = new ArrowHead();
-
-        endDecoration.setFill(Color.BLACK);
-        setEndDecoration(endDecoration);
-    }
+    
+//    public DiagramConnectionVisual() {
+//        ArrowHead endDecoration = new ArrowHead();
+//
+//        endDecoration.setFill(Color.BLACK);
+//        setEndDecoration(endDecoration);
+//    }
     
     public DiagramConnectionVisual(int sourceToTargetCardinality, int targetToSourceCardinality) {
+    	
     	if (sourceToTargetCardinality == (DiagramConnection.TOMANY | DiagramConnection.OPTIONAL)) {
-    		sourceCardinality = new Text(">O");
+    		// this generates this ">O" symbol.
+    		Zero zero = new Zero();
+    		Many many = new Many();
+    		zero.setTranslateX(8);
+    		many.setStrokeWidth(0.3);
+        	Shape ZeroOrMany = Shape.union(zero, many);
+        	ZeroOrMany.setFill(Color.TRANSPARENT);
+        	ZeroOrMany.setStroke(Color.BLACK);
+        	setEndDecoration(ZeroOrMany);
     	} else if (sourceToTargetCardinality == DiagramConnection.TOMANY) {
-    		sourceCardinality = new Text(">|");
-    	} else if (sourceToTargetCardinality == (DiagramConnection.TOONE | DiagramConnection.OPTIONAL)) {
-    		sourceCardinality = new Text("|O");
-    	} else if (sourceToTargetCardinality == DiagramConnection.TOONE) {
-    		sourceCardinality = new Text("||");
-    	} else if (sourceToTargetCardinality == 1337) {
-    		sourceCardinality = new Text("");
+    		// this generates this ">|" symbol
+    		One one = new One();
+    		Many many = new Many();
+    		Shape OneOrMany = Shape.union(one, many);
+    		setEndDecoration(OneOrMany);
+    	} else {
+    		// this generates no symbol
+    		setEndDecoration(new HBox());
     	}
     	
-    	if (targetToSourceCardinality == (DiagramConnection.TOMANY | DiagramConnection.OPTIONAL)) {
-    		targetCardinality =  new Text(">O");
-    	} else if (targetToSourceCardinality == DiagramConnection.TOMANY) {
-    		targetCardinality =  new Text(">|");
-    	} else if (targetToSourceCardinality == (DiagramConnection.TOONE | DiagramConnection.OPTIONAL)) {
-    		targetCardinality =  new Text("|O");
+    	if (targetToSourceCardinality == (DiagramConnection.TOONE | DiagramConnection.OPTIONAL)) {
+    		// this generates this "|O" symbol
+    		Zero zero = new Zero();
+    		One one = new One();
+    		zero.setFill(Color.TRANSPARENT);
+    		zero.setStroke(Color.BLACK);
+    		one.setTranslateX(-10);
+    		one.setTranslateY(-11);
+    		zero.setTranslateX(10);
+    		zero.setTranslateY(-7);
+    		HBox ZeroOrOne = new HBox(zero, one);
+    		setStartDecoration(ZeroOrOne);
     	} else if (targetToSourceCardinality == DiagramConnection.TOONE) {
-    		targetCardinality =  new Text("||");
-    	} else if (targetToSourceCardinality == 1337) {
-    		targetCardinality = new Text("");
+    		// this generates this "||" symbol
+    		One one = new One();
+    		One one2 = new One();
+    		one.setTranslateX(5);
+    		one2.setTranslateX(10);
+    		one.setTranslateY(-11);
+    		one2.setTranslateY(-11);
+    		HBox oneOnlyOne = new HBox(one,one2);
+    		setStartDecoration(oneOnlyOne);
+    	} else {
+    		// this generates no symbol
+    		setStartDecoration(new HBox());
     	}
     	
-    	addCardinalities();
-    }
-    
-    private void addCardinalities() {
-    	 List<String> list = Font.getFamilies();
-         
-       targetCardinality.setFont(new Font(list.get(184),23));
-       targetCardinality.setTranslateY(targetCardinality.getTranslateY()-13);
-       targetCardinality.setTranslateX(targetCardinality.getTranslateX()+5);
-       
-       fontnumber = 0;
-       // 33, 
-       sourceCardinality.setFont(new Font(list.get(184),23));
-       sourceCardinality.setOnMouseClicked( e-> {
-       	fontnumber++;
-       	sourceCardinality.setFont(new Font(list.get(fontnumber),23));
-       	System.out.println(list.get(fontnumber) + " " + fontnumber);
-       	orthogonal = !orthogonal;
-       	setRouter(getRouter(orthogonal));
-       });
-       
-       sourceCardinality.setTranslateY(sourceCardinality.getTranslateY()-15);
-       
-       
-       HBox hboxStart = new HBox();
-       hboxStart.getChildren().addAll(targetCardinality);
-       
-       HBox hboxEnd = new HBox();
-       hboxEnd.getChildren().addAll(sourceCardinality);
-       
-       setStartDecoration(hboxStart);
-       setEndDecoration(hboxEnd);
-       setRouter(getRouter(orthogonal));
+    	setRouter(getRouter(orthogonal));
     }
     
     public IConnectionRouter getRouter(boolean isOrthogonal) {
