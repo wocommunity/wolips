@@ -9,7 +9,6 @@ public class DiagramConnection extends AbstractDiagramItem {
 	private int sourceToTargetCardinality;
 	private int targetToSourceCardinality;
 	private DiagramType diagramType;
-//	private DiagramConnectionPart part;
 	
 	public DiagramConnection(DiagramType diagramType) {
 		this.diagramType = diagramType;
@@ -40,15 +39,6 @@ public class DiagramConnection extends AbstractDiagramItem {
 	public void setDiagramType(DiagramType diagramType) {
 		this.diagramType = diagramType;
 	}
-	
-//	public DiagramConnectionPart getPart() {
-//		return part;
-//	}
-//
-//	public void setPart(DiagramConnectionPart part) {
-//		this.part = part;
-//	}
-
 
 	/**
      * Generated UUID
