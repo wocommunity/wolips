@@ -15,6 +15,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramConnection;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
+import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramType;
 import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
 
 public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
@@ -44,7 +45,7 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 		if (entityClassDiagram == null) {
 			entityClassDiagram = new EOEntityClassDiagram(entity, _getModelParent());
 		}
-		EOEntityDiagramDimension dimension = new EOEntityDiagramDimension(100, 100, 100, 100);
+		EOEntityDiagramDimension dimension = new EOEntityDiagramDimension(100, 100, 200, 100);
 		entityClassDiagram.getDiagramDimensions().put(getName(), dimension);
 		super.addEntityToDiagram(entityClassDiagram);
 	}
@@ -97,12 +98,12 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 
 	@Override
 	public SimpleDiagram drawDiagram() {
-		SimpleDiagram myERD = new SimpleDiagram();
+		SimpleDiagram myClassDiagram = new SimpleDiagram();
 		HashMap<String, DiagramNode> entityNodeMap = new HashMap<String, DiagramNode>();
 		
-		for (AbstractEOEntityDiagram entityERD : getDiagramEntities()) {
-			DiagramNode entityNode = entityERD.draw(getName());
-			EOEntity entity = entityERD.getEntity();
+		for (AbstractEOEntityDiagram entityClassDiagram : getDiagramEntities()) {
+			DiagramNode entityNode = entityClassDiagram.draw(getName());
+			EOEntity entity = entityClassDiagram.getEntity();
 			entityNodeMap.put(entity.getName(), entityNode);
 		}
 		
@@ -127,21 +128,24 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 						if (destinationRelationship.getDestination() == sourceEntity) {
 							if (destinationRelationship.isToMany()) {
 								manyToManyConnection = false;
-								sourceToTargetCardinality = 1337;
-								targetToSourceCardinality = 1337;
+								sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+								targetToSourceCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);;
 							} else {
 								manyToManyConnection = false;
 								// Hier werden die Kardinalitäten erstellt..
-								sourceToTargetCardinality = 1337;
-								targetToSourceCardinality = 1337;
+								sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);;
+								targetToSourceCardinality = DiagramConnection.TOONE + (destinationRelationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
 							}
 
 							if (!manyToManyConnection) {
-								DiagramConnection conn = new DiagramConnection();
-								conn.connect(node, entityNodeMap.get(relationship.getDestination().getName()));
-								conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
-
-								myERD.addChildElement(conn);
+								// TODO rekursive beziehungen werden hier einfach uebersprungen, hier sollte das irgendwie gehandelt werden.
+								if (node != entityNodeMap.get(relationship.getDestination().getName())) {
+									DiagramConnection conn = new DiagramConnection(DiagramType.CLASSDIAGRAM);
+									conn.connect(node, entityNodeMap.get(relationship.getDestination().getName()));
+									conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
+	
+									myClassDiagram.addChildElement(conn);
+								}
 							}
 						}
 					}
@@ -150,10 +154,10 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 
 			}
 			// add nodes to mindMap
-			myERD.addChildElement(node);
+			myClassDiagram.addChildElement(node);
 		}
 		
-		return myERD;
+		return myClassDiagram;
 	}
 
 }

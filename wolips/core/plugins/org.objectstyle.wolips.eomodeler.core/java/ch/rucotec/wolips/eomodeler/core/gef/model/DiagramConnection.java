@@ -8,6 +8,16 @@ public class DiagramConnection extends AbstractDiagramItem {
 	
 	private int sourceToTargetCardinality;
 	private int targetToSourceCardinality;
+	private DiagramType diagramType;
+//	private DiagramConnectionPart part;
+	
+	public DiagramConnection(DiagramType diagramType) {
+		this.diagramType = diagramType;
+	}
+	
+	public DiagramConnection() {
+
+	}
 	
 	public void setCardinalities(int sourceToTargetCardinality, int targetToSourceCardinality) {
 		this.sourceToTargetCardinality = sourceToTargetCardinality;
@@ -22,6 +32,22 @@ public class DiagramConnection extends AbstractDiagramItem {
 		return targetToSourceCardinality;
 	}
 
+
+	public DiagramType getDiagramType() {
+		return diagramType;
+	}
+
+	public void setDiagramType(DiagramType diagramType) {
+		this.diagramType = diagramType;
+	}
+	
+//	public DiagramConnectionPart getPart() {
+//		return part;
+//	}
+//
+//	public void setPart(DiagramConnectionPart part) {
+//		this.part = part;
+//	}
 
 
 	/**

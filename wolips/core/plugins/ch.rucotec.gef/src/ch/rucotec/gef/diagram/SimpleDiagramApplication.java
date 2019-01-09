@@ -1,7 +1,5 @@
 package ch.rucotec.gef.diagram;
 
-import java.util.ArrayList;
-
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.operations.IUndoContext;
 import org.eclipse.gef.common.adapt.AdapterKey;
@@ -16,13 +14,11 @@ import com.sun.javafx.stage.EmbeddedWindow;
 import ch.rucotec.gef.diagram.models.ItemCreationModel;
 import ch.rucotec.gef.diagram.models.ItemCreationModel.Type;
 import ch.rucotec.gef.diagram.visuals.DiagramNodeVisual;
-import ch.rucotec.gef.diagram.visuals.DiagramNodeVisual.DiagramTyp;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
+import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramType;
 import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
 import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagramExampleFactory;
 import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
-import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
-import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramCollection;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -34,10 +30,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
- * Entry point for our Simple Mind Map Editor, creating and rendering a JavaFX
+ * Entry point for our SimpleDiagram, creating and rendering a JavaFX
  * Window.
  *
  */
+@SuppressWarnings("restriction")
 public class SimpleDiagramApplication{
 
 	private SimpleDiagram diagram;
@@ -175,7 +172,7 @@ public class SimpleDiagramApplication{
 	private Node createToolPalette() {
 		ItemCreationModel creationModel = getContentViewer().getAdapter(ItemCreationModel.class);
 
-		DiagramNodeVisual graphic = new DiagramNodeVisual(new DiagramNode(), DiagramTyp.ERDIAGRAM);
+		DiagramNodeVisual graphic = new DiagramNodeVisual(new DiagramNode(), DiagramType.ERDIAGRAM);
 		graphic.setTitle("New Node");
 
 		// the toggleGroup makes sure, we only select one 

@@ -10,6 +10,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import com.google.common.collect.Lists;
 
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
+import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,10 +43,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 public class DiagramNodeVisual extends Region {
-	
-	public enum DiagramTyp {
-		ERDIAGRAM, CLASSDIAGRAM;
-	}
 
     private static final double HORIZONTAL_PADDING = 20d;
     private static final double VERTICAL_PADDING = 10d;
@@ -59,7 +56,6 @@ public class DiagramNodeVisual extends Region {
     private VBox labelVBox;
     
     //SAVAS: Das hier muss noch angepasst werden
-    private DiagramTyp diagramTyp;
     private DiagramNode myNode;
     private List<EOAttribute> attributeList;
     private GridPane gridPane = new GridPane();
@@ -102,13 +98,11 @@ public class DiagramNodeVisual extends Region {
     	Label lblAttributeName = null;
     	Label lblRelationshipName = null;
     	List<EORelationship> relationshipList = myNode.getRelationshipsList();
-    	int attributesCount = 0;
     	
     	for (int i = 0; i < attributeList.size(); i++) {
 			EOAttribute attribute = attributeList.get(i);
 			
 			if (attribute.isClassProperty()) { 
-				attributesCount++;
 				lblAttributeName = new Label(attribute.getName() + " : " + attribute.getJavaClassName());
 				
 				gridPane.add(new Label("-"), 0, i+1);
@@ -119,13 +113,13 @@ public class DiagramNodeVisual extends Region {
     	for (int i = 0; i < relationshipList.size(); i++) {
     		EORelationship relationship = relationshipList.get(i);
     		if (relationship.isToMany()) {
-    			lblRelationshipName = new Label(relationship.getName() + " : " + relationship.getDestination().getClassName()+"[]");
+    			lblRelationshipName = new Label(relationship.getName() + " : " + relationship.getDestination().getClassNameWithoutPackage()+"[]");
     		} else if (relationship.isToOne()) {
-    			lblRelationshipName = new Label(relationship.getName() + " : " + relationship.getDestination().getClassName());
+    			lblRelationshipName = new Label(relationship.getName() + " : " + relationship.getDestination().getClassNameWithoutPackage());
     		}
     		
-    		gridPane.add(new Label("-"), 0, attributesCount + i + 2);
-    		gridPane.add(lblRelationshipName, 1, attributesCount + i + 2);
+    		gridPane.add(new Label("-"), 0, GridPane.getRowIndex(lblAttributeName) + i + 1);
+    		gridPane.add(lblRelationshipName, 1, GridPane.getRowIndex(lblAttributeName) + i + 1);
     	}
     }
 
@@ -176,15 +170,18 @@ public class DiagramNodeVisual extends Region {
 //        getChildren().addAll(new Group(shape), new Group(labelVBox));
 //    }
     
-    public DiagramNodeVisual(DiagramNode node, DiagramTyp diagramTyp) {
+    public DiagramNodeVisual(DiagramNode node, DiagramType diagramTyp) {
     	this.myNode = node;
     	this.attributeList = node.getAttributeList();
-    	this.diagramTyp = diagramTyp;
-    	if (diagramTyp == DiagramTyp.ERDIAGRAM) {
+    	if (diagramTyp == DiagramType.ERDIAGRAM) {
     		createERDiagram();
-    	} else if (diagramTyp == DiagramTyp.CLASSDIAGRAM) {
+    	} else if (diagramTyp == DiagramType.CLASSDIAGRAM) {
     		createClassDiagram();
     	}
+    }
+    
+    private void updateNodeBounds() {
+    	myNode.setBounds(new Rectangle(getBoundsInParent().getMinX(), getBoundsInParent().getMinY(), getBoundsInParent().getWidth(), getBoundsInParent().getHeight()));
     }
     
     public void createERDiagram() {
@@ -206,8 +203,6 @@ public class DiagramNodeVisual extends Region {
         colmn.setPrefWidth(100);
         gridPane.getColumnConstraints().add(colmn);
         gridPane.getColumnConstraints().add(new ColumnConstraints());
-//        gridPane.getColumnConstraints().add(new ColumnConstraints(30, 30, 30));
-//        gridPane.getColumnConstraints().add(new ColumnConstraints(30, 30, 30));
 //        gridPane.getColumnConstraints().add(new ColumnConstraints(30, 30, 30));
         
         
@@ -266,9 +261,13 @@ public class DiagramNodeVisual extends Region {
         // create vertical box for title and description
         labelVBox = new VBox(VERTICAL_SPACING);
         labelVBox.setPadding(new Insets(VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING));
-
+        
         // TODO Savas activate GC
         labelVBox.setOnMouseReleased(e -> {System.gc();});
+        
+        // XXX hier werden die Koordinaten updated. Das brauch ich hier damit ich die Kardinalität der Beiziehung richtig plaziere.
+        labelVBox.setOnMouseDragged(e -> updateNodeBounds());
+        
         ColumnConstraints colmn = new ColumnConstraints();
         colmn.setHgrow(Priority.SOMETIMES);
         colmn.setMinWidth(10);
@@ -316,7 +315,7 @@ public class DiagramNodeVisual extends Region {
         
 
         // vertically lay out title and description
-        labelVBox.getChildren().addAll(titleText,separator2, gridPane, separator);
+        labelVBox.getChildren().addAll(titleText, separator, gridPane, separator2);
 
         // ensure title is always visible (see also #computeMinWidth(double) and
         // #computeMinHeight(double) methods)

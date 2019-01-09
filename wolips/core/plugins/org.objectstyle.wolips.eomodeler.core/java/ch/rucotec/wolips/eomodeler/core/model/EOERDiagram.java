@@ -15,6 +15,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramConnection;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
+import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramType;
 import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
 
 public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
@@ -139,7 +140,7 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 						if (!manyToManyConnection) {
 							// TODO rekursive beziehungen werden hier einfach uebersprungen, hier sollte das irgendwie gehandelt werden.
 							if (node != entityNodeMap.get(relationship.getDestination().getName())) {
-								DiagramConnection conn = new DiagramConnection();
+								DiagramConnection conn = new DiagramConnection(DiagramType.ERDIAGRAM);
 								conn.connect(node, entityNodeMap.get(relationship.getDestination().getName()));
 								conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
 	

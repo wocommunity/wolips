@@ -115,12 +115,6 @@ public class EOERDiagramCollection extends AbstractDiagramCollection<EOModel, EO
 		firePropertyChange(AbstractDiagramCollection.DIAGRAM, null, erdiagram);
 	}
 	
-	public void saveToFile(File modelFolder) throws PropertyListParserException, IOException {
-		for (EOERDiagram erdiagram : getDiagrams()) {
-			erdiagram.saveToFile(modelFolder);
-		}
-	}
-	
 	//---------------------------------------------------------------------------
 	// ### Custom Accessors & Overrides
 	//---------------------------------------------------------------------------

@@ -12,8 +12,9 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
 import ch.rucotec.gef.diagram.visuals.DiagramNodeVisual;
-import ch.rucotec.gef.diagram.visuals.DiagramNodeVisual.DiagramTyp;
+import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramConnection;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
+import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramType;
 import ch.rucotec.wolips.eomodeler.core.model.EOEntityERDiagram;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Translate;
@@ -31,9 +32,9 @@ implements ITransformableContentPart<DiagramNodeVisual>, IResizableContentPart<D
 		DiagramNodeVisual nodeVisual = null;
 		DiagramNode node = getContent();
 		if (node.getEntityDiagram() instanceof EOEntityERDiagram) {
-			nodeVisual = new DiagramNodeVisual(node, DiagramTyp.ERDIAGRAM);
+			nodeVisual = new DiagramNodeVisual(node, DiagramType.ERDIAGRAM);
 		} else {
-			nodeVisual = new DiagramNodeVisual(node, DiagramTyp.CLASSDIAGRAM);
+			nodeVisual = new DiagramNodeVisual(node, DiagramType.CLASSDIAGRAM);
 		}
 		return nodeVisual;
 	}
@@ -54,7 +55,9 @@ implements ITransformableContentPart<DiagramNodeVisual>, IResizableContentPart<D
 	protected void doRefreshVisual(DiagramNodeVisual visual) {
 		// updating the visual's texts
 		DiagramNode node = getContent();
-		
+		for (DiagramConnection conn : node.getIncomingConnections()) {
+//			conn.getPart().refreshVisual();
+		}
 		visual.setTitle(node.getTitle());
 		visual.setDescription(node.getDescription());
 		visual.setColor(node.getColor());

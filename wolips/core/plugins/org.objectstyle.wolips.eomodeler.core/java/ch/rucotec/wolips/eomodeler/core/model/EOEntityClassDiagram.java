@@ -51,7 +51,6 @@ public class EOEntityClassDiagram extends AbstractEOEntityDiagram {
 	@Override
 	public DiagramNode draw(String selectedDiagramName) {
 		setSelectedDiagramName(selectedDiagramName);
-		DiagramNode entityNode = new DiagramNode(this, selectedDiagramName);
 		List<EOAttribute> attributeList = new ArrayList<EOAttribute>();
 		List<EORelationship> relationshipsList = new ArrayList<EORelationship>();
 		relationshipsList.addAll(getEntity().getRelationships());
@@ -67,9 +66,10 @@ public class EOEntityClassDiagram extends AbstractEOEntityDiagram {
 		double width = getDiagramDimensionForKey(selectedDiagramName).getWidth();
 		double height = getDiagramDimensionForKey(selectedDiagramName).getHeight();
 		
+		DiagramNode entityNode = new DiagramNode(this, selectedDiagramName);
 		entityNode.setAttributeList(attributeList);
 		entityNode.setRelationshipsList(relationshipsList);
-		entityNode.setTitle(getEntity().getExternalName());
+		entityNode.setTitle(getEntity().getClassNameWithoutPackage());
 		entityNode.setDescription("Beschreibung");
 		entityNode.setColor(Color.AZURE);
 		entityNode.setBounds(new Rectangle(xPos, yPos, width, height));

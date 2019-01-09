@@ -1,10 +1,13 @@
 package ch.rucotec.wolips.eomodeler.core.model;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.objectstyle.woenvironment.plist.PropertyListParserException;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
@@ -39,6 +42,12 @@ public abstract class AbstractDiagramCollection <T extends EOModelObject, U exte
 	public void setModelDirty(boolean dirty) {
 		myModel.setDirty(dirty);
 		diagramCollectionDirty = dirty;
+	}
+	
+	public void saveToFile(File modelFolder) throws PropertyListParserException, IOException {
+		for (U diagram : myDiagrams) {
+			diagram.saveToFile(modelFolder);
+		}
 	}
 	
 	public String findUnusedDiagramName(String _newName) {
