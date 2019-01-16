@@ -504,7 +504,7 @@
             <input type="org.objectstyle.wolips.eomodeler.core.model.EOEntityIndex"/>
          </propertySection>
          <propertySection
-               class="ch.rucotec.wolips.eomodeler.editors.diagram.EOERDBasicEditorSection"
+               class="ch.rucotec.wolips.eomodeler.editors.diagram.EODiagramBasicEditorSection"
                enablesFor="1"
                id="org.objectstyle.wolips.eomodeler.sections.diagramBasic"
                tab="org.objectstyle.wolips.eomodeler.tabs.diagramBasic">

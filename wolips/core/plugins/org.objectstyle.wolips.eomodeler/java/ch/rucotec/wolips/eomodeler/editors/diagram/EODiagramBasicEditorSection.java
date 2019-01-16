@@ -26,8 +26,9 @@ import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
 import ch.rucotec.wolips.eomodeler.DiagramTab;
 import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.EOClassDiagram;
 
-public class EOERDBasicEditorSection extends AbstractPropertySection {
+public class EODiagramBasicEditorSection extends AbstractPropertySection {
 	
 	//---------------------------------------------------------------------------
 	// ### Variables and Constants
@@ -60,18 +61,11 @@ public class EOERDBasicEditorSection extends AbstractPropertySection {
 	public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
 		super.createControls(_parent, _tabbedPropertySheetPage);
 		parent = _parent;
-//		Composite form = getWidgetFactory().createFlatFormComposite(_parent);
-//		FormLayout formLayout = new FormLayout();
-//		form.setLayout(formLayout);
 		_parent.setLayout(new GridLayout(3, false));
-
-//		Composite topForm = FormUtils.createForm(getWidgetFactory(), _parent);
 
 		getWidgetFactory().createCLabel(_parent, "Diagram Name", SWT.NONE);
 		myNameText = new Text(_parent, SWT.BORDER);
-//		GridData nameFieldLayoutData = new GridData(GridData.FILL);
 		myNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 0));
-//		myNameText.setLayoutData(nameFieldLayoutData);
 		UglyFocusHackWorkaroundListener.addListener(myNameText);
 	}
 	
@@ -91,38 +85,43 @@ public class EOERDBasicEditorSection extends AbstractPropertySection {
 		Iterator<EOEntity> entityIterator = myCurrentModel.getEntities().iterator();
 		while (entityIterator.hasNext()) {
 			final EOEntity entity = entityIterator.next();
-			Button entityCheckBox = null;
-			for (Button checkbox : checkBoxes) {
-				if (entity.getName().equals(checkbox.getText())) {
-					entityCheckBox = checkbox;
-					break;
-				}
-			}
 			
-			if (entityCheckBox == null) {
-				entityCheckBox = new Button(parent, SWT.CHECK);
-				entityCheckBox.setText(entity.getName());
-				checkBoxes.add(entityCheckBox);
+			// mit dieser abfrage werden die join tables nicht als checkboxen angezeigt.
+			if (myDiagram instanceof EOClassDiagram && !entity.getClassNameWithoutPackage().equals("EOGenericRecord")) {
+				Button entityCheckBox = null;
+				for (Button checkbox : checkBoxes) {
+					if (entity.getName().equals(checkbox.getText())) {
+						entityCheckBox = checkbox;
+						break;
+					}
+				}
+				
+				if (entityCheckBox == null) {
+					entityCheckBox = new Button(parent, SWT.CHECK);
+					entityCheckBox.setText(entity.getName());
+					checkBoxes.add(entityCheckBox);
+				}
+				
+				if (myDiagram.getEntities().contains(entity)) {
+					entityCheckBox.setSelection(true);
+				} else {
+					entityCheckBox.setSelection(false);
+				}
+				entityCheckBox.addSelectionListener(new SelectionAdapter() {
+	
+			        @Override
+			        public void widgetSelected(SelectionEvent event) {
+			            Button btn = (Button) event.getSource();
+			        	if (btn.getSelection()) {
+			        		myDiagram.addEntityToDiagram(entity);
+			        	} else if (!btn.getSelection()) {
+			        		myDiagram.removeEntityFromDiagram(entity);
+			        	}
+			        	DiagramTab.getInstance().setSelectedDiagram(myDiagram);
+			        	myDiagram._getModelParent().setModelDirty(true);
+			        }
+			    });
 			}
-			if (myDiagram.getEntities().contains(entity)) {
-				entityCheckBox.setSelection(true);
-			} else {
-				entityCheckBox.setSelection(false);
-			}
-			entityCheckBox.addSelectionListener(new SelectionAdapter() {
-
-		        @Override
-		        public void widgetSelected(SelectionEvent event) {
-		            Button btn = (Button) event.getSource();
-		        	if (btn.getSelection()) {
-		        		myDiagram.addEntityToDiagram(entity);
-		        	} else if (!btn.getSelection()) {
-		        		myDiagram.removeEntityFromDiagram(entity);
-		        	}
-		        	DiagramTab.getInstance().setSelectedDiagram(myDiagram);
-		        	myDiagram._getModelParent().setModelDirty(true);
-		        }
-		    });
 		}
 	}
 	
