@@ -504,11 +504,19 @@
             <input type="org.objectstyle.wolips.eomodeler.core.model.EOEntityIndex"/>
          </propertySection>
          <propertySection
-               class="ch.rucotec.wolips.eomodeler.editors.diagram.EODiagramBasicEditorSection"
+               class="ch.rucotec.wolips.eomodeler.editors.diagram.EOERDiagramBasicEditorSection"
                enablesFor="1"
                id="org.objectstyle.wolips.eomodeler.sections.diagramBasic"
                tab="org.objectstyle.wolips.eomodeler.tabs.diagramBasic">
-            <input type="ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram"/>
+            <input type="ch.rucotec.wolips.eomodeler.core.model.EOERDiagram"/>
+         </propertySection>
+         <propertySection
+               class="ch.rucotec.wolips.eomodeler.editors.diagram.EOClassDiagramBasicEditorSection"
+               id="org.objectstyle.wolips.eomodeler.tabs.diagramBasic"
+               tab="org.objectstyle.wolips.eomodeler.tabs.diagramBasic">
+            <input
+                  type="ch.rucotec.wolips.eomodeler.core.model.EOClassDiagram">
+            </input>
          </propertySection>
       </propertySections>
    </extension>

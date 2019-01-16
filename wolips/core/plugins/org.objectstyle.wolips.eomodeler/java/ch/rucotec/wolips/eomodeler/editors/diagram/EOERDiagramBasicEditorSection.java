@@ -27,8 +27,17 @@ import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 import ch.rucotec.wolips.eomodeler.DiagramTab;
 import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
 import ch.rucotec.wolips.eomodeler.core.model.EOClassDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
 
-public class EODiagramBasicEditorSection extends AbstractPropertySection {
+/**
+ * This class describes how the PropetiesView in Eclipse.
+ * If a {@link EOERDiagram} is selected in the Outline then the PropetiesView will show this.
+ * the settings are made in the {@code plugin.xml}
+ * 
+ * @author celik
+ *
+ */
+public class EOERDiagramBasicEditorSection extends AbstractPropertySection {
 	
 	//---------------------------------------------------------------------------
 	// ### Variables and Constants
@@ -69,6 +78,9 @@ public class EODiagramBasicEditorSection extends AbstractPropertySection {
 		UglyFocusHackWorkaroundListener.addListener(myNameText);
 	}
 	
+	/**
+	 * Creates checkboxes for every entity in the EOModel.
+	 */
 	private void createEntityCheckBoxes() {
 		if (myCurrentModel == null) {
 			myCurrentModel = myDiagram._getModelParent().getModel();
@@ -87,41 +99,39 @@ public class EODiagramBasicEditorSection extends AbstractPropertySection {
 			final EOEntity entity = entityIterator.next();
 			
 			// mit dieser abfrage werden die join tables nicht als checkboxen angezeigt.
-			if (myDiagram instanceof EOClassDiagram && !entity.getClassNameWithoutPackage().equals("EOGenericRecord")) {
-				Button entityCheckBox = null;
-				for (Button checkbox : checkBoxes) {
-					if (entity.getName().equals(checkbox.getText())) {
-						entityCheckBox = checkbox;
-						break;
-					}
+			Button entityCheckBox = null;
+			for (Button checkbox : checkBoxes) {
+				if (entity.getName().equals(checkbox.getText())) {
+					entityCheckBox = checkbox;
+					break;
 				}
-				
-				if (entityCheckBox == null) {
-					entityCheckBox = new Button(parent, SWT.CHECK);
-					entityCheckBox.setText(entity.getName());
-					checkBoxes.add(entityCheckBox);
-				}
-				
-				if (myDiagram.getEntities().contains(entity)) {
-					entityCheckBox.setSelection(true);
-				} else {
-					entityCheckBox.setSelection(false);
-				}
-				entityCheckBox.addSelectionListener(new SelectionAdapter() {
-	
-			        @Override
-			        public void widgetSelected(SelectionEvent event) {
-			            Button btn = (Button) event.getSource();
-			        	if (btn.getSelection()) {
-			        		myDiagram.addEntityToDiagram(entity);
-			        	} else if (!btn.getSelection()) {
-			        		myDiagram.removeEntityFromDiagram(entity);
-			        	}
-			        	DiagramTab.getInstance().setSelectedDiagram(myDiagram);
-			        	myDiagram._getModelParent().setModelDirty(true);
-			        }
-			    });
 			}
+			
+			if (entityCheckBox == null) {
+				entityCheckBox = new Button(parent, SWT.CHECK);
+				entityCheckBox.setText(entity.getName());
+				checkBoxes.add(entityCheckBox);
+			}
+			
+			if (myDiagram.getEntities().contains(entity)) {
+				entityCheckBox.setSelection(true);
+			} else {
+				entityCheckBox.setSelection(false);
+			}
+			entityCheckBox.addSelectionListener(new SelectionAdapter() {
+
+		        @Override
+		        public void widgetSelected(SelectionEvent event) {
+		            Button btn = (Button) event.getSource();
+		        	if (btn.getSelection()) {
+		        		myDiagram.addEntityToDiagram(entity);
+		        	} else if (!btn.getSelection()) {
+		        		myDiagram.removeEntityFromDiagram(entity);
+		        	}
+		        	DiagramTab.getInstance().setSelectedDiagram(myDiagram);
+		        	myDiagram._getModelParent().setModelDirty(true);
+		        }
+		    });
 		}
 	}
 	
