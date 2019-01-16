@@ -18,10 +18,14 @@ import javafx.scene.Node;
  *
  * The {@link SimpleDiagramPart} is responsible to create a visual for the
  * {@link SimpleDiagram} and manage the children of the mind map.
- *
+ * <br/>(documented by GEF)
  */
 public class SimpleDiagramPart extends AbstractContentPart<Group> {
 
+	//---------------------------------------------------------------------------
+	// ### Custom Methods and Accessors
+	//---------------------------------------------------------------------------
+	
     @Override
     protected void doAddChildVisual(IVisualPart<? extends Node> child, int index) {
         getVisual().getChildren().add(child.getVisual());

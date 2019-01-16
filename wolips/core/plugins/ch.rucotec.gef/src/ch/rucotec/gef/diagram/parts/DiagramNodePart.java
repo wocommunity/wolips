@@ -8,11 +8,11 @@ import org.eclipse.gef.geometry.planar.Rectangle;
 import org.eclipse.gef.mvc.fx.parts.AbstractContentPart;
 import org.eclipse.gef.mvc.fx.parts.IResizableContentPart;
 import org.eclipse.gef.mvc.fx.parts.ITransformableContentPart;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
 import ch.rucotec.gef.diagram.visuals.DiagramNodeVisual;
-import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramConnection;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramType;
 import ch.rucotec.wolips.eomodeler.core.model.EOEntityERDiagram;
@@ -20,13 +20,17 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.Translate;
 
 /**
- * the {@link DiagramNodePart} is responsible to create and update the
+ * The {@link DiagramNodePart} is responsible to create and update the
  * {@link DiagramNodeVisual} for a instance of the {@link DiagramNode}.
- *
+ * <br/>(documented by GEF)
  */
 public class DiagramNodePart extends AbstractContentPart<DiagramNodeVisual>
 implements ITransformableContentPart<DiagramNodeVisual>, IResizableContentPart<DiagramNodeVisual> {
 
+	//---------------------------------------------------------------------------
+	// ### Custom Methods and Accessors
+	//---------------------------------------------------------------------------
+	
 	@Override
 	protected DiagramNodeVisual doCreateVisual() {
 		DiagramNodeVisual nodeVisual = null;
@@ -55,11 +59,7 @@ implements ITransformableContentPart<DiagramNodeVisual>, IResizableContentPart<D
 	protected void doRefreshVisual(DiagramNodeVisual visual) {
 		// updating the visual's texts
 		DiagramNode node = getContent();
-		for (DiagramConnection conn : node.getIncomingConnections()) {
-//			conn.getPart().refreshVisual();
-		}
 		visual.setTitle(node.getTitle());
-		visual.setDescription(node.getDescription());
 		visual.setColor(node.getColor());
 		
 		// use the IResizableContentPart API to resize the visual

@@ -1467,21 +1467,16 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			myModel = ((AbstractEOAttributePath) selectedObject).getChildIEOAttribute().getEntity()._getModelParent();
 		} else if (selectedObject instanceof EODatabaseConfig) {
 			myModel = ((EODatabaseConfig) selectedObject)._getModelParent();
-//			setActivePage(0);
 		} else if (selectedObject instanceof EOERDiagramCollection) {
 			myModel = ((EOERDiagramCollection) selectedObject)._getModelParent();
 		} else if (selectedObject instanceof AbstractDiagram) {
 			myModel = ((AbstractDiagram) selectedObject).getDiagramCollection().getModel();
-			diagramTab.setSelectedDiagram(null);
 		}
 		
 		// Erneuert die Entitäten Tabele (wird gebraucht, wenn man mehrere Models hat)
 		if (myEntitiesTableEditor != null) { 
 			myEntitiesTableEditor.setModel(myModel);
 		}
-		
-		
-//		diagramView.setModel(myModel);
 	}
 	
 	public void setSelectedDiagram(final AbstractDiagram _selectedDiagram) {

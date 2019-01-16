@@ -7,8 +7,6 @@ import org.eclipse.gef.common.adapt.AdapterKey;
 import org.eclipse.gef.fx.anchors.IAnchor;
 import org.eclipse.gef.fx.nodes.Connection;
 import org.eclipse.gef.mvc.fx.parts.AbstractContentPart;
-import org.eclipse.gef.mvc.fx.parts.IBendableContentPart;
-import org.eclipse.gef.mvc.fx.parts.IFeedbackPart;
 import org.eclipse.gef.mvc.fx.parts.IVisualPart;
 
 import com.google.common.collect.HashMultimap;
@@ -18,20 +16,26 @@ import com.google.inject.Provider;
 
 import ch.rucotec.gef.diagram.visuals.DiagramConnectionVisual;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramConnection;
-import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramType;
-import javafx.beans.property.BooleanProperty;
 import javafx.scene.Node;
 
 /**
- * The mind map connection part is used the controller for th
+ * The diagram connection part is used the controller for the
  * {@link DiagramConnection}. It create the {@link DiagramConnectionVisual}
  * including the anchors for the connection.
- *
+ * <br/>(documented by GEF)
  */
 public class DiagramConnectionPart extends AbstractContentPart<Connection> {
 
+	//---------------------------------------------------------------------------
+	// ### Variables and Constants
+	//---------------------------------------------------------------------------
+	
     private static final String START_ROLE = "START";
     private static final String END_ROLE = "END";
+
+    //---------------------------------------------------------------------------
+    // ### Custom Methods and Accessors
+    //---------------------------------------------------------------------------
 
     @Override
     protected void doAttachToAnchorageVisual(IVisualPart<? extends Node> anchorage, String role) {
@@ -45,7 +49,6 @@ public class DiagramConnectionPart extends AbstractContentPart<Connection> {
             throw new IllegalStateException("No adapter  found for <" + anchorage.getClass() + "> found.");
         }
         IAnchor anchor = adapter.get();
-//        System.out.println(anchorage);
         if (role.equals(START_ROLE)) {
             getVisual().setStartAnchor(anchor);
         } else if (role.equals(END_ROLE)) {
@@ -58,7 +61,6 @@ public class DiagramConnectionPart extends AbstractContentPart<Connection> {
     @Override
     protected Connection doCreateVisual() {
     	DiagramConnection diagramCon = getContent();
-//    	diagramCon.setPart(this);
         return new DiagramConnectionVisual(diagramCon);
     }
 
@@ -92,9 +94,7 @@ public class DiagramConnectionPart extends AbstractContentPart<Connection> {
     protected void doRefreshVisual(Connection visual) {
     	if(visual instanceof DiagramConnectionVisual) {
     		DiagramConnectionVisual connVisual = (DiagramConnectionVisual) visual;
-    		if (connVisual.getDiagramCon() != null && connVisual.getDiagramCon().getDiagramType() == DiagramType.CLASSDIAGRAM) {
-    			connVisual.refreshDecoration();
-    		}
+    		connVisual.refreshDecoration();
     	}
     }
 

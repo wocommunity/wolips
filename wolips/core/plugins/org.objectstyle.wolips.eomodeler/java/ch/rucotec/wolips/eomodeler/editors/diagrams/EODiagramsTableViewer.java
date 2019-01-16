@@ -12,8 +12,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.objectstyle.wolips.baseforuiplugins.utils.WOTableViewer;
 import org.objectstyle.wolips.baseforuiplugins.utils.WOTextCellEditor;
-import org.objectstyle.wolips.eomodeler.core.model.EOArgument;
-import org.objectstyle.wolips.eomodeler.editors.arguments.EOArgumentsLabelProvider;
 import org.objectstyle.wolips.eomodeler.utils.StayEditingCellEditorListener;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;

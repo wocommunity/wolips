@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.objectstyle.wolips.eomodeler.core.Messages;
 import org.objectstyle.wolips.eomodeler.core.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
@@ -18,12 +17,38 @@ import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramType;
 import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
 
+/**
+ * The {@code EOERDiagram} represents a class diagram and extends {@link AbstractDiagram}
+ * most methods in this class are just Overrides from its extended classes.
+ * 
+ * @author celik
+ * @see AbstractDiagram
+ */
 public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 	
+	//---------------------------------------------------------------------------
+	// ### Construction
+	//---------------------------------------------------------------------------
+	
+	/**
+	 * This constructor calls the constructor of its super and gives the name as parameter.
+	 * 
+	 * @param name
+	 */
 	public EOERDiagram(String name) {
 		super(name);
 	}
 	
+	//---------------------------------------------------------------------------
+	// ### Custom Methods and Accessors
+	//---------------------------------------------------------------------------
+	
+	/**
+	 * Finds the {@link EOEntityERDiagram} for the given entity.
+	 * If there is none than one is created and is handed over to the 
+	 * {@code addEntityToDiagram(AbstractEOEntityDiagram entityDiagram)}
+	 * 
+	 */
 	@Override
 	public void addEntityToDiagram(EOEntity entity) {
 		EOEntityERDiagram entityERDiagram = (EOEntityERDiagram) getEntityDiagramWithEntity(entity);
@@ -35,6 +60,9 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 		super.addEntityToDiagram(entityERDiagram);
 	}
 	
+	/**
+	 * Creates a new object of {@code EOERDiagram} and returns it.
+	 */
 	@Override
 	protected AbstractDiagram createDiagram(String name) {
 		return new EOERDiagram(name);
@@ -84,11 +112,17 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 		return EOERDiagramCollection.class;
 	}
 
+	/**
+	 * Removes this from its parent.
+	 */
 	@Override
 	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) throws EOModelException {
 		_getModelParent().removeERDiagram(this);
 	}
 
+	/**
+	 * Adds this to the given modelParent.
+	 */
 	@Override
 	public void _addToModelParent(EOERDiagramCollection modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
 		if (findUniqueName) {

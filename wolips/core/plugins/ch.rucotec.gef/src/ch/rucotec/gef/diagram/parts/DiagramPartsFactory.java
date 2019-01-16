@@ -16,13 +16,21 @@ import javafx.scene.Node;
 /**
  * The {@link DiagramPartsFactory} creates a Part for the mind map models, based
  * on the type of the model instance.
- *
+ * <br/>(documented by GEF)
  */
 public class DiagramPartsFactory implements IContentPartFactory {
 
+	//---------------------------------------------------------------------------
+	// ### Variables and Constants
+	//---------------------------------------------------------------------------
+	
     @Inject
     private Injector injector;
 
+	//---------------------------------------------------------------------------
+	// ### Custom Methods and Accessors
+	//---------------------------------------------------------------------------
+    
     @Override
     public IContentPart<? extends Node> createContentPart(Object content, Map<Object, Object> contextMap) {
         if (content == null) {

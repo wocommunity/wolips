@@ -3,38 +3,24 @@ package ch.rucotec.gef.diagram;
 import org.eclipse.gef.common.adapt.AdapterKey;
 import org.eclipse.gef.common.adapt.inject.AdapterMaps;
 import org.eclipse.gef.mvc.fx.MvcFxModule;
-import org.eclipse.gef.mvc.fx.behaviors.HoverBehavior;
-import org.eclipse.gef.mvc.fx.gestures.ScrollGesture;
 import org.eclipse.gef.mvc.fx.handlers.FocusAndSelectOnClickHandler;
 import org.eclipse.gef.mvc.fx.handlers.HoverOnHoverHandler;
 import org.eclipse.gef.mvc.fx.handlers.ResizeTranslateFirstAnchorageOnHandleDragHandler;
 import org.eclipse.gef.mvc.fx.handlers.TranslateSelectedOnDragHandler;
-import org.eclipse.gef.mvc.fx.handlers.ZoomOnPinchSpreadHandler;
-import org.eclipse.gef.mvc.fx.parts.DefaultFocusFeedbackPartFactory;
 import org.eclipse.gef.mvc.fx.parts.DefaultHoverFeedbackPartFactory;
 import org.eclipse.gef.mvc.fx.parts.DefaultSelectionFeedbackPartFactory;
 import org.eclipse.gef.mvc.fx.parts.DefaultSelectionHandlePartFactory;
-import org.eclipse.gef.mvc.fx.parts.DefaultSnappingFeedbackPartFactory;
 import org.eclipse.gef.mvc.fx.parts.SquareSegmentHandlePart;
-import org.eclipse.gef.mvc.fx.policies.BendConnectionPolicy;
-import org.eclipse.gef.mvc.fx.policies.FocusTraversalPolicy;
 import org.eclipse.gef.mvc.fx.policies.ResizePolicy;
 import org.eclipse.gef.mvc.fx.policies.TransformPolicy;
-import org.eclipse.gef.mvc.fx.providers.*;
 import org.eclipse.gef.mvc.fx.providers.ShapeBoundsProvider;
 import org.eclipse.gef.mvc.fx.providers.ShapeOutlineProvider;
-import org.eclipse.gef.mvc.fx.providers.TopLeftSnappingLocationProvider;
-import org.eclipse.gef.mvc.fx.providers.TransformProvider;
 
 import com.google.inject.multibindings.MapBinder;
 
-import ch.rucotec.gef.diagram.models.ItemCreationModel;
-import ch.rucotec.gef.diagram.parts.DiagramConnectionPart;
 import ch.rucotec.gef.diagram.parts.DiagramNodePart;
 import ch.rucotec.gef.diagram.parts.DiagramPartsFactory;
 import ch.rucotec.gef.diagram.parts.SimpleDiagramAnchorProvider;
-import ch.rucotec.gef.diagram.policies.CreateNewConnectiononClickHandler;
-import ch.rucotec.gef.diagram.policies.CreateNewNodeOnClickHandler;
 
 /**
  * The Guice Module to configure our parts and behaviors.
@@ -42,6 +28,10 @@ import ch.rucotec.gef.diagram.policies.CreateNewNodeOnClickHandler;
  */
 public class SimpleDiagramModule extends MvcFxModule {
 
+	//---------------------------------------------------------------------------
+	// ### Custom Methods and Accessors
+	//---------------------------------------------------------------------------
+	
 	@Override
 	protected void bindIContentPartFactoryAsContentViewerAdapter(MapBinder<AdapterKey<?>, Object> adapterMapBinder) {
 		// bind DiagramPartsFactory adapter to the content viewer
@@ -80,39 +70,7 @@ public class SimpleDiagramModule extends MvcFxModule {
 
 		// support resizing nodes
 		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(ResizePolicy.class);
-		
-		// bind create connection handler
-		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(CreateNewConnectiononClickHandler.class);
 	
-	}
-	
-	protected void bindConnectionNodePartAdapters(MapBinder<AdapterKey<?>, Object> adapterMapBinder) {
-////		AdapterKey<?> role = AdapterKey.role(DefaultHoverFeedbackPartFactory.HOVER_FEEDBACK_GEOMETRY_PROVIDER);
-////		adapterMapBinder.addBinding(role).to(ShapeOutlineProvider.class);
-////		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(BendConnectionPolicy.class);
-//		// provides a hover feedback to the shape, used by the HoverBehavior
-//		AdapterKey<?> role = AdapterKey.role(DefaultHoverFeedbackPartFactory.HOVER_FEEDBACK_GEOMETRY_PROVIDER);
-//		adapterMapBinder.addBinding(role).to(ShapeOutlineProvider.class);
-//
-//		// provides a selection feedback to the shape
-//		role = AdapterKey.role(DefaultSelectionFeedbackPartFactory.SELECTION_FEEDBACK_GEOMETRY_PROVIDER);
-//		adapterMapBinder.addBinding(role).to(ShapeBoundsProvider.class);
-//
-//		// support moving nodes via mouse drag
-//		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(TransformPolicy.class);
-//		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(TranslateSelectedOnDragHandler.class);
-//
-//		
-//		// specify the factory to create the geometry object for the selection
-//		// handles
-//		role = AdapterKey.role(DefaultSelectionHandlePartFactory.SELECTION_HANDLES_GEOMETRY_PROVIDER);
-//		adapterMapBinder.addBinding(role).to(ShapeBoundsProvider.class);
-//
-//		// support resizing nodes
-//		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(ResizePolicy.class);
-//		
-//		// bind create connection handler
-//		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(CreateNewConnectiononClickHandler.class);
 	}
 
     /**
@@ -132,7 +90,7 @@ public class SimpleDiagramModule extends MvcFxModule {
         super.configure();
 
         bindDiagramNodePartAdapters(AdapterMaps.getAdapterMapBinder(binder(), DiagramNodePart.class));
-        bindConnectionNodePartAdapters(AdapterMaps.getAdapterMapBinder(binder(), DiagramConnectionPart.class));
+        
         // with this binding we create the handles
         bindSquareSegmentHandlePartPartAdapter(
                 AdapterMaps.getAdapterMapBinder(binder(), SquareSegmentHandlePart.class));
@@ -157,15 +115,5 @@ public class SimpleDiagramModule extends MvcFxModule {
 
 		// binding a Hover Behavior to the root part. it will react to
 		// HoverModel changes and render the hover part
-//		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(HoverBehavior.class);
-		
-		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(CreateNewNodeOnClickHandler.class);
-	}
-	
-	@Override
-	protected void bindIViewerAdaptersForContentViewer(MapBinder<AdapterKey<?>, Object> adapterMapBinder) {
-		super.bindIViewerAdaptersForContentViewer(adapterMapBinder);
-		// bind the model to the content viewer
-		adapterMapBinder.addBinding(AdapterKey.defaultRole()).to(ItemCreationModel.class);
 	}
 }

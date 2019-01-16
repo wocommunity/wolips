@@ -9,9 +9,14 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 
 import ch.rucotec.wolips.eomodeler.core.model.EOClassDiagram;
 import ch.rucotec.wolips.eomodeler.core.model.EOClassDiagramCollection;
-import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
-import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramCollection;
 
+/**
+ * This class is used in the plugin.xml->Extensions->org.eclipse.ui.popupMenus and is used
+ * to create EOClassDiagram objects by right clicking EOClassDiagramCollection in the EOModeller
+ * 
+ * @author celik
+ *
+ */
 public class NewClassDiagram extends AbstractNewObjectAction<EOClassDiagramCollection, EOClassDiagram>{
 	public NewClassDiagram() {
 		super(EOClassDiagramCollection.class, "newClassDiagram");

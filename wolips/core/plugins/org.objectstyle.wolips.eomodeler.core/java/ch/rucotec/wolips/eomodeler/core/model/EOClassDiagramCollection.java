@@ -1,14 +1,11 @@
 package ch.rucotec.wolips.eomodeler.core.model;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.objectstyle.woenvironment.plist.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
@@ -17,11 +14,18 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelReferenceFailure;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 
+/**
+ * 
+ * 
+ * @author celik
+ * @see AbstractDiagramCollection
+ */
 public class EOClassDiagramCollection extends AbstractDiagramCollection<EOModel, EOClassDiagram> {
 
 	//---------------------------------------------------------------------------
 	// ### Variables and Constants
 	//---------------------------------------------------------------------------
+	
 	public static final String DISPLAYNAME = "Class Diagrams";
 	
 	//---------------------------------------------------------------------------
@@ -36,6 +40,13 @@ public class EOClassDiagramCollection extends AbstractDiagramCollection<EOModel,
 	// ### Methods
 	//---------------------------------------------------------------------------
 	
+	/**
+	 * Adds a blank class diagram with the given name to the {@code EOClassDiagramCollection}.
+	 * 
+	 * @param name
+	 * @return the blank {@link EOClassDiagram}
+	 * @throws DuplicateNameException
+	 */
 	// adding a ClassDiagram
 	public EOClassDiagram addBlankClassDiagram(String name) throws DuplicateNameException{
 		EOClassDiagram classdiagram = new EOClassDiagram(findUnusedDiagramName(name));
@@ -47,6 +58,14 @@ public class EOClassDiagramCollection extends AbstractDiagramCollection<EOModel,
 		addClassDiagram(classdiagram, true, null);
 	}
 	
+	/**
+	 * Adds the given {@link EOClassDiagram} to the {@code EOClassDiagramCollection}.
+	 * 
+	 * @param classdiagram - which will be added to the {@link EOClassDiagram}.
+	 * @param _fireEvents - if its should refresh after adding it.
+	 * @param _failures
+	 * @throws DuplicateNameException
+	 */
 	public void addClassDiagram(EOClassDiagram classdiagram, boolean _fireEvents, Set<EOModelVerificationFailure> _failures) throws DuplicateNameException {
 		classdiagram._setModelParent(this);
 		checkForDuplicateClassDiagramName(classdiagram, classdiagram.getName(), _failures);
@@ -63,6 +82,15 @@ public class EOClassDiagramCollection extends AbstractDiagramCollection<EOModel,
 		}
 	}
 	
+	/**
+	 * Checks whether or not the class diagram name is already taken, if so then a 
+	 * {@code DuplicateNameException} is thrown.
+	 * 
+	 * @param classdiagram
+	 * @param newName
+	 * @param _failures
+	 * @throws DuplicateNameException
+	 */
 	public void checkForDuplicateClassDiagramName(EOClassDiagram classdiagram, String newName, Set<EOModelVerificationFailure> _failures) throws DuplicateNameException {
 		EOClassDiagram existingDiagram = getDiagramNamed(newName);
 		if (existingDiagram != null && existingDiagram != classdiagram) {
@@ -77,17 +105,24 @@ public class EOClassDiagramCollection extends AbstractDiagramCollection<EOModel,
 		}
 	}
 	
+	/**
+	 * Removes the class diagram from the {@code EOClassDiagramCollection} and clears
+	 * its data from every Entity.plist.
+	 * 
+	 * @param classdiagram
+	 */
 	public void removeClassDiagram(EOClassDiagram classdiagram) {
 		Set<EOClassDiagram> oldClassDiagrams = getDiagrams();
 		Set<EOClassDiagram> newClassDiagrams = new LinkedHashSet<EOClassDiagram>();
 		newClassDiagrams.addAll(getDiagrams());
 		newClassDiagrams.remove(classdiagram);
+		getMyDeletedDiagrams().add(classdiagram);
 		setDiagrams(newClassDiagrams);
 		firePropertyChange(AbstractDiagramCollection.DIAGRAMS, oldClassDiagrams, newClassDiagrams);
 		
-		// Hier wird das Diagramm auch im EOERD gelöscht (Sonst wird es im Entity.plist nicht entfernt)
-		for (AbstractEOEntityDiagram eoerd : classdiagram.getDiagramEntities()) {
-			eoerd.removeFromEntityPlist(classdiagram.getName());
+		// Hier wird das Diagramm bei jedem entity wo er auftritt glöscht. (Sonst wird es im Entity.plist nicht entfernt)
+		for (AbstractEOEntityDiagram eoclassdiagram : classdiagram.getDiagramEntities()) {
+			eoclassdiagram.removeFromEntityPlist(classdiagram.getName());
 		}
 		
 		classdiagram._setModelParent(null);
@@ -106,19 +141,19 @@ public class EOClassDiagramCollection extends AbstractDiagramCollection<EOModel,
 	@Override
 	public void loadDiagramFromEntity(EOEntity entity, List diagramList) throws EOModelException {
 		List diagrams = diagramList;
-		EOEntityClassDiagram entityERDiagram = new EOEntityClassDiagram(entity, diagramList, this);
+		EOEntityClassDiagram entityClassDiagram = new EOEntityClassDiagram(entity, diagramList, this);
 		
 		for (int i = 0; i < diagrams.size(); i++) {
 			Object digram = diagrams.get(i);
 			if (digram instanceof Map) {
 				Map diagramMap = (Map)digram;
 				String diagramName = (String)diagramMap.get("diagramName");
-				EOClassDiagram erdiagram = getDiagramNamed(diagramName);
-				if (erdiagram == null) {
-					erdiagram = new EOClassDiagram(diagramName);
-					addClassDiagram(erdiagram, false, null);
+				EOClassDiagram classdiagram = getDiagramNamed(diagramName);
+				if (classdiagram == null) {
+					classdiagram = new EOClassDiagram(diagramName);
+					addClassDiagram(classdiagram, false, null);
 				}
-				erdiagram.addEntityToDiagram(entityERDiagram);
+				classdiagram.addEntityToDiagram(entityClassDiagram);
 			}
 		}
 	}
@@ -128,6 +163,9 @@ public class EOClassDiagramCollection extends AbstractDiagramCollection<EOModel,
 		return new HashSet<EOModelReferenceFailure>();
 	}
 
+	/**
+	 * Sets the parent it him self to dirty.
+	 */
 	@Override
 	protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
 		if (getModel() != null) {

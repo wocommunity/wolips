@@ -13,13 +13,26 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 
+/**
+ * This class creates an EditorPart which can be used to make Tabs in EOModel.
+ * 
+ * @author celik
+ *
+ */
 public class DiagramTab extends MyFXViewPart implements ISelectionProvider {
 	
 	private static DiagramTab instance; 
 
+	/**
+	 * Default private constructor.
+	 */
 	private DiagramTab() {
 	}
 	
+	/**
+	 * Getting an instance with the Singleton pattern.
+	 * @return
+	 */
 	public static DiagramTab getInstance() {
 		if (instance == null) {
 			instance = new DiagramTab();
@@ -28,17 +41,12 @@ public class DiagramTab extends MyFXViewPart implements ISelectionProvider {
 	}
 
 	@Override
-	protected Scene createFxScene() {
+	protected Scene errorFxScene() {
 		AnchorPane pane = new AnchorPane();
 		Scene myScene = new Scene(pane);
 		Label lblError = new Label("There was a problem while generating the diagram");
 		pane.getChildren().add(lblError);
 		return myScene;
-	}
-
-	@Override
-	protected void setFxFocus() {
-		//super.setFocus();
 	}
 
 	@Override
@@ -72,7 +80,6 @@ public class DiagramTab extends MyFXViewPart implements ISelectionProvider {
 
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
 		// TODO Auto-generated method stub
-
 	}
 
 	public ISelection getSelection() {
@@ -91,13 +98,11 @@ public class DiagramTab extends MyFXViewPart implements ISelectionProvider {
 
 	@Override
 	public void createPartControl(Composite parent) {
-		// TODO Auto-generated method stub
 		super.createPartControl(parent);
 	}
 
 	@Override
 	public void setFocus() {
-		// TODO Auto-generated method stub
 		super.setFocus();
 	}
 }

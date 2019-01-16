@@ -1,34 +1,20 @@
 package ch.rucotec.gef.diagram.visuals;
 
+import java.util.List;
+
 import org.eclipse.gef.fx.nodes.GeometryNode;
 import org.eclipse.gef.geometry.planar.Rectangle;
-import org.eclipse.gef.geometry.planar.RoundedRectangle;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
-import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
-
-import com.google.common.collect.Lists;
 
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramType;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.VPos;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -40,28 +26,54 @@ import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 
+/**
+ * This Class is responsible for the visual effects of a {@link DiagramNode}.
+ * 
+ * @author celik
+ * <br/>(this was originally documented by GEF)
+ */
 public class DiagramNodeVisual extends Region {
+	
+	//---------------------------------------------------------------------------
+	// ### Variables and Constants
+	//---------------------------------------------------------------------------
 
     private static final double HORIZONTAL_PADDING = 20d;
     private static final double VERTICAL_PADDING = 10d;
     private static final double VERTICAL_SPACING = 5d;
-    private Double minWidth;
-
-    private Text titleText;
-    private TextFlow descriptionFlow;
-    private Text descriptionText;
-    private GeometryNode<Rectangle> shape;
-    private VBox labelVBox;
     
-    //SAVAS: Das hier muss noch angepasst werden
     private DiagramNode myNode;
     private List<EOAttribute> attributeList;
     private GridPane gridPane = new GridPane();
+    private Double minWidth;
+    private Text titleText;
+    private GeometryNode<Rectangle> shape;
+    private VBox labelVBox;
     
 //    private final ObservableList<TableAttribute> data = FXCollections.observableArrayList();
+    
+	//---------------------------------------------------------------------------
+	// ### Construction
+	//---------------------------------------------------------------------------
+    
+    public DiagramNodeVisual(DiagramNode node, DiagramType diagramTyp) {
+    	this.myNode = node;
+    	this.attributeList = node.getAttributeList();
+    	if (diagramTyp == DiagramType.ERDIAGRAM) {
+    		createVisualForERDiagram();
+    	} else if (diagramTyp == DiagramType.CLASSDIAGRAM) {
+    		createClassDiagram();
+    	}
+    }
+    
+	//---------------------------------------------------------------------------
+	// ### Custom Methods and Accessors
+	//---------------------------------------------------------------------------
 
+    /**
+     * This method creates all the elements for the entity relationship diagram and places them into the gridpane.
+     */
     public void initAttributeListForERDiagram() {
     	Label lblAttributeName = null;
     	Label lblAttributeAllowsNull = null;
@@ -79,6 +91,7 @@ public class DiagramNodeVisual extends Region {
 				lblAttributeAllowsNull = new Label("Ø");
 			}
 			
+			// this places the primary key attribute at the top in the gridpane.
 			if (attribute.isPrimaryKey()) {
 				lblAttributeName.setFont(Font.font(lblAttributeName.getFont().getFamily(), FontWeight.EXTRA_BOLD, 16));
 				lblAttributeName.setUnderline(true);
@@ -94,6 +107,9 @@ public class DiagramNodeVisual extends Region {
 		}
 	}
     
+    /**
+     * This method creates all the elements for the class diagram and places them into the gridpane.
+     */
     public void initAttributeListForClassDiagram() {
     	Label lblAttributeName = null;
     	Label lblRelationshipName = null;
@@ -122,69 +138,11 @@ public class DiagramNodeVisual extends Region {
     		gridPane.add(lblRelationshipName, 1, GridPane.getRowIndex(lblAttributeName) + i + 1);
     	}
     }
-
-	public List<EOAttribute> getAttributeList() {
-		return attributeList;
-	}
-
-//	public DiagramNodeVisual() {
-//        // create background shape
-////        shape = new GeometryNode<>(new RoundedRectangle(0, 0, 70, 30, 8, 8));
-//        shape.setFill(Color.LIGHTGREEN);
-//        shape.setStroke(Color.BLACK);
-//
-//        // create vertical box for title and description
-//        labelVBox = new VBox(VERTICAL_SPACING);
-//        labelVBox.setPadding(new Insets(VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING));
-//
-//        // ensure shape and labels are resized to fit this visual
-//        shape.prefWidthProperty().bind(widthProperty());
-//        shape.prefHeightProperty().bind(heightProperty());
-//        labelVBox.prefWidthProperty().bind(widthProperty());
-//        labelVBox.prefHeightProperty().bind(heightProperty());
-//
-//        // create title text
-//        titleText = new Text();
-//        titleText.setTextOrigin(VPos.TOP);
-//
-//        // create description text
-//        descriptionText = new Text();
-//        descriptionText.setTextOrigin(VPos.TOP);
-//
-//        // use TextFlow to enable wrapping of the description text within the
-//        // label bounds
-//        descriptionFlow = new TextFlow(descriptionText);
-//        // only constrain the width, so that the height is computed in
-//        // dependence on the width
-//        descriptionFlow.maxWidthProperty().bind(shape.widthProperty().subtract(HORIZONTAL_PADDING * 2));
-//
-//        // vertically lay out title and description
-//        labelVBox.getChildren().addAll(titleText, descriptionFlow);
-//
-//        // ensure title is always visible (see also #computeMinWidth(double) and
-//        // #computeMinHeight(double) methods)
-//        setMinSize(USE_COMPUTED_SIZE, USE_COMPUTED_SIZE);
-//
-//        // wrap shape and VBox in Groups so that their bounds-in-parent is
-//        // considered when determining the layout-bounds of this visual
-//        getChildren().addAll(new Group(shape), new Group(labelVBox));
-//    }
     
-    public DiagramNodeVisual(DiagramNode node, DiagramType diagramTyp) {
-    	this.myNode = node;
-    	this.attributeList = node.getAttributeList();
-    	if (diagramTyp == DiagramType.ERDIAGRAM) {
-    		createERDiagram();
-    	} else if (diagramTyp == DiagramType.CLASSDIAGRAM) {
-    		createClassDiagram();
-    	}
-    }
-    
-    private void updateNodeBounds() {
-    	myNode.setBounds(new Rectangle(getBoundsInParent().getMinX(), getBoundsInParent().getMinY(), getBoundsInParent().getWidth(), getBoundsInParent().getHeight()));
-    }
-    
-    public void createERDiagram() {
+    /**
+     * Creates the necessary elements for an Entity Relationship Diagram.
+     */
+    public void createVisualForERDiagram() {
     	// create background shape
         shape = new GeometryNode<>(new Rectangle(0, 0, 70, 30));
         shape.setFill(Color.LIGHTGREEN);
@@ -215,31 +173,15 @@ public class DiagramNodeVisual extends Region {
         // create title text
         titleText = new Text();
         titleText.setTextOrigin(VPos.TOP);
-        Font font = new Font(15);
-        titleText.setFont(font);
+        titleText.setFont(new Font(15));
         
-        InnerShadow innerShadow = new InnerShadow();
-        
-        Separator separator2 = new Separator();
-		separator2.setEffect(innerShadow);
-		separator2.setPadding(new Insets(0, -HORIZONTAL_PADDING, 0, -HORIZONTAL_PADDING));
-		separator2.setMinWidth(1);
-        
-
-        // create description text
-        descriptionText = new Text();
-        descriptionText.setTextOrigin(VPos.TOP);
-
-        // use TextFlow to enable wrapping of the description text within the
-        // label bounds
-        descriptionFlow = new TextFlow(descriptionText);
-        // only constrain the width, so that the height is computed in
-        // dependence on the width
-        descriptionFlow.maxWidthProperty().bind(shape.widthProperty().subtract(HORIZONTAL_PADDING * 2));
-        
+        Separator separator = new Separator();
+		separator.setEffect(new InnerShadow());
+		separator.setPadding(new Insets(0, -HORIZONTAL_PADDING, 0, -HORIZONTAL_PADDING));
+		separator.setMinWidth(1);
 
         // vertically lay out title and description
-        labelVBox.getChildren().addAll(titleText,separator2, gridPane);
+        labelVBox.getChildren().addAll(titleText,separator, gridPane);
 
         // ensure title is always visible (see also #computeMinWidth(double) and
         // #computeMinHeight(double) methods)
@@ -251,6 +193,9 @@ public class DiagramNodeVisual extends Region {
         getChildren().addAll(new Group(shape), new Group(labelVBox));
     }
     
+    /**
+     * Creates the necessary elements for a Class Diagram.
+     */
     public void createClassDiagram() {
     	// create background shape
         shape = new GeometryNode<>(new Rectangle(0, 0, 70, 30));
@@ -262,10 +207,9 @@ public class DiagramNodeVisual extends Region {
         labelVBox = new VBox(VERTICAL_SPACING);
         labelVBox.setPadding(new Insets(VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING));
         
-        // TODO Savas activate GC
         labelVBox.setOnMouseReleased(e -> {System.gc();});
         
-        // XXX hier werden die Koordinaten updated. Das brauch ich hier damit ich die Kardinalität der Beiziehung richtig plaziere.
+        // hier werden die Koordinaten updated. Das brauch ich hier damit ich die Kardinalität der Beiziehung richtig plazieren kann.
         labelVBox.setOnMouseDragged(e -> updateNodeBounds());
         
         ColumnConstraints colmn = new ColumnConstraints();
@@ -286,11 +230,9 @@ public class DiagramNodeVisual extends Region {
         // create title text
         titleText = new Text();
         titleText.setTextOrigin(VPos.TOP);
-        Font font = new Font(15);
-        titleText.setFont(font);
+        titleText.setFont(new Font(15));
         
         InnerShadow innerShadow = new InnerShadow();
-        
         Separator separator = new Separator();
 		separator.setEffect(innerShadow);
 		separator.setPadding(new Insets(0, -HORIZONTAL_PADDING, 0, -HORIZONTAL_PADDING));
@@ -300,20 +242,7 @@ public class DiagramNodeVisual extends Region {
 		separator2.setEffect(innerShadow);
 		separator2.setPadding(new Insets(0, -HORIZONTAL_PADDING, 0, -HORIZONTAL_PADDING));
 		separator2.setMinWidth(1);
-        
-
-        // create description text
-        descriptionText = new Text();
-        descriptionText.setTextOrigin(VPos.TOP);
-
-        // use TextFlow to enable wrapping of the description text within the
-        // label bounds
-        descriptionFlow = new TextFlow(descriptionText);
-        // only constrain the width, so that the height is computed in
-        // dependence on the width
-        descriptionFlow.maxWidthProperty().bind(shape.widthProperty().subtract(HORIZONTAL_PADDING * 2));
-        
-
+		
         // vertically lay out title and description
         labelVBox.getChildren().addAll(titleText, separator, gridPane, separator2);
 
@@ -360,10 +289,18 @@ public class DiagramNodeVisual extends Region {
     public Orientation getContentBias() {
         return Orientation.HORIZONTAL;
     }
-
-    public Text getDescriptionText() {
-        return descriptionText;
+    
+    //---------------------------------------------------------------------------
+    // ### Local Helpers
+    //---------------------------------------------------------------------------
+    
+    private void updateNodeBounds() {
+    	myNode.setBounds(new Rectangle(getBoundsInParent().getMinX(), getBoundsInParent().getMinY(), getBoundsInParent().getWidth(), getBoundsInParent().getHeight()));
     }
+
+    //---------------------------------------------------------------------------
+    // ### Basic Accessors
+    //---------------------------------------------------------------------------
 
     public GeometryNode<?> getGeometryNode() {
         return shape;
@@ -377,11 +314,11 @@ public class DiagramNodeVisual extends Region {
         shape.setFill(color);
     }
 
-    public void setDescription(String description) {
-        this.descriptionText.setText(description);
-    }
-
     public void setTitle(String title) {
         this.titleText.setText(title);
     }
+    
+    public List<EOAttribute> getAttributeList() {
+		return attributeList;
+	}
 }

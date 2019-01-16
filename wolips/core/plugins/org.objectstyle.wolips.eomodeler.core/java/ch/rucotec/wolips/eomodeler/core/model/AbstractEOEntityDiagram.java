@@ -3,8 +3,6 @@ package ch.rucotec.wolips.eomodeler.core.model;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,23 +14,53 @@ import org.objectstyle.wolips.eomodeler.core.model.EOLastModified;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelMap;
 
-import com.webobjects.foundation.NSDictionary;
-
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
 
+/**
+ * This class makes an entity to an entity diagram, every entity diagram have their own list of
+ * diagram dimensions which is a {@link HashMap} and the "Key" String is the name of the {@link AbstractDiagram} the entity diagram needs to be shown.
+ * 
+ * @author celik
+ *
+ */
 public abstract class AbstractEOEntityDiagram {
+	
+	//---------------------------------------------------------------------------
+	// ### Variables and Constants
+	//---------------------------------------------------------------------------
 	
 	private EOEntity myEntity;
 	private HashMap<String, EOEntityDiagramDimension> myDiagramDimensions;
 	private AbstractDiagramCollection myGroup;
 	private String mySelectedDiagramName;
 	
+	//---------------------------------------------------------------------------
+	// ### Construction
+	//---------------------------------------------------------------------------
+	
+	/**
+	 * Creates an EOEntityDiagram ({@link EOEntityERDiagram} or {@link EOClassDiagram})
+	 * for the given entity.
+	 * 
+	 * @param entity
+	 * @param group
+	 */
 	public AbstractEOEntityDiagram(EOEntity entity, AbstractDiagramCollection group) {
 		myEntity = entity;
 		myDiagramDimensions = new HashMap<String, EOEntityDiagramDimension>();
 		myGroup = group;
 	}
 	
+	/**
+	 * Creates an EOEntityDiagram ({@link EOEntityERDiagram} or {@link EOClassDiagram}) 
+	 * for the given entity, reads out the given List (which must be an instanceof {@link Map})
+	 * the List has information about where the position of the entity diagram is and for which
+	 * diagram.
+	 * 
+	 * @param entity
+	 * @param diagramList
+	 * @param group
+	 */
 	public AbstractEOEntityDiagram(EOEntity entity, List diagramList, AbstractDiagramCollection group) {
 		myEntity = entity;
 		myDiagramDimensions = new HashMap<String, EOEntityDiagramDimension>();
@@ -52,46 +80,63 @@ public abstract class AbstractEOEntityDiagram {
 				myDiagramDimensions.put(diagramName, erdDimension);
 			}
 		}
-		
-		
-//		Iterator<?> diagramKeyIterator = diagramMap.keySet().iterator();
-//		while (diagramKeyIterator.hasNext()) {
-//			String erdName = String.valueOf(diagramKeyIterator.next());
-//			Object erdProperties = diagramMap.get(erdName);
-//			if (erdProperties instanceof Map) {
-//				int xPos = Integer.parseInt(((String)((Map) erdProperties).get("xPos")));
-//				int yPos = Integer.parseInt(((String)((Map) erdProperties).get("yPos")));
-//				int width = Integer.parseInt(((String)((Map) erdProperties).get("width")));
-//				int height = Integer.parseInt(((String)((Map) erdProperties).get("height")));
-//				
-//				EOEntityDiagramDimension erdDimension = new EOEntityDiagramDimension(xPos, yPos, width, height);
-//				
-//				myDiagramDimensions.put(erdName, erdDimension);
-//			}
-//		}
-		
 	}
 	
+	//---------------------------------------------------------------------------
+	// ### Custom Methods and Accessors
+	//---------------------------------------------------------------------------
+	
+	/**
+	 * This method returns a {@link DiagramNode} which is the visual element 
+	 * for the diagram.
+	 * 
+	 * @param selectedDiagramName
+	 * @return - a {@link DiagramNode}
+	 */
 	public abstract DiagramNode draw(String selectedDiagramName);
 	
+	/**
+	 * Saves all the information into the responsible entity.plist
+	 * 
+	 * @param modelFolder
+	 * @throws PropertyListParserException
+	 * @throws IOException
+	 */
 	public void saveToFile(File modelFolder) throws PropertyListParserException, IOException {
 		EOEntity entity = getEntity();
 		String entityName = entity.getName();
 		File entityFile = new File(modelFolder, entityName + ".plist");
 		EOModelMap entityMap = entity.toEntityMap();
-		System.out.println();
 		EOModelMap entityMapWithDiagrams = toMap(entityMap);
 		WOLPropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, entityFile, entityMapWithDiagrams);
 		
 		myEntity.setLastModified(new EOLastModified(entityFile));
 	}
 	
+	/**
+	 * Removes a diagram from the entity.plist.
+	 * 
+	 * @param selectedDiagramName
+	 */
 	public void removeFromEntityPlist(String selectedDiagramName) {
-		getDiagramDimensions().remove(selectedDiagramName);
+		myDiagramDimensions.remove(selectedDiagramName);
 	}
 	
+	/**
+	 * Generates a {@link EOModelMap} with the information which describes in which diagram and on 
+	 * which position this EOEntityDiagram is.
+	 * 
+	 * @param entityMap
+	 * @return a {@link EOModelMap}
+	 */
 	public abstract EOModelMap toMap(EOModelMap entityMap);
 	
+	/**
+	 * Changes the dimension of the EOEntityDiagram on the diagram.
+	 * 
+	 * @param selectedDiagramName
+	 * @param dimension
+	 */
 	public void positionsChanged(String selectedDiagramName, Rectangle dimension) {
 		EOEntityDiagramDimension entityDimension = getDiagramDimensionForKey(selectedDiagramName);
 		entityDimension.setxPos(dimension.getX());
@@ -100,6 +145,10 @@ public abstract class AbstractEOEntityDiagram {
 		entityDimension.setHeight(dimension.getHeight());
 		myGroup.setModelDirty(true);
 	}
+	
+	//---------------------------------------------------------------------------
+	// ### Basic Accessors
+	//---------------------------------------------------------------------------
 	
 	public EOEntity getEntity() {
 		return myEntity;

@@ -11,23 +11,13 @@ import org.eclipse.gef.mvc.fx.viewer.IViewer;
 import com.google.inject.Guice;
 import com.sun.javafx.stage.EmbeddedWindow;
 
-import ch.rucotec.gef.diagram.models.ItemCreationModel;
-import ch.rucotec.gef.diagram.models.ItemCreationModel.Type;
-import ch.rucotec.gef.diagram.visuals.DiagramNodeVisual;
-import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
-import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramType;
 import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
-import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagramExampleFactory;
 import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 /**
  * Entry point for our SimpleDiagram, creating and rendering a JavaFX
@@ -35,12 +25,32 @@ import javafx.scene.layout.VBox;
  *
  */
 @SuppressWarnings("restriction")
-public class SimpleDiagramApplication{
+public class SimpleDiagramApplication {
 
+	//---------------------------------------------------------------------------
+	// ### Variables and Constants
+	//---------------------------------------------------------------------------
+	
 	private SimpleDiagram diagram;
 	private EmbeddedWindow primaryStage;
 	private HistoricizingDomain domain;
-	private SimpleDiagramExampleFactory fac = new SimpleDiagramExampleFactory();
+
+	//---------------------------------------------------------------------------
+	// ### Construction
+	//---------------------------------------------------------------------------
+	
+	/**
+	 * Constructor for the JavaFx GEF-Application needs an {@link EmbeddedWindow} which is
+	 * used as the primaryStage.
+	 * @param stage - the primaryStage.
+	 */
+	public SimpleDiagramApplication(EmbeddedWindow stage) {
+		this.primaryStage = stage;
+	}
+
+	//---------------------------------------------------------------------------
+	// ### Custom Methods and Accessors
+	//---------------------------------------------------------------------------
 	
 	/**
 	 * Returns the content viewer of the domain
@@ -62,15 +72,12 @@ public class SimpleDiagramApplication{
 
 		pane.setTop(createButtonBar());
 		pane.setCenter(getContentViewer().getCanvas());
-		//pane.setRight(createToolPalette());
 
 		pane.setMinWidth(800);
 		pane.setMinHeight(600);
 
 		Scene scene = new Scene(pane);
 		primaryStage.setScene(scene);
-
-		//primaryStage.setScene(scene);
 	}
 
 	/**
@@ -79,16 +86,15 @@ public class SimpleDiagramApplication{
 	private void populateViewerContents() {
 
 		if (diagram == null) {
-//			diagram = fac.createSingleNodeExample();
+			//			diagram = fac.createSingleNodeExample();
 			diagram = new SimpleDiagram();
 		}
 		IViewer viewer = getContentViewer();
 		viewer.getContents().setAll(diagram);
 	}
 
-	public void start(EmbeddedWindow stage) throws Exception {
+	public void start() throws Exception {
 		SimpleDiagramModule module = new SimpleDiagramModule();
-		this.primaryStage = stage;
 		// create domain using guice
 		this.domain = (HistoricizingDomain) Guice.createInjector(module).getInstance(IDomain.class);
 
@@ -102,14 +108,12 @@ public class SimpleDiagramApplication{
 		populateViewerContents();
 
 		// set-up stage
-//		primaryStage.setResizable(true);
-//		primaryStage.setTitle("GEF Simple Mindmap");
 		primaryStage.sizeToScene();
 		primaryStage.show();
 	}
 
 	/**
-	 * Creates the undo/redo buttons
+	 * Creates the undo/redo and Zoom -/Zoom + buttons
 	 * 
 	 * @return
 	 */
@@ -141,7 +145,7 @@ public class SimpleDiagramApplication{
 			undoButton.setDisable(!e.getHistory().canUndo(ctx));
 			redoButton.setDisable(!e.getHistory().canRedo(ctx));
 		});
-		
+
 		// Zoom handling
 		/* TODO
 		 * ((InfiniteCanvas)getContentViewer().getCanvas()).getContentTransform().appendScale(
@@ -154,7 +158,7 @@ public class SimpleDiagramApplication{
 					1.1,
 					1.1);
 		});
-		
+
 		Button zoomOutButton = new Button("Zoom -");
 		zoomOutButton.setOnAction(e -> {
 			((InfiniteCanvas)getContentViewer().getCanvas()).getContentTransform().appendScale(
@@ -166,61 +170,16 @@ public class SimpleDiagramApplication{
 	}
 
 	/**
-	 * Creates the tooling buttons to create new elements
-	 * @return
+	 * This sets the diagram and refreshes the content of the viewer.
+	 * @param selectedDiagram
 	 */
-	private Node createToolPalette() {
-		ItemCreationModel creationModel = getContentViewer().getAdapter(ItemCreationModel.class);
-
-		DiagramNodeVisual graphic = new DiagramNodeVisual(new DiagramNode(), DiagramType.ERDIAGRAM);
-		graphic.setTitle("New Node");
-
-		// the toggleGroup makes sure, we only select one 
-		ToggleGroup toggleGroup = new ToggleGroup();
-
-		ToggleButton createNode = new ToggleButton("", graphic);
-		createNode.setToggleGroup(toggleGroup);
-		createNode.setMaxWidth(Double.MAX_VALUE);
-		createNode.selectedProperty().addListener((e, oldVal, newVal) -> {
-			creationModel.setType(newVal ? Type.Node : Type.None);
-		});
-
-		ToggleButton createConn = new ToggleButton("New Connection");
-		createConn.setToggleGroup(toggleGroup);
-		createConn.setMaxWidth(Double.MAX_VALUE);
-		createConn.setMinHeight(50);
-		createConn.selectedProperty().addListener((e, oldVal, newVal) -> {
-			creationModel.setType(newVal ? Type.Connection : Type.None);
-		});
-
-		// now listen to changes in the model, and deactivate buttons, if necessary
-		creationModel.getTypeProperty().addListener((e, oldVal, newVal) -> {
-			if (Type.None == newVal) {
-				// unselect the toggle button
-				Toggle selectedToggle = toggleGroup.getSelectedToggle();
-				if (selectedToggle != null) {
-					selectedToggle.setSelected(false);
-				}
-			}
-		});
-
-		return new VBox(20, createNode, createConn);
-	}
-	
-	public void generateErd(Object _model) {
-		diagram = fac.createErd(_model);
-		populateViewerContents();
-	}
-	
-	public void generateDiagram(Object selectedDiagram) {
-		if (selectedDiagram instanceof AbstractDiagram) {
-			diagram = ((AbstractDiagram) selectedDiagram).drawDiagram();
-		}
+	public void setDiagram(AbstractDiagram selectedDiagram) {
+		diagram = selectedDiagram.drawDiagram();
 		populateViewerContents(); // Refresh content
 	}
 
 	public IUndoContext getUndoContext() {
 		return domain.getUndoContext();
 	}
-	
+
 }

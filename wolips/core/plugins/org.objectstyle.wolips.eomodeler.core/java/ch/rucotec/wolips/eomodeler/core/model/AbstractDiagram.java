@@ -9,16 +9,44 @@ import java.util.Set;
 import org.objectstyle.woenvironment.plist.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.core.model.EOModelMap;
-import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.core.model.ISortableEOModelObject;
 import org.objectstyle.wolips.eomodeler.core.model.UserInfoableEOModelObject;
 
+import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramConnection;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
 import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
 
+/**
+ * This class is handling everything what a standard diagram needs.
+ * 
+ * <p> 
+ * An AbstractDiagramCollection has many AbstractDiagrams, an AbstractDiagram has only 1
+ * parent of the AbstractDiagramCollection class.
+ * </p>
+ * <pre>
+ *  +---------------------------+
+ *  | AbstractDiagramCollection |
+ *  +---------------------------+
+ *  	        |1
+ *  	        |
+ *  	        |0..*
+ *  +---------------------------+
+ *  |      AbstractDiagram      |
+ *  +---------------------------+
+ * </pre>
+ * 
+ * @author celik
+ *
+ * @param <T> - describing the parent Collection(group) (parent must extend {@link AbstractDiagramCollection}).
+ * 	            <p>For example:</p>
+ * 				<pre><code>AbstractDiagram<{@link EOClassDiagramCollection}></code></pre>
+ */
 public abstract class AbstractDiagram<T extends AbstractDiagramCollection> extends UserInfoableEOModelObject<T> implements ISortableEOModelObject {
 
+	//---------------------------------------------------------------------------
+	// ### Variables and Constants
+	//---------------------------------------------------------------------------
+	
 	public static final String NAME = "name";
 	public static final String ENTITYNAMES = "entityNames";
 	public static final String DIAGRAMS = "diagrams";
@@ -29,27 +57,51 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 	private Set<AbstractEOEntityDiagram> myDeletedDiagramEntities;
 	private T myDiagramCollection;
 	
-	public AbstractDiagram() {
+	//---------------------------------------------------------------------------
+	// ### Construction
+	//---------------------------------------------------------------------------
+	
+	/**
+	 * Used to initialize the needed variables and give the diagram its name.
+	 * 
+	 * @param name
+	 */
+	protected AbstractDiagram(String name) {
+		myName = name;
 		myDiagramEntities = new LinkedHashSet<AbstractEOEntityDiagram>();
 		myDeletedDiagramEntities = new LinkedHashSet<AbstractEOEntityDiagram>();
 		myEntities = new LinkedHashSet<EOEntity>();
 	}
 	
-	public AbstractDiagram(String name) {
-		this();
-		myName = name;
-	}
+	//---------------------------------------------------------------------------
+	// ### Custom Methods and Accessors
+	//---------------------------------------------------------------------------
 	
 	public abstract void addEntityToDiagram(EOEntity entity);
 	
+	/**
+	 * Adds the given {@code EOEntityDiagram} ({@link EOEntityClassDiagram} or {@link EOEntityERDiagram})
+	 * to the diagram.
+	 * 
+	 * @param entityDiagram
+	 */
 	public void addEntityToDiagram(AbstractEOEntityDiagram entityDiagram) {
-		if (myDeletedDiagramEntities.contains(entityDiagram)) {
-			myDeletedDiagramEntities.remove(entityDiagram);
+		for (AbstractEOEntityDiagram eoEntityDiagram : myDeletedDiagramEntities) {
+			if (eoEntityDiagram.getEntity() == entityDiagram.getEntity()) {
+				myDeletedDiagramEntities.remove(eoEntityDiagram);
+			}
 		}
 		myDiagramEntities.add(entityDiagram);
 		myEntities.add(entityDiagram.getEntity());
 	}
 	
+	/**
+	 * Searches the EOEntityDiagram ({@link EOEntityClassDiagram} or {@link EOEntityERDiagram}) in every Diagram in the parent
+	 * the parent is the DiagramCollection. If an Entity already has a EOEntityDiagram, then it returns the found EOEntityDiagram else it return null.
+	 * 
+	 * @param entity
+	 * @return {@link AbstractEOEntityDiagram}
+	 */
 	public AbstractEOEntityDiagram getEntityDiagramWithEntity(EOEntity entity) {
 		AbstractEOEntityDiagram foundEntityDiagram = null;
 		for (AbstractDiagram diagram : (Set<AbstractDiagram>)myDiagramCollection.getDiagrams()) {
@@ -62,6 +114,11 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 		return foundEntityDiagram;
 	}
 	
+	/**
+	 * Removes the EOEntityDiagram (which is found with the given {@link EOEntity}) from the Diagram.
+	 * 
+	 * @param entity
+	 */
 	public void removeEntityFromDiagram(EOEntity entity) {
 		for (AbstractEOEntityDiagram entityDiagram : myDiagramEntities) {
 			if (entity == entityDiagram.getEntity()) {
@@ -73,12 +130,15 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 		}
 	}
 	
-	public Set<AbstractEOEntityDiagram> getDiagramEntities() {
-		return myDiagramEntities;
-	}
-	
 	protected abstract AbstractDiagram createDiagram(String name);
 	
+	/**
+	 * Saves all the diagram information in the needed Entity.plist.
+	 * 
+	 * @param modelFolder
+	 * @throws PropertyListParserException
+	 * @throws IOException
+	 */
 	public void saveToFile(File modelFolder) throws PropertyListParserException, IOException {
 		Iterator<AbstractEOEntityDiagram> deletedEntityDiagramIterator = myDeletedDiagramEntities.iterator();
 		while (deletedEntityDiagramIterator.hasNext()) {
@@ -93,10 +153,11 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 		}
 	}
 	
-	public void loadFromMap(EOModelMap _diagramMap, Set<EOModelVerificationFailure> _failures) {
-		
-	}
-	
+	/**
+	 * Clones a diagram.
+	 * 
+	 * @return {@link AbstractDiagram}
+	 */
 	protected AbstractDiagram cloneDiagram() {
 		AbstractDiagram diagram = createDiagram(myName);
 		cloneIntoDiagram(diagram);
@@ -104,10 +165,17 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 		return diagram;
 	}
 	
-	public void cloneIntoDiagram(AbstractDiagram diagram) {
+	private void cloneIntoDiagram(AbstractDiagram diagram) {
 		diagram.myDiagramEntities = myDiagramEntities; 
 	}
 	
+	/**
+	 * Sets the diagram name and fires the PropertyChanged listener.
+	 * 
+	 * @param name
+	 * @param fireEvents
+	 * @throws DuplicateNameException
+	 */
 	@SuppressWarnings("unused")
 	public void setName(String name, boolean fireEvents) throws DuplicateNameException {
 		String oldName = myName;
@@ -124,6 +192,16 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 		}
 	}
 	
+	/**
+	 * Returns a String with all the entity names in the diagram.
+	 * <p>
+	 * This method is used to display all the entity names in one column for the TableView.
+	 * The TableView knows this method due to the Constant = <code>AbstractDiagram.ENTITYNAMES</code>.
+	 * </p>
+	 * Which apears by clicking  on a Collection object in the EOModeller Application
+	 * 
+	 * @return a String with all the entity names in the entities list.
+	 */
 	// Diese Methode wird durch den Column ersteller des TableViews aufgerufen (weil die Konstante 
 	//	AbstractDiagram.ENTITYNAMES als column mit gegeben wird ) hier wird dann der gewünschte String zurueck gegeben.
 	public String getEntityNames() {
@@ -136,6 +214,23 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 			}
 		}
 		return sb.toString();
+	}
+	
+	/**
+	 * This method creates a {@link SimpleDiagram} which represents the whole diagram, this is
+	 * later given to the JavaFX application which then is added to the canvas.
+	 * 
+	 * @return a {@link SimpleDiagram} which contains every {@link DiagramNode}s and 
+	 * the {@link DiagramConnection}s
+	 */
+	public abstract SimpleDiagram drawDiagram();
+	
+	//---------------------------------------------------------------------------
+	// ### Basic Accessors
+	//---------------------------------------------------------------------------
+	
+	public Set<AbstractEOEntityDiagram> getDiagramEntities() {
+		return myDiagramEntities;
 	}
 	
 	@Override
@@ -159,6 +254,9 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 	public Set<EOEntity> getEntities() {
 		return myEntities;
 	}
-	
-	public abstract SimpleDiagram drawDiagram();
+
+	@Override
+	public String toString() {
+		return "AbstractDiagram [myName=" + myName + ", myEntities=" + myEntities + ", myDiagramEntities=" + myDiagramEntities + ", myDeletedDiagramEntities=" + myDeletedDiagramEntities + ", myDiagramCollection=" + myDiagramCollection + "]";
+	}
 }

@@ -1,6 +1,5 @@
 package ch.rucotec.wolips.eomodeler.core.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -8,16 +7,25 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.gef.geometry.planar.Rectangle;
-import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelMap;
-import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
 import javafx.scene.paint.Color;
 
+/**
+ * Represents an entity as an element of a entity relationship diagram every entity in a entity relationship diagram has a
+ * {@code EOEntityERDiagram} which knows all their positions and diagram names.
+ * 
+ * @author celik
+ * @see AbstractEOEntityDiagram
+ */
 public class EOEntityERDiagram extends AbstractEOEntityDiagram{
 
+	//---------------------------------------------------------------------------
+	// ### Construction
+	//---------------------------------------------------------------------------
+	
 	public EOEntityERDiagram(EOEntity entity, List diagramList, EOERDiagramCollection group) {
 		super(entity, diagramList, group);
 	}
@@ -25,6 +33,10 @@ public class EOEntityERDiagram extends AbstractEOEntityDiagram{
 	public EOEntityERDiagram(EOEntity entity, EOERDiagramCollection group) {  
 		super(entity, group);
 	}
+	
+	//---------------------------------------------------------------------------
+	// ### Custom Methods and Accessors
+	//---------------------------------------------------------------------------
 	
 	@Override
 	public EOModelMap toMap(EOModelMap entityMap) {
@@ -47,23 +59,6 @@ public class EOEntityERDiagram extends AbstractEOEntityDiagram{
 		entityMapWithDiagrams.setList("ERDiagrams", diagrams, true);
 		return entityMapWithDiagrams;
 	}
-	
-//	@Override
-//	public EOModelMap removeFromEntityPlist(EOModelMap entityMap) {
-////		EOModelMap entityMapWithoutDiagrams = entityMap;
-////		List diagramList = entityMapWithoutDiagrams.getList("ERDiagrams");
-////		for (int index = 0; index < diagramList.size(); index++) {
-////			Object digram = diagramList.get(index);
-////			if (digram instanceof Map) {
-////				Map diagramMap = (Map)digram;
-////				String diagramName = (String)diagramMap.get("diagramName");
-////				if (diagramName.equals(getSelectedDiagramName())) {
-////					
-////				}
-////			}
-////		}
-//		getDiagramDimensions().remove(getSelectedDiagramName());
-//	}
 
 	@Override
 	public DiagramNode draw(String selectedDiagramName) {
@@ -75,10 +70,7 @@ public class EOEntityERDiagram extends AbstractEOEntityDiagram{
 		double width = getDiagramDimensionForKey(selectedDiagramName).getWidth();
 		double height = getDiagramDimensionForKey(selectedDiagramName).getHeight();
 		
-//		entityNode.setAttributeList(attributeList);
-//		entityNode.setRelationshipsList(relationshipsList);
 		entityNode.setTitle(getEntity().getExternalName());
-		entityNode.setDescription("Beschreibung");
 		entityNode.setColor(Color.AZURE);
 		entityNode.setBounds(new Rectangle(xPos, yPos, width, height));
 		

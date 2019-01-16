@@ -21,14 +21,22 @@ import javafx.scene.Node;
  *
  * It is bound to an {@link DiagramNodePart} and will be called in the
  * {@link DiagramConnectionPart}.
- *
+ * <br/>(documented by GEF)
  */
 public class SimpleDiagramAnchorProvider extends IAdaptable.Bound.Impl<IVisualPart<? extends Node>>
         implements Provider<IAnchor> {
-
+	
+	//---------------------------------------------------------------------------
+	// ### Variables and Constants
+	//---------------------------------------------------------------------------
+	
     // the anchor in case we already created one
     private DynamicAnchor anchor;
 
+	//---------------------------------------------------------------------------
+	// ### Custom Methods and Accessors
+	//---------------------------------------------------------------------------
+    
     @Override
     public ReadOnlyObjectProperty<IVisualPart<? extends Node>> adaptableProperty() {
         return null;

@@ -1,16 +1,11 @@
 package ch.rucotec.wolips.eomodeler.core.model;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.objectstyle.woenvironment.plist.PropertyListParserException;
-import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.core.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
@@ -37,6 +32,13 @@ public class EOERDiagramCollection extends AbstractDiagramCollection<EOModel, EO
 	// ### Methods
 	//---------------------------------------------------------------------------
 	
+	/**
+	 * Adds a blank entity relationship diagram with the given name to the {@code EOERDiagramCollection}.
+	 * 
+	 * @param name
+	 * @return the blank {@link EOERDiagram}
+	 * @throws DuplicateNameException
+	 */
 	// adding an ERDiagram
 	public EOERDiagram addBlankERDiagram(String name) throws DuplicateNameException{
 		EOERDiagram erdiagram = new EOERDiagram(findUnusedDiagramName(name));
@@ -44,26 +46,18 @@ public class EOERDiagramCollection extends AbstractDiagramCollection<EOModel, EO
 		return erdiagram;
 	}
 	
-//	public String findUnusedERDiagramName(String _newName) {
-//		return _findUnusedName(_newName, "getERDiagramNamed");
-//	}
-	
-//	public EOERDiagram getERDiagramNamed(String _name) {
-//		EOERDiagram matchingERDiagram = null;
-//		Iterator<EOERDiagram> erdIterator = getDiagrams().iterator();
-//		while (matchingERDiagram == null && erdIterator.hasNext()) {
-//			EOERDiagram erdiagram = erdIterator.next();
-//			if (ComparisonUtils.equals(erdiagram.getName(), _name)) {
-//				matchingERDiagram = erdiagram;
-//			}
-//		}
-//		return matchingERDiagram;
-//	}
-	
 	public void addERDiagram(EOERDiagram erdiagram) throws DuplicateNameException {
 		addERDiagram(erdiagram, true, null);
 	}
 	
+	/**
+	 * Adds the given {@link EOERDiagram} to the {@code EOERDiagramCollection}.
+	 * 
+	 * @param erdiagram - which will be added to the {@link EOERDiagram}.
+	 * @param _fireEvents - if its should refresh after adding it.
+	 * @param _failures
+	 * @throws DuplicateNameException
+	 */
 	public void addERDiagram(EOERDiagram erdiagram, boolean _fireEvents, Set<EOModelVerificationFailure> _failures) throws DuplicateNameException {
 		erdiagram._setModelParent(this);
 		checkForDuplicateERDiagramName(erdiagram, erdiagram.getName(), _failures);
@@ -80,6 +74,15 @@ public class EOERDiagramCollection extends AbstractDiagramCollection<EOModel, EO
 		}
 	}
 	
+	/**
+	 * Checks whether or not the entity relationship diagram name is already taken, if so then a 
+	 * {@code DuplicateNameException} is thrown.
+	 * 
+	 * @param erdiagram
+	 * @param newName
+	 * @param _failures
+	 * @throws DuplicateNameException
+	 */
 	public void checkForDuplicateERDiagramName(EOERDiagram erdiagram, String newName, Set<EOModelVerificationFailure> _failures) throws DuplicateNameException {
 		EOERDiagram existingERDiagram = getDiagramNamed(newName);
 		if (existingERDiagram != null && existingERDiagram != erdiagram) {
@@ -94,11 +97,18 @@ public class EOERDiagramCollection extends AbstractDiagramCollection<EOModel, EO
 		}
 	}
 	
+	/**
+	 * Removes the entity relationship diagram from the {@code EOERDiagramCollection} and clears
+	 * its data from every Entity.plist.
+	 * 
+	 * @param erdiagram
+	 */
 	public void removeERDiagram(EOERDiagram erdiagram) {
 		Set<EOERDiagram> oldERDiagrams = getDiagrams();
 		Set<EOERDiagram> newERDiagrams = new LinkedHashSet<EOERDiagram>();
 		newERDiagrams.addAll(getDiagrams());
 		newERDiagrams.remove(erdiagram);
+		getMyDeletedDiagrams().add(erdiagram);
 		setDiagrams(newERDiagrams);
 		firePropertyChange(AbstractDiagramCollection.DIAGRAMS, oldERDiagrams, newERDiagrams);
 		
@@ -144,6 +154,9 @@ public class EOERDiagramCollection extends AbstractDiagramCollection<EOModel, EO
 		return new HashSet<EOModelReferenceFailure>();
 	}
 
+	/**
+	 * Sets the parent it him self to dirty.
+	 */
 	@Override
 	protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
 		if (getModel() != null) {
@@ -172,8 +185,4 @@ public class EOERDiagramCollection extends AbstractDiagramCollection<EOModel, EO
 	public EOModel _getModelParent() {
 		return getModel();
 	}
-	
-	//---------------------------------------------------------------------------
-	// ### Basic Accessors
-	//---------------------------------------------------------------------------
 }

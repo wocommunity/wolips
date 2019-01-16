@@ -18,16 +18,37 @@ import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramType;
 import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
 
+/**
+ * The {@code EOClassDiagram} represents a class diagram and extends {@link AbstractDiagram}
+ * most methods in this class are just Overrides from its extended classes.
+ * 
+ * @author celik
+ * @see AbstractDiagram
+ */
 public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 	
+	//---------------------------------------------------------------------------
+	// ### Construction
+	//---------------------------------------------------------------------------
+	
+	/**
+	 * This constructor calls the constructor of its super and gives the name as parameter.
+	 * 
+	 * @param name
+	 */
 	public EOClassDiagram(String name) {
 		super(name);
 	}
 
+	//---------------------------------------------------------------------------
+	// ### Custom Methods and Accessors
+	//---------------------------------------------------------------------------
+	
 	public void setName(String name) throws DuplicateNameException {
 		setName(name, true);
 	}
 	
+	@Override
 	public void setName(String _name, boolean _fireEvents) throws DuplicateNameException {
 		String name = _name;
 		if (name == null || name.isEmpty()) {
@@ -39,6 +60,12 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 		super.setName(name, _fireEvents);
 	}
 
+	/**
+	 * Finds the {@link EOEntityClassDiagram} for the given entity.
+	 * If there is none than one is created and is handed over to the 
+	 * {@code addEntityToDiagram(AbstractEOEntityDiagram entityDiagram)}
+	 * 
+	 */
 	@Override
 	public void addEntityToDiagram(EOEntity entity) {
 		EOEntityClassDiagram entityClassDiagram = (EOEntityClassDiagram) getEntityDiagramWithEntity(entity);
@@ -50,6 +77,9 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 		super.addEntityToDiagram(entityClassDiagram);
 	}
 
+	/**
+	 * Creates a new object of {@code EOClassDiagram} and returns it.
+	 */
 	@Override
 	protected AbstractDiagram createDiagram(String name) {
 		return new EOClassDiagram(name);
@@ -83,11 +113,17 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 		return EOClassDiagramCollection.class;
 	}
 
+	/**
+	 * Removes this from its parent.
+	 */
 	@Override
 	public void _removeFromModelParent(Set<EOModelVerificationFailure> failures) throws EOModelException {
 		_getModelParent().removeClassDiagram(this);
 	}
 
+	/**
+	 * Adds this to the given modelParent.
+	 */
 	@Override
 	public void _addToModelParent(EOClassDiagramCollection modelParent, boolean findUniqueName, Set<EOModelVerificationFailure> failures) throws EOModelException {
 		if (findUniqueName) {
@@ -129,11 +165,11 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 							if (destinationRelationship.isToMany()) {
 								manyToManyConnection = false;
 								sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
-								targetToSourceCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);;
+								targetToSourceCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
 							} else {
 								manyToManyConnection = false;
 								// Hier werden die Kardinalitäten erstellt..
-								sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);;
+								sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
 								targetToSourceCardinality = DiagramConnection.TOONE + (destinationRelationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
 							}
 
@@ -159,5 +195,5 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 		
 		return myClassDiagram;
 	}
-
+	
 }
