@@ -26,7 +26,6 @@ import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
 import ch.rucotec.wolips.eomodeler.DiagramTab;
 import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
-import ch.rucotec.wolips.eomodeler.core.model.EOClassDiagram;
 import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
 
 /**

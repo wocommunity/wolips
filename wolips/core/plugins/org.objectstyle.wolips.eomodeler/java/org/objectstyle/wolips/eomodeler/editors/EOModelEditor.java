@@ -357,30 +357,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		}
 	}
 	
-	// SAVAS sobald ein neues ERD erstellt wird, ist das neue ERD selektiert im Outline Tab
-//	protected class ERDsChangeRefresher extends AbstractAddRemoveChangeRefresher<EOERDiagramCollection> {
-//		public ERDsChangeRefresher() {
-//			super("ERDiagramsChange");
-//		}
-//
-//		public void changeSelection(final ISelection selection) {
-//			EOModelEditor.this.setSelection(selection);
-//			EOModelEditor.this.setActivePage(1);
-//		}
-//
-//		@Override
-//		protected void objectsAdded(List<EOERDiagramCollection> _addedObjects) {
-//			// TODO Auto-generated method stub
-//			
-//		}
-//
-//		@Override
-//		protected void objectsRemoved(List<EOERDiagramCollection> _removedObjects) {
-//			// TODO Auto-generated method stub
-//			
-//		}
-//	}
-	
+	// SAVAS sobald ein neues Diagram erstellt oder geloescht wird, wird die selektion im Outline Tab angepasst.
 	protected class DiagramDeletedRefresher extends AbstractAddRemoveChangeRefresher<EOERDiagram> {
 		public DiagramDeletedRefresher() {
 			super("DiagramDeleted");
@@ -490,6 +467,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		myDatabaseConfigsChangeListener = new DatabaseConfigsChangeRefresher();
 		myAttributeAndRelationshipListener = new AttributeAndRelationshipDeletedRefresher();
 		myArgumentListener = new ArgumentDeletedRefresher();
+		// SAVAS DiagramListener
 		myDiagramListener = new DiagramDeletedRefresher();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 	}
@@ -676,7 +654,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				EOArgumentSelectionChangedListener argumentSelectionChangedListener = new EOArgumentSelectionChangedListener();
 				myStoredProcedureEditor.addSelectionChangedListener(argumentSelectionChangedListener);
 				
-				// SAVAS: Hier wird ein extra Tab erstellt fürs Diagramm
+				// SAVAS: Hier wird das DiagramTab configuriert.
 
 				diagramTab = DiagramTab.getInstance();
 				
@@ -902,7 +880,9 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			pageNum = getPageNum(myEntitiesTableEditor);
 		} else if (_pageType == EOModelEditor.EOSTOREDPROCEDURE_PAGE) {
 			pageNum = getPageNum(myStoredProcedureEditor);
-		} else if(_pageType == EOModelEditor.EODIAGRAMCOLLECTION_PAGE) {
+		} 
+		// SAVAS PageNumber
+		else if(_pageType == EOModelEditor.EODIAGRAMCOLLECTION_PAGE) {
 			pageNum = getPageNum(myDiagramCollectionEditor);
 		} else if (_pageType == EOModelEditor.EODIAGRAM_PAGE) {
 			pageNum = getPageNum(diagramTab);

@@ -103,6 +103,4 @@ public class EODiagramsTableViewer extends Composite implements ISelectionProvid
 	public AbstractDiagramCollection getDiagramCollection() {
 		return myDiagramCollection;
 	}
-	
-	// SAVAS ich han kei ahnig ob ich da Doubleklick class bruche oder nöd?
 }

@@ -722,8 +722,7 @@
                enablesFor="1"
                icon="icons/reverseEngineer.png"
                id="org.objectstyle.wolips.eomodeler.outline.popup.NewERDiagram"
-               label="New ERDiagram"
-               menubarPath="group1">
+               label="New ERDiagram">
          </action>
       </objectContribution>
       <objectContribution

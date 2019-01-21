@@ -151,7 +151,7 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 				modelChildren.addAll(model.getDatabaseConfigs());
 			}
 			if (model.getERDiagramCollection() != null) {
-				modelChildren.add(model.getERDiagramCollection()); // SAVAS ERD wird im Outline dem TreeView als children hinzugefuegt (TreeView befindet sich im OutlineView)
+				modelChildren.add(model.getERDiagramCollection()); // SAVAS DiagramCollection wird im Outline dem TreeView als children hinzugefuegt (TreeView befindet sich im OutlineView)
 			}
 			if (model.getClassDiagramCollection() != null) {
 				modelChildren.add(model.getClassDiagramCollection());
@@ -209,7 +209,7 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 			Set<EOClassDiagram> classdiagrams = new TreeSet<EOClassDiagram>(new EOSortableEOModelObjectComparator());
 			classdiagrams.addAll(classdiagramCollection.getDiagrams());
 			children = classdiagrams.toArray();
-		}else {
+		} else {
 			children = new Object[0];
 		}
 		return children;
@@ -256,8 +256,6 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 			}
 		} else if (_element instanceof EOEntityIndex) {
 			parent = ((EOEntityIndex) _element).getEntity();
-		} else if (_element instanceof EOERDiagramCollection) { // SAVAS der parent von EOERD wird gespeichert
-			parent = ((EOERDiagramCollection) _element).getModel();
 		} else {
 			parent = null;
 		}

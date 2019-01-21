@@ -59,8 +59,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.core.model.AbstractEOAttributePath;
 import org.objectstyle.wolips.eomodeler.core.model.EOArgument;
@@ -79,8 +77,6 @@ import org.objectstyle.wolips.eomodeler.core.utils.BooleanUtils;
 
 import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
 import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagramCollection;
-import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
-import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramCollection;
 
 public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvider, IColorProvider {
 	private TreeViewer _treeViewer;

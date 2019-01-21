@@ -134,8 +134,13 @@ public class DiagramNodeVisual extends Region {
     			lblRelationshipName = new Label(relationship.getName() + " : " + relationship.getDestination().getClassNameWithoutPackage());
     		}
     		
-    		gridPane.add(new Label("-"), 0, GridPane.getRowIndex(lblAttributeName) + i + 1);
-    		gridPane.add(lblRelationshipName, 1, GridPane.getRowIndex(lblAttributeName) + i + 1);
+    		if (lblAttributeName != null) {
+	    		gridPane.add(new Label("-"), 0, GridPane.getRowIndex(lblAttributeName) + i + 1);
+	    		gridPane.add(lblRelationshipName, 1, GridPane.getRowIndex(lblAttributeName) + i + 1);
+    		} else {
+    			gridPane.add(new Label("-"), 0, 10 + i + 1);
+	    		gridPane.add(lblRelationshipName, 1, 10 + i + 1);
+    		}
     	}
     }
     

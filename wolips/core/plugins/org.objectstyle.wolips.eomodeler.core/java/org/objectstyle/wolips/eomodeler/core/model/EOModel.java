@@ -154,11 +154,6 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		myEntities = new HashSet<EOEntity>();
 		myStoredProcedures = new HashSet<EOStoredProcedure>();
 		myDatabaseConfigs = new HashSet<EODatabaseConfig>();
-		// SAVAS myERD und myDeletedERDNames
-		if(!myName.equals("erprototypes")) {
-			myERDiagramCollection = addBlankERDiagramCollection(EOERDiagramCollection.DISPLAYNAME);
-			myClassDiagramCollection = addBlankClassDiagramCollection(EOClassDiagramCollection.DISPLAYNAME);
-		}
 		myDeletedEntityNamesInObjectStore = new PropertyListSet<String>();
 		myDeletedEntityNames = new PropertyListSet<String>();
 		myDeletedStoredProcedureNames = new PropertyListSet<String>();
@@ -167,6 +162,11 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		_modelEvents = new ModelEvents();
 		_entityNamingConvention = NamingConvention.DEFAULT;
 		_attributeNamingConvention = NamingConvention.DEFAULT;
+		// SAVAS DiagramCollections erstellen.
+		if(!myName.equals("erprototypes")) {
+			myERDiagramCollection = addBlankERDiagramCollection(EOERDiagramCollection.DISPLAYNAME);
+			myClassDiagramCollection = addBlankClassDiagramCollection(EOClassDiagramCollection.DISPLAYNAME);
+		}
 	}
 
 	public EOModel(URL modelURL) throws EOModelException, IOException {
@@ -182,6 +182,46 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		this(EOModelGroup.getModelNameForURL(modelURL));
 		loadFromURL(modelURL, failures);
 	}
+	
+	// SAVAS DiagramCollection verwaltung.
+	public static final String ERDIAGRAMCOLLECTION = "erdiagramCollection";
+	public static final String CLASSDIAGRAMCOLLECTION = "classdiagramCollection";
+	private EOERDiagramCollection myERDiagramCollection;
+	private EOClassDiagramCollection myClassDiagramCollection;
+	
+	public EOERDiagramCollection getERDiagramCollection() {
+		return myERDiagramCollection;
+	}
+	
+	public EOClassDiagramCollection getClassDiagramCollection() {
+		return myClassDiagramCollection;
+	}
+	
+	public void _ERDiagramChanged(EOERDiagramCollection _erdiagrams, String _propertyName, Object _oldValue, Object _newValue) {
+		firePropertyChange(EOModel.ERDIAGRAMCOLLECTION + "." + _propertyName, _oldValue, _newValue);
+		firePropertyChange(EOModel.ERDIAGRAMCOLLECTION, null, _erdiagrams);
+		
+	}
+	
+	public EOERDiagramCollection addBlankERDiagramCollection(String name) {
+		EOERDiagramCollection erdiagrams = new EOERDiagramCollection(name);
+		erdiagrams._setModel(this);
+		return erdiagrams;
+	}
+	
+	public void _ClassDiagramChanged(EOClassDiagramCollection _classdiagrams, String _propertyName, Object _oldValue, Object _newValue) {
+		firePropertyChange(EOModel.CLASSDIAGRAMCOLLECTION + "." + _propertyName, _oldValue, _newValue);
+		firePropertyChange(EOModel.CLASSDIAGRAMCOLLECTION, null, _classdiagrams);
+		
+	}
+	
+	public EOClassDiagramCollection addBlankClassDiagramCollection(String name) {
+		EOClassDiagramCollection classdiagrams = new EOClassDiagramCollection(name);
+		classdiagrams._setModel(this);
+		return classdiagrams;
+	}
+	
+	// ********************************************************************************
 
 	protected void _storedProcedureChanged(EOStoredProcedure _storedProcedure, String _propertyName, Object _oldValue, Object _newValue) {
 		firePropertyChange(EOModel.STORED_PROCEDURE + "." + _propertyName, _oldValue, _newValue);
@@ -340,47 +380,6 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			clearCachedPrototypes(null, false);
 		}
 	}
-	
-	// SAVAS hinzugefuegt (meiner ist nicht protected weil es nicht im gleichen package ist)
-	
-	public static final String ERDIAGRAMCOLLECTION = "erdiagramCollection";
-	public static final String CLASSDIAGRAMCOLLECTION = "classdiagramCollection";
-	private EOERDiagramCollection myERDiagramCollection;
-	private EOClassDiagramCollection myClassDiagramCollection;
-	
-	public EOERDiagramCollection getERDiagramCollection() {
-		return myERDiagramCollection;
-	}
-	
-	public EOClassDiagramCollection getClassDiagramCollection() {
-		return myClassDiagramCollection;
-	}
-	
-	public void _ERDiagramChanged(EOERDiagramCollection _erdiagrams, String _propertyName, Object _oldValue, Object _newValue) {
-		firePropertyChange(EOModel.ERDIAGRAMCOLLECTION + "." + _propertyName, _oldValue, _newValue);
-		firePropertyChange(EOModel.ERDIAGRAMCOLLECTION, null, _erdiagrams);
-		
-	}
-	
-	public EOERDiagramCollection addBlankERDiagramCollection(String name) {
-		EOERDiagramCollection erdiagrams = new EOERDiagramCollection(name);
-		erdiagrams._setModel(this);
-		return erdiagrams;
-	}
-	
-	public void _ClassDiagramChanged(EOClassDiagramCollection _classdiagrams, String _propertyName, Object _oldValue, Object _newValue) {
-		firePropertyChange(EOModel.CLASSDIAGRAMCOLLECTION + "." + _propertyName, _oldValue, _newValue);
-		firePropertyChange(EOModel.CLASSDIAGRAMCOLLECTION, null, _classdiagrams);
-		
-	}
-	
-	public EOClassDiagramCollection addBlankClassDiagramCollection(String name) {
-		EOClassDiagramCollection classdiagrams = new EOClassDiagramCollection(name);
-		classdiagrams._setModel(this);
-		return classdiagrams;
-	}
-	
-	// ********************************************************************************
 	
 	public EODatabaseConfig getDatabaseConfigNamed(String _name) {
 		EODatabaseConfig matchingDatabaseConfig = null;
@@ -916,20 +915,6 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		}
 		loadUserInfo(modelMap);
 		
-//		Set<String> erdiagramNames = modelMap.getSet("ERDiagrams"); // SAVAS myERDs werden im index.eomodeld rausgelesen und erstellt.
-//		if (erdiagramNames != null) {
-//			for (String erdiagramName : erdiagramNames) {
-//				EOERDiagramGroup erdiagram = new EOERDiagramGroup();
-//				URL erdiagramURL = new URL(_modelFolder, erdiagramName + ".rucotec");
-//				if (URLUtils.exists(erdiagramURL)) {
-//					erdiagram.loadFromURL(erdiagramURL, _failures);
-////					addERDiagram(erdiagram, false, _failures);
-//				} else {
-//					_failures.add(new EOModelVerificationFailure(this, this, "The stored procedure file " + erdiagramURL + " was missing.", false));
-//				}
-//			}
-//		}
-		
 		Set<Map> entities = modelMap.getSet("entities");
 		if (entities != null) {
 			for (Map entitiesMap : entities) {
@@ -940,6 +925,12 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 				if (URLUtils.exists(entityURL)) {
 					entity.loadFromURL(entityURL, _failures);
 					URL fspecURL = new URL(_modelFolder, entityName + ".fspec");
+					if (URLUtils.exists(fspecURL)) {
+						entity.loadFetchSpecsFromURL(fspecURL, _failures);
+					}
+					if (entity.getName() == null) {
+						_failures.add(new EOModelVerificationFailure(this, this, "The entity file " + entityURL + " defines an entity with no name.", false));
+					}
 					
 					// SAVAS hier werden alle diagramme anhand vom entity erstellt.
 					if (entity._getEntityMap() != null) {
@@ -952,7 +943,6 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 							classdiagrams = entity._getEntityMap().getList("ClassDiagrams");
 						}
 						
-//						Map erds = entity._getEntityMap().getMap("ERDs");
 						if (erds != null && myERDiagramCollection != null) {
 							myERDiagramCollection.loadDiagramFromEntity(entity, erds);
 						}
@@ -962,12 +952,6 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 						}
 					}
 					
-					if (URLUtils.exists(fspecURL)) {
-						entity.loadFetchSpecsFromURL(fspecURL, _failures);
-					}
-					if (entity.getName() == null) {
-						_failures.add(new EOModelVerificationFailure(this, this, "The entity file " + entityURL + " defines an entity with no name.", false));
-					}
 					addEntity(entity, true, false, _failures);
 				} else {
 					_failures.add(new EOModelVerificationFailure(this, this, "The entity file " + entityURL + " was missing.", false));
@@ -1070,16 +1054,6 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 				setActiveDatabaseConfig(activeDatabaseConfig, false);
 			}
 		}
-		
-		// SAVAS Falls es noch keine ERDGruppe gibt erstell eine automatisch.
-//		if (myERDiagrams.size() == 0 && !(this.myName.equals("erprototypes"))) {
-//			this.addBlankERDiagram("newERDiagram");
-//			try {
-//				this.save();
-//			} catch (Exception e) {
-//				System.out.println(e);
-//			}
-//		}
 
 		_lastModified = new EOLastModified(indexURL);
 	}
@@ -1130,13 +1104,6 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			storedProcedures.add(storedProcedure.getName());
 		}
 		modelMap.setSet("storedProcedures", storedProcedures, true);
-		
-		// SAVAS hier werden myERDs inhalt ins index.eomodeld gespeichert.
-//		Set<String> erdiagrams = new PropertyListSet<String>(EOModelMap.asArray(myModelMap.get("ERDiagrams")));
-//		for (EOERDiagramGroup erdiagram : myERDiagrams) {
-//			erdiagrams.add(erdiagram.getName());
-//		}
-//		modelMap.setSet("ERDiagrams", erdiagrams, true);
 
 		EOModelMap entityModelerMap = getEntityModelerMap(true);
 		boolean canConvertDatabaseConfigsToSingleConnectionDictionary = canConvertDatabaseConfigsToSingleConnectionDictionary();
@@ -1305,28 +1272,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 				}
 			}
 			
-			// SAVAS hier werden alle gelöschten die nicht existierenden ERDs ihren File verlieren.
-			
-//			if (myDeletedERDiagramNames != null) {
-//				for (String erdiagramName : myDeletedERDiagramNames) {
-//					if (getERDiagramNamed(erdiagramName) == null) {
-//						File storedProcedureFile = new File(modelFolder, erdiagramName + ".rucotec");
-//						if (storedProcedureFile.exists()) {
-//							storedProcedureFile.delete();
-//						}
-//					}
-//				}
-//			}
-//			
-//			// SAVAS hier wird für jedes ERD ein File erstellt.
-//			for (EOERDiagramGroup erdiagram : myERDiagrams) {
-//				if (erdiagram.isERDiagramDirty()) {
-//					String erdiagramName = erdiagram.getName();
-//					File erdiagramFile = new File(modelFolder, erdiagramName + ".rucotec");
-//					erdiagram.saveToFile(erdiagramFile);
-//				}
-//			}
-			
+			// SAVAS hier werden DiagramColelections gesaved
 			if (myERDiagramCollection != null) {
 				if (myERDiagramCollection.isDiagramCollectionDirty()) {
 					myERDiagramCollection.saveToFile(modelFolder);
