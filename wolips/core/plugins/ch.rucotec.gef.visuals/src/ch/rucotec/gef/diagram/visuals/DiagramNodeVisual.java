@@ -82,7 +82,7 @@ public class DiagramNodeVisual extends Region {
 		for (int i = 0; i < attributeListFilteredPK.size(); i++) {
 			EOAttribute attribute = attributeListFilteredPK.get(i);
 			
-			lblAttributeName = new Label(attribute.getName());
+			lblAttributeName = new Label(attribute.getColumnName());
 			lblAttributeName.setPadding(new Insets(0, 0, 0, 10));
 			
 			if (attribute.isAllowsNull() != null) {
@@ -92,7 +92,7 @@ public class DiagramNodeVisual extends Region {
 			}
 			
 			// this places the primary key attribute at the top in the gridpane.
-			if (attribute.isPrimaryKey()) {
+			if (attribute.isPrimaryKey() && !attribute.isInherited()) {
 				lblAttributeName.setFont(Font.font(lblAttributeName.getFont().getFamily(), FontWeight.EXTRA_BOLD, 16));
 				lblAttributeName.setUnderline(true);
 				attributeListFilteredPK.remove(i);

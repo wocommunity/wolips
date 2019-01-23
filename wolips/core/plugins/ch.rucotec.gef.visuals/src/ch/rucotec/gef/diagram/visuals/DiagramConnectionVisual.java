@@ -63,14 +63,14 @@ public class DiagramConnectionVisual extends Connection {
      * 
      <PRE>
 		+----------------+  
-		|    ,-.         | 
-		|    | |         | 
-		|    | |         | 
-		|    | |         | 
-		|    | |         | 
-		|    | |         | 
-		|    | |         | 
-		|    `-'         |	 
+		|      ,-.       | 
+		|      | |       | 
+		|      | |       | 
+		|      | |       | 
+		|      | |       | 
+		|      | |       | 
+		|      | |       | 
+		|      `-'       |	 
 		+----------------+
      </PRE>
      * @author celik
@@ -128,6 +128,31 @@ public class DiagramConnectionVisual extends Connection {
     public static class Zero extends Circle {
     	public Zero() {
     		super(7);
+		}
+    }
+    
+    /**
+   	 * Creates a {@link Polyline} for a Extends cardinality look alike symbol.
+   	 * 
+   	 <PRE>
+   		+----------------+  
+		|     ,-.,-.     | 
+		|    / / | |     | 
+		|   / /  | |     | 
+		|  / /   | |     | 
+		|  \ \   | |     | 
+		|   \ \  | |     | 
+		|    \ \ | |     |  
+		|     `-'`-'     |	 
+		+----------------+
+        </PRE>
+   	 * 
+   	 * @author celik
+   	 *
+   	 */
+    public static class Extends extends Polyline {
+    	public Extends() {
+			super(0,0,10,10,10,-10,0,0);
 		}
     }
     
@@ -203,9 +228,31 @@ public class DiagramConnectionVisual extends Connection {
     		Many many = new Many();
     		Shape OneOrMany = Shape.union(one, many);
     		setEndDecoration(OneOrMany);
-    	} else {
+    	} else if (sourceToTargetCardinality == (DiagramConnection.TOONE | DiagramConnection.OPTIONAL)) {
+    		// this generates this "|O" symbol
+    		Zero zero = new Zero();
+    		One one = new One();
+    		zero.setFill(Color.TRANSPARENT);
+    		zero.setStroke(Color.BLACK);
+    		one.setTranslateX(-10);
+    		one.setTranslateY(-11);
+    		zero.setTranslateX(10);
+    		zero.setTranslateY(-7);
+    		HBox ZeroOrOne = new HBox(zero, one);
+    		setEndDecoration(ZeroOrOne);
+    	} else if (sourceToTargetCardinality == DiagramConnection.TOONE) {
+    		// this generates this "||" symbol
+    		One one = new One();
+    		One one2 = new One();
+    		one.setTranslateX(5);
+    		one2.setTranslateX(10);
+    		one.setTranslateY(-11);
+    		one2.setTranslateY(-11);
+    		HBox oneOnlyOne = new HBox(one,one2);
+    		setEndDecoration(oneOnlyOne); 
+    		} else {
     		// this generates no symbol
-    		setEndDecoration(new HBox());
+    			setEndDecoration(new HBox());
     	}
     	
     	if (targetToSourceCardinality == (DiagramConnection.TOONE | DiagramConnection.OPTIONAL)) {
@@ -255,6 +302,11 @@ public class DiagramConnectionVisual extends Connection {
 			sourceToTarget.setTranslateX(10);
 			sourceToTarget.setFont(new Font(16));
 			setEndDecoration(new HBox(sourceToTarget));
+    	} else if (sourceToTargetCardinality == DiagramConnection.EXTENDS) {
+    		// generates the inheritance "<I" symbol
+    		Extends extending = new Extends();
+    		setEndDecoration(extending);
+    		sourceToTarget = new Text("");
     	} else {
     		sourceToTarget = new Text("");
     	}

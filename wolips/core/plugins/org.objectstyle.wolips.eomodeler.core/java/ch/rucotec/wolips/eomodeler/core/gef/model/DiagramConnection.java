@@ -20,9 +20,12 @@ public class DiagramConnection extends AbstractDiagramItem {
 	//---------------------------------------------------------------------------
 	
     private static final long serialVersionUID = 6065237357753406466L;
+    
 	public static final int TOONE = 10;
 	public static final int TOMANY = 20;
 	public static final int OPTIONAL = 1;
+	public static final int NONE = 0;
+	public static final int EXTENDS = 3;
 
 	private int sourceToTargetCardinality;
 	private int targetToSourceCardinality;

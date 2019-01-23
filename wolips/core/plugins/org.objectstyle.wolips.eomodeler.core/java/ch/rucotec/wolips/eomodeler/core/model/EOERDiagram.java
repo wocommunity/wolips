@@ -136,6 +136,8 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 	public SimpleDiagram drawDiagram() {
 	SimpleDiagram myERD = new SimpleDiagram();
 	HashMap<String, DiagramNode> entityNodeMap = new HashMap<String, DiagramNode>();
+	Set<String> horizontalParents = new HashSet<String>();
+	Set<String> neededParents = new HashSet<String>();
 	
 	for (AbstractEOEntityDiagram entityERD : getDiagramEntities()) {
 		DiagramNode entityNode = entityERD.draw(getName());
@@ -144,11 +146,50 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 	}
 	
 	for (DiagramNode node : entityNodeMap.values()) {
+		EOEntity nodeEntity = node.getEntityDiagram().getEntity();
+		
+		// Inheritance
+		if (nodeEntity.isHorizontalInheritance()) {
+			if (!neededParents.contains(nodeEntity.getParent().getName())) {
+				horizontalParents.add(nodeEntity.getParent().getName()); 
+			}
+			node.removeParentAttributes(nodeEntity.getParent().getPrimaryKeyAttributes());
+			node.removeRelationshipToParent();
+		} else if (nodeEntity.isVerticalInheritance()) {
+			if (entityNodeMap.get(nodeEntity.getParent().getName()) != null) {
+				int sourceToTargetCardinality = 0;
+				int targetToSourceCardinality = 0;
+				
+				sourceToTargetCardinality = DiagramConnection.TOONE;
+				targetToSourceCardinality = DiagramConnection.TOONE + DiagramConnection.OPTIONAL;
+				neededParents.add(nodeEntity.getParent().getName());
+				
+				DiagramConnection conn = new DiagramConnection(DiagramType.ERDIAGRAM);
+				conn.connect(node, entityNodeMap.get(nodeEntity.getParent().getName()));
+				conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
+		
+				myERD.addChildElement(conn);
+			}
+		} else if (nodeEntity.isSingleTableInheritance()) {
+			DiagramNode parentNode = entityNodeMap.get(nodeEntity.getParent().getName());
+			if (parentNode != null) {
+				parentNode.addChildrenAttributes(nodeEntity.getAttributes());
+				parentNode.addChildrenRelationships(nodeEntity.getRelationships());
+			}
+			/* if the parentNode is already registered in myERD we delete it and
+			 * reference node to parentNode, thus the relationship loop below
+			 */
+			if (parentNode != null && myERD.getChildElements().contains(parentNode)) {
+				myERD.getChildElements().remove(parentNode);
+				node = parentNode;
+			} else {
+				continue;
+			}
+		}
+		
 		for (EORelationship relationship : node.getRelationshipsList()) {
 			boolean manyToManyConnection = false;
-			//	List<MindMapConnection> connectionList = node.getIncomingConnections();
-
-
+			
 			if (relationship.isToMany() && getEntities().contains(relationship.getDestination())) {
 				EOEntity sourceEntity = relationship.getEntity();
 				EOEntity destinationEntity = relationship.getDestination();
@@ -156,17 +197,21 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 
 				int sourceToTargetCardinality = 0;
 				int targetToSourceCardinality = 0;
+				
+				if (destinationEntity.isVerticalInheritance() && destinationEntity.getParent() == sourceEntity) {
+					continue;
+				}
 
 				// löst das Many to Many Problem und fügt die notwendigen Kardinalitäten ein.
 				while (destinationRelationshipIterator.hasNext()) {
 					EORelationship destinationRelationship = destinationRelationshipIterator.next();
 
 					if (destinationRelationship.getDestination() == sourceEntity) {
+						// Hier werden die Kardinalitäten erstellt..
 						if (destinationRelationship.isToMany()) {
 							manyToManyConnection = true;
 						} else {
 							manyToManyConnection = false;
-							// Hier werden die Kardinalitäten erstellt..
 							sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
 							targetToSourceCardinality = DiagramConnection.TOONE + (destinationRelationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
 						}
@@ -179,6 +224,7 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 								conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
 	
 								myERD.addChildElement(conn);
+								neededParents.add(nodeEntity.getName());
 							}
 						}
 					}
@@ -187,10 +233,19 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 			}
 
 		}
-		// add nodes to mindMap
+		// add node to mindMap
 		myERD.addChildElement(node);
 	}
 	
+	/* Delete the ParentNodes of horizontal inheritance if it's 
+	 * not needed from other Nodes.
+	 */
+	for (String horizontalParent : horizontalParents) {
+		DiagramNode parentNode = entityNodeMap.get(horizontalParent);
+		if (parentNode != null && !neededParents.contains(horizontalParent)) {
+			myERD.removeChildElement(parentNode);
+		}
+	}
 	return myERD;
 }
 

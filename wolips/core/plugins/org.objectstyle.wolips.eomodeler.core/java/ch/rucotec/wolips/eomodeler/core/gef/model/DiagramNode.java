@@ -3,6 +3,7 @@ package ch.rucotec.wolips.eomodeler.core.gef.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.gef.geometry.planar.Rectangle;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
@@ -63,13 +64,52 @@ public class DiagramNode extends AbstractDiagramItem implements Serializable {
 	public DiagramNode(AbstractEOEntityDiagram entityDiagram, String selectedDiagram) {
 		this.entityDiagram = entityDiagram;
 		this.selectedDiagram = selectedDiagram;
-		setAttributeList(new ArrayList<EOAttribute>(entityDiagram.getEntity().getAttributes()));
+		resetAttributeList();
 		setRelationshipsList(new ArrayList<EORelationship>(entityDiagram.getEntity().getRelationships()));
 	}
 	
 	//---------------------------------------------------------------------------
 	// ### Custom Methods and Accessors
 	//---------------------------------------------------------------------------
+	
+	private void resetAttributeList() {
+		setAttributeList(new ArrayList<EOAttribute>(entityDiagram.getEntity().getAttributes()));
+	}
+	
+	public void removeRelationshipToParent() {
+		for (int i = 0; i < relationshipsList.size(); i++) {
+			EORelationship relationship = relationshipsList.get(i);
+			if (relationship.getDestination() == entityDiagram.getEntity().getParent()) {
+				relationshipsList.remove(relationship);
+			}
+		}
+	}
+	
+	public void removeParentAttributes(Set<EOAttribute> pkAttributes) {
+		for (EOAttribute pkAttribute : pkAttributes) {
+			for (int i = 0; i < attributeList.size(); i++) {
+				EOAttribute attribute = attributeList.get(i);
+				if (attribute.getName().equals(pkAttribute.getName())) {
+					attributeList.remove(attribute);
+				}
+			}
+		}
+	}
+	
+	
+	
+	public void addChildrenRelationships(Set<EORelationship> relationships) {
+		relationshipsList.addAll(relationships);
+	}
+	
+	public void addChildrenAttributes(Set<EOAttribute> attributes) {
+		// adding every attribute except PK and inherited attributes from children.
+		for (EOAttribute attribute : attributes) {
+			if (!attribute.isPrimaryKey() && !attribute.isInherited()) {
+				attributeList.add(attribute);
+			}
+		}
+	}
 
 	public void setAttributeList(List<EOAttribute> attributeList) {
 		pcs.firePropertyChange(PROP_ATTRIBUTELIST, this.attributeList, (this.attributeList = attributeList));

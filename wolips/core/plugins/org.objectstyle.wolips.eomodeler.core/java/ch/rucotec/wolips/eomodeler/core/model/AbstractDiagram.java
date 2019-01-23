@@ -86,11 +86,7 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 	 * @param entityDiagram
 	 */
 	public void addEntityToDiagram(AbstractEOEntityDiagram entityDiagram) {
-		for (AbstractEOEntityDiagram eoEntityDiagram : myDeletedDiagramEntities) {
-			if (eoEntityDiagram.getEntity() == entityDiagram.getEntity()) {
-				myDeletedDiagramEntities.remove(eoEntityDiagram);
-			}
-		}
+		myDeletedDiagramEntities.remove(entityDiagram);
 		myDiagramEntities.add(entityDiagram);
 		myEntities.add(entityDiagram.getEntity());
 	}

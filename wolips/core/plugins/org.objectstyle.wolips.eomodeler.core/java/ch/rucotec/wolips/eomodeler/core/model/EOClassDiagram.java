@@ -144,6 +144,25 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 		}
 		
 		for (DiagramNode node : entityNodeMap.values()) {
+			EOEntity nodeEntity = node.getEntityDiagram().getEntity();
+			
+			// inheritance handle
+			if (nodeEntity.isInherited()) {
+				int sourceToTargetCardinality = 0;
+				int targetToSourceCardinality = 0;
+				
+				sourceToTargetCardinality = DiagramConnection.EXTENDS ;
+				targetToSourceCardinality = DiagramConnection.NONE;
+				
+				DiagramConnection conn = new DiagramConnection(DiagramType.CLASSDIAGRAM);
+				conn.connect(node, entityNodeMap.get(nodeEntity.getParent().getName()));
+				conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
+
+				myClassDiagram.addChildElement(conn);
+				
+				node.removeParentAttributes(nodeEntity.getParent().getAttributes());
+			}
+			
 			for (EORelationship relationship : node.getRelationshipsList()) {
 				boolean manyToManyConnection = false;
 				//	List<MindMapConnection> connectionList = node.getIncomingConnections();
@@ -156,19 +175,23 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 
 					int sourceToTargetCardinality = 0;
 					int targetToSourceCardinality = 0;
+					
+					if (destinationEntity.isInherited()) {
+						continue;
+					}
 
 					// löst das Many to Many Problem und fügt die notwendigen Kardinalitäten ein.
 					while (destinationRelationshipIterator.hasNext()) {
 						EORelationship destinationRelationship = destinationRelationshipIterator.next();
 
 						if (destinationRelationship.getDestination() == sourceEntity) {
+							// Hier werden die Kardinalitäten erstellt..
 							if (destinationRelationship.isToMany()) {
 								manyToManyConnection = false;
 								sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
 								targetToSourceCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
 							} else {
 								manyToManyConnection = false;
-								// Hier werden die Kardinalitäten erstellt..
 								sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
 								targetToSourceCardinality = DiagramConnection.TOONE + (destinationRelationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
 							}
