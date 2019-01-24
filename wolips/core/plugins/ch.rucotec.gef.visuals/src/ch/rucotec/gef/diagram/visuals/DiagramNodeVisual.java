@@ -78,6 +78,7 @@ public class DiagramNodeVisual extends Region {
     	Label lblAttributeName = null;
     	Label lblAttributeAllowsNull = null;
     	List<EOAttribute> attributeListFilteredPK = attributeList;
+    	int pkCount = 0;
     	
 		for (int i = 0; i < attributeListFilteredPK.size(); i++) {
 			EOAttribute attribute = attributeListFilteredPK.get(i);
@@ -97,12 +98,13 @@ public class DiagramNodeVisual extends Region {
 				lblAttributeName.setUnderline(true);
 				attributeListFilteredPK.remove(i);
 				i--;
-				gridPane.add(lblAttributeName, 0, 1);
-				gridPane.add(lblAttributeAllowsNull, 1, 1);
+				gridPane.add(lblAttributeName, 0, pkCount + 1);
+				gridPane.add(lblAttributeAllowsNull, 1, pkCount + 1);
+				pkCount++;
 			} else {
 				lblAttributeName.setUnderline(false);
-				gridPane.add(lblAttributeName, 0, i+2);
-				gridPane.add(lblAttributeAllowsNull, 1, i+2);
+				gridPane.add(lblAttributeName, 0, pkCount+i+2);
+				gridPane.add(lblAttributeAllowsNull, 1, pkCount+i+2);
 			}
 		}
 	}
