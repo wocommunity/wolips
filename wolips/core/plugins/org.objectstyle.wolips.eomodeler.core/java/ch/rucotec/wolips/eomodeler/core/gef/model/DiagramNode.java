@@ -64,17 +64,13 @@ public class DiagramNode extends AbstractDiagramItem implements Serializable {
 	public DiagramNode(AbstractEOEntityDiagram entityDiagram, String selectedDiagram) {
 		this.entityDiagram = entityDiagram;
 		this.selectedDiagram = selectedDiagram;
-		resetAttributeList();
+		setAttributeList(new ArrayList<EOAttribute>(entityDiagram.getEntity().getAttributes()));
 		setRelationshipsList(new ArrayList<EORelationship>(entityDiagram.getEntity().getRelationships()));
 	}
 	
 	//---------------------------------------------------------------------------
 	// ### Custom Methods and Accessors
 	//---------------------------------------------------------------------------
-	
-	private void resetAttributeList() {
-		setAttributeList(new ArrayList<EOAttribute>(entityDiagram.getEntity().getAttributes()));
-	}
 	
 	public void removeRelationshipToParent() {
 		for (int i = 0; i < relationshipsList.size(); i++) {

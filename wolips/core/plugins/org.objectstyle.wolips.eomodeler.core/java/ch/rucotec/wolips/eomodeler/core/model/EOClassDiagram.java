@@ -147,11 +147,11 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 			EOEntity nodeEntity = node.getEntityDiagram().getEntity();
 			
 			// inheritance handle
-			if (nodeEntity.isInherited()) {
+			if (nodeEntity.isInherited() && entityNodeMap.get(nodeEntity.getParent().getName()) != null) {
 				int sourceToTargetCardinality = 0;
 				int targetToSourceCardinality = 0;
 				
-				sourceToTargetCardinality = DiagramConnection.EXTENDS ;
+				sourceToTargetCardinality = DiagramConnection.EXTENDS;
 				targetToSourceCardinality = DiagramConnection.NONE;
 				
 				DiagramConnection conn = new DiagramConnection(DiagramType.CLASSDIAGRAM);
