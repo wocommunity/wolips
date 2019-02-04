@@ -10,6 +10,7 @@ import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramType;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
@@ -132,27 +133,29 @@ public class DiagramConnectionVisual extends Connection {
     }
     
     /**
-   	 * Creates a {@link Polyline} for a Extends cardinality look alike symbol.
+   	 * Creates a {@link Polygon} for a Extends cardinality look alike symbol.
    	 * 
    	 <PRE>
    		+----------------+  
-		|     ,-.,-.     | 
-		|    / / | |     | 
-		|   / /  | |     | 
-		|  / /   | |     | 
-		|  \ \   | |     | 
-		|   \ \  | |     | 
-		|    \ \ | |     |  
-		|     `-'`-'     |	 
+		|       ,,-.     | 
+		|      /   |     | 
+		|     /    |     | 
+		|    /     |     | 
+		|    \     |     | 
+		|     \    |     | 
+		|      \   |     |  
+		|       ``-'     |	 
 		+----------------+
         </PRE>
    	 * 
    	 * @author celik
    	 *
    	 */
-    public static class Extends extends Polyline {
+    public static class Extends extends Polygon{
     	public Extends() {
-			super(0,0,10,10,10,-10,0,0);
+			super(0,0,15,15,15,-15,0,0);
+			setFill(Color.WHITE);
+			setStroke(Color.BLACK);
 		}
     }
     
