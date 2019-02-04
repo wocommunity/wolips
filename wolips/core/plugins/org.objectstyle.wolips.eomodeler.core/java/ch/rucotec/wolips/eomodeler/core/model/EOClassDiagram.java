@@ -76,7 +76,7 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 		entityClassDiagram.getDiagramDimensions().put(getName(), dimension);
 		super.addEntityToDiagram(entityClassDiagram);
 	}
-
+	
 	/**
 	 * Creates a new object of {@code EOClassDiagram} and returns it.
 	 */
@@ -218,5 +218,4 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 		
 		return myClassDiagram;
 	}
-	
 }

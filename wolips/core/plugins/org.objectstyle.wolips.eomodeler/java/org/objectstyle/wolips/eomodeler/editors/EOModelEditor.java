@@ -85,7 +85,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -581,7 +580,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 						EOModelEditor.this.editorDirtyStateChanged();
 					}
 				});
-
 				synchronized (myCreatePagesLock) {
 					myModel = model;
 					if (myEntitiesTableEditor != null) {
@@ -1451,6 +1449,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			myModel = ((EOERDiagramCollection) selectedObject)._getModelParent();
 		} else if (selectedObject instanceof AbstractDiagram) {
 			myModel = ((AbstractDiagram) selectedObject).getDiagramCollection().getModel();
+			((AbstractDiagram) selectedObject).setEOModelEditor(this);
 		}
 		
 		// Erneuert die Entitäten Tabele (wird gebraucht, wenn man mehrere Models hat)

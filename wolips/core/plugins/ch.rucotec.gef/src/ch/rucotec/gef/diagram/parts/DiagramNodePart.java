@@ -106,4 +106,9 @@ implements ITransformableContentPart<DiagramNodeVisual>, IResizableContentPart<D
 		// perform layout pass to apply size
 		getVisual().getParent().layout();
 	}
+
+	@Override
+	public String toString() {
+		return "DiagramNodePart [ " + getContent().getTitle() + " ] [ " + getContent().getEntityDiagram().getEntity().getName() + " ] ";
+	}
 }

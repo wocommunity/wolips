@@ -51,6 +51,7 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 	public static final String ENTITYNAMES = "entityNames";
 	public static final String DIAGRAMS = "diagrams";
 	
+	private Object myEOModelEditor;
 	private String myName;
 	private Set<EOEntity> myEntities;
 	private Set<AbstractEOEntityDiagram> myDiagramEntities;
@@ -78,6 +79,13 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 	//---------------------------------------------------------------------------
 	
 	public abstract void addEntityToDiagram(EOEntity entity);
+	
+	public void addEntityToDiagram(EOEntity parentEntity, Set<EOEntity> childrenEntites) {
+		addEntityToDiagram(parentEntity);
+		for (EOEntity children : childrenEntites) {
+			addEntityToDiagram(children);
+		}
+	}
 	
 	/**
 	 * Adds the given {@code EOEntityDiagram} ({@link EOEntityClassDiagram} or {@link EOEntityERDiagram})
@@ -123,6 +131,13 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 				myDiagramEntities.remove(entityDiagram);
 				break;
 			}
+		}
+	}
+	
+	public void removeEntityFromDiagram(EOEntity parentEntity, Set<EOEntity> childrenEntites) {
+		removeEntityFromDiagram(parentEntity);
+		for (EOEntity children : childrenEntites) {
+			removeEntityFromDiagram(children);
 		}
 	}
 	
@@ -251,6 +266,20 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 		return myEntities;
 	}
 
+	/**
+	 * @return the myEOModelEditor
+	 */
+	public Object getEOModelEditor() {
+		return myEOModelEditor;
+	}
+
+	/**
+	 * @param myEOModelEditor the myEOModelEditor to set
+	 */
+	public void setEOModelEditor(Object myEOModelEditor) {
+		this.myEOModelEditor = myEOModelEditor;
+	}
+	
 	@Override
 	public String toString() {
 		return "AbstractDiagram [myName=" + myName + ", myEntities=" + myEntities + ", myDiagramEntities=" + myDiagramEntities + ", myDeletedDiagramEntities=" + myDeletedDiagramEntities + ", myDiagramCollection=" + myDiagramCollection + "]";

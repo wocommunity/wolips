@@ -1,7 +1,10 @@
 package ch.rucotec.wolips.eomodeler.editors.diagram;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.beans.BeansObservables;
@@ -15,6 +18,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
@@ -52,7 +58,9 @@ public class EOClassDiagramBasicEditorSection extends AbstractPropertySection {
 	
 	private Composite parent;
 	
-	private ArrayList<Button> checkBoxes = new ArrayList<Button>();
+	private Group grpcheckBoxes;
+	
+	private Map<EOEntity, Button> checkBoxes;
 	
 	//---------------------------------------------------------------------------
 	// ### Construction
@@ -75,8 +83,107 @@ public class EOClassDiagramBasicEditorSection extends AbstractPropertySection {
 		myNameText = new Text(_parent, SWT.BORDER);
 		myNameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 0));
 		UglyFocusHackWorkaroundListener.addListener(myNameText);
+		selectAllAndDeselectAllButton();
+		initGroupForEntityCheckBoxes(_parent);
+		checkBoxes = new TreeMap<EOEntity, Button>(new Comparator<EOEntity>() {
+
+			public int compare(EOEntity o1, EOEntity o2) {
+				return o1.getName().compareToIgnoreCase(o2.getName());
+			}
+		});
 	}
 	
+	/**
+	 * Creates a SelectAll and DeselectALL Button.
+	 */
+	private void selectAllAndDeselectAllButton() {
+		GridData gd_btnNewButton = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
+		gd_btnNewButton.widthHint = 100;
+		
+		Button selectAll = new Button(parent, SWT.NONE);
+		selectAll.setLayoutData(gd_btnNewButton);
+		selectAll.setText("Select All");
+		selectAll.setToolTipText("Selects all Classes");
+		selectAll.addListener(SWT.MouseDown, new Listener() {
+			
+			public void handleEvent(Event event) {
+				for (final EOEntity entity : myCurrentModel.getEntities()) {
+					if (!myDiagram.getEntities().contains(entity)) {
+						myDiagram.addEntityToDiagram(entity);
+					}
+					if (checkBoxes.get(entity) != null) {
+						checkBoxes.get(entity).setSelection(true);
+					}
+				}
+				DiagramTab.getInstance().setSelectedDiagram(myDiagram);
+				myDiagram._getModelParent().setModelDirty(true);
+			}
+		});
+		
+		Button deselectAll = new Button(parent, SWT.NONE);
+		deselectAll.setLayoutData(gd_btnNewButton);
+		deselectAll.setText("Deselect All");
+		deselectAll.setToolTipText("Deselects all Classes");
+		deselectAll.addListener(SWT.MouseDown, new Listener() {
+			
+			public void handleEvent(Event event) {
+				for (final EOEntity entity : myCurrentModel.getEntities()) {
+					if (myDiagram.getEntities().contains(entity)) {
+						myDiagram.removeEntityFromDiagram(entity);
+					}
+					if (checkBoxes.get(entity) != null) {
+						checkBoxes.get(entity).setSelection(false);
+					}
+				}
+				DiagramTab.getInstance().setSelectedDiagram(myDiagram);
+				myDiagram._getModelParent().setModelDirty(true);
+			}
+		});
+	}
+
+	/**
+	 * Initializes the Group-Widget and gives it a GridLayout.
+	 * 
+	 * @param _parent
+	 */
+	private void initGroupForEntityCheckBoxes(Composite _parent) {
+		grpcheckBoxes = new Group(_parent, SWT.NONE);
+		grpcheckBoxes.setLayout(new GridLayout(3, false));
+		GridData gd_grpLol = new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1);
+		grpcheckBoxes.setLayoutData(gd_grpLol);
+		grpcheckBoxes.setText("Classes");
+	}
+	
+	/**
+	 * Adds a ToolTip for every checkbox
+	 * 
+	 * @see MyCheckBoxToolTip
+	 */
+	private void grpCheckBoxesToolTip() {
+		for (final EOEntity entity : myCurrentModel.getEntities()) {
+			Set<EOEntity> childrens = entity.getChildrenEntities(); 
+			Button checkboxParent = checkBoxes.get(entity);
+			if (checkboxParent != null) {
+				MyCheckBoxToolTip dtooltip = new MyCheckBoxToolTip(checkboxParent, myDiagram);
+				dtooltip.setParentEntity(entity);
+			}
+		}
+	}
+	
+	/**
+	 * Changes the parent of every checkbox (from Composite to a Group)
+	 */
+	private void sortButtons() {
+		/* if you wonder why there is no sorting done
+		 * its because the checkBoxes is already sorted (its a TreeMap)
+		 * we just give them their new parent.
+		 */
+		for (Button checkbox : checkBoxes.values()) {
+			if (checkbox.getParent() == parent) {
+				checkbox.setParent(grpcheckBoxes);
+			}
+		}
+	}
 	/**
 	 * Creates checkboxes for every entity in the EOModel.
 	 */
@@ -85,9 +192,8 @@ public class EOClassDiagramBasicEditorSection extends AbstractPropertySection {
 			myCurrentModel = myDiagram._getModelParent().getModel();
 		} else if (myCurrentModel != myDiagram._getModelParent().getModel()) {
 			// die alten Checkboxen werden geloescht.
-			for (Button b : checkBoxes) {
-				b.dispose();
-			}
+			grpcheckBoxes.dispose();
+			initGroupForEntityCheckBoxes(parent);
 			checkBoxes.clear();
 			myCurrentModel = myDiagram._getModelParent().getModel();
 		}
@@ -100,17 +206,15 @@ public class EOClassDiagramBasicEditorSection extends AbstractPropertySection {
 			// mit dieser abfrage werden die join tables nicht als checkboxen angezeigt.
 			if (!entity.getClassNameWithoutPackage().equals("EOGenericRecord")) {
 				Button entityCheckBox = null;
-				for (Button checkbox : checkBoxes) {
-					if (entity.getName().equals(checkbox.getText())) {
-						entityCheckBox = checkbox;
-						break;
-					}
+				
+				if (checkBoxes.get(entity) != null) {
+					entityCheckBox = checkBoxes.get(entity);
 				}
 				
 				if (entityCheckBox == null) {
 					entityCheckBox = new Button(parent, SWT.CHECK);
 					entityCheckBox.setText(entity.getName());
-					checkBoxes.add(entityCheckBox);
+					checkBoxes.put(entity, entityCheckBox);
 				}
 				
 				if (myDiagram.getEntities().contains(entity)) {
@@ -156,6 +260,8 @@ public class EOClassDiagramBasicEditorSection extends AbstractPropertySection {
 			myBindingContext = new DataBindingContext();
 			myBindingContext.bindValue(SWTObservables.observeText(myNameText, SWT.Modify), BeansObservables.observeValue(myDiagram, AbstractDiagram.NAME), null, null);
 			createEntityCheckBoxes();
+			sortButtons();
+			grpCheckBoxesToolTip();
 		}
 	}
 	

@@ -151,7 +151,7 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 		// Inheritance
 		if (nodeEntity.isHorizontalInheritance()) {
 			if (!neededParents.contains(nodeEntity.getParent().getName())) {
-				horizontalParents.add(nodeEntity.getParent().getName()); 
+//				horizontalParents.add(nodeEntity.getParent().getName()); 
 			}
 			node.removeParentAttributes(nodeEntity.getParent().getPrimaryKeyAttributes());
 			node.removeRelationshipToParent();
@@ -177,7 +177,7 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 				parentNode.addChildrenRelationships(nodeEntity.getRelationships());
 			}
 			/* if the parentNode is already registered in myERD we delete it and
-			 * reference node to parentNode, thus the relationship loop below
+			 * reference node to parentNode, thus the relationship loop below will be executed
 			 */
 			if (parentNode != null && myERD.getChildElements().contains(parentNode)) {
 				myERD.getChildElements().remove(parentNode);
@@ -218,9 +218,13 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 
 						if (!manyToManyConnection) {
 							// TODO rekursive beziehungen werden hier einfach uebersprungen, hier sollte das irgendwie gehandelt werden.
-							if (node != entityNodeMap.get(relationship.getDestination().getName())) {
+							DiagramNode destinationNode = entityNodeMap.get(relationship.getDestination().getName());
+							if (destinationNode.getEntityDiagram().getEntity().isSingleTableInheritance()) {
+								destinationNode = entityNodeMap.get(destinationNode.getEntityDiagram().getEntity().getParent().getName());
+							}
+							if (node != destinationNode && !node.getTitle().equals(destinationNode.getTitle())) {
 								DiagramConnection conn = new DiagramConnection(DiagramType.ERDIAGRAM);
-								conn.connect(node, entityNodeMap.get(relationship.getDestination().getName()));
+								conn.connect(node, destinationNode);
 								conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
 	
 								myERD.addChildElement(conn);
