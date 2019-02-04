@@ -77,34 +77,42 @@ public class DiagramNodeVisual extends Region {
     public void initAttributeListForERDiagram() {
     	Label lblAttributeName = null;
     	Label lblAttributeAllowsNull = null;
-    	List<EOAttribute> attributeListFilteredPK = attributeList;
     	int pkCount = 0;
     	
-		for (int i = 0; i < attributeListFilteredPK.size(); i++) {
-			EOAttribute attribute = attributeListFilteredPK.get(i);
-			
-			lblAttributeName = new Label(attribute.getColumnName());
-			lblAttributeName.setPadding(new Insets(0, 0, 0, 10));
-			
-			if (attribute.isAllowsNull() != null) {
-				lblAttributeAllowsNull = new Label(attribute.isAllowsNull() ? "O" : "Ø");
-			} else {
-				lblAttributeAllowsNull = new Label("Ø");
-			}
-			
-			// this places the primary key attribute at the top in the gridpane.
-			if (attribute.isPrimaryKey() && !attribute.isInherited()) {
+    	for (EOAttribute pkAttribute : attributeList) {
+    		if (pkAttribute.isPrimaryKey() && !pkAttribute.isInherited()) {
+	    		lblAttributeName = new Label(pkAttribute.getColumnName());
+				lblAttributeName.setPadding(new Insets(0, 0, 0, 10));
+				
+				if (pkAttribute.isAllowsNull() != null) {
+					lblAttributeAllowsNull = new Label(pkAttribute.isAllowsNull() ? "O" : "Ø");
+				} else {
+					lblAttributeAllowsNull = new Label("Ø");
+				}
+				
 				lblAttributeName.setFont(Font.font(lblAttributeName.getFont().getFamily(), FontWeight.EXTRA_BOLD, 16));
 				lblAttributeName.setUnderline(true);
-				attributeListFilteredPK.remove(i);
-				i--;
-				gridPane.add(lblAttributeName, 0, pkCount + 1);
-				gridPane.add(lblAttributeAllowsNull, 1, pkCount + 1);
+				gridPane.add(lblAttributeName, 0, pkCount);
+				gridPane.add(lblAttributeAllowsNull, 1, pkCount);
 				pkCount++;
-			} else {
+    		}
+    	}
+    	
+		for (int i = 0; i < attributeList.size(); i++) {
+			EOAttribute attribute = attributeList.get(i);
+			if (!attribute.isPrimaryKey()) {
+				lblAttributeName = new Label(attribute.getColumnName());
+				lblAttributeName.setPadding(new Insets(0, 0, 0, 10));
+				
+				if (attribute.isAllowsNull() != null) {
+					lblAttributeAllowsNull = new Label(attribute.isAllowsNull() ? "O" : "Ø");
+				} else {
+					lblAttributeAllowsNull = new Label("Ø");
+				}
+				
 				lblAttributeName.setUnderline(false);
-				gridPane.add(lblAttributeName, 0, pkCount+i+2);
-				gridPane.add(lblAttributeAllowsNull, 1, pkCount+i+2);
+				gridPane.add(lblAttributeName, 0, pkCount+i);
+				gridPane.add(lblAttributeAllowsNull, 1, pkCount+i);
 			}
 		}
 	}
