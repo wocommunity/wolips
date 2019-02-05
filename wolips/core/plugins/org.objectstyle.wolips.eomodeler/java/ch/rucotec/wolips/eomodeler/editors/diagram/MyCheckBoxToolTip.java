@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
 
 import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
@@ -81,7 +82,16 @@ public class MyCheckBoxToolTip extends ToolTip {
 			
 			public void mouseDoubleClick(MouseEvent e) {
 				if (tree.getSelection().length > 0) {
+					EOModel model = myDiagram._getModelParent().getModel();
 					EOEntity selectedEntity = myDiagram._getModelParent().getModel().getEntityNamed(tree.getSelection()[0].getText(0));
+					if (selectedEntity == null) {
+						for (EOEntity entity : model.getEntities()) {
+							if (entity.getName().equals(tree.getSelection()[0].getText(0))) {
+								selectedEntity = entity;
+								break;
+							}
+						}
+					}
 					if (myCurrentModelEditor == null) {
 						myCurrentModelEditor = (EOModelEditor)myDiagram.getEOModelEditor();
 					}
