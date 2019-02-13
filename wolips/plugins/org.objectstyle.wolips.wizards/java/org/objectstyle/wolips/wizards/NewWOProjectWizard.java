@@ -961,7 +961,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 					}
 
 					// Classpath surgery
-					((ProjectFrameworkAdapter) getProject().getAdapter(ProjectFrameworkAdapter.class)).addFrameworksNamed(newFrameworks);
+					getProject().getAdapter(ProjectFrameworkAdapter.class).addFrameworksNamed(newFrameworks);
 				} catch (Exception e) {
 					WizardsPlugin.getDefault().log(e);
 					ErrorDialog.openError(getShell(), Messages.getString("NewWOProjectWizard.errorMessage.classpath.title"), Messages.getString("NewWOProjectWizard.errorMessage.classpath.message"), new Status(IStatus.WARNING, "org.objectstyle.wolips.wizards", Messages.getString("NewWOProjectWizard.errorMessage.classpath.message")));
@@ -992,7 +992,7 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 							newFrameworks.add("JavaWebServicesSupport");
 						}
 					}
-					((ProjectFrameworkAdapter) getProject().getAdapter(ProjectFrameworkAdapter.class)).addFrameworksNamed(newFrameworks);
+					getProject().getAdapter(ProjectFrameworkAdapter.class).addFrameworksNamed(newFrameworks);
 				} catch (Exception e) {
 					WizardsPlugin.getDefault().log(e);
 					ErrorDialog.openError(getShell(), Messages.getString("NewWOProjectWizard.errorMessage.classpath.title"), Messages.getString("NewWOProjectWizard.errorMessage.classpath.message"), new Status(IStatus.WARNING, "org.objectstyle.wolips.wizards", Messages.getString("NewWOProjectWizard.errorMessage.classpath.message")));
