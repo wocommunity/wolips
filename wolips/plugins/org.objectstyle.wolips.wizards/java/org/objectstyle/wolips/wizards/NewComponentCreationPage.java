@@ -20,14 +20,18 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ProjectScope;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.preferences.IScopeContext;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
@@ -41,13 +45,11 @@ import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.Signature;
-import org.eclipse.jdt.internal.corext.codemanipulation.StubUtility;
 import org.eclipse.jdt.internal.corext.util.JavaModelUtil;
 import org.eclipse.jdt.internal.corext.util.Messages;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.JavaPluginImages;
 import org.eclipse.jdt.internal.ui.dialogs.StatusInfo;
-import org.eclipse.jdt.internal.ui.viewsupport.BasicElementLabels;
 import org.eclipse.jdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.jdt.internal.ui.wizards.SuperInterfaceSelectionDialog;
 import org.eclipse.jdt.internal.ui.wizards.TypedElementSelectionValidator;
@@ -1089,7 +1091,7 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 		}
 		
 		// gather contents to populate wod, woo, html files
-		String lineDelimiter = StubUtility.getLineDelimiterUsed(getJavaProject());
+		String lineDelimiter = getLineDelimiterUsed(getJavaProject());
 		Map<String, String> filesContents = new HashMap<String, String>();
 		filesContents.put("wod", "");
 		filesContents.put("woo", wooContentsWithEncoding(lineDelimiter, getComponentWOOEncodingKey()));
@@ -1713,6 +1715,35 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 			}
 		}
 		return typeNameStatus;
+	}
+	
+	private static String getLineDelimiterUsed(IJavaProject project) {
+		return getProjectLineDelimiter(project);
+	}
+
+	private static String getProjectLineDelimiter(IJavaProject javaProject) {
+		IProject project = null;
+		if (javaProject != null) {
+			project = javaProject.getProject();
+		}
+		String lineDelimiter = getLineDelimiterPreference(project);
+		if (lineDelimiter != null) {
+			return lineDelimiter;
+		}
+		return System.getProperty("line.separator", "\n");
+	}
+
+	private static String getLineDelimiterPreference(IProject project) {
+		if (project != null) {
+			IScopeContext[] scopeContext = { new ProjectScope(project) };
+			String lineDelimiter = Platform.getPreferencesService().getString("org.eclipse.core.runtime", "line.separator", null, scopeContext);
+			if (lineDelimiter != null) {
+				return lineDelimiter;
+			}
+		}
+		IScopeContext[] scopeContext = { InstanceScope.INSTANCE };
+		String platformDefault = System.getProperty("line.separator", "\n");
+		return Platform.getPreferencesService().getString("org.eclipse.core.runtime", "line.separator", platformDefault, scopeContext);
 	}
 
 }
