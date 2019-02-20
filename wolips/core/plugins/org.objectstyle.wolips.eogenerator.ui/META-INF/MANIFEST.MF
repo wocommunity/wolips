@@ -16,4 +16,4 @@ Export-Package: org.objectstyle.wolips.eogenerator.ui,
  org.objectstyle.wolips.eogenerator.ui.actions,
  org.objectstyle.wolips.eogenerator.ui.dialogs,
  org.objectstyle.wolips.eogenerator.ui.editors
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

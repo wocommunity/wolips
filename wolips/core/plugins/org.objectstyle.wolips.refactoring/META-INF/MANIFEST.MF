@@ -17,4 +17,4 @@ Require-Bundle: org.eclipse.jdt.core,
 Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.refactoring,
  org.objectstyle.wolips.refactoring.actions
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

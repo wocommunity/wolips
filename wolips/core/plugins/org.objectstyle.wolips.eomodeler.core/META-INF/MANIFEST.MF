@@ -23,5 +23,5 @@ Export-Package: ch.rucotec.wolips.eomodeler.core.gef.model,
  org.objectstyle.wolips.eomodeler.core.utils
 Bundle-ClassPath: .,
  lib/EOFSQLUtils.jar
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.collect

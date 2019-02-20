@@ -20,8 +20,8 @@ import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
 import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
 
 /**
- * This class extends the {@link ToolTip} and provides a custom made ToolTip for your 
- * {@link Button}. This ToolTip shows the its data in a {@link Tree}.
+ * This class extends {@link ToolTip} and provides a custom made ToolTip for a 
+ * {@link Button}. This ToolTip shows its data in a {@link Tree}.
  * 
  * @author celik
  *

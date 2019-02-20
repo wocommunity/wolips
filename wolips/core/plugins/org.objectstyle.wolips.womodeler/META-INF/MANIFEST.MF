@@ -24,4 +24,4 @@ Bundle-Vendor: objectstyle.org
 Export-Package: org.objectstyle.wolips.womodeler
 Bundle-ClassPath: lib/jdom.jar,
  .
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

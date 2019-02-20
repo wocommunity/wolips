@@ -35,6 +35,8 @@
 		<ant dir="org.objectstyle.wolips.targetbuilder" target="all" />
 		<ant dir="org.objectstyle.wolips.team" target="all" />
 		<ant dir="org.objectstyle.wolips.eomodeler.core" target="all" />
+		<ant dir="ch.rucotec.gef.visuals" target="all" />
+		<ant dir="ch.rucotec.gef" target="all" />
 		<ant dir="org.objectstyle.wolips.eomodeler.factories" target="all" />
 		<ant dir="org.objectstyle.wolips.eogenerator.core" target="all" />
 		<ant dir="org.objectstyle.wolips.eogenerator.jdt" target="all" />
@@ -88,6 +90,8 @@
 		<ant dir="org.objectstyle.wolips.eogenerator.jdt" target="dist" />
 		<ant dir="org.objectstyle.wolips.eogenerator.ui" target="dist" />
 		<ant dir="org.objectstyle.wolips.eomodeler.core" target="dist" />
+		<ant dir="ch.rucotec.gef.visuals" target="dist" />
+		<ant dir="ch.rucotec.gef" target="dist" />
 		<ant dir="org.objectstyle.wolips.eomodeler" target="dist" />
 		<ant dir="org.objectstyle.wolips.eomodeler.eclipse" target="dist" />
 		<ant dir="org.objectstyle.wolips.wizards" target="dist" />

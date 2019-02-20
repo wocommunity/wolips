@@ -16,4 +16,4 @@ Require-Bundle: org.objectstyle.wolips.woproject,
 Bundle-ActivationPolicy: lazy
 Export-Package: er.extensions.foundation,
  org.objectstyle.wolips.variables
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

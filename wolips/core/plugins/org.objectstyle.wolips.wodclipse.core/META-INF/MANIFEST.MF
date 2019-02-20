@@ -64,4 +64,4 @@ Export-Package: com.steadystate.css,
  org.w3c.dom.css,
  org.w3c.dom.stylesheets,
  org.w3c.dom.views
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

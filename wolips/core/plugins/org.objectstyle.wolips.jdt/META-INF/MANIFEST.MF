@@ -33,4 +33,4 @@ Export-Package: org.objectstyle.wolips.jdt,
  org.objectstyle.wolips.jdt.ui.refactoring.actions,
  org.objectstyle.wolips.jdt.ui.tags,
  org.objectstyle.wolips.jdt.ui.tags.actions
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

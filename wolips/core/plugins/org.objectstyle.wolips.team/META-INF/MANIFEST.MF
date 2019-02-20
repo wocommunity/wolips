@@ -8,4 +8,4 @@ Bundle-Vendor: objectstyle.org
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.objectstyle.wolips.baseforplugins
 Export-Package: org.objectstyle.wolips.team
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

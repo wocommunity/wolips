@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 
 <!-- ======================================================== -->
-<!--        Main WOLips plugins Ant build file                -->
+<!--        Main TBLips plugins Ant build file                -->
 <!-- Serves as a facade for different helper build files.     -->
 <!-- ======================================================== -->
-<project name="org.objectstyle.wolips.eomodeler" default="" basedir=".">
+<project name="ch.rucotec.gef.visuals" default="" basedir=".">
 
 	<property file="default.properties" />
 
@@ -19,26 +19,7 @@
 			<fileset dir="../../../../lib">
 				<include name="**/*.jar" />
 			</fileset>
-			<fileset dir="../org.objectstyle.wolips.thirdparty.commonscollections">
-				<include name="**/*.jar" />
-			</fileset>
-			<fileset dir="../org.objectstyle.wolips.thirdparty.velocity/">
-				<include name="**/*.jar" />
-			</fileset>
-			<fileset dir="../org.objectstyle.wolips.eomodeler.core">
-				<include name="**/*.jar" />
-			</fileset>
-			<fileset dir="../ch.rucotec.gef">
-				<include name="**/*.jar" />
-			</fileset>
 			<pathelement path="../../../../${build.output.java.dir}" />
-			<!--	<pathelement path = "/Library/Java/JavaVirtualMachines/jdk1.8.0_112.jdk/Contents/Home/jre/lib/jfxswt.jar"/> -->
-			<pathelement path="lib/jfxswt.jar" />
-			<pathelement path="${wo.dir.library.frameworks}/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar" />
-			<pathelement path="${wo.dir.library.frameworks}/JavaFoundation.framework/Resources/Java/javafoundation.jar" />
-			<pathelement path="${wo.dir.library.frameworks}/JavaEOControl.framework/Resources/Java/javaeocontrol.jar" />
-			<pathelement path="${wo.dir.library.frameworks}/JavaJDBCAdaptor.framework/Resources/Java/javajdbcadaptor.jar" />
-			<pathelement path="${wo.dir.library.frameworks}/JavaXML.framework/Resources/Java/javaxml.jar" />
 		</path>
 		<ant dir="." antfile="../../../../${project.buildscripts.dir}/plugin-project.xml" target="java">
 			<property name="param.plugin.dir" value="." />
@@ -52,8 +33,7 @@
 	<!-- ========================================== -->
 	<target name="jar">
 		<patternset id="param.classes.patternset.refid">
-			<include name="**/ch/rucotec/wolips/eomodeler/**" />
-			<include name="**/org/objectstyle/wolips/eomodeler/**" />
+			<include name="**/ch/rucotec/gef/visuals/**" />
 		</patternset>
 
 		<ant dir="." antfile="../../../../${project.buildscripts.dir}/plugin-project.xml" target="jar.no.unpack">

@@ -15,4 +15,4 @@ Export-Package: org.objectstyle.wolips.editors,
  org.objectstyle.wolips.editors.contentdescriber,
  org.objectstyle.wolips.editors.launcher,
  org.objectstyle.wolips.editors.patterset
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

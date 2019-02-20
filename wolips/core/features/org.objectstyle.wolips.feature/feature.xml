@@ -63,69 +63,95 @@ individuals on behalf of the ObjectStyle Group. For more information
 on the ObjectStyle Group, please see http://objectstyle.org/
    </license>
 
-   <url>
-      <update label="%feature.updateSiteName" url="%feature.updateSite"/>
-      <discovery label="%feature.updateSiteName" url="%feature.updateSite"/>
-   </url>
-
    <requires>
-      <import plugin="org.apache.ant"/>
-      <import plugin="org.eclipse.ant.core"/>
-      <import plugin="org.eclipse.core.databinding"/>
-      <import plugin="org.eclipse.core.databinding.beans"/>
-      <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.variables"/>
-      <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.jdt.debug"/>
-      <import plugin="org.eclipse.jdt.debug.ui"/>
-      <import plugin="org.eclipse.jdt.launching"/>
-      <import plugin="org.eclipse.jdt.ui"/>
-      <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.jface.databinding"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.ltk.core.refactoring"/>
-      <import plugin="org.eclipse.search"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.ui.browser"/>
-      <import plugin="org.eclipse.ui.console"/>
-      <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.ui.views.properties.tabbed"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.junit"/>
-      <import plugin="org.objectstyle.wolips"/>
-      <import plugin="org.objectstyle.wolips.ant"/>
-      <import plugin="org.objectstyle.wolips.apieditor"/>
+      <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.objectstyle.wolips.baseforplugins"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.apache.ant"/>
+      <import plugin="org.objectstyle.wolips.woproject"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.objectstyle.wolips.variables"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.objectstyle.wolips.locate"/>
+      <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.objectstyle.wolips.baseforuiplugins"/>
-      <import plugin="org.objectstyle.wolips.bindings"/>
-      <import plugin="org.objectstyle.wolips.builder"/>
+      <import plugin="org.objectstyle.wolips.preferences"/>
+      <import plugin="org.objectstyle.wolips"/>
+      <import plugin="org.objectstyle.wolips.eomodeler.core"/>
+      <import plugin="org.objectstyle.wolips.thirdparty.velocity"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.objectstyle.wolips.eogenerator.core"/>
+      <import plugin="org.eclipse.core.databinding"/>
+      <import plugin="org.eclipse.jface.databinding"/>
+      <import plugin="org.eclipse.core.databinding.beans"/>
+      <import plugin="org.objectstyle.wolips.workbenchutilities"/>
+      <import plugin="org.eclipse.ltk.core.refactoring"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.ui.browser"/>
+      <import plugin="org.eclipse.jdt.debug.ui"/>
+      <import plugin="org.eclipse.core.variables"/>
+      <import plugin="org.objectstyle.wolips.ant"/>
+      <import plugin="org.objectstyle.wolips.jdt"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.jdt.debug"/>
+      <import plugin="org.objectstyle.wolips.wodclipse.core"/>
       <import plugin="org.objectstyle.wolips.components"/>
       <import plugin="org.objectstyle.wolips.editors"/>
-      <import plugin="org.objectstyle.wolips.eogenerator.core"/>
-      <import plugin="org.objectstyle.wolips.eogenerator.jdt"/>
+      <import plugin="org.objectstyle.wolips.bindings"/>
+      <import plugin="org.eclipse.search"/>
+      <import plugin="org.eclipse.ui.console"/>
+      <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.objectstyle.wolips.templateengine"/>
       <import plugin="org.objectstyle.wolips.eogenerator.ui"/>
       <import plugin="org.objectstyle.wolips.eomodeler"/>
-      <import plugin="org.objectstyle.wolips.eomodeler.core"/>
-      <import plugin="org.objectstyle.wolips.htmlpreview"/>
-      <import plugin="org.objectstyle.wolips.jdt"/>
-      <import plugin="org.objectstyle.wolips.locate"/>
-      <import plugin="org.objectstyle.wolips.preferences"/>
-      <import plugin="org.objectstyle.wolips.templateengine"/>
-      <import plugin="org.objectstyle.wolips.thirdparty.velocity"/>
-      <import plugin="org.objectstyle.wolips.tkhtmleditor"/>
+      <import plugin="org.objectstyle.wolips.eogenerator.jdt"/>
+      <import plugin="org.eclipse.ui.views.properties.tabbed"/>
       <import plugin="org.objectstyle.wolips.ui"/>
-      <import plugin="org.objectstyle.wolips.variables"/>
+      <import plugin="org.objectstyle.wolips.tkhtmleditor"/>
       <import plugin="org.objectstyle.wolips.wodclipse"/>
-      <import plugin="org.objectstyle.wolips.wodclipse.core"/>
-      <import plugin="org.objectstyle.wolips.womodeler"/>
-      <import plugin="org.objectstyle.wolips.woproject"/>
-      <import plugin="org.objectstyle.wolips.workbenchutilities"/>
+      <import plugin="org.objectstyle.wolips.apieditor"/>
+      <import plugin="org.objectstyle.wolips.htmlpreview"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.ui" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.core.runtime" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.resources" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.6.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.equinox.common" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.objectstyle.wolips.thirdparty.commonscollections"/>
+      <import plugin="org.eclipse.jdt"/>
+      <import plugin="org.eclipse.jdt.apt.core"/>
+      <import plugin="org.eclipse.ltk.ui.refactoring"/>
+      <import plugin="org.objectstyle.wolips.refactoring"/>
+      <import plugin="org.eclipse.jdt.junit"/>
+      <import plugin="org.eclipse.jdt.junit4.runtime"/>
+      <import plugin="org.eclipse.e4.core.contexts" version="1.3.0" match="greaterOrEqual"/>
+      <import plugin="org.objectstyle.wolips.targetbuilder"/>
+      <import plugin="org.eclipse.jdt.core" version="3.5.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.filesystem"/>
+      <import plugin="org.objectstyle.wolips.componenteditor"/>
+      <import plugin="org.eclipse.jdt.core.manipulation"/>
+      <import plugin="org.eclipse.ant.core" version="3.2.100" match="greaterOrEqual"/>
+      <import plugin="org.objectstyle.wolips.wooeditor"/>
+      <import plugin="org.eclipse.gef.geometry" version="5.0.0" match="greaterOrEqual"/>
+      <import plugin="com.google.guava"/>
+      <import plugin="org.eclipse.gef.common" version="5.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.gef.fx" version="5.0.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.gef.geometry.convert.fx" version="5.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.gef.mvc.fx" version="5.0.2" match="greaterOrEqual"/>
+      <import plugin="ch.rucotec.gef"/>
+      <import plugin="com.google.inject"/>
+      <import plugin="javax.inject"/>
+      <import plugin="org.eclipse.gef"/>
+      <import plugin="org.objectstyle.wolips.launching"/>
+      <import plugin="org.eclipse.core.commands" version="3.8.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime" version="3.12.0" match="greaterOrEqual"/>
+      <import plugin="ch.rucotec.gef.visuals"/>
    </requires>
 
    <plugin
@@ -431,6 +457,20 @@ on the ObjectStyle Group, please see http://objectstyle.org/
          id="org.objectstyle.wolips.wooeditor"
          download-size="32"
          install-size="32"
+         version="1.0.6"
+         unpack="false"/>
+
+   <plugin
+         id="ch.rucotec.gef"
+         download-size="32"
+         install-size="32"
+         version="1.0.6"
+         unpack="false"/>
+
+   <plugin
+         id="ch.rucotec.gef.visuals"
+         download-size="0"
+         install-size="0"
          version="1.0.6"
          unpack="false"/>
 
