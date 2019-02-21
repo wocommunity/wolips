@@ -43,7 +43,6 @@ Installing prebuilt versions of WOLips in existing Eclipse installations can be 
 5. Use the eclipse plugin installation process to install from the dist directory.
 
 
-======
 wolips
 ======
 
