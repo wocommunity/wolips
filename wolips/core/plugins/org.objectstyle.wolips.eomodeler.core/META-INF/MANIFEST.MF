@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.ui.views.properties.tabbed,
  org.objectstyle.wolips.thirdparty.commonscollections,
  org.objectstyle.wolips.thirdparty.velocity,
  org.objectstyle.wolips.woproject,
- org.eclipse.gef.geometry;bundle-version="5.0.0"
+ org.eclipse.gef.geometry
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: objectstyle.org
 Export-Package: ch.rucotec.wolips.eomodeler.core.gef.model,
