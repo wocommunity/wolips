@@ -7,6 +7,7 @@ import org.eclipse.gef.common.adapt.AdapterKey;
 import org.eclipse.gef.fx.anchors.IAnchor;
 import org.eclipse.gef.fx.nodes.Connection;
 import org.eclipse.gef.mvc.fx.parts.AbstractContentPart;
+import org.eclipse.gef.mvc.fx.parts.IBendableContentPart;
 import org.eclipse.gef.mvc.fx.parts.IVisualPart;
 
 import com.google.common.collect.HashMultimap;
@@ -24,7 +25,7 @@ import javafx.scene.Node;
  * including the anchors for the connection.
  * <br/>(documented by GEF)
  */
-public class DiagramConnectionPart extends AbstractContentPart<Connection> {
+public class DiagramConnectionPart extends AbstractContentPart<Connection> implements IBendableContentPart<Connection>{
 
 	//---------------------------------------------------------------------------
 	// ### Variables and Constants
@@ -102,4 +103,13 @@ public class DiagramConnectionPart extends AbstractContentPart<Connection> {
     public DiagramConnection getContent() {
         return (DiagramConnection) super.getContent();
     }
+
+	@Override
+	public List<BendPoint> getContentBendPoints() {
+		return null;
+	}
+
+	@Override
+	public void setContentBendPoints(List<BendPoint> bendPoints) {
+	}
 }

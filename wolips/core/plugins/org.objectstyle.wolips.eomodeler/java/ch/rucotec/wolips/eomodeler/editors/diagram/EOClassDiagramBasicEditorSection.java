@@ -39,7 +39,7 @@ import ch.rucotec.wolips.eomodeler.core.model.EOClassDiagram;
  * If a {@link EOClassDiagram} is selected in the Outline then the PropetiesView will show this.
  * the settings are made in the {@code plugin.xml}
  * 
- * @author celik
+ * @author Savas Celik
  *
  */
 public class EOClassDiagramBasicEditorSection extends AbstractPropertySection {
@@ -108,11 +108,13 @@ public class EOClassDiagramBasicEditorSection extends AbstractPropertySection {
 			
 			public void handleEvent(Event event) {
 				for (final EOEntity entity : myCurrentModel.getEntities()) {
-					if (!myDiagram.getEntities().contains(entity)) {
-						myDiagram.addEntityToDiagram(entity);
-					}
-					if (checkBoxes.get(entity) != null) {
-						checkBoxes.get(entity).setSelection(true);
+					if (!entity.getClassNameWithoutPackage().equals("EOGenericRecord")) {
+						if (!myDiagram.getEntities().contains(entity)) {
+							myDiagram.addEntityToDiagram(entity);
+						}
+						if (checkBoxes.get(entity) != null) {
+							checkBoxes.get(entity).setSelection(true);
+						}
 					}
 				}
 				DiagramTab.getInstance().setSelectedDiagram(myDiagram);
@@ -161,7 +163,6 @@ public class EOClassDiagramBasicEditorSection extends AbstractPropertySection {
 	 */
 	private void grpCheckBoxesToolTip() {
 		for (final EOEntity entity : myCurrentModel.getEntities()) {
-			Set<EOEntity> childrens = entity.getChildrenEntities(); 
 			Button checkboxParent = checkBoxes.get(entity);
 			if (checkboxParent != null) {
 				MyCheckBoxToolTip dtooltip = new MyCheckBoxToolTip(checkboxParent, myDiagram);
