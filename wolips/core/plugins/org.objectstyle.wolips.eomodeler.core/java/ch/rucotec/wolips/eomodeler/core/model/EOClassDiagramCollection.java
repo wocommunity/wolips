@@ -17,7 +17,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 /**
  * 
  * 
- * @author celik
+ * @author Savas Celik
  * @see AbstractDiagramCollection
  */
 public class EOClassDiagramCollection extends AbstractDiagramCollection<EOModel, EOClassDiagram> {

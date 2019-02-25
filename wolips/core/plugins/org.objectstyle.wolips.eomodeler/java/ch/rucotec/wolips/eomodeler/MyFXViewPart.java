@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 /**
  * This class creates an EditorPart providing a JavaFX canvas to be able to draw on it.
  * 
- * @author celik
+ * @author Savas Celik
  *
  */
 public abstract class MyFXViewPart extends EditorPart {

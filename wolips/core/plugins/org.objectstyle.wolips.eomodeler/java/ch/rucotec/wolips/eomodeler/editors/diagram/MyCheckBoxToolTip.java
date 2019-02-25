@@ -23,7 +23,7 @@ import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
  * This class extends {@link ToolTip} and provides a custom made ToolTip for a 
  * {@link Button}. This ToolTip shows its data in a {@link Tree}.
  * 
- * @author celik
+ * @author Savas Celik
  *
  */
 public class MyCheckBoxToolTip extends ToolTip {

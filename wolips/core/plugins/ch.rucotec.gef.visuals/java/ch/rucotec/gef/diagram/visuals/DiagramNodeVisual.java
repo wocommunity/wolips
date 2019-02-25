@@ -30,7 +30,7 @@ import javafx.scene.text.Text;
 /**
  * This Class is responsible for the visual effects of a {@link DiagramNode}.
  * 
- * @author celik
+ * @author Savas Celik
  * <br/>(this was originally documented by GEF)
  */
 public class DiagramNodeVisual extends Region {

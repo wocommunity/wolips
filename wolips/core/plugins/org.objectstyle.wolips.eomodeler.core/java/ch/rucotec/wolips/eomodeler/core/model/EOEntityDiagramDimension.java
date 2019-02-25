@@ -4,7 +4,7 @@ package ch.rucotec.wolips.eomodeler.core.model;
  * This class is used to save the coordinates + the height and the width of an
  * EOEntityDiagram.
  * 
- * @author celik
+ * @author Savas Celik
  *
  */
 public class EOEntityDiagramDimension {

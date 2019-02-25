@@ -40,7 +40,7 @@ import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
  * If a {@link EOERDiagram} is selected in the Outline then the PropetiesView will show this.
  * the settings are made in the {@code plugin.xml}
  * 
- * @author celik
+ * @author Savas Celik
  *
  */
 public class EOERDiagramBasicEditorSection extends AbstractPropertySection {

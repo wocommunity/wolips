@@ -19,7 +19,7 @@ import javafx.scene.text.Text;
 /**
  * This Class is responsible for the visual effects of a {@link DiagramConnection}.
  * 
- * @author celik
+ * @author Savas Celik
  *
  */
 public class DiagramConnectionVisual extends Connection {
@@ -40,7 +40,7 @@ public class DiagramConnectionVisual extends Connection {
 		+----------------+
      </PRE>
 	 * 
-	 * @author celik
+	 * @author Savas Celik
 	 *
 	 */
     public static class CrowFoot extends Polyline {
@@ -74,7 +74,7 @@ public class DiagramConnectionVisual extends Connection {
 		|      `-'       |	 
 		+----------------+
      </PRE>
-     * @author celik
+     * @author Savas Celik
      *
      */
     public static class One extends Polyline {
@@ -99,7 +99,7 @@ public class DiagramConnectionVisual extends Connection {
 		+----------------+
      </PRE>
 	 * 
-	 * @author celik
+	 * @author Savas Celik
 	 *
 	 */
     public static class Many extends Polyline {
@@ -123,7 +123,7 @@ public class DiagramConnectionVisual extends Connection {
 		+----------------+
      </PRE>
 	 * 
-	 * @author celik
+	 * @author Savas Celik
 	 *
 	 */
     public static class Zero extends Circle {
@@ -148,7 +148,7 @@ public class DiagramConnectionVisual extends Connection {
 		+----------------+
         </PRE>
    	 * 
-   	 * @author celik
+   	 * @author Savas Celik
    	 *
    	 */
     public static class Extends extends Polygon{

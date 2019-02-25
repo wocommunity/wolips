@@ -17,7 +17,7 @@ import javafx.scene.paint.Color;
  * Represents an entity as an element of a entity relationship diagram every entity in a entity relationship diagram has a
  * {@code EOEntityERDiagram} which knows all their positions and diagram names.
  * 
- * @author celik
+ * @author Savas Celik
  * @see AbstractEOEntityDiagram
  */
 public class EOEntityERDiagram extends AbstractEOEntityDiagram{

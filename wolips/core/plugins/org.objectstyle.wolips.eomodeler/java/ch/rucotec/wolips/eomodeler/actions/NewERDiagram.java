@@ -14,7 +14,7 @@ import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramCollection;
  * This class is used in the plugin.xml->Extensions->org.eclipse.ui.popupMenus and is used
  * to create EOERDiagram objects by right clicking EOERDiagramCollection in the EOModeller
  * 
- * @author celik
+ * @author Savas Celik
  *
  */
 public class NewERDiagram extends AbstractNewObjectAction<EOERDiagramCollection, EOERDiagram>{

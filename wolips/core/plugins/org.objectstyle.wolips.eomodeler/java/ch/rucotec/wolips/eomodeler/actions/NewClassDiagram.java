@@ -14,7 +14,7 @@ import ch.rucotec.wolips.eomodeler.core.model.EOClassDiagramCollection;
  * This class is used in the plugin.xml->Extensions->org.eclipse.ui.popupMenus and is used
  * to create EOClassDiagram objects by right clicking EOClassDiagramCollection in the EOModeller
  * 
- * @author celik
+ * @author Savas Celik
  *
  */
 public class NewClassDiagram extends AbstractNewObjectAction<EOClassDiagramCollection, EOClassDiagram>{

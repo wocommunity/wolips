@@ -20,7 +20,7 @@ import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagramCollection;
  * Creates a TableEditor for the EODiagrams where all Diagrams are listet by their names and
  * the entities they have.
  * 
- * @author celik
+ * @author Savas Celik
  *
  */
 public class EODiagramsTableEditor extends EditorPart implements ISelectionProvider {

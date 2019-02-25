@@ -20,7 +20,7 @@ import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
  * This class makes an entity to an entity diagram, every entity diagram have their own list of
  * diagram dimensions which is a {@link HashMap} and the "Key" String is the name of the {@link AbstractDiagram} the entity diagram needs to be shown.
  * 
- * @author celik
+ * @author Savas Celik
  *
  */
 public abstract class AbstractEOEntityDiagram {

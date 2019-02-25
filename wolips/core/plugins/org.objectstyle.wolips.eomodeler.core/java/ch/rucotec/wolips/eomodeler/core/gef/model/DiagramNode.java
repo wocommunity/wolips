@@ -19,7 +19,7 @@ import javafx.scene.paint.Color;
  * A node is in this case a rectecular element in our Diagram.
  * The look of the our Node (rectecular element) is treated in the DiagramNodeVisual class.
  * 
- * @author celik
+ * @author Savas Celik
  * <br/>(this was originally documented by GEF)
  */
 public class DiagramNode extends AbstractDiagramItem implements Serializable {

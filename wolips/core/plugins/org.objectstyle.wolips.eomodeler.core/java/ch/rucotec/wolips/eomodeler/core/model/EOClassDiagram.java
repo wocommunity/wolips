@@ -22,7 +22,7 @@ import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
  * The {@code EOClassDiagram} represents a class diagram and extends {@link AbstractDiagram}
  * most methods in this class are just Overrides from its extended classes.
  * 
- * @author celik
+ * @author Savas Celik
  * @see AbstractDiagram
  */
 public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{

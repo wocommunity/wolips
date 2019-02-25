@@ -35,7 +35,7 @@ import org.objectstyle.wolips.eomodeler.core.model.UserInfoableEOModelObject;
  *  +---------------------------+
  * </pre>
  * 
- * @author celik
+ * @author Savas Celik
  *
  * @param <T> - describing the parent EOModel (parent class must extend {@link EOModelObject}).
  * 

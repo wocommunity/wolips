@@ -17,7 +17,7 @@ import javafx.scene.paint.Color;
  * Represents an entity as an element of a class diagram every entity in a class diagram has a
  * {@code EOEntityClassDiagram} which knows all their positions and diagram names.
  * 
- * @author celik
+ * @author Savas Celik
  * @see AbstractEOEntityDiagram
  */
 public class EOEntityClassDiagram extends AbstractEOEntityDiagram {

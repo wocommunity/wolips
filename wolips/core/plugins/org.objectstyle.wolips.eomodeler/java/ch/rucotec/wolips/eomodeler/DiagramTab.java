@@ -16,7 +16,7 @@ import javafx.scene.layout.AnchorPane;
 /**
  * This class creates an EditorPart which can be used to make Tabs in EOModel.
  * 
- * @author celik
+ * @author Savas Celik
  *
  */
 public class DiagramTab extends MyFXViewPart implements ISelectionProvider {

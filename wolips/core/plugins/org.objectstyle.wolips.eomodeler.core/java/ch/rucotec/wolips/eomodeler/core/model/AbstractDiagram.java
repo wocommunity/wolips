@@ -35,7 +35,7 @@ import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
  *  +---------------------------+
  * </pre>
  * 
- * @author celik
+ * @author Savas Celik
  *
  * @param <T> - describing the parent Collection(group) (parent must extend {@link AbstractDiagramCollection}).
  * 	            <p>For example:</p>

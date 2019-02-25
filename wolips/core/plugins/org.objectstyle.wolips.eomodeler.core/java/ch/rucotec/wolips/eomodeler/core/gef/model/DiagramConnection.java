@@ -10,7 +10,7 @@ package ch.rucotec.wolips.eomodeler.core.gef.model;
  * dConnection.connect(diagramNode1, diagramNode2);
  * </code>
  * </pre>
- * @author celik
+ * @author Savas Celik
  *
  */
 public class DiagramConnection extends AbstractDiagramItem {
