@@ -2,13 +2,15 @@ package ch.rucotec.wolips.eomodeler.editors.diagram;
 
 import java.util.Set;
 
-//import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.swt.widgets.Widget;
@@ -20,13 +22,13 @@ import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
 import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
 
 /**
- * This class extends {@link ToolTip} and provides a custom made ToolTip for a 
+ * This class extends {@link CustomToolTip} and provides a custom made ToolTip for a 
  * {@link Button} (Can be customized for every {@link Widget}). This ToolTip shows its data in a {@link Tree}.
  * 
  * @author Savas Celik
  *
  */
-public class MyCheckBoxToolTip extends ToolTip {
+public class MyCheckBoxToolTip extends CustomToolTip {
 	
 	//---------------------------------------------------------------------------
 	// ### Variables and Constants
@@ -41,6 +43,10 @@ public class MyCheckBoxToolTip extends ToolTip {
 	private EOEntity parentEntity;
 	
 	private Set<EOEntity> childrenEntities;
+	
+	private Control control;
+	
+	private int disposeDelay;
 
 	//---------------------------------------------------------------------------
 	// ### Construction
@@ -55,23 +61,60 @@ public class MyCheckBoxToolTip extends ToolTip {
 	 */
 	public MyCheckBoxToolTip(Button control, AbstractDiagram myDiagram) {
 		super(control);
+		this.control = control;
 		this.myDiagram = myDiagram;
-		setShift(new Point ( 1, 0 ));
+		setShift(new Point ( 10, 5 ));
 		setPopupDelay(200);
 		setHideOnMouseDown(false);
+		disposeDelay = 300;
 	}
 	
 	//---------------------------------------------------------------------------
 	// ### Methods
 	//---------------------------------------------------------------------------
 	
+	/**
+	 * Checks whether or not the cursor is in the ToolTip window.
+	 * 
+	 * @param tip
+	 * @return true if it's in the ToolTip window, else false.
+	 */
+	protected boolean isCursorInToolTip(Shell tip) {
+		boolean cursorInToolTip = false;
+		if (tip != null && !tip.isDisposed()) {
+			Rectangle rect = tip.getBounds();
+			cursorInToolTip = rect.contains(tip.getDisplay().getCursorLocation());
+		}
+		return cursorInToolTip;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * This method is called to dispose the ToolTip window.
+	 * I Override it so the disposing has a delay on it.
+	 * (That gives the user time to hover in to the ToolTip window)
+	 * 
+	 * @see ch.rucotec.wolips.eomodeler.editors.diagram.CustomToolTip#toolTipHide(org.eclipse.swt.widgets.Shell, org.eclipse.swt.widgets.Event)
+	 */
+	@Override
+	protected void toolTipHide(Shell tip, Event event) {
+		if (!control.isDisposed()) {
+			control.getDisplay().timerExec(disposeDelay, () -> {
+				if (!control.isDisposed() && !isCursorInToolTip(tip)) {
+					super.toolTipHide(tip, event);
+				}
+			});
+		} else {
+			tip.dispose();
+		}
+	}
+	
 	@Override
 	protected Composite createToolTipContentArea(Event event, Composite parent) {
 		tree = new Tree(parent, SWT.NONE);
-		
 		// Making the Entity shown in the TreeView as a ToolTip Doubleclick able.
 		tree.addListener(SWT.MouseDoubleClick, new Listener() { 
-			
 			@Override
 			public void handleEvent(Event event) {
 				if (tree.getSelection().length > 0) { // This checks whether or not the User selected something. 
@@ -91,6 +134,7 @@ public class MyCheckBoxToolTip extends ToolTip {
 					myCurrentModelEditor.setSelectedEntity(selectedEntity);
 					myCurrentModelEditor.setActivePage(1);
 				}
+				parent.dispose();
 			}
 		});
 		
