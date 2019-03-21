@@ -2,16 +2,16 @@ package ch.rucotec.wolips.eomodeler.editors.diagram;
 
 import java.util.Set;
 
-import org.eclipse.jface.window.ToolTip;
+//import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.swt.widgets.Widget;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
@@ -21,7 +21,7 @@ import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
 
 /**
  * This class extends {@link ToolTip} and provides a custom made ToolTip for a 
- * {@link Button}. This ToolTip shows its data in a {@link Tree}.
+ * {@link Button} (Can be customized for every {@link Widget}). This ToolTip shows its data in a {@link Tree}.
  * 
  * @author Savas Celik
  *
@@ -68,25 +68,18 @@ public class MyCheckBoxToolTip extends ToolTip {
 	@Override
 	protected Composite createToolTipContentArea(Event event, Composite parent) {
 		tree = new Tree(parent, SWT.NONE);
-		tree.addMouseListener(new MouseListener() {
+		
+		// Making the Entity shown in the TreeView as a ToolTip Doubleclick able.
+		tree.addListener(SWT.MouseDoubleClick, new Listener() { 
 			
-			public void mouseUp(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			public void mouseDown(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			public void mouseDoubleClick(MouseEvent e) {
-				if (tree.getSelection().length > 0) {
+			@Override
+			public void handleEvent(Event event) {
+				if (tree.getSelection().length > 0) { // This checks whether or not the User selected something. 
 					EOModel model = myDiagram._getModelParent().getModel();
 					EOEntity selectedEntity = myDiagram._getModelParent().getModel().getEntityNamed(tree.getSelection()[0].getText(0));
 					if (selectedEntity == null) {
 						for (EOEntity entity : model.getEntities()) {
-							if (entity.getName().equals(tree.getSelection()[0].getText(0))) {
+							if (entity.getName().equals(tree.getSelection()[0].getText(0))) { // Since the Entity names are unique we check if we can find a Entity with the name of our selected item in the TreeView.
 								selectedEntity = entity;
 								break;
 							}
