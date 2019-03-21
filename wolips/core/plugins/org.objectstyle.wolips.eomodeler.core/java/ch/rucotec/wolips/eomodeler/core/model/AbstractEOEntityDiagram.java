@@ -110,6 +110,7 @@ public abstract class AbstractEOEntityDiagram {
 		EOModelMap entityMapWithDiagrams = toMap(entityMap);
 		WOLPropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, entityFile, entityMapWithDiagrams);
 		
+		// To prevend that the "Model Changed on Disk" information pops up.
 		myEntity.setLastModified(new EOLastModified(entityFile));
 	}
 	
