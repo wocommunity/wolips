@@ -3,7 +3,6 @@ package ch.rucotec.wolips.eomodeler.editors.diagram;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import org.eclipse.core.databinding.DataBindingContext;
@@ -48,8 +47,10 @@ public class EOClassDiagramBasicEditorSection extends AbstractPropertySection {
 	// ### Variables and Constants
 	//---------------------------------------------------------------------------
 	
+	private static final String GENERIC_RECORD = "EOGenericRecord";
 	
 	private EOClassDiagram myDiagram;
+	
 	private EOModel myCurrentModel;
 	
 	private Text myNameText;
@@ -108,7 +109,7 @@ public class EOClassDiagramBasicEditorSection extends AbstractPropertySection {
 			
 			public void handleEvent(Event event) {
 				for (final EOEntity entity : myCurrentModel.getEntities()) {
-					if (!entity.getClassNameWithoutPackage().equals("EOGenericRecord")) {
+					if (!entity.getClassNameWithoutPackage().equals(GENERIC_RECORD)) {
 						if (!myDiagram.getEntities().contains(entity)) {
 							myDiagram.addEntityToDiagram(entity);
 						}
@@ -205,7 +206,7 @@ public class EOClassDiagramBasicEditorSection extends AbstractPropertySection {
 			final EOEntity entity = entityIterator.next();
 			
 			// mit dieser abfrage werden die join tables nicht als checkboxen angezeigt.
-			if (!entity.getClassNameWithoutPackage().equals("EOGenericRecord")) {
+			if (!entity.getClassNameWithoutPackage().equals(GENERIC_RECORD)) {
 				Button entityCheckBox = null;
 				
 				if (checkBoxes.get(entity) != null) {
