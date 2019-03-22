@@ -222,8 +222,6 @@ public class DiagramNodeVisual extends Region {
         labelVBox = new VBox(VERTICAL_SPACING);
         labelVBox.setPadding(new Insets(VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING));
         
-        labelVBox.setOnMouseReleased(e -> {System.gc();});
-        
         // hier werden die Koordinaten updated. Das brauch ich hier damit ich die Kardinalität der Beiziehung richtig plazieren kann.
         labelVBox.setOnMouseDragged(e -> updateNodeBounds());
         
