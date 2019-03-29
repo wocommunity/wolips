@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 
 import com.google.eclipse.mechanic.CompositeTask;
 
@@ -128,9 +128,9 @@ public class ImportProjectsTask extends CompositeTask {
           for (IProjectDescription projectDescription : projectDescriptions) {
             try {
               IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(projectDescription.getName());
-              monitor.beginTask("Importing " + project.getName() + " ...", 100);
-              project.create(projectDescription, new SubProgressMonitor(monitor, 30));
-              project.open(IResource.BACKGROUND_REFRESH, new SubProgressMonitor(monitor, 70));
+              SubMonitor subMonitor = SubMonitor.convert(monitor, "Importing " + project.getName() + " ...", 100);
+              project.create(projectDescription, subMonitor.split(30));
+              project.open(IResource.BACKGROUND_REFRESH, subMonitor.split(70));
             }
             catch (Throwable t) {
               System.out.println("ImportProjectsTask.run: " + t.getMessage());
