@@ -46,7 +46,9 @@ public class MyCheckBoxToolTip extends CustomToolTip {
 	
 	private Control control;
 	
-	private int disposeDelay;
+	private int disposeDelay = 300;
+	
+	private int popUpDelay = 500;
 
 	//---------------------------------------------------------------------------
 	// ### Construction
@@ -64,9 +66,8 @@ public class MyCheckBoxToolTip extends CustomToolTip {
 		this.control = control;
 		this.myDiagram = myDiagram;
 		setShift(new Point ( 10, 5 ));
-		setPopupDelay(200);
+		setPopupDelay(500);
 		setHideOnMouseDown(false);
-		disposeDelay = 300;
 	}
 	
 	//---------------------------------------------------------------------------
