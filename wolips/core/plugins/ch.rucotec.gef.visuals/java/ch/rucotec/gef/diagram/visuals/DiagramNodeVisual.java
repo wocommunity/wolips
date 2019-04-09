@@ -46,6 +46,7 @@ public class DiagramNodeVisual extends Region {
     private static final double HORIZONTAL_PADDING = 20d;
     private static final double VERTICAL_PADDING = 10d;
     private static final double VERTICAL_SPACING = 5d;
+    private static final String GENERIC_RECORD = "EOGenericRecord";
     
     private DiagramNode myNode;
     private List<EOAttribute> attributeList;
@@ -146,6 +147,7 @@ public class DiagramNodeVisual extends Region {
     	Label lblRelationshipName = null;
     	List<EORelationship> relationshipList = myNode.getRelationshipsList();
     	
+    	// Adding Attributes to the GridPane
     	for (int i = 0; i < attributeList.size(); i++) {
 			EOAttribute attribute = attributeList.get(i);
 			
@@ -157,8 +159,12 @@ public class DiagramNodeVisual extends Region {
 			}
 		}
     	
+    	// Adding Relationships to the GridPane
     	for (int i = 0; i < relationshipList.size(); i++) {
     		EORelationship relationship = relationshipList.get(i);
+    		if (relationship.getDestination().getClassNameWithoutPackage().equals(GENERIC_RECORD)) {
+    			continue;
+    		}
     		if (relationship.isToMany()) {
     			lblRelationshipName = new Label(relationship.getName() + " : " + relationship.getDestination().getClassNameWithoutPackage()+"[]");
     		} else if (relationship.isToOne()) {
