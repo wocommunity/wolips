@@ -49,6 +49,8 @@ public class EOClassDiagramBasicEditorSection extends AbstractPropertySection {
 	
 	private static final String GENERIC_RECORD = "EOGenericRecord";
 	
+	private static final String GROUP_NAME = "Classes";
+	
 	private EOClassDiagram myDiagram;
 	
 	private EOModel myCurrentModel;
@@ -154,7 +156,7 @@ public class EOClassDiagramBasicEditorSection extends AbstractPropertySection {
 		grpcheckBoxes.setLayout(new GridLayout(3, false));
 		GridData gd_grpLol = new GridData(SWT.FILL, SWT.CENTER, false, false, 3, 1);
 		grpcheckBoxes.setLayoutData(gd_grpLol);
-		grpcheckBoxes.setText("Classes");
+		grpcheckBoxes.setText(GROUP_NAME);
 	}
 	
 	/**
