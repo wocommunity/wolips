@@ -1,10 +1,13 @@
 package ch.rucotec.gef.diagram.visuals;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.gef.fx.nodes.GeometryNode;
 import org.eclipse.gef.geometry.planar.Rectangle;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
@@ -24,6 +27,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
@@ -50,6 +54,7 @@ public class DiagramNodeVisual extends Region {
     private Text titleText;
     private GeometryNode<Rectangle> shape;
     private VBox labelVBox;
+    private Set<EOAttribute> foreignKeyAttributes = new HashSet<EOAttribute>();
     
 //    private final ObservableList<TableAttribute> data = FXCollections.observableArrayList();
     
@@ -75,14 +80,18 @@ public class DiagramNodeVisual extends Region {
      * This method creates all the elements for the entity relationship diagram and places them into the gridpane.
      */
     public void initAttributeListForERDiagram() {
+    	initForeignKeys();
     	Label lblAttributeName = null;
     	Label lblAttributeAllowsNull = null;
     	int pkCount = 0;
     	
+    	if (titleText.getText().equals("NewEntity")) {
+    		System.out.println("NOW");
+    	}
+    	
     	for (EOAttribute pkAttribute : attributeList) {
     		if (pkAttribute.isPrimaryKey() && !pkAttribute.isInherited()) {
 	    		lblAttributeName = new Label(pkAttribute.getColumnName());
-				lblAttributeName.setPadding(new Insets(0, 0, 0, 10));
 				
 				if (pkAttribute.isAllowsNull() != null) {
 					lblAttributeAllowsNull = new Label(pkAttribute.isAllowsNull() ? "O" : "Ø");
@@ -102,7 +111,6 @@ public class DiagramNodeVisual extends Region {
 			EOAttribute attribute = attributeList.get(i);
 			if (!attribute.isPrimaryKey()) {
 				lblAttributeName = new Label(attribute.getColumnName());
-				lblAttributeName.setPadding(new Insets(0, 0, 0, 10));
 				
 				if (attribute.isAllowsNull() != null) {
 					lblAttributeAllowsNull = new Label(attribute.isAllowsNull() ? "O" : "Ø");
@@ -110,12 +118,29 @@ public class DiagramNodeVisual extends Region {
 					lblAttributeAllowsNull = new Label("Ø");
 				}
 				
-				lblAttributeName.setUnderline(false);
+				if(foreignKeyAttributes.contains(attribute)) {
+					lblAttributeName.setFont(Font.font(lblAttributeName.getFont().getFamily(), FontPosture.ITALIC, lblAttributeName.getFont().getSize()));
+					lblAttributeName.setStyle("-fx-border-width: 0 0 1.5 0; -fx-border-style: hidden hidden dashed hidden;");
+				} else {
+					lblAttributeName.setUnderline(false);
+				}
 				gridPane.add(lblAttributeName, 0, pkCount+i);
 				gridPane.add(lblAttributeAllowsNull, 1, pkCount+i);
 			}
 		}
 	}
+    
+    private void initForeignKeys() {
+    	EOEntity entity = myNode.getEntityDiagram().getEntity();
+    	Set<EORelationship> toOneRealationships = entity.getToOneRelationships();
+		for (EORelationship relationship : toOneRealationships) {
+			for (EOAttribute attribut : attributeList) {
+				if (relationship.getRelatedAttributes().contains(attribut)) {
+					foreignKeyAttributes.add(attribut);
+				}
+			}
+		}
+    }
     
     /**
      * This method creates all the elements for the class diagram and places them into the gridpane.
