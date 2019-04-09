@@ -85,10 +85,6 @@ public class DiagramNodeVisual extends Region {
     	Label lblAttributeAllowsNull = null;
     	int pkCount = 0;
     	
-    	if (titleText.getText().equals("NewEntity")) {
-    		System.out.println("NOW");
-    	}
-    	
     	for (EOAttribute pkAttribute : attributeList) {
     		if (pkAttribute.isPrimaryKey() && !pkAttribute.isInherited()) {
 	    		lblAttributeName = new Label(pkAttribute.getColumnName());
@@ -193,8 +189,6 @@ public class DiagramNodeVisual extends Region {
         labelVBox = new VBox(VERTICAL_SPACING);
         labelVBox.setPadding(new Insets(VERTICAL_PADDING, HORIZONTAL_PADDING, VERTICAL_PADDING, HORIZONTAL_PADDING));
 
-        // TODO Savas activate GC
-        labelVBox.setOnMouseReleased(e -> {System.gc();});
         ColumnConstraints colmn = new ColumnConstraints();
         colmn.setHgrow(Priority.SOMETIMES);
         colmn.setMinWidth(100);
