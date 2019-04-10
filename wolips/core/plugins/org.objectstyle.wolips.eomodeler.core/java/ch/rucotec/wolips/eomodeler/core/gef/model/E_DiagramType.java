@@ -6,6 +6,6 @@ package ch.rucotec.wolips.eomodeler.core.gef.model;
  * @author Savas Celik
  *
  */
-public enum DiagramType {
+public enum E_DiagramType {
 	ERDIAGRAM, CLASSDIAGRAM;
 }

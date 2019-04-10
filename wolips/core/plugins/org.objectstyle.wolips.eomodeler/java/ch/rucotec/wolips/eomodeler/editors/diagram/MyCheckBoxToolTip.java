@@ -63,8 +63,8 @@ public class MyCheckBoxToolTip extends CustomToolTip {
 		super(control);
 		this.control = control;
 		this.myDiagram = myDiagram;
-		setShift(new Point ( 10, 5 ));
-		setPopupDelay(200);
+		setShift(new Point ( 0, 0 ));
+		setPopupDelay(800);
 		setHideOnMouseDown(false);
 		disposeDelay = 300;
 	}
@@ -99,15 +99,16 @@ public class MyCheckBoxToolTip extends CustomToolTip {
 	 */
 	@Override
 	protected void toolTipHide(Shell tip, Event event) {
-		if (!control.isDisposed()) {
-			control.getDisplay().timerExec(disposeDelay, () -> {
-				if (!control.isDisposed() && !isCursorInToolTip(tip)) {
-					super.toolTipHide(tip, event);
-				}
-			});
-		} else {
-			tip.dispose();
-		}
+//		if (!control.isDisposed()) {
+//			control.getDisplay().timerExec(disposeDelay, () -> {
+//				if (!control.isDisposed() && !isCursorInToolTip(tip)) {
+//					super.toolTipHide(tip, event);
+//				}
+//			});
+//		} else {
+//			tip.dispose();
+//		}
+		super.toolTipHide(tip, event);
 	}
 	
 	@Override

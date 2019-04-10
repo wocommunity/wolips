@@ -29,7 +29,7 @@ public class DiagramConnection extends AbstractDiagramItem {
 
 	private int sourceToTargetCardinality;
 	private int targetToSourceCardinality;
-	private DiagramType diagramType;
+	private E_DiagramType diagramType;
     private DiagramNode source;
     private DiagramNode target;
     private boolean connected;
@@ -39,11 +39,11 @@ public class DiagramConnection extends AbstractDiagramItem {
 	//---------------------------------------------------------------------------
     
     /**
-     * Generates a DiagramConnection for the given {@link DiagramType} the Type is needed
+     * Generates a DiagramConnection for the given {@link E_DiagramType} the Type is needed
      * to specify how the cardinalities look like.
      * @param diagramType
      */
-	public DiagramConnection(DiagramType diagramType) {
+	public DiagramConnection(E_DiagramType diagramType) {
 		this.diagramType = diagramType;
 	}
 	
@@ -123,11 +123,11 @@ public class DiagramConnection extends AbstractDiagramItem {
 	}
 
 
-	public DiagramType getDiagramType() {
+	public E_DiagramType getDiagramType() {
 		return diagramType;
 	}
 
-	public void setDiagramType(DiagramType diagramType) {
+	public void setDiagramType(E_DiagramType diagramType) {
 		this.diagramType = diagramType;
 	}
 }

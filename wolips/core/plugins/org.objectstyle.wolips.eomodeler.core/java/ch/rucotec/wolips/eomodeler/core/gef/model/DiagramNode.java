@@ -11,7 +11,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 
 import com.google.common.collect.Lists;
 
-import ch.rucotec.wolips.eomodeler.core.model.AbstractEOEntityDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.EOEntityDiagram;
 import javafx.scene.paint.Color;
 
 /**
@@ -41,8 +41,9 @@ public class DiagramNode extends AbstractDiagramItem implements Serializable {
 	private String title;
 	private Color color;
 	private Rectangle bounds;
-	private AbstractEOEntityDiagram entityDiagram;
+	private EOEntityDiagram entityDiagram;
 	private String selectedDiagram;
+	private E_DiagramType diagramType;
 	private List<DiagramConnection> incomingConnections = Lists.newArrayList();
 	private List<DiagramConnection> outgoingConnections = Lists.newArrayList();
 	private List<EOAttribute> attributeList;
@@ -61,9 +62,10 @@ public class DiagramNode extends AbstractDiagramItem implements Serializable {
 	 * @param entityDiagram
 	 * @param selectedDiagram
 	 */
-	public DiagramNode(AbstractEOEntityDiagram entityDiagram, String selectedDiagram) {
+	public DiagramNode(EOEntityDiagram entityDiagram, String selectedDiagram, E_DiagramType diagramType) {
 		this.entityDiagram = entityDiagram;
 		this.selectedDiagram = selectedDiagram;
+		this.diagramType = diagramType;
 		setAttributeList(new ArrayList<EOAttribute>(entityDiagram.getEntity().getAttributes()));
 		setRelationshipsList(new ArrayList<EORelationship>(entityDiagram.getEntity().getRelationships()));
 	}
@@ -137,7 +139,7 @@ public class DiagramNode extends AbstractDiagramItem implements Serializable {
 
 	public void setBounds(Rectangle bounds) {
 		if (this.bounds != null && entityDiagram != null && !this.bounds.equals(bounds)) { 
-			entityDiagram.positionsChanged(selectedDiagram, bounds); // hier wird dem EOEntityDiagram mitgeteilt, dass sich die Position geändert hat.
+			entityDiagram.positionsChanged(selectedDiagram, bounds, diagramType); // hier wird dem EOEntityDiagram mitgeteilt, dass sich die Position geändert hat.
 		}
 		pcs.firePropertyChange(PROP_BOUNDS, this.bounds, (this.bounds = bounds.getCopy()));
 	}
@@ -174,7 +176,7 @@ public class DiagramNode extends AbstractDiagramItem implements Serializable {
 		return title;
 	}
 
-	public AbstractEOEntityDiagram getEntityDiagram() {
+	public EOEntityDiagram getEntityDiagram() {
 		return entityDiagram;
 	}
 
@@ -184,5 +186,9 @@ public class DiagramNode extends AbstractDiagramItem implements Serializable {
 
 	public List<EORelationship> getRelationshipsList() {
 		return relationshipsList;
+	}
+	
+	public E_DiagramType getDiagramType() {
+		return diagramType;
 	}
 } 

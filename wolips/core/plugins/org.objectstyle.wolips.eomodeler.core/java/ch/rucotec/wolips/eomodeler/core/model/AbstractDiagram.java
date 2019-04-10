@@ -7,13 +7,13 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.objectstyle.woenvironment.plist.PropertyListParserException;
-import org.objectstyle.wolips.eomodeler.core.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.ISortableEOModelObject;
 import org.objectstyle.wolips.eomodeler.core.model.UserInfoableEOModelObject;
 
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramConnection;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
+import ch.rucotec.wolips.eomodeler.core.gef.model.E_DiagramType;
 import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
 
 /**
@@ -54,8 +54,8 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 	private Object myEOModelEditor;
 	private String myName;
 	private Set<EOEntity> myEntities;
-	private Set<AbstractEOEntityDiagram> myDiagramEntities;
-	private Set<AbstractEOEntityDiagram> myDeletedDiagramEntities;
+	private Set<EOEntityDiagram> myDiagramEntities;
+	private Set<EOEntityDiagram> myDeletedDiagramEntities;
 	private T myDiagramCollection;
 	
 	//---------------------------------------------------------------------------
@@ -69,8 +69,8 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 	 */
 	protected AbstractDiagram(String name) {
 		myName = name;
-		myDiagramEntities = new LinkedHashSet<AbstractEOEntityDiagram>();
-		myDeletedDiagramEntities = new LinkedHashSet<AbstractEOEntityDiagram>();
+		myDiagramEntities = new LinkedHashSet<EOEntityDiagram>();
+		myDeletedDiagramEntities = new LinkedHashSet<EOEntityDiagram>();
 		myEntities = new LinkedHashSet<EOEntity>();
 	}
 	
@@ -93,7 +93,7 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 	 * 
 	 * @param entityDiagram
 	 */
-	public void addEntityToDiagram(AbstractEOEntityDiagram entityDiagram) {
+	public void addEntityToDiagram(EOEntityDiagram entityDiagram) {
 		myDeletedDiagramEntities.remove(entityDiagram);
 		myDiagramEntities.add(entityDiagram);
 		myEntities.add(entityDiagram.getEntity());
@@ -104,12 +104,12 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 	 * the parent is the DiagramCollection. If an Entity already has a EOEntityDiagram, then it returns the found EOEntityDiagram else it return null.
 	 * 
 	 * @param entity
-	 * @return {@link AbstractEOEntityDiagram}
+	 * @return {@link EOEntityDiagram}
 	 */
-	public AbstractEOEntityDiagram getEntityDiagramWithEntity(EOEntity entity) {
-		AbstractEOEntityDiagram foundEntityDiagram = null;
+	public EOEntityDiagram getEntityDiagramWithEntity(EOEntity entity) {
+		EOEntityDiagram foundEntityDiagram = null;
 		for (AbstractDiagram diagram : (Set<AbstractDiagram>)myDiagramCollection.getDiagrams()) {
-			for (AbstractEOEntityDiagram entityDiagram : (Set<AbstractEOEntityDiagram>)diagram.getDiagramEntities()) {
+			for (EOEntityDiagram entityDiagram : (Set<EOEntityDiagram>)diagram.getDiagramEntities()) {
 				if (entityDiagram.getEntity() == entity) {
 					foundEntityDiagram = entityDiagram;
 				}
@@ -124,7 +124,7 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 	 * @param entity
 	 */
 	public void removeEntityFromDiagram(EOEntity entity) {
-		for (AbstractEOEntityDiagram entityDiagram : myDiagramEntities) {
+		for (EOEntityDiagram entityDiagram : myDiagramEntities) {
 			if (entity == entityDiagram.getEntity()) {
 				myDeletedDiagramEntities.add(entityDiagram);
 				myEntities.remove(entity);
@@ -143,6 +143,8 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 	
 	protected abstract AbstractDiagram createDiagram(String name);
 	
+	public abstract void saveToFile(File modelFolder) throws PropertyListParserException, IOException;
+	
 	/**
 	 * Saves all the diagram information in the needed Entity.plist.
 	 * 
@@ -150,16 +152,16 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 	 * @throws PropertyListParserException
 	 * @throws IOException
 	 */
-	public void saveToFile(File modelFolder) throws PropertyListParserException, IOException {
-		Iterator<AbstractEOEntityDiagram> deletedEntityDiagramIterator = myDeletedDiagramEntities.iterator();
+	public void saveToFile(File modelFolder, E_DiagramType diagramType) throws PropertyListParserException, IOException {
+		Iterator<EOEntityDiagram> deletedEntityDiagramIterator = myDeletedDiagramEntities.iterator();
 		while (deletedEntityDiagramIterator.hasNext()) {
-			AbstractEOEntityDiagram deletedEntityDiagram = deletedEntityDiagramIterator.next();
-			deletedEntityDiagram.removeFromEntityPlist(this.getName());
+			EOEntityDiagram deletedEntityDiagram = deletedEntityDiagramIterator.next();
+			deletedEntityDiagram.removeFromEntityPlist(this.getName(), diagramType);
 			deletedEntityDiagram.saveToFile(modelFolder);
 			myDiagramEntities.remove(deletedEntityDiagram);
 		}
 		
-		for (AbstractEOEntityDiagram entityDiagram : myDiagramEntities) {
+		for (EOEntityDiagram entityDiagram : myDiagramEntities) {
 			entityDiagram.saveToFile(modelFolder);
 		}
 	}
@@ -187,21 +189,21 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 	 * @param fireEvents
 	 * @throws DuplicateNameException
 	 */
-	@SuppressWarnings("unused")
-	public void setName(String name, boolean fireEvents) throws DuplicateNameException {
-		String oldName = myName;
-		for (AbstractEOEntityDiagram entityDiagram : myDiagramEntities) {
-			if (entityDiagram.getDiagramDimensions().get(oldName) != null) {
-				EOEntityDiagramDimension diagramDimension = entityDiagram.getDiagramDimensions().get(oldName);
-				entityDiagram.getDiagramDimensions().remove(oldName);
-				entityDiagram.getDiagramDimensions().put(name, diagramDimension);
-			}
-		}
-		myName = name;
-		if (fireEvents) {
-			firePropertyChange(AbstractDiagram.NAME, oldName, myName);
-		}
-	}
+//	@SuppressWarnings("unused")
+//	public void setName(String name, boolean fireEvents) throws DuplicateNameException {
+//		String oldName = myName;
+//		for (AbstractEOEntityDiagram entityDiagram : myDiagramEntities) {
+//			if (entityDiagram.getDiagramDimensions().get(oldName) != null) {
+//				EOEntityDiagramDimension diagramDimension = entityDiagram.getDiagramDimensions().get(oldName);
+//				entityDiagram.getDiagramDimensions().remove(oldName);
+//				entityDiagram.getDiagramDimensions().put(name, diagramDimension);
+//			}
+//		}
+//		myName = name;
+//		if (fireEvents) {
+//			firePropertyChange(AbstractDiagram.NAME, oldName, myName);
+//		}
+//	}
 	
 	/**
 	 * Returns a String with all the entity names in the diagram.
@@ -240,7 +242,7 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 	// ### Basic Accessors
 	//---------------------------------------------------------------------------
 	
-	public Set<AbstractEOEntityDiagram> getDiagramEntities() {
+	public Set<EOEntityDiagram> getDiagramEntities() {
 		return myDiagramEntities;
 	}
 	
@@ -260,6 +262,10 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 	@Override
 	public String getName() {
 		return myName;
+	}
+	
+	public void setMyName(String name) {
+		myName = name;
 	}
 
 	public Set<EOEntity> getEntities() {

@@ -6,7 +6,7 @@ import org.eclipse.gef.fx.nodes.OrthogonalRouter;
 import org.eclipse.gef.fx.nodes.StraightRouter;
 
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramConnection;
-import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramType;
+import ch.rucotec.wolips.eomodeler.core.gef.model.E_DiagramType;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -182,12 +182,12 @@ public class DiagramConnectionVisual extends Connection {
     public DiagramConnectionVisual(DiagramConnection diagramCon) {
     	int sourceToTargetCardinality = diagramCon.getSourceToTargetCardinality();
     	int targetToSourceCardinality = diagramCon.getTargetToSourceCardinality();
-    	DiagramType diagramType = diagramCon.getDiagramType();
+    	E_DiagramType diagramType = diagramCon.getDiagramType();
     	this.diagramCon = diagramCon;
     	
-    	if (diagramType == DiagramType.ERDIAGRAM) {
+    	if (diagramType == E_DiagramType.ERDIAGRAM) {
     		setERDiagramConnection(sourceToTargetCardinality, targetToSourceCardinality);
-    	} else if (diagramType == DiagramType.CLASSDIAGRAM) {
+    	} else if (diagramType == E_DiagramType.CLASSDIAGRAM) {
     		setClassDiagramConnection(sourceToTargetCardinality, targetToSourceCardinality);
     	}
     	
@@ -345,7 +345,7 @@ public class DiagramConnectionVisual extends Connection {
      * are always readable.
      */
     public void refreshDecoration() {
-    	if (diagramCon != null && diagramCon.getDiagramType() == DiagramType.CLASSDIAGRAM && targetToSource != null && sourceToTarget!= null) {
+    	if (diagramCon != null && diagramCon.getDiagramType() == E_DiagramType.CLASSDIAGRAM && targetToSource != null && sourceToTarget!= null) {
     		int endPointX = (int)getEndPoint().x;
     		int endPointY = (int)getEndPoint().y;
     		int targetX = (int) diagramCon.getTarget().getBounds().getX();

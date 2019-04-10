@@ -14,8 +14,6 @@ import com.google.common.collect.SetMultimap;
 
 import ch.rucotec.gef.diagram.visuals.DiagramNodeVisual;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
-import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramType;
-import ch.rucotec.wolips.eomodeler.core.model.EOEntityERDiagram;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Translate;
 
@@ -35,11 +33,7 @@ implements ITransformableContentPart<DiagramNodeVisual>, IResizableContentPart<D
 	protected DiagramNodeVisual doCreateVisual() {
 		DiagramNodeVisual nodeVisual = null;
 		DiagramNode node = getContent();
-		if (node.getEntityDiagram() instanceof EOEntityERDiagram) {
-			nodeVisual = new DiagramNodeVisual(node, DiagramType.ERDIAGRAM);
-		} else {
-			nodeVisual = new DiagramNodeVisual(node, DiagramType.CLASSDIAGRAM);
-		}
+		nodeVisual = new DiagramNodeVisual(node);
 		return nodeVisual;
 	}
 

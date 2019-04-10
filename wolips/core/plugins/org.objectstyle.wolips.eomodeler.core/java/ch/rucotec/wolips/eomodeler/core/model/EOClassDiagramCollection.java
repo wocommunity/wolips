@@ -14,6 +14,8 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelReferenceFailure;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 
+import ch.rucotec.wolips.eomodeler.core.gef.model.E_DiagramType;
+
 /**
  * 
  * 
@@ -121,8 +123,8 @@ public class EOClassDiagramCollection extends AbstractDiagramCollection<EOModel,
 		firePropertyChange(AbstractDiagramCollection.DIAGRAMS, oldClassDiagrams, newClassDiagrams);
 		
 		// Hier wird das Diagramm bei jedem entity wo er auftritt glöscht. (Sonst wird es im Entity.plist nicht entfernt)
-		for (AbstractEOEntityDiagram eoclassdiagram : classdiagram.getDiagramEntities()) {
-			eoclassdiagram.removeFromEntityPlist(classdiagram.getName());
+		for (EOEntityDiagram eoclassdiagram : classdiagram.getDiagramEntities()) {
+			eoclassdiagram.removeClassDiagramFromEntityPlist(classdiagram.getName());
 		}
 		
 		classdiagram._setModelParent(null);
@@ -140,11 +142,12 @@ public class EOClassDiagramCollection extends AbstractDiagramCollection<EOModel,
 	
 	@Override
 	public void loadDiagramFromEntity(EOEntity entity, List diagramList) throws EOModelException {
-		List diagrams = diagramList;
-		EOEntityClassDiagram entityClassDiagram = new EOEntityClassDiagram(entity, diagramList, this);
+		EOEntityDiagram entityClassDiagram = getEntityDiagramWithEntity(entity);
 		
-		for (int i = 0; i < diagrams.size(); i++) {
-			Object digram = diagrams.get(i);
+		entityClassDiagram.addDiagramDimensions(diagramList, E_DiagramType.CLASSDIAGRAM);
+		
+		for (int i = 0; i < diagramList.size(); i++) {
+			Object digram = diagramList.get(i);
 			if (digram instanceof Map) {
 				Map diagramMap = (Map)digram;
 				String diagramName = (String)diagramMap.get("diagramName");

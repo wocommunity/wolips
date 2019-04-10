@@ -11,7 +11,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
-import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramType;
+import ch.rucotec.wolips.eomodeler.core.gef.model.E_DiagramType;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.VPos;
@@ -63,12 +63,13 @@ public class DiagramNodeVisual extends Region {
 	// ### Construction
 	//---------------------------------------------------------------------------
     
-    public DiagramNodeVisual(DiagramNode node, DiagramType diagramTyp) {
+    public DiagramNodeVisual(DiagramNode node) {
     	this.myNode = node;
     	this.attributeList = node.getAttributeList();
-    	if (diagramTyp == DiagramType.ERDIAGRAM) {
+    	
+    	if (node.getDiagramType() == E_DiagramType.ERDIAGRAM) {
     		createVisualForERDiagram();
-    	} else if (diagramTyp == DiagramType.CLASSDIAGRAM) {
+    	} else if (node.getDiagramType() == E_DiagramType.CLASSDIAGRAM) {
     		createClassDiagram();
     	}
     }

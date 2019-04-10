@@ -53,7 +53,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -61,7 +60,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.velocity.runtime.parser.node.GetExecutor;
 import org.objectstyle.woenvironment.plist.PropertyListParserException;
 import org.objectstyle.woenvironment.plist.WOLPropertyListSerialization;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
@@ -71,12 +69,10 @@ import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityDeletedEvent;
 import org.objectstyle.wolips.eomodeler.core.model.history.ModelEvents;
 import org.objectstyle.wolips.eomodeler.core.utils.NamingConvention;
 
+import ch.rucotec.wolips.eomodeler.core.gef.model.E_DiagramType;
+import ch.rucotec.wolips.eomodeler.core.model.EOEntityDiagram;
 import ch.rucotec.wolips.eomodeler.core.model.EOClassDiagramCollection;
-import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
-//import ch.rucotec.wolips.eomodeler.core.model.AbstractEOEntityDiagram;
 import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramCollection;
-//import ch.rucotec.wolips.eomodeler.core.model.EOEntityERDiagram;
-import ch.rucotec.wolips.eomodeler.core.model.EOEntityERDiagram;
 
 public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements ISortableEOModelObject {
 	public static final String CURRENT_VERSION = "1.0.1";
@@ -188,6 +184,19 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 	public static final String CLASSDIAGRAMCOLLECTION = "classdiagramCollection";
 	private EOERDiagramCollection myERDiagramCollection;
 	private EOClassDiagramCollection myClassDiagramCollection;
+	private Map<EOEntity, EOEntityDiagram> entityDiagramMap = new HashMap<EOEntity, EOEntityDiagram>();
+	
+	public Map<EOEntity, EOEntityDiagram> getEntityDiagramMap() {
+		return entityDiagramMap;
+	}
+	
+	public EOEntityDiagram createAndAddEntityDiagram(EOEntity entity) {
+		EOEntityDiagram entityDiagram = new EOEntityDiagram(entity);
+		entityDiagram.putCollection(E_DiagramType.ERDIAGRAM, myERDiagramCollection);
+		entityDiagram.putCollection(E_DiagramType.CLASSDIAGRAM, myClassDiagramCollection);
+		entityDiagramMap.put(entity, entityDiagram);
+		return entityDiagram;
+	}
 	
 	public EOERDiagramCollection getERDiagramCollection() {
 		return myERDiagramCollection;

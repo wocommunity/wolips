@@ -1,10 +1,13 @@
 package ch.rucotec.wolips.eomodeler.core.model;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.objectstyle.woenvironment.plist.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
@@ -14,7 +17,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramConnection;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
-import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramType;
+import ch.rucotec.wolips.eomodeler.core.gef.model.E_DiagramType;
 import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
 
 /**
@@ -51,13 +54,16 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 	 */
 	@Override
 	public void addEntityToDiagram(EOEntity entity) {
-		EOEntityERDiagram entityERDiagram = (EOEntityERDiagram) getEntityDiagramWithEntity(entity);
-		if (entityERDiagram == null) {
-			entityERDiagram = new EOEntityERDiagram(entity, _getModelParent());
-		}
+		EOEntityDiagram entityERDiagram = getDiagramCollection().getEntityDiagramWithEntity(entity);
+		
 		EOEntityDiagramDimension dimension = new EOEntityDiagramDimension(100, 100, 100, 100);
-		entityERDiagram.getDiagramDimensions().put(getName(), dimension);
+		entityERDiagram.getERDiagramDimensions().put(getName(), dimension);
 		super.addEntityToDiagram(entityERDiagram);
+	}
+	
+	@Override
+	public void saveToFile(File modelFolder) throws PropertyListParserException, IOException {
+		super.saveToFile(modelFolder, E_DiagramType.ERDIAGRAM);
 	}
 	
 	/**
@@ -81,7 +87,19 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 		if (_getModelParent() != null) {
 			_getModelParent().checkForDuplicateERDiagramName(this, name, null);
 		}
-		super.setName(name, _fireEvents);
+		String oldName = getName();
+		for (EOEntityDiagram entityDiagram : getDiagramEntities()) {
+			if (entityDiagram.getERDiagramDimensions().get(oldName) != null) {
+				EOEntityDiagramDimension diagramDimension = entityDiagram.getERDiagramDimensions().get(oldName);
+				entityDiagram.getERDiagramDimensions().remove(oldName);
+				entityDiagram.getERDiagramDimensions().put(name, diagramDimension);
+			}
+		}
+
+		super.setMyName(_name);
+		if (_fireEvents) {
+			firePropertyChange(AbstractDiagram.NAME, oldName, getName());
+		}
 	}
 	
 	@Override
@@ -139,8 +157,8 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 	Set<String> horizontalParents = new HashSet<String>();
 	Set<String> neededParents = new HashSet<String>();
 	
-	for (AbstractEOEntityDiagram entityERD : getDiagramEntities()) {
-		DiagramNode entityNode = entityERD.draw(getName());
+	for (EOEntityDiagram entityERD : getDiagramEntities()) {
+		DiagramNode entityNode = entityERD.draw(getName(), E_DiagramType.ERDIAGRAM);
 		EOEntity entity = entityERD.getEntity();
 		entityNodeMap.put(entity.getName(), entityNode);
 	}
@@ -164,7 +182,7 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 				targetToSourceCardinality = DiagramConnection.TOONE + DiagramConnection.OPTIONAL;
 				neededParents.add(nodeEntity.getParent().getName());
 				
-				DiagramConnection conn = new DiagramConnection(DiagramType.ERDIAGRAM);
+				DiagramConnection conn = new DiagramConnection(E_DiagramType.ERDIAGRAM);
 				conn.connect(node, entityNodeMap.get(nodeEntity.getParent().getName()));
 				conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
 		
@@ -223,7 +241,7 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 								destinationNode = entityNodeMap.get(destinationNode.getEntityDiagram().getEntity().getParent().getName());
 							}
 							if (node != destinationNode && !node.getTitle().equals(destinationNode.getTitle())) {
-								DiagramConnection conn = new DiagramConnection(DiagramType.ERDIAGRAM);
+								DiagramConnection conn = new DiagramConnection(E_DiagramType.ERDIAGRAM);
 								conn.connect(node, destinationNode);
 								conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
 	

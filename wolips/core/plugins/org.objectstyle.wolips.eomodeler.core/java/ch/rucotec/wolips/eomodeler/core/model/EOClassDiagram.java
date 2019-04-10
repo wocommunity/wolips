@@ -1,12 +1,16 @@
 package ch.rucotec.wolips.eomodeler.core.model;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.objectstyle.woenvironment.plist.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelReferenceFailure;
@@ -15,7 +19,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramConnection;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
-import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramType;
+import ch.rucotec.wolips.eomodeler.core.gef.model.E_DiagramType;
 import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
 
 /**
@@ -44,11 +48,11 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 	// ### Custom Methods and Accessors
 	//---------------------------------------------------------------------------
 	
+	
 	public void setName(String name) throws DuplicateNameException {
 		setName(name, true);
 	}
 	
-	@Override
 	public void setName(String _name, boolean _fireEvents) throws DuplicateNameException {
 		String name = _name;
 		if (name == null || name.isEmpty()) {
@@ -57,7 +61,19 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 		if (_getModelParent() != null) {
 			_getModelParent().checkForDuplicateClassDiagramName(this, name, null);
 		}
-		super.setName(name, _fireEvents);
+		String oldName = getName();
+		for (EOEntityDiagram entityDiagram : getDiagramEntities()) {
+			if (entityDiagram.getClassDiagramDimensions().get(oldName) != null) {
+				EOEntityDiagramDimension diagramDimension = entityDiagram.getClassDiagramDimensions().get(oldName);
+				entityDiagram.getClassDiagramDimensions().remove(oldName);
+				entityDiagram.getClassDiagramDimensions().put(name, diagramDimension);
+			}
+		}
+
+		super.setMyName(_name);
+		if (_fireEvents) {
+			firePropertyChange(AbstractDiagram.NAME, oldName, getName());
+		}
 	}
 
 	/**
@@ -68,13 +84,19 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 	 */
 	@Override
 	public void addEntityToDiagram(EOEntity entity) {
-		EOEntityClassDiagram entityClassDiagram = (EOEntityClassDiagram) getEntityDiagramWithEntity(entity);
+		EOModel eoModelOfMyCollection = getDiagramCollection().getModel();
+		EOEntityDiagram entityClassDiagram = eoModelOfMyCollection.getEntityDiagramMap().get(entity);
 		if (entityClassDiagram == null) {
-			entityClassDiagram = new EOEntityClassDiagram(entity, _getModelParent());
+			entityClassDiagram = eoModelOfMyCollection.createAndAddEntityDiagram(entity);
 		}
 		EOEntityDiagramDimension dimension = new EOEntityDiagramDimension(100, 100, 200, 100);
-		entityClassDiagram.getDiagramDimensions().put(getName(), dimension);
+		entityClassDiagram.getClassDiagramDimensions().put(getName(), dimension);
 		super.addEntityToDiagram(entityClassDiagram);
+	}
+	
+	@Override
+	public void saveToFile(File modelFolder) throws PropertyListParserException, IOException {
+		super.saveToFile(modelFolder, E_DiagramType.CLASSDIAGRAM);
 	}
 	
 	/**
@@ -137,8 +159,8 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 		SimpleDiagram myClassDiagram = new SimpleDiagram();
 		HashMap<String, DiagramNode> entityNodeMap = new HashMap<String, DiagramNode>();
 		
-		for (AbstractEOEntityDiagram entityClassDiagram : getDiagramEntities()) {
-			DiagramNode entityNode = entityClassDiagram.draw(getName());
+		for (EOEntityDiagram entityClassDiagram : getDiagramEntities()) {
+			DiagramNode entityNode = entityClassDiagram.draw(getName(), E_DiagramType.CLASSDIAGRAM);
 			EOEntity entity = entityClassDiagram.getEntity();
 			entityNodeMap.put(entity.getName(), entityNode);
 		}
@@ -154,7 +176,7 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 				sourceToTargetCardinality = DiagramConnection.EXTENDS;
 				targetToSourceCardinality = DiagramConnection.NONE;
 				
-				DiagramConnection conn = new DiagramConnection(DiagramType.CLASSDIAGRAM);
+				DiagramConnection conn = new DiagramConnection(E_DiagramType.CLASSDIAGRAM);
 				conn.connect(node, entityNodeMap.get(nodeEntity.getParent().getName()));
 				conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
 
@@ -199,7 +221,7 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 							if (!manyToManyConnection) {
 								// TODO rekursive beziehungen werden hier einfach uebersprungen, hier sollte das irgendwie gehandelt werden.
 								if (node != entityNodeMap.get(relationship.getDestination().getName())) {
-									DiagramConnection conn = new DiagramConnection(DiagramType.CLASSDIAGRAM);
+									DiagramConnection conn = new DiagramConnection(E_DiagramType.CLASSDIAGRAM);
 									conn.connect(node, entityNodeMap.get(relationship.getDestination().getName()));
 									conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
 	

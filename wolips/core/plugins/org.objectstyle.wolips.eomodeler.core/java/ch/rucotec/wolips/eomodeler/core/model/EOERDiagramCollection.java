@@ -13,6 +13,8 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelReferenceFailure;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelVerificationFailure;
 
+import ch.rucotec.wolips.eomodeler.core.gef.model.E_DiagramType;
+
 public class EOERDiagramCollection extends AbstractDiagramCollection<EOModel, EOERDiagram> {
 	
 	//---------------------------------------------------------------------------
@@ -112,8 +114,8 @@ public class EOERDiagramCollection extends AbstractDiagramCollection<EOModel, EO
 		setDiagrams(newERDiagrams);
 		firePropertyChange(AbstractDiagramCollection.DIAGRAMS, oldERDiagrams, newERDiagrams);
 		
-		for (AbstractEOEntityDiagram eoerd : erdiagram.getDiagramEntities()) {
-			eoerd.removeFromEntityPlist(erdiagram.getName());
+		for (EOEntityDiagram eoerd : erdiagram.getDiagramEntities()) {
+			eoerd.removeERDiagramFromEntityPlist(erdiagram.getName());
 		}
 		
 		erdiagram._setModelParent(null);
@@ -131,11 +133,12 @@ public class EOERDiagramCollection extends AbstractDiagramCollection<EOModel, EO
 	
 	@Override
 	public void loadDiagramFromEntity(EOEntity entity, List diagramList) throws EOModelException {
-		List diagrams = diagramList;
-		EOEntityERDiagram entityERDiagram = new EOEntityERDiagram(entity, diagramList, this);
+		EOEntityDiagram entityERDiagram = getEntityDiagramWithEntity(entity);
 		
-		for (int i = 0; i < diagrams.size(); i++) {
-			Object digram = diagrams.get(i);
+		entityERDiagram.addDiagramDimensions(diagramList, E_DiagramType.ERDIAGRAM);
+		
+		for (int i = 0; i < diagramList.size(); i++) {
+			Object digram = diagramList.get(i);
 			if (digram instanceof Map) {
 				Map diagramMap = (Map)digram;
 				String diagramName = (String)diagramMap.get("diagramName");

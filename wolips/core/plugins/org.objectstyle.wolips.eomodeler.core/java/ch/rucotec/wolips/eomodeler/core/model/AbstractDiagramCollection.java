@@ -142,6 +142,14 @@ public abstract class AbstractDiagramCollection <T extends EOModelObject, U exte
 		return matchingDiagram;
 	}
 	
+	public EOEntityDiagram getEntityDiagramWithEntity(EOEntity entity) {
+		EOEntityDiagram entityDiagram = myModel.getEntityDiagramMap().get(entity);
+		if (entityDiagram == null) {
+			entityDiagram = myModel.createAndAddEntityDiagram(entity);
+		}
+		return entityDiagram;
+	}
+	
 	/**
 	 * this method is triggered by deleting the collection, at the moment it does nothing.
 	 * 
