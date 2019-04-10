@@ -164,7 +164,7 @@ public class EOClassDiagramCollection extends AbstractDiagramCollection<EOModel,
 	}
 
 	/**
-	 * Sets the parent it him self to dirty.
+	 * Sets the parent and him self to dirty.
 	 */
 	@Override
 	protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {

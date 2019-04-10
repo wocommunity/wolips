@@ -128,7 +128,7 @@ public abstract class AbstractDiagramCollection <T extends EOModelObject, U exte
 	 * Checks if there is a matching diagram name with the given parameter.
 	 * 
 	 * @param _name
-	 * @return the found {@link U (extends {@link AbstractDiagram}), null if nothing is found.
+	 * @return the found {@link U (extends {@link AbstractDiagram}) or null if nothing is found.
 	 */
 	public U getDiagramNamed(String _name) {
 		U matchingDiagram = null;
