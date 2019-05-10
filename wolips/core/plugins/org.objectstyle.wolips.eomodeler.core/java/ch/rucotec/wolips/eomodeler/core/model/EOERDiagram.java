@@ -259,6 +259,7 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 		myERD.addChildElement(node);
 	}
 	
+	// SAVAS: Fix This, becouse its not needed any where
 	/* Delete the ParentNodes of horizontal inheritance if it's 
 	 * not needed from other Nodes.
 	 */

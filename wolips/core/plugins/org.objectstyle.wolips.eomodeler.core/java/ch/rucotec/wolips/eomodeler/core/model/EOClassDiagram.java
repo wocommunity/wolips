@@ -186,11 +186,8 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 			}
 			
 			for (EORelationship relationship : node.getRelationshipsList()) {
-				boolean manyToManyConnection = false;
-				//	List<MindMapConnection> connectionList = node.getIncomingConnections();
 
-
-				if (relationship.isToMany() && getEntities().contains(relationship.getDestination())) {
+				if (getEntities().contains(relationship.getDestination())) {
 					EOEntity sourceEntity = relationship.getEntity();
 					EOEntity destinationEntity = relationship.getDestination();
 					Iterator<EORelationship> destinationRelationshipIterator = destinationEntity.getRelationships().iterator();
@@ -201,36 +198,34 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 					if (destinationEntity.isInherited()) {
 						continue;
 					}
-
-					// löst das Many to Many Problem und fügt die notwendigen Kardinalitäten ein.
-					while (destinationRelationshipIterator.hasNext()) {
-						EORelationship destinationRelationship = destinationRelationshipIterator.next();
-
-						if (destinationRelationship.getDestination() == sourceEntity) {
-							// Hier werden die Kardinalitäten erstellt..
-							if (destinationRelationship.isToMany()) {
-								manyToManyConnection = false;
-								sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
-								targetToSourceCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
-							} else {
-								manyToManyConnection = false;
-								sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
-								targetToSourceCardinality = DiagramConnection.TOONE + (destinationRelationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
-							}
-
-							if (!manyToManyConnection) {
-								// TODO rekursive beziehungen werden hier einfach uebersprungen, hier sollte das irgendwie gehandelt werden.
-								if (node != entityNodeMap.get(relationship.getDestination().getName())) {
-									DiagramConnection conn = new DiagramConnection(E_DiagramType.CLASSDIAGRAM);
-									conn.connect(node, entityNodeMap.get(relationship.getDestination().getName()));
-									conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
+					
+					if (relationship.isToMany()) {
+						while (destinationRelationshipIterator.hasNext()) {
+							EORelationship destinationRelationship = destinationRelationshipIterator.next();
 	
-									myClassDiagram.addChildElement(conn);
+							if (destinationRelationship.getDestination() == sourceEntity) {
+								// Hier werden die Kardinalitäten erstellt..
+								if (destinationRelationship.isToMany()) {
+									sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+									targetToSourceCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+								} else {
+									sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+									targetToSourceCardinality = DiagramConnection.TOONE + (destinationRelationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
 								}
 							}
 						}
+					} else {
+						sourceToTargetCardinality = DiagramConnection.TOONE + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+						targetToSourceCardinality = DiagramConnection.NONE;
 					}
+					// TODO rekursive beziehungen werden hier einfach uebersprungen, hier sollte das irgendwie gehandelt werden.
+					if (node != entityNodeMap.get(relationship.getDestination().getName())) {
+						DiagramConnection conn = new DiagramConnection(E_DiagramType.CLASSDIAGRAM);
+						conn.connect(node, entityNodeMap.get(relationship.getDestination().getName()));
+						conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
 
+						myClassDiagram.addChildElement(conn);
+					}
 				}
 
 			}

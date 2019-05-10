@@ -310,7 +310,13 @@ public class DiagramConnectionVisual extends Connection {
     		Extends extending = new Extends();
     		setEndDecoration(extending);
     		sourceToTarget = new Text("");
-    	} else {
+    	} else if (sourceToTargetCardinality == DiagramConnection.TOONE) {
+    		sourceToTarget = new Text("1");
+			sourceToTarget.setTranslateX(10);
+			sourceToTarget.setFont(new Font(16));
+			setEndDecoration(new HBox(sourceToTarget));
+    	}
+    	else {
     		sourceToTarget = new Text("");
     	}
     	
