@@ -231,7 +231,7 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 	
 	/**
 	 * This method creates a {@link SimpleDiagram} which represents the whole diagram, this is
-	 * later given to the JavaFX application which then is added to the canvas.
+	 * later given to the JavaFX application which is then added to the canvas.
 	 * 
 	 * @return a {@link SimpleDiagram} which contains every {@link DiagramNode}s and 
 	 * the {@link DiagramConnection}s
