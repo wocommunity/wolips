@@ -159,6 +159,31 @@ public class DiagramConnectionVisual extends Connection {
 		}
     }
     
+    /**
+     * Creates a {@link Polyline} for an Unidirectional association look alike symbol.
+     * 
+     * 	 <PRE>
+   	 	+----------------+  
+		|       ,        | 
+		|      /         | 
+		|     /          | 
+		|    /           | 
+		|    \           | 
+		|     \          | 
+		|      \         |  
+		|       `        |	 
+		+----------------+
+     *   </PRE>
+     *   
+   	 * @author Savas Celik
+     *
+     */
+    public static class Arrow extends Polyline{
+    	public Arrow() {
+			super(0,0,15,15,0,0,15,-15);
+		}
+    }
+    
 	//---------------------------------------------------------------------------
 	// ### Variables and Constants
 	//---------------------------------------------------------------------------
@@ -253,7 +278,7 @@ public class DiagramConnectionVisual extends Connection {
     		one2.setTranslateY(-11);
     		HBox oneOnlyOne = new HBox(one,one2);
     		setEndDecoration(oneOnlyOne); 
-    		} else {
+    	} else {
     		// this generates no symbol
     			setEndDecoration(new HBox());
     	}
@@ -280,6 +305,22 @@ public class DiagramConnectionVisual extends Connection {
     		one2.setTranslateY(-11);
     		HBox oneOnlyOne = new HBox(one,one2);
     		setStartDecoration(oneOnlyOne);
+    	} else if (targetToSourceCardinality == (DiagramConnection.TOMANY | DiagramConnection.OPTIONAL)) {
+    		// this generates this ">O" symbol.
+    		Zero zero = new Zero();
+    		Many many = new Many();
+    		zero.setTranslateX(8);
+    		many.setStrokeWidth(0.3);
+        	Shape ZeroOrMany = Shape.union(zero, many);
+        	ZeroOrMany.setFill(Color.TRANSPARENT);
+        	ZeroOrMany.setStroke(Color.BLACK);
+        	setStartDecoration(ZeroOrMany);
+    	} else if (targetToSourceCardinality == DiagramConnection.TOMANY) {
+    		// this generates this ">|" symbol
+    		One one = new One();
+    		Many many = new Many();
+    		Shape OneOrMany = Shape.union(one, many);
+    		setStartDecoration(OneOrMany); 
     	} else {
     		// this generates no symbol
     		setStartDecoration(new HBox());
@@ -309,12 +350,15 @@ public class DiagramConnectionVisual extends Connection {
     		// generates the inheritance "<I" symbol
     		Extends extending = new Extends();
     		setEndDecoration(extending);
-    		sourceToTarget = new Text("");
     	} else if (sourceToTargetCardinality == DiagramConnection.TOONE) {
     		sourceToTarget = new Text("1");
 			sourceToTarget.setTranslateX(10);
 			sourceToTarget.setFont(new Font(16));
 			setEndDecoration(new HBox(sourceToTarget));
+			Arrow arrow = new Arrow();
+			arrow.setTranslateY(-16.2);
+			arrow.setTranslateX(-1);
+			setEndDecoration(new HBox(arrow));
     	}
     	else {
     		sourceToTarget = new Text("");

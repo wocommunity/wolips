@@ -204,7 +204,7 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 		for (EORelationship relationship : node.getRelationshipsList()) {
 			boolean manyToManyConnection = false;
 			
-			if (relationship.isToMany() && getEntities().contains(relationship.getDestination())) {
+			if (getEntities().contains(relationship.getDestination())) {
 				EOEntity sourceEntity = relationship.getEntity();
 				EOEntity destinationEntity = relationship.getDestination();
 				Iterator<EORelationship> destinationRelationshipIterator = destinationEntity.getRelationships().iterator();
@@ -216,38 +216,42 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 					continue;
 				}
 
-				// löst das Many to Many Problem und fügt die notwendigen Kardinalitäten ein.
-				while (destinationRelationshipIterator.hasNext()) {
-					EORelationship destinationRelationship = destinationRelationshipIterator.next();
-
-					if (destinationRelationship.getDestination() == sourceEntity) {
-						// Hier werden die Kardinalitäten erstellt..
-						if (destinationRelationship.isToMany()) {
-							manyToManyConnection = true;
-						} else {
-							manyToManyConnection = false;
-							sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
-							targetToSourceCardinality = DiagramConnection.TOONE + (destinationRelationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
-						}
-
-						if (!manyToManyConnection) {
-							// TODO rekursive beziehungen werden hier einfach uebersprungen, hier sollte das irgendwie gehandelt werden.
-							DiagramNode destinationNode = entityNodeMap.get(relationship.getDestination().getName());
-							if (destinationNode.getEntityDiagram().getEntity().isSingleTableInheritance()) {
-								destinationNode = entityNodeMap.get(destinationNode.getEntityDiagram().getEntity().getParent().getName());
-							}
-							if (node != destinationNode && !node.getTitle().equals(destinationNode.getTitle())) {
-								DiagramConnection conn = new DiagramConnection(E_DiagramType.ERDIAGRAM);
-								conn.connect(node, destinationNode);
-								conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
+				if (relationship.isToMany()) {
+					// löst das Many to Many Problem und fügt die notwendigen Kardinalitäten ein.
+					while (destinationRelationshipIterator.hasNext()) {
+						EORelationship destinationRelationship = destinationRelationshipIterator.next();
 	
-								myERD.addChildElement(conn);
-								neededParents.add(nodeEntity.getName());
+						if (destinationRelationship.getDestination() == sourceEntity) {
+							// Hier werden die Kardinalitäten erstellt..
+							if (destinationRelationship.isToMany()) {
+								manyToManyConnection = true;
+							} else {
+								manyToManyConnection = false;
+								sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+								targetToSourceCardinality = DiagramConnection.TOONE + (destinationRelationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
 							}
 						}
 					}
+				} 
+				else {
+					sourceToTargetCardinality = DiagramConnection.TOONE + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+					targetToSourceCardinality = DiagramConnection.TOMANY + DiagramConnection.OPTIONAL;
 				}
+				if (!manyToManyConnection) {
+					// TODO rekursive beziehungen werden hier einfach uebersprungen, hier sollte das irgendwie gehandelt werden.
+					DiagramNode destinationNode = entityNodeMap.get(relationship.getDestination().getName());
+					if (destinationNode.getEntityDiagram().getEntity().isSingleTableInheritance()) {
+						destinationNode = entityNodeMap.get(destinationNode.getEntityDiagram().getEntity().getParent().getName());
+					}
+					if (node != destinationNode && !node.getTitle().equals(destinationNode.getTitle())) {
+						DiagramConnection conn = new DiagramConnection(E_DiagramType.ERDIAGRAM);
+						conn.connect(node, destinationNode);
+						conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
 
+						myERD.addChildElement(conn);
+						neededParents.add(nodeEntity.getName());
+					}
+				}
 			}
 
 		}

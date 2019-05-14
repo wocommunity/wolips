@@ -6,7 +6,7 @@ package ch.rucotec.wolips.eomodeler.core.gef.model;
  * <p>Example code:</p>
  * <pre>
  * <code>
- * DiagramConnection dConnection = new DiagramConnection(DiagramType.CLASSDIAGRAM);<br/>
+ * DiagramConnection dConnection = new DiagramConnection(E_DiagramType.CLASSDIAGRAM);<br/>
  * dConnection.connect(diagramNode1, diagramNode2);
  * </code>
  * </pre>
