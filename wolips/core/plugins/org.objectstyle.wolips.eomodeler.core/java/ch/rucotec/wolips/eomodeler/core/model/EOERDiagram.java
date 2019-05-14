@@ -154,7 +154,6 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 	public SimpleDiagram drawDiagram() {
 	SimpleDiagram myERD = new SimpleDiagram();
 	HashMap<String, DiagramNode> entityNodeMap = new HashMap<String, DiagramNode>();
-	Set<String> horizontalParents = new HashSet<String>();
 	Set<String> neededParents = new HashSet<String>();
 	
 	for (EOEntityDiagram entityERD : getDiagramEntities()) {
@@ -168,9 +167,6 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 		
 		// Inheritance
 		if (nodeEntity.isHorizontalInheritance()) {
-			if (!neededParents.contains(nodeEntity.getParent().getName())) {
-//				horizontalParents.add(nodeEntity.getParent().getName()); 
-			}
 			node.removeParentAttributes(nodeEntity.getParent().getPrimaryKeyAttributes());
 			node.removeRelationshipToParent();
 		} else if (nodeEntity.isVerticalInheritance()) {
@@ -257,17 +253,6 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 		}
 		// add node to mindMap
 		myERD.addChildElement(node);
-	}
-	
-	// SAVAS: Fix This, becouse its not needed any where
-	/* Delete the ParentNodes of horizontal inheritance if it's 
-	 * not needed from other Nodes.
-	 */
-	for (String horizontalParent : horizontalParents) {
-		DiagramNode parentNode = entityNodeMap.get(horizontalParent);
-		if (parentNode != null && !neededParents.contains(horizontalParent)) {
-			myERD.removeChildElement(parentNode);
-		}
 	}
 	return myERD;
 }
