@@ -180,7 +180,7 @@ public class DiagramConnectionVisual extends Connection {
      */
     public static class Arrow extends Polyline{
     	public Arrow() {
-			super(0,0,15,15,0,0,15,-15);
+			super(0,0,11,11,0,0,11,-11);
 		}
     }
     
@@ -338,13 +338,9 @@ public class DiagramConnectionVisual extends Connection {
     	
     	if (sourceToTargetCardinality == (DiagramConnection.TOMANY | DiagramConnection.OPTIONAL)) {
     		sourceToTarget = new Text("0..*");
-			sourceToTarget.setTranslateX(10);
-			sourceToTarget.setFont(new Font(16));
 			setEndDecoration(new HBox(sourceToTarget));
     	} else if (sourceToTargetCardinality == DiagramConnection.TOMANY) {
     		sourceToTarget = new Text("1..*");
-			sourceToTarget.setTranslateX(10);
-			sourceToTarget.setFont(new Font(16));
 			setEndDecoration(new HBox(sourceToTarget));
     	} else if (sourceToTargetCardinality == DiagramConnection.EXTENDS) {
     		// generates the inheritance "<I" symbol
@@ -352,13 +348,10 @@ public class DiagramConnectionVisual extends Connection {
     		setEndDecoration(extending);
     	} else if (sourceToTargetCardinality == DiagramConnection.TOONE) {
     		sourceToTarget = new Text("1");
-			sourceToTarget.setTranslateX(10);
-			sourceToTarget.setFont(new Font(16));
-			setEndDecoration(new HBox(sourceToTarget));
 			Arrow arrow = new Arrow();
-			arrow.setTranslateY(-16.2);
+			arrow.setTranslateY(-12.2);
 			arrow.setTranslateX(-1);
-			setEndDecoration(new HBox(arrow));
+			setEndDecoration(new HBox(arrow, sourceToTarget));
     	}
     	else {
     		sourceToTarget = new Text("");
@@ -366,28 +359,24 @@ public class DiagramConnectionVisual extends Connection {
     	
     	if (targetToSourceCardinality == (DiagramConnection.TOMANY | DiagramConnection.OPTIONAL)) {
 			targetToSource = new Text("0..*");
-			targetToSource.setTranslateX(10);
-			targetToSource.setFont(new Font(16));
 			setStartDecoration(new HBox(targetToSource));
     	} else if (targetToSourceCardinality == DiagramConnection.TOMANY) {
     		targetToSource = new Text("1..*");
-			targetToSource.setTranslateX(10);
-			targetToSource.setFont(new Font(16));
 			setStartDecoration(new HBox(targetToSource));
     	} else if (targetToSourceCardinality == (DiagramConnection.TOONE | DiagramConnection.OPTIONAL)) {
     		targetToSource = new Text("0..1");
-			targetToSource.setTranslateX(10);
-			targetToSource.setFont(new Font(16));
 			setStartDecoration(new HBox(targetToSource));
     	} else if (targetToSourceCardinality == DiagramConnection.TOONE) {
     		targetToSource = new Text("1");
-			targetToSource.setTranslateX(10);
-			targetToSource.setFont(new Font(16));
 			setStartDecoration(new HBox(targetToSource));
     	} else {
     		targetToSource = new Text("");
     	}
     	
+    	sourceToTarget.setTranslateX(10);
+		sourceToTarget.setFont(new Font(16));
+		targetToSource.setTranslateX(10);
+		targetToSource.setFont(new Font(16));
     }
     
     /**
