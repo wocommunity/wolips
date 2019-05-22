@@ -199,29 +199,34 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 						continue;
 					}
 					
-					if (relationship.isToMany()) {
-						while (destinationRelationshipIterator.hasNext()) {
-							EORelationship destinationRelationship = destinationRelationshipIterator.next();
-	
-							if (destinationRelationship.getDestination() == sourceEntity) {
-								// Hier werden die Kardinalitäten erstellt..
-								if (destinationRelationship.isToMany()) {
-									sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
-									targetToSourceCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
-								} else {
-									sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
-									targetToSourceCardinality = DiagramConnection.TOONE + (destinationRelationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
-								}
-							}
-						}
-					} else {
+					// Hier werden die Kardinalitäten erstellt..
+					if (destinationEntity.getRelationships().isEmpty()) {
 						sourceToTargetCardinality = DiagramConnection.TOONE + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
 						targetToSourceCardinality = DiagramConnection.NONE;
+					} else {
+						while (destinationRelationshipIterator.hasNext()) {
+							EORelationship destinationRelationship = destinationRelationshipIterator.next();
+
+							if (destinationRelationship.getDestination() == sourceEntity) {
+								if (relationship.isToMany()) {
+									if (destinationRelationship.isToMany()) {
+										sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+										targetToSourceCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+									} else {
+										sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+										targetToSourceCardinality = DiagramConnection.TOONE + (destinationRelationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+									}
+								}
+							} else {
+								sourceToTargetCardinality = DiagramConnection.TOONE + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+								targetToSourceCardinality = DiagramConnection.NONE;
+							}
+						} 
 					}
 					// TODO rekursive beziehungen werden hier einfach uebersprungen, hier sollte das irgendwie gehandelt werden.
-					if (node != entityNodeMap.get(relationship.getDestination().getName())) {
+					if (node != entityNodeMap.get(relationship.getDestination().getName()) && !hasConnection(entityNodeMap.get(sourceEntity.getName()), entityNodeMap.get(destinationEntity.getName()))) {
 						DiagramConnection conn = new DiagramConnection(E_DiagramType.CLASSDIAGRAM);
-						conn.connect(node, entityNodeMap.get(relationship.getDestination().getName()));
+						conn.connect(node, entityNodeMap.get(destinationEntity.getName()));
 						conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);
 
 						myClassDiagram.addChildElement(conn);

@@ -216,34 +216,40 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 					continue;
 				}
 
-				if (relationship.isToMany()) {
-					// löst das Many to Many Problem und fügt die notwendigen Kardinalitäten ein.
+				// Hier werden die Kardinalitäten erstellt..
+				if (destinationEntity.getRelationships().isEmpty()) {
+					sourceToTargetCardinality = DiagramConnection.TOONE + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+					targetToSourceCardinality = DiagramConnection.TOMANY + DiagramConnection.OPTIONAL;
+				} else {
 					while (destinationRelationshipIterator.hasNext()) {
 						EORelationship destinationRelationship = destinationRelationshipIterator.next();
 	
 						if (destinationRelationship.getDestination() == sourceEntity) {
-							// Hier werden die Kardinalitäten erstellt..
-							if (destinationRelationship.isToMany()) {
-								manyToManyConnection = true;
-							} else {
-								manyToManyConnection = false;
-								sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
-								targetToSourceCardinality = DiagramConnection.TOONE + (destinationRelationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+							// löst das Many to Many Problem und fügt die notwendigen Kardinalitäten ein.
+							if (relationship.isToMany()) {
+								if (destinationRelationship.isToMany()) {
+									manyToManyConnection = true;
+								} else {
+									manyToManyConnection = false;
+									sourceToTargetCardinality = DiagramConnection.TOMANY + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+									targetToSourceCardinality = DiagramConnection.TOONE + (destinationRelationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+								}
 							}
+						} else {
+							manyToManyConnection = false;
+							sourceToTargetCardinality = DiagramConnection.TOONE + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
+							targetToSourceCardinality = DiagramConnection.TOMANY + DiagramConnection.OPTIONAL;
 						}
 					}
-				} 
-				else {
-					sourceToTargetCardinality = DiagramConnection.TOONE + (relationship.isOptional() ? DiagramConnection.OPTIONAL : 0);
-					targetToSourceCardinality = DiagramConnection.TOMANY + DiagramConnection.OPTIONAL;
 				}
+				
 				if (!manyToManyConnection) {
 					// TODO rekursive beziehungen werden hier einfach uebersprungen, hier sollte das irgendwie gehandelt werden.
 					DiagramNode destinationNode = entityNodeMap.get(relationship.getDestination().getName());
 					if (destinationNode.getEntityDiagram().getEntity().isSingleTableInheritance()) {
 						destinationNode = entityNodeMap.get(destinationNode.getEntityDiagram().getEntity().getParent().getName());
 					}
-					if (node != destinationNode && !node.getTitle().equals(destinationNode.getTitle())) {
+					if (node != destinationNode && !node.getTitle().equals(destinationNode.getTitle()) && !hasConnection(entityNodeMap.get(sourceEntity.getName()), entityNodeMap.get(destinationEntity.getName()))) {
 						DiagramConnection conn = new DiagramConnection(E_DiagramType.ERDIAGRAM);
 						conn.connect(node, destinationNode);
 						conn.setCardinalities(sourceToTargetCardinality, targetToSourceCardinality);

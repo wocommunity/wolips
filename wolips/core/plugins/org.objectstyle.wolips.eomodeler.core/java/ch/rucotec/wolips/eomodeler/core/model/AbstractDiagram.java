@@ -238,6 +238,32 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 	 */
 	public abstract SimpleDiagram drawDiagram();
 	
+	/**
+	 * Tests if the two given {@link DiagramNode}s have a connection to each other.
+	 * 
+	 * @param firstNode
+	 * @param secondNode
+	 * @return
+	 */
+	protected boolean hasConnection(DiagramNode firstNode, DiagramNode secondNode) {
+		boolean hasConnection = false;
+		
+		for (DiagramConnection connection : firstNode.getIncomingConnections()) {
+			if (connection.getSource().equals(secondNode)) {
+				hasConnection = true;
+				break;
+			}
+		}
+		
+		for (DiagramConnection connection : firstNode.getOutgoingConnections()) {
+			if (connection.getTarget().equals(secondNode)) {
+				hasConnection = true;
+				break;
+			}
+		}
+		return hasConnection;
+	}
+	
 	//---------------------------------------------------------------------------
 	// ### Basic Accessors
 	//---------------------------------------------------------------------------

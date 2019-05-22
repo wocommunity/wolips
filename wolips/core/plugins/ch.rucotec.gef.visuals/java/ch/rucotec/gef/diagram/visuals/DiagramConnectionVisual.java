@@ -353,9 +353,6 @@ public class DiagramConnectionVisual extends Connection {
 			arrow.setTranslateX(-1);
 			setEndDecoration(new HBox(arrow, sourceToTarget));
     	}
-    	else {
-    		sourceToTarget = new Text("");
-    	}
     	
     	if (targetToSourceCardinality == (DiagramConnection.TOMANY | DiagramConnection.OPTIONAL)) {
 			targetToSource = new Text("0..*");
@@ -369,14 +366,16 @@ public class DiagramConnectionVisual extends Connection {
     	} else if (targetToSourceCardinality == DiagramConnection.TOONE) {
     		targetToSource = new Text("1");
 			setStartDecoration(new HBox(targetToSource));
-    	} else {
-    		targetToSource = new Text("");
     	}
     	
-    	sourceToTarget.setTranslateX(10);
-		sourceToTarget.setFont(new Font(16));
-		targetToSource.setTranslateX(10);
-		targetToSource.setFont(new Font(16));
+    	if (sourceToTarget != null) {
+    		sourceToTarget.setTranslateX(10);
+    		sourceToTarget.setFont(new Font(16));
+    	}
+    	if (targetToSource != null) {
+    		targetToSource.setTranslateX(10);
+    		targetToSource.setFont(new Font(16));
+    	}
     }
     
     /**
@@ -399,19 +398,21 @@ public class DiagramConnectionVisual extends Connection {
     		int sourceWidth = (int)diagramCon.getSource().getBounds().getWidth();
     		int sourceHeight = (int)diagramCon.getSource().getBounds().getHeight();
     		
+    		int paddingSize = 10;
+    		
     		if (startPointX <= sourceX && startPointY <= (sourceY + sourceHeight)) {
 	    		// links
 	    		targetToSource.setRotate(180);
 	    		if (!targetToSource.getText().equals("1")) {
 		    		targetToSource.setTranslateY(0);
-		    		targetToSource.setTranslateX(10);
+		    		targetToSource.setTranslateX(paddingSize);
 	    		}
 //	    		System.out.println("links");
 	    	} else if (startPointX <= (sourceX + sourceWidth) && startPointX >= sourceX && startPointY <= sourceY) {
 	    		// oben
 	    		targetToSource.setRotate(90);
 	    		if (!targetToSource.getText().equals("1")) {
-	    			targetToSource.setTranslateY(10);
+	    			targetToSource.setTranslateY(paddingSize);
 	    			targetToSource.setTranslateX(0);
 	    		}
 //	    		System.out.println("oben");
@@ -419,15 +420,15 @@ public class DiagramConnectionVisual extends Connection {
 	    		// rechts
 	    		targetToSource.setRotate(0);
 	    		targetToSource.setTranslateY(0);
-	    		targetToSource.setTranslateX(10);
+	    		targetToSource.setTranslateX(paddingSize);
 //	    		System.out.println("rechts");
 	    	} else if (startPointX >= sourceX && startPointX <= (sourceX + sourceWidth) && startPointY+1 >= (sourceY + sourceHeight)) {
 	    		// unten
 	    		targetToSource.setRotate(270);
 	    		if (!targetToSource.getText().equals("1")) {
-	    		targetToSource.setTranslateY(10);
-	    		targetToSource.setTranslateX(0);
-    		}
+		    		targetToSource.setTranslateY(paddingSize);
+		    		targetToSource.setTranslateX(0);
+	    		}
 //	    		System.out.println("unten");
 	    	}
 	    	
@@ -436,14 +437,14 @@ public class DiagramConnectionVisual extends Connection {
 	    		sourceToTarget.setRotate(180);
 	    		if (!sourceToTarget.getText().equals("1")) {
 		    		sourceToTarget.setTranslateY(0);
-		    		sourceToTarget.setTranslateX(10);
+		    		sourceToTarget.setTranslateX(paddingSize);
 	    		}
 //	    		System.out.println("links");
 	    	} else if (endPointX <= (targetX + targetWidth) && endPointX >= targetX && endPointY <= targetY) {
 	    		// oben
 	    		sourceToTarget.setRotate(90);
 	    		if (!sourceToTarget.getText().equals("1")) {
-	    			sourceToTarget.setTranslateY(10);
+	    			sourceToTarget.setTranslateY(paddingSize);
 	    			sourceToTarget.setTranslateX(0);
 	    		}
 //	    		System.out.println("oben");
@@ -451,15 +452,15 @@ public class DiagramConnectionVisual extends Connection {
 	    		// rechts
 	    		sourceToTarget.setRotate(0);
 	    		sourceToTarget.setTranslateY(0);
-	    		sourceToTarget.setTranslateX(10);
+	    		sourceToTarget.setTranslateX(paddingSize);
 //	    		System.out.println("rechts");
 	    	} else if (endPointX >= targetX && endPointX <= (targetX + targetWidth) && endPointY >= (targetY + targetHeight)) {
 	    		// unten
 	    		sourceToTarget.setRotate(270);
 	    		if (!sourceToTarget.getText().equals("1")) {
-	    		sourceToTarget.setTranslateY(10);
-	    		sourceToTarget.setTranslateX(0);
-    		}
+		    		sourceToTarget.setTranslateY(paddingSize);
+		    		sourceToTarget.setTranslateX(0);
+	    		}
 //	    		System.out.println("unten");
 	    	}
     	}
