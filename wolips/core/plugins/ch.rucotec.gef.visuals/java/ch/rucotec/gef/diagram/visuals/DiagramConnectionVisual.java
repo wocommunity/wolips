@@ -366,6 +366,8 @@ public class DiagramConnectionVisual extends Connection {
     	} else if (targetToSourceCardinality == DiagramConnection.TOONE) {
     		targetToSource = new Text("1");
 			setStartDecoration(new HBox(targetToSource));
+    	} else if (targetToSourceCardinality == DiagramConnection.NONE) {
+    		targetToSource = new Text("");
     	}
     	
     	if (sourceToTarget != null) {
