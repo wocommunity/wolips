@@ -109,7 +109,10 @@ public class DiagramNodeVisual extends Region {
 			EOAttribute attribute = attributeList.get(i);
 			if (!attribute.isPrimaryKey()) {
 				lblAttributeName = new Label(attribute.getColumnName());
-				
+				if (lblAttributeName.getText() == null && attribute.isInherited()) {
+					EOEntity parentEntity = attribute.getEntity().getParent();
+					lblAttributeName.setText(parentEntity.getAttributeNamed(attribute.getName()).getColumnName());
+				}
 				if (attribute.isAllowsNull() != null) {
 					lblAttributeAllowsNull = new Label(attribute.isAllowsNull() ? "O" : "Ø");
 				} else {
@@ -166,7 +169,7 @@ public class DiagramNodeVisual extends Region {
     		if (relationship.getDestination().getClassNameWithoutPackage().equals(GENERIC_RECORD)) {
     			continue;
     		}
-    		if (relationship.isToMany()) {
+    		if (relationship.isToMany() != null && relationship.isToMany()) {
     			lblRelationshipName = new Label(relationship.getName() + " : " + relationship.getDestination().getClassNameWithoutPackage()+"[]");
     		} else if (relationship.isToOne()) {
     			lblRelationshipName = new Label(relationship.getName() + " : " + relationship.getDestination().getClassNameWithoutPackage());

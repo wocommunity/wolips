@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.objectstyle.woenvironment.plist.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.core.model.ISortableEOModelObject;
 import org.objectstyle.wolips.eomodeler.core.model.UserInfoableEOModelObject;
 
@@ -262,6 +263,21 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 			}
 		}
 		return hasConnection;
+	}
+	
+	protected EORelationship getRelationshipBetween(EOEntity from, EOEntity to) {
+		EORelationship foundRelationship = null;
+		Set<EORelationship> relationships = from.getRelationships();
+		if (!relationships.isEmpty()) {
+			Iterator<EORelationship> relationshipIterator = relationships.iterator();
+			while (relationshipIterator.hasNext()) {
+				EORelationship relationship = relationshipIterator.next();
+				if (relationship.getDestination() == to) {
+					foundRelationship = relationship;
+				}
+			}
+		}
+		return foundRelationship;
 	}
 	
 	//---------------------------------------------------------------------------

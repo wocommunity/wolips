@@ -24,7 +24,7 @@ public class DiagramConnection extends AbstractDiagramItem {
 	public static final int TOONE = 10;
 	public static final int TOMANY = 20;
 	public static final int OPTIONAL = 1;
-	public static final int NONE = 0;
+	public static final int NONE = -1;
 	public static final int EXTENDS = 3;
 
 	private int sourceToTargetCardinality;

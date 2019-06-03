@@ -348,10 +348,10 @@ public class DiagramConnectionVisual extends Connection {
     		setEndDecoration(extending);
     	} else if (sourceToTargetCardinality == DiagramConnection.TOONE) {
     		sourceToTarget = new Text("1");
-			Arrow arrow = new Arrow();
-			arrow.setTranslateY(-12.2);
-			arrow.setTranslateX(-1);
-			setEndDecoration(new HBox(arrow, sourceToTarget));
+			setEndDecoration(new HBox(sourceToTarget));
+    	} else if (sourceToTargetCardinality == (DiagramConnection.TOONE | DiagramConnection.OPTIONAL)) {
+    		sourceToTarget = new Text("0..1");
+			setEndDecoration(new HBox(sourceToTarget));
     	}
     	
     	if (targetToSourceCardinality == (DiagramConnection.TOMANY | DiagramConnection.OPTIONAL)) {
@@ -370,6 +370,14 @@ public class DiagramConnectionVisual extends Connection {
     		targetToSource = new Text("");
     	}
     	
+    	// Unidirectional
+    	if (sourceToTargetCardinality == DiagramConnection.TOONE && targetToSourceCardinality == DiagramConnection.NONE) {
+    		sourceToTarget = new Text("1");
+			Arrow arrow = new Arrow();
+			arrow.setTranslateY(-12.2);
+			arrow.setTranslateX(-1);
+			setEndDecoration(new HBox(arrow, sourceToTarget));
+    	}
     	if (sourceToTarget != null) {
     		sourceToTarget.setTranslateX(10);
     		sourceToTarget.setFont(new Font(16));
