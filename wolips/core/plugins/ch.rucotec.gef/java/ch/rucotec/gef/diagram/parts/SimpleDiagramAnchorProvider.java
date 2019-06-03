@@ -10,14 +10,14 @@ import org.eclipse.gef.mvc.fx.parts.IVisualPart;
 import com.google.common.reflect.TypeToken;
 import com.google.inject.Provider;
 
-import ch.rucotec.gef.diagram.visuals.DiagramConnectionVisual;
+import ch.rucotec.gef.diagram.visuals.connection.AbstractDiagramConnectionVisual;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.Node;
 
 /**
  * The {@link SimpleDiagramAnchorProvider} create an anchor for a
- * {@link DiagramConnectionVisual}.
+ * {@link AbstractDiagramConnectionVisual}.
  *
  * It is bound to an {@link DiagramNodePart} and will be called in the
  * {@link DiagramConnectionPart}.

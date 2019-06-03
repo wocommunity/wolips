@@ -70,9 +70,9 @@ import org.objectstyle.wolips.eomodeler.core.model.history.ModelEvents;
 import org.objectstyle.wolips.eomodeler.core.utils.NamingConvention;
 
 import ch.rucotec.wolips.eomodeler.core.gef.model.E_DiagramType;
-import ch.rucotec.wolips.eomodeler.core.model.EOEntityDiagram;
 import ch.rucotec.wolips.eomodeler.core.model.EOClassDiagramCollection;
 import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramCollection;
+import ch.rucotec.wolips.eomodeler.core.model.EOEntityDiagram;
 
 public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements ISortableEOModelObject {
 	public static final String CURRENT_VERSION = "1.0.1";

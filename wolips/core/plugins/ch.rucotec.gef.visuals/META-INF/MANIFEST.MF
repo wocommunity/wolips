@@ -11,4 +11,5 @@ Require-Bundle: org.eclipse.gef.geometry,
  org.eclipse.gef.common,
  org.eclipse.gef.geometry.convert.fx,
  org.objectstyle.wolips.eomodeler.core
-Export-Package: ch.rucotec.gef.diagram.visuals
+Export-Package: ch.rucotec.gef.diagram.visuals.connection,
+ ch.rucotec.gef.diagram.visuals.node

@@ -15,13 +15,16 @@ import com.google.common.collect.SetMultimap;
 import com.google.common.reflect.TypeToken;
 import com.google.inject.Provider;
 
-import ch.rucotec.gef.diagram.visuals.DiagramConnectionVisual;
+import ch.rucotec.gef.diagram.visuals.connection.AbstractDiagramConnectionVisual;
+import ch.rucotec.gef.diagram.visuals.connection.DiagramConnectionVisualClassDiagram;
+import ch.rucotec.gef.diagram.visuals.connection.DiagramConnectionVisualERD;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramConnection;
+import ch.rucotec.wolips.eomodeler.core.gef.model.E_DiagramType;
 import javafx.scene.Node;
 
 /**
  * The diagram connection part is used the controller for the
- * {@link DiagramConnection}. It create the {@link DiagramConnectionVisual}
+ * {@link DiagramConnection}. It create the {@link AbstractDiagramConnectionVisual}
  * including the anchors for the connection.
  * <br/>(documented by GEF)
  */
@@ -62,7 +65,13 @@ public class DiagramConnectionPart extends AbstractContentPart<Connection> imple
     @Override
     protected Connection doCreateVisual() {
     	DiagramConnection diagramCon = getContent();
-        return new DiagramConnectionVisual(diagramCon);
+    	AbstractDiagramConnectionVisual diagramVisual = null;
+    	if (diagramCon.getDiagramType() == E_DiagramType.ERDIAGRAM) {
+    		diagramVisual = new DiagramConnectionVisualERD(diagramCon);
+    	} else if (diagramCon.getDiagramType() == E_DiagramType.CLASSDIAGRAM) {
+    		diagramVisual = new DiagramConnectionVisualClassDiagram(diagramCon);
+    	}
+        return diagramVisual;
     }
 
     @Override
@@ -93,8 +102,8 @@ public class DiagramConnectionPart extends AbstractContentPart<Connection> imple
 
     @Override
     protected void doRefreshVisual(Connection visual) {
-    	if(visual instanceof DiagramConnectionVisual) {
-    		DiagramConnectionVisual connVisual = (DiagramConnectionVisual) visual;
+    	if(visual instanceof AbstractDiagramConnectionVisual) {
+    		AbstractDiagramConnectionVisual connVisual = (AbstractDiagramConnectionVisual) visual;
     		connVisual.refreshDecoration();
     	}
     }

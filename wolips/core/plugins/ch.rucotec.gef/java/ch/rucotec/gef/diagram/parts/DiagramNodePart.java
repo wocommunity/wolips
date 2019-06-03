@@ -12,28 +12,35 @@ import org.eclipse.gef.mvc.fx.parts.ITransformableContentPart;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
-import ch.rucotec.gef.diagram.visuals.DiagramNodeVisual;
+import ch.rucotec.gef.diagram.visuals.node.AbstractDiagramNodeVisual;
+import ch.rucotec.gef.diagram.visuals.node.DiagramNodeVisualClassDiagram;
+import ch.rucotec.gef.diagram.visuals.node.DiagramNodeVisualERD;
 import ch.rucotec.wolips.eomodeler.core.gef.model.DiagramNode;
+import ch.rucotec.wolips.eomodeler.core.gef.model.E_DiagramType;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Translate;
 
 /**
  * The {@link DiagramNodePart} is responsible to create and update the
- * {@link DiagramNodeVisual} for a instance of the {@link DiagramNode}.
+ * {@link AbstractDiagramNodeVisual} for a instance of the {@link DiagramNode}.
  * <br/>(documented by GEF)
  */
-public class DiagramNodePart extends AbstractContentPart<DiagramNodeVisual>
-implements ITransformableContentPart<DiagramNodeVisual>, IResizableContentPart<DiagramNodeVisual> {
+public class DiagramNodePart extends AbstractContentPart<AbstractDiagramNodeVisual>
+implements ITransformableContentPart<AbstractDiagramNodeVisual>, IResizableContentPart<AbstractDiagramNodeVisual> {
 
 	//---------------------------------------------------------------------------
 	// ### Custom Methods and Accessors
 	//---------------------------------------------------------------------------
 	
 	@Override
-	protected DiagramNodeVisual doCreateVisual() {
-		DiagramNodeVisual nodeVisual = null;
+	protected AbstractDiagramNodeVisual doCreateVisual() {
+		AbstractDiagramNodeVisual nodeVisual = null;
 		DiagramNode node = getContent();
-		nodeVisual = new DiagramNodeVisual(node);
+		if (node.getDiagramType() == E_DiagramType.ERDIAGRAM) {
+			nodeVisual = new DiagramNodeVisualERD(node);
+    	} else if (node.getDiagramType() == E_DiagramType.CLASSDIAGRAM) {
+    		nodeVisual = new DiagramNodeVisualClassDiagram(node);
+    	}
 		return nodeVisual;
 	}
 
@@ -50,10 +57,10 @@ implements ITransformableContentPart<DiagramNodeVisual>, IResizableContentPart<D
 	}
 
 	@Override
-	protected void doRefreshVisual(DiagramNodeVisual visual) {
+	protected void doRefreshVisual(AbstractDiagramNodeVisual visual) {
 		// updating the visual's texts
 		DiagramNode node = getContent();
-		visual.setTitle(node.getTitle());
+		visual.getTitle().setText(node.getTitle());
 		visual.setColor(node.getColor());
 		
 		// use the IResizableContentPart API to resize the visual
