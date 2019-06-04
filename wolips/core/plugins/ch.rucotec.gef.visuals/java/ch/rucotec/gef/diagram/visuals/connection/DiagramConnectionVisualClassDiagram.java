@@ -58,7 +58,7 @@ public class DiagramConnectionVisualClassDiagram extends AbstractDiagramConnecti
      */
     public static class Arrow extends Polyline{
     	public Arrow() {
-			super(0,0,16,10,0,0,16,-10);
+			super(0,0,11,7,0,0,11,-7);
 		}
     }
 	
@@ -112,29 +112,15 @@ public class DiagramConnectionVisualClassDiagram extends AbstractDiagramConnecti
     	if (sourceToTargetCardinality == DiagramConnection.TOONE && targetToSourceCardinality == DiagramConnection.NONE) {
     		sourceToTarget = new Text("1");
 			Arrow arrow = new Arrow();
-			arrow.setTranslateY(-11.2);
+			arrow.setTranslateY(-8.2);
 			arrow.setTranslateX(-1);
 			setEndDecoration(new HBox(arrow, sourceToTarget));
     	} else if (sourceToTargetCardinality == (DiagramConnection.TOONE | DiagramConnection.OPTIONAL) && targetToSourceCardinality == DiagramConnection.NONE) {
     		sourceToTarget = new Text("0..1");
 			Arrow arrow = new Arrow();
-			arrow.setTranslateY(-11.2);
+			arrow.setTranslateY(-8.2);
 			arrow.setTranslateX(-1);
 			setEndDecoration(new HBox(arrow, sourceToTarget));
-    	}
-    	
-    	if (targetToSourceCardinality == DiagramConnection.TOONE && sourceToTargetCardinality == DiagramConnection.NONE) {
-    		targetToSource = new Text("1");
-			Arrow arrow = new Arrow();
-			arrow.setTranslateY(-11.2);
-			arrow.setTranslateX(-1);
-			setStartDecoration(new HBox(arrow, targetToSource));
-    	} else if (targetToSourceCardinality == (DiagramConnection.TOONE | DiagramConnection.OPTIONAL) && sourceToTargetCardinality == DiagramConnection.NONE) {
-    		targetToSource = new Text("0..1");
-			Arrow arrow = new Arrow();
-			arrow.setTranslateY(-11.2);
-			arrow.setTranslateX(-1);
-			setStartDecoration(new HBox(arrow, targetToSource));
     	}
     	
     	if (sourceToTarget != null) {

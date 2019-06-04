@@ -217,7 +217,7 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 								sourceToTargetCardinality = DiagramConnection.TOMANY + (relationshipFromSourceToDestination.isOptional() ? DiagramConnection.OPTIONAL : 0);
 								targetToSourceCardinality = DiagramConnection.TOONE + (relationshipFromDestinationToSource.isOptional() ? DiagramConnection.OPTIONAL : 0);
 							}
-						} else if (relationshipFromDestinationToSource.isClassProperty() == null || relationshipFromDestinationToSource.isClassProperty()) {
+						} else if (relationshipFromDestinationToSource.isClassProperty() == null || !relationshipFromDestinationToSource.isClassProperty()) {
 							sourceToTargetCardinality = DiagramConnection.TOONE + (relationshipFromSourceToDestination.isOptional() ? DiagramConnection.OPTIONAL : 0);
 							targetToSourceCardinality = DiagramConnection.NONE;
 						} else {
