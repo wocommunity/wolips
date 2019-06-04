@@ -191,13 +191,19 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 				
 				if (getEntities().contains(relationshipFromSourceToDestination.getDestination())
 						&& !allreadyConnected) {
+					
 					EORelationship relationshipFromDestinationToSource = getRelationshipBetween(destinationEntity, sourceEntity);
-					
-					
 					int sourceToTargetCardinality = 0;
 					int targetToSourceCardinality = 0;
 					
+					// if the destinationEntity is an inherited Entity we skip adding a connection to him
+					// becouse inherited Entitys were alerady connected (above)
 					if (destinationEntity.isInherited()) {
+						continue;
+					}
+					
+					// if the relationship is a not classproperty then we simply skip drawing it.
+					if (relationshipFromSourceToDestination.isClassProperty() == null || !relationshipFromSourceToDestination.isClassProperty()) {
 						continue;
 					}
 					
@@ -211,6 +217,9 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 								sourceToTargetCardinality = DiagramConnection.TOMANY + (relationshipFromSourceToDestination.isOptional() ? DiagramConnection.OPTIONAL : 0);
 								targetToSourceCardinality = DiagramConnection.TOONE + (relationshipFromDestinationToSource.isOptional() ? DiagramConnection.OPTIONAL : 0);
 							}
+						} else if (relationshipFromDestinationToSource.isClassProperty() == null || relationshipFromDestinationToSource.isClassProperty()) {
+							sourceToTargetCardinality = DiagramConnection.TOONE + (relationshipFromSourceToDestination.isOptional() ? DiagramConnection.OPTIONAL : 0);
+							targetToSourceCardinality = DiagramConnection.NONE;
 						} else {
 							sourceToTargetCardinality = DiagramConnection.TOONE + (relationshipFromSourceToDestination.isOptional() ? DiagramConnection.OPTIONAL : 0);
 							targetToSourceCardinality = DiagramConnection.TOMANY + (relationshipFromDestinationToSource.isOptional() ? DiagramConnection.OPTIONAL : 0);
