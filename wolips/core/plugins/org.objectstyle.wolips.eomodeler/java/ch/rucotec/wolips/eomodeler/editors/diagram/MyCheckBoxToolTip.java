@@ -149,7 +149,7 @@ public class MyCheckBoxToolTip extends CustomToolTip {
 		if (parentEntity != null && childrenEntities != null) {
 			for (EOEntity childrenEntity : childrenEntities) {
 				TreeItem childrenItem = new TreeItem(parentItem, SWT.CHECK);
-				childrenItem.setImage(Activator.getDefault().getImageRegistry().get(Activator.EORELATIONSHIP_ICON));
+				childrenItem.setImage(Activator.getDefault().getImageRegistry().get(Activator.SUBCLASS_ENTITY_ICON));
 				childrenItem.setText(childrenEntity.getName());
 			}
 		}

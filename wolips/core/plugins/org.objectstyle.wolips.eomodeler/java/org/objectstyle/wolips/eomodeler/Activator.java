@@ -94,6 +94,8 @@ public class Activator extends AbstractBaseUIActivator {
 	public static final String DESCENDING_ICON = "descending";
 
 	public static final String SQL_ICON = "sql";
+	
+	public static final String SUBCLASS_ENTITY_ICON = "subclassEntity";
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.objectstyle.wolips.eomodeler";
@@ -168,5 +170,6 @@ public class Activator extends AbstractBaseUIActivator {
 		_reg.put(Activator.ASCENDING_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/ascending.png"));
 		_reg.put(Activator.DESCENDING_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/descending.png"));
 		_reg.put(Activator.SQL_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/sql.png"));
+		_reg.put(Activator.SUBCLASS_ENTITY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/subclassEntity.png"));
 	}
 }

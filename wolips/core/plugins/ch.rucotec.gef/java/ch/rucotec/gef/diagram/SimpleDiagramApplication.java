@@ -3,7 +3,6 @@ package ch.rucotec.gef.diagram;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
@@ -33,10 +32,11 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -201,14 +201,19 @@ public class SimpleDiagramApplication {
 					deltaY < 0 ? 0.9 : 1.1,
 					deltaY < 0 ? 0.9 : 1.1);
 		 */
-		Button zoomInButton = new Button("Zoom +");
+		
+		Image zoomInImage = new Image(getClass().getResourceAsStream("/icons/zoomIn.png"));
+		Button zoomInButton = new Button();
+		zoomInButton.setGraphic(new ImageView(zoomInImage));
 		zoomInButton.setOnAction(e -> {
 			((InfiniteCanvas)getContentViewer().getCanvas()).getContentTransform().appendScale(
 					1.1,
 					1.1);
 		});
 
-		Button zoomOutButton = new Button("Zoom -");
+		Image zoomOutImage = new Image(getClass().getResourceAsStream("/icons/zoomOut.png"));
+		Button zoomOutButton = new Button();
+		zoomOutButton.setGraphic(new ImageView(zoomOutImage));
 		zoomOutButton.setOnAction(e -> {
 			((InfiniteCanvas)getContentViewer().getCanvas()).getContentTransform().appendScale(
 					0.9,

@@ -42,7 +42,7 @@ public abstract class MyFXViewPart extends EditorPart {
 			gefApplication.start();
 
 		} catch (Exception e) {
-			System.err.println("Error probably in MyFXViewPart: " + e.getCause());
+			System.err.println("Error probably in MyFXViewPart: " + e.getMessage());
 		}
 
 	}
