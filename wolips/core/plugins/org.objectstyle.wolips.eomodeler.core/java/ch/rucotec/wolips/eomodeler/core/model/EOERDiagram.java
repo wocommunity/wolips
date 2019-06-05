@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.objectstyle.woenvironment.plist.PropertyListParserException;
@@ -27,7 +26,7 @@ import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
  * @author Savas Celik
  * @see AbstractDiagram
  */
-public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
+public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection> {
 	
 	//---------------------------------------------------------------------------
 	// ### Construction
@@ -56,7 +55,7 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection>{
 	public void addEntityToDiagram(EOEntity entity) {
 		EOEntityDiagram entityERDiagram = getDiagramCollection().getEntityDiagramWithEntity(entity);
 		
-		EOEntityDiagramDimension dimension = new EOEntityDiagramDimension(100, 100, 100, 100);
+		EOEntityDiagramDimension dimension = generateEOEntityDiagramDimension();
 		entityERDiagram.getERDiagramDimensions().put(getName(), dimension);
 		super.addEntityToDiagram(entityERDiagram);
 	}

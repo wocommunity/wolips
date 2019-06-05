@@ -28,7 +28,7 @@ import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
  * @author Savas Celik
  * @see AbstractDiagram
  */
-public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
+public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection> {
 	
 	//---------------------------------------------------------------------------
 	// ### Construction
@@ -88,7 +88,7 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection>{
 		if (entityClassDiagram == null) {
 			entityClassDiagram = eoModelOfMyCollection.createAndAddEntityDiagram(entity);
 		}
-		EOEntityDiagramDimension dimension = new EOEntityDiagramDimension(100, 100, 200, 100);
+		EOEntityDiagramDimension dimension = generateEOEntityDiagramDimension();
 		entityClassDiagram.getClassDiagramDimensions().put(getName(), dimension);
 		super.addEntityToDiagram(entityClassDiagram);
 	}

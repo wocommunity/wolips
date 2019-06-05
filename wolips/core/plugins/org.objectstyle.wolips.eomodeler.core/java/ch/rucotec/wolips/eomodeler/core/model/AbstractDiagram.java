@@ -59,6 +59,12 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 	private Set<EOEntityDiagram> myDeletedDiagramEntities;
 	private T myDiagramCollection;
 	
+	// position for the Node of the Entity
+	private int xPos = 100;
+	private int yPos = 100;
+	private int width = 200;
+	private int height = 100;
+	
 	//---------------------------------------------------------------------------
 	// ### Construction
 	//---------------------------------------------------------------------------
@@ -278,6 +284,16 @@ public abstract class AbstractDiagram<T extends AbstractDiagramCollection> exten
 			}
 		}
 		return foundRelationship;
+	}
+	
+	protected EOEntityDiagramDimension generateEOEntityDiagramDimension() {
+		EOEntityDiagramDimension dimension = new EOEntityDiagramDimension(xPos, yPos, width, height);
+		
+		// add 10 on xPos and on yPos so that the nodes for entities are not directly on top of each other
+		xPos += 10;
+		yPos += 10;
+		
+		return dimension;
 	}
 	
 	//---------------------------------------------------------------------------
