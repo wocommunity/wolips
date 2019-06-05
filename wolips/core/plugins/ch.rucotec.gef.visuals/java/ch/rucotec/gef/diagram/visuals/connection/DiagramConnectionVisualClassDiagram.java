@@ -31,7 +31,7 @@ public class DiagramConnectionVisualClassDiagram extends AbstractDiagramConnecti
    	 */
     public static class Extends extends Polygon{
     	public Extends() {
-			super(0,0,15,15,15,-15,0,0);
+			super(0,0,15,10,15,-10,0,0);
 			setFill(Color.WHITE);
 			setStroke(Color.BLACK);
 		}
