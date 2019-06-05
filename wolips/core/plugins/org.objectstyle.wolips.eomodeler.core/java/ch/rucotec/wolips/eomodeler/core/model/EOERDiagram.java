@@ -53,11 +53,14 @@ public class EOERDiagram extends AbstractDiagram<EOERDiagramCollection> {
 	 */
 	@Override
 	public void addEntityToDiagram(EOEntity entity) {
-		EOEntityDiagram entityERDiagram = getDiagramCollection().getEntityDiagramWithEntity(entity);
+		EOEntityDiagram entityDiagram = getDiagramCollection().getEntityDiagramWithEntity(entity);
+		EOEntityDiagramDimension dimension = entityDiagram.getERDiagramDimensionForDiagramName(getName());
 		
-		EOEntityDiagramDimension dimension = generateEOEntityDiagramDimension();
-		entityERDiagram.getERDiagramDimensions().put(getName(), dimension);
-		super.addEntityToDiagram(entityERDiagram);
+		if (dimension == null) {
+			dimension = generateEOEntityDiagramDimension();
+			entityDiagram.getERDiagramDimensions().put(getName(), dimension);
+		}
+		super.addEntityToDiagram(entityDiagram);
 	}
 	
 	@Override

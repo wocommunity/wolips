@@ -9,7 +9,6 @@ import java.util.Set;
 import org.objectstyle.woenvironment.plist.PropertyListParserException;
 import org.objectstyle.wolips.eomodeler.core.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelReferenceFailure;
@@ -83,14 +82,14 @@ public class EOClassDiagram extends AbstractDiagram<EOClassDiagramCollection> {
 	 */
 	@Override
 	public void addEntityToDiagram(EOEntity entity) {
-		EOModel eoModelOfMyCollection = getDiagramCollection().getModel();
-		EOEntityDiagram entityClassDiagram = eoModelOfMyCollection.getEntityDiagramMap().get(entity);
-		if (entityClassDiagram == null) {
-			entityClassDiagram = eoModelOfMyCollection.createAndAddEntityDiagram(entity);
+		EOEntityDiagram entityDiagram = getDiagramCollection().getEntityDiagramWithEntity(entity);
+		EOEntityDiagramDimension dimension = entityDiagram.getClassDiagramDimensionForDiagramName(getName());
+		
+		if (dimension == null) {
+			dimension = generateEOEntityDiagramDimension();
+			entityDiagram.getClassDiagramDimensions().put(getName(), dimension);
 		}
-		EOEntityDiagramDimension dimension = generateEOEntityDiagramDimension();
-		entityClassDiagram.getClassDiagramDimensions().put(getName(), dimension);
-		super.addEntityToDiagram(entityClassDiagram);
+		super.addEntityToDiagram(entityDiagram);
 	}
 	
 	@Override

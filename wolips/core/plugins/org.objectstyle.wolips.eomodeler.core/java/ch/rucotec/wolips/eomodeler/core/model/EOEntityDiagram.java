@@ -147,10 +147,10 @@ public class EOEntityDiagram {
 		setSelectedDiagramName(selectedDiagramName);
 		DiagramNode entityNode = new DiagramNode(this, selectedDiagramName, E_DiagramType.ERDIAGRAM);
 		
-		double xPos = getERDiagramDimensionForKey(selectedDiagramName).getxPos();
-		double yPos = getERDiagramDimensionForKey(selectedDiagramName).getyPos();
-		double width = getERDiagramDimensionForKey(selectedDiagramName).getWidth();
-		double height = getERDiagramDimensionForKey(selectedDiagramName).getHeight();
+		double xPos = getERDiagramDimensionForDiagramName(selectedDiagramName).getxPos();
+		double yPos = getERDiagramDimensionForDiagramName(selectedDiagramName).getyPos();
+		double width = getERDiagramDimensionForDiagramName(selectedDiagramName).getWidth();
+		double height = getERDiagramDimensionForDiagramName(selectedDiagramName).getHeight();
 		
 		entityNode.setTitle(getEntity().getExternalName());
 		entityNode.setColor(Color.AZURE);
@@ -163,10 +163,10 @@ public class EOEntityDiagram {
 		setSelectedDiagramName(selectedDiagramName);
 		DiagramNode entityNode = new DiagramNode(this, selectedDiagramName, E_DiagramType.CLASSDIAGRAM);
 		
-		double xPos = getClassDiagramDimensionForKey(selectedDiagramName).getxPos();
-		double yPos = getClassDiagramDimensionForKey(selectedDiagramName).getyPos();
-		double width = getClassDiagramDimensionForKey(selectedDiagramName).getWidth();
-		double height = getClassDiagramDimensionForKey(selectedDiagramName).getHeight();
+		double xPos = getClassDiagramDimensionForDiagramName(selectedDiagramName).getxPos();
+		double yPos = getClassDiagramDimensionForDiagramName(selectedDiagramName).getyPos();
+		double width = getClassDiagramDimensionForDiagramName(selectedDiagramName).getWidth();
+		double height = getClassDiagramDimensionForDiagramName(selectedDiagramName).getHeight();
 		
 		entityNode.setTitle(getEntity().getClassNameWithoutPackage());
 		entityNode.setColor(Color.AZURE);
@@ -279,7 +279,7 @@ public class EOEntityDiagram {
 	}
 	
 	private void positionsChangedERDiagram(String selectedDiagramName, Rectangle dimension) {
-		EOEntityDiagramDimension entityDimension = getERDiagramDimensionForKey(selectedDiagramName);
+		EOEntityDiagramDimension entityDimension = getERDiagramDimensionForDiagramName(selectedDiagramName);
 		entityDimension.setxPos(dimension.getX());
 		entityDimension.setyPos(dimension.getY());
 		entityDimension.setWidth(dimension.getWidth());
@@ -287,7 +287,7 @@ public class EOEntityDiagram {
 	}
 	
 	public void positionsChangedClassDiagram(String selectedDiagramName, Rectangle dimension) {
-		EOEntityDiagramDimension entityDimension = getClassDiagramDimensionForKey(selectedDiagramName);
+		EOEntityDiagramDimension entityDimension = getClassDiagramDimensionForDiagramName(selectedDiagramName);
 		entityDimension.setxPos(dimension.getX());
 		entityDimension.setyPos(dimension.getY());
 		entityDimension.setWidth(dimension.getWidth());
@@ -302,12 +302,12 @@ public class EOEntityDiagram {
 		return myEntity;
 	}
 	
-	public EOEntityDiagramDimension getERDiagramDimensionForKey(String key) {
-		return myERDiagramDimensions.get(key);
+	public EOEntityDiagramDimension getERDiagramDimensionForDiagramName(String DiagramName) {
+		return myERDiagramDimensions.get(DiagramName);
 	}
 	
-	public EOEntityDiagramDimension getClassDiagramDimensionForKey(String key) {
-		return myClassDiagramDimensions.get(key);
+	public EOEntityDiagramDimension getClassDiagramDimensionForDiagramName(String DiagramName) {
+		return myClassDiagramDimensions.get(DiagramName);
 	}
 
 	
