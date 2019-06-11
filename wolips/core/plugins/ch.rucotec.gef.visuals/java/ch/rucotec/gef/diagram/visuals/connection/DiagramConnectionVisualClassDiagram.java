@@ -121,6 +121,18 @@ public class DiagramConnectionVisualClassDiagram extends AbstractDiagramConnecti
 			arrow.setTranslateY(-8.2);
 			arrow.setTranslateX(-1);
 			setEndDecoration(new HBox(arrow, sourceToTarget));
+    	} else if (sourceToTargetCardinality == DiagramConnection.TOMANY && targetToSourceCardinality == DiagramConnection.NONE) {
+    		sourceToTarget = new Text("1..*");
+			Arrow arrow = new Arrow();
+			arrow.setTranslateY(-8.2);
+			arrow.setTranslateX(-1);
+			setEndDecoration(new HBox(arrow, sourceToTarget));
+    	} else if (sourceToTargetCardinality == (DiagramConnection.TOMANY | DiagramConnection.OPTIONAL) && targetToSourceCardinality == DiagramConnection.NONE) {
+    		sourceToTarget = new Text("0..*");
+			Arrow arrow = new Arrow();
+			arrow.setTranslateY(-8.2);
+			arrow.setTranslateX(-1);
+			setEndDecoration(new HBox(arrow, sourceToTarget));
     	}
     	
     	if (sourceToTarget != null) {
