@@ -21,7 +21,7 @@ import javafx.stage.Stage;
  * @author Savas Celik
  *
  */
-public abstract class MyFXViewPart extends EditorPart {
+public abstract class MyFXViewPart extends EditorPart implements IGEFDiagramTab{
 	
 	private FXCanvas canvas;
 	private SimpleDiagramApplication gefApplication;
@@ -62,10 +62,6 @@ public abstract class MyFXViewPart extends EditorPart {
 		canvas.setFocus();
 	}
 
-	public SimpleDiagramApplication getGefApplication() {
-		return gefApplication;
-	}
-
 	public Stage getStage() {
 		return (Stage) canvas.getScene().getWindow();
 	}
@@ -74,6 +70,7 @@ public abstract class MyFXViewPart extends EditorPart {
 		myModel = _model;
 	}
 	
+	@Override
 	public void setSelectedDiagram (AbstractDiagram selectedDiagram) {
 		gefApplication.setDiagram(selectedDiagram);
 	}

@@ -105,7 +105,7 @@ implements ITransformableContentPart<AbstractDiagramNodeVisual>, IResizableConte
 	public void setVisualSize(Dimension totalSize) {
 		IResizableContentPart.super.setVisualSize(totalSize);
 		// perform layout pass to apply size
-		getVisual().getParent().layout();
+		getVisual().layout();
 	}
 
 	@Override

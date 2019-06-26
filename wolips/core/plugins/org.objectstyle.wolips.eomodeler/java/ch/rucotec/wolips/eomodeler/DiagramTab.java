@@ -20,25 +20,6 @@ import javafx.scene.layout.AnchorPane;
  *
  */
 public class DiagramTab extends MyFXViewPart implements ISelectionProvider {
-	
-	private static DiagramTab instance; 
-
-	/**
-	 * Default private constructor.
-	 */
-	private DiagramTab() {
-	}
-	
-	/**
-	 * Getting an instance with the Singleton pattern.
-	 * @return
-	 */
-	public static DiagramTab getInstance() {
-		if (instance == null) {
-			instance = new DiagramTab();
-		}
-		return instance;
-	}
 
 	@Override
 	protected Scene errorFxScene() {

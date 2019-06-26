@@ -135,7 +135,8 @@ import org.objectstyle.wolips.eomodeler.preferences.PreferenceConstants;
 import org.objectstyle.wolips.eomodeler.utils.AbstractAddRemoveChangeRefresher;
 import org.objectstyle.wolips.eomodeler.utils.EclipseFileUtils;
 
-import ch.rucotec.wolips.eomodeler.DiagramTab;
+import ch.rucotec.wolips.eomodeler.GEFTabFactory;
+import ch.rucotec.wolips.eomodeler.IGEFDiagramTab;
 import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
 import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagramCollection;
 import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
@@ -447,7 +448,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	public static final String EODIAGRAMCOLLECTION_PAGE = "eodiagramcollection";
 	public static final String EODIAGRAM_PAGE = "eodiagram";
 	
-	private DiagramTab diagramTab;
+	private IGEFDiagramTab diagramTab;
 	private EODiagramsTableEditor myDiagramCollectionEditor;
 	private AbstractDiagramCollection mySelectedDiagramCollection;
 	private final DiagramDeletedRefresher myDiagramListener;
@@ -653,13 +654,12 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				myStoredProcedureEditor.addSelectionChangedListener(argumentSelectionChangedListener);
 				
 				// SAVAS: Hier wird das DiagramTab configuriert.
-
-				diagramTab = DiagramTab.getInstance();
+				diagramTab = GEFTabFactory.getDiagramTab();
 				
 				// das ist nicht notwendig aber wenn ich es mache werden diagramme schneller generiert.
-				addPage(diagramTab, getEditorInput());
+				addPage((IEditorPart) diagramTab, getEditorInput());
 				removePage(getPageNum(EOModelEditor.EODIAGRAM_PAGE));
-				
+
 				myDiagramCollectionEditor = new EODiagramsTableEditor();
 				EODiagramSelectionChangedListener diagramSelectionChangedListener = new EODiagramSelectionChangedListener();
 				myDiagramCollectionEditor.addSelectionChangedListener(diagramSelectionChangedListener);
@@ -883,7 +883,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		else if(_pageType == EOModelEditor.EODIAGRAMCOLLECTION_PAGE) {
 			pageNum = getPageNum(myDiagramCollectionEditor);
 		} else if (_pageType == EOModelEditor.EODIAGRAM_PAGE) {
-			pageNum = getPageNum(diagramTab);
+			pageNum = getPageNum((IEditorPart) diagramTab);
 		}else {
 			pageNum = -1;
 		}
@@ -1477,7 +1477,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		try {
 			if (_setDiagramPageVisible) {
 				if (!myDiagramPageVisible) {
-					addPage(diagramTab, getEditorInput());
+					addPage((IEditorPart) diagramTab, getEditorInput());
 				}
 				// Hier wird festgelegt welches Diagramm angezeigt werden soll.
 				diagramTab.setSelectedDiagram(mySelectedDiagram);

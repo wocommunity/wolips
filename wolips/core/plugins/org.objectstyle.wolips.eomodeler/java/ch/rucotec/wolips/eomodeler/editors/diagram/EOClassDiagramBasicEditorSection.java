@@ -29,7 +29,7 @@ import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.UglyFocusHackWorkaroundListener;
 
-import ch.rucotec.wolips.eomodeler.DiagramTab;
+import ch.rucotec.wolips.eomodeler.GEFTabFactory;
 import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
 import ch.rucotec.wolips.eomodeler.core.model.EOClassDiagram;
 
@@ -120,7 +120,7 @@ public class EOClassDiagramBasicEditorSection extends AbstractPropertySection {
 						}
 					}
 				}
-				DiagramTab.getInstance().setSelectedDiagram(myDiagram);
+				GEFTabFactory.getDiagramTab().setSelectedDiagram(myDiagram);
 				myDiagram._getModelParent().setModelDirty(true);
 			}
 		});
@@ -140,7 +140,7 @@ public class EOClassDiagramBasicEditorSection extends AbstractPropertySection {
 						checkBoxes.get(entity).setSelection(false);
 					}
 				}
-				DiagramTab.getInstance().setSelectedDiagram(myDiagram);
+				GEFTabFactory.getDiagramTab().setSelectedDiagram(myDiagram);
 				myDiagram._getModelParent().setModelDirty(true);
 			}
 		});
@@ -236,7 +236,7 @@ public class EOClassDiagramBasicEditorSection extends AbstractPropertySection {
 			        	} else if (!btn.getSelection()) {
 			        		myDiagram.removeEntityFromDiagram(entity);
 			        	}
-			        	DiagramTab.getInstance().setSelectedDiagram(myDiagram);
+			        	GEFTabFactory.getDiagramTab().setSelectedDiagram(myDiagram);
 			        	myDiagram._getModelParent().setModelDirty(true);
 			        }
 			    });
