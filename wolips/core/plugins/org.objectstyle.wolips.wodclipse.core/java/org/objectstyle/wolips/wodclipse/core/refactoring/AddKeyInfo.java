@@ -5,7 +5,7 @@ import java.util.Set;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.NamingConventions;
-import org.eclipse.jdt.internal.corext.codemanipulation.StubUtility;
+
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 import org.objectstyle.wolips.eomodeler.core.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.core.model.EOModelGroup;
@@ -136,10 +136,11 @@ public class AddKeyInfo {
   public void setCreateMutatorMethod(boolean createMutatorMethod) {
     _createMutatorMethod = createMutatorMethod;
   }
-
+  
   public String getFieldName() {
-    String[] suggestedFieldNames = StubUtility.getVariableNameSuggestions(NamingConventions.VK_INSTANCE_FIELD, _componentType.getJavaProject(), getName(), 0, null, true);
-    String fieldName = suggestedFieldNames[0];
+	  String[] suggestedFieldNames = NamingConventions.suggestVariableNames(NamingConventions.VK_INSTANCE_FIELD, 2, getName(), _componentType.getJavaProject(), 0, null, true);
+	  String fieldName = suggestedFieldNames[0];
     return fieldName;
   }
+
 }

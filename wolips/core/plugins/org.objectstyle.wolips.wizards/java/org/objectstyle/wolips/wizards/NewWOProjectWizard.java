@@ -627,10 +627,10 @@ public abstract class NewWOProjectWizard extends BasicNewResourceWizard implemen
 				IWorkbenchActivitySupport workbenchActivitySupport = PlatformUI.getWorkbench().getActivitySupport();
 				IActivityManager activityManager = workbenchActivitySupport.getActivityManager();
 				IIdentifier identifier = activityManager.getIdentifier(WorkbenchActivityHelper.createUnifiedId(contribution));
-				Set<Object> idActivities = identifier.getActivityIds();
+				Set<String> idActivities = identifier.getActivityIds();
 
 				if (!idActivities.isEmpty()) {
-					Set<Object> enabledIds = new HashSet<Object>(activityManager.getEnabledActivityIds());
+					Set<String> enabledIds = new HashSet<String>(activityManager.getEnabledActivityIds());
 
 					if (enabledIds.addAll(idActivities)) {
 						workbenchActivitySupport.setEnabledActivityIds(enabledIds);
