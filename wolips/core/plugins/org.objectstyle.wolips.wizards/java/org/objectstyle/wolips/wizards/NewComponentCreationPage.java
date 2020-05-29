@@ -1716,6 +1716,35 @@ public class NewComponentCreationPage extends NewTypeWizardPage {
 		}
 		return typeNameStatus;
 	}
+	
+	private static String getLineDelimiterUsed(IJavaProject project) {
+		return getProjectLineDelimiter(project);
+	}
+
+	private static String getProjectLineDelimiter(IJavaProject javaProject) {
+		IProject project = null;
+		if (javaProject != null) {
+			project = javaProject.getProject();
+		}
+		String lineDelimiter = getLineDelimiterPreference(project);
+		if (lineDelimiter != null) {
+			return lineDelimiter;
+		}
+		return System.getProperty("line.separator", "\n");
+	}
+
+	private static String getLineDelimiterPreference(IProject project) {
+		if (project != null) {
+			IScopeContext[] scopeContext = { new ProjectScope(project) };
+			String lineDelimiter = Platform.getPreferencesService().getString("org.eclipse.core.runtime", "line.separator", null, scopeContext);
+			if (lineDelimiter != null) {
+				return lineDelimiter;
+			}
+		}
+		IScopeContext[] scopeContext = { InstanceScope.INSTANCE };
+		String platformDefault = System.getProperty("line.separator", "\n");
+		return Platform.getPreferencesService().getString("org.eclipse.core.runtime", "line.separator", platformDefault, scopeContext);
+	}
 
 	
 	
