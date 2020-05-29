@@ -1,9 +1,7 @@
 package ch.rucotec.gef.diagram;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.concurrent.CompletableFuture;
 
 import javax.imageio.ImageIO;
 
@@ -20,10 +18,14 @@ import com.sun.javafx.stage.EmbeddedWindow;
 
 import ch.rucotec.wolips.eomodeler.core.gef.model.SimpleDiagram;
 import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
@@ -272,7 +274,7 @@ public class SimpleDiagramApplication {
 		
 		Text fileNameText = new Text("Filename");
 		Text resolutionText = new Text("Resolution");
-		Text saveText = new Text("Where to save");
+		Text saveText = new Text("Save Location");
 		Text filePathText = new Text(noPathSelected);
 		
 		
@@ -289,7 +291,7 @@ public class SimpleDiagramApplication {
 		slider.setShowTickLabels(true);
 		slider.setSnapToTicks(true);
 		slider.setPadding(new Insets(10, 0, 0, 0));
-		slider.setValue(6);
+		slider.setValue(2);
 		
 		Button browseBtn = new Button("Browse...");
 		GridPane.setMargin(browseBtn, new Insets(80, 0, 0, 0));
@@ -336,56 +338,83 @@ public class SimpleDiagramApplication {
 	}
 	
 	private void exportButtonAction(String filePath, String diagramName, int resolution) {
-		if (!diagramName.isEmpty() && !diagramName.endsWith(".png")) {
-			diagramName += ".png";
-		}
 		
-		if (!diagramName.isEmpty()) {
-			if (Files.isDirectory(Paths.get(filePath))) {
-				int scale = resolution;
-	        	InfiniteCanvas infi = ((InfiniteCanvas)getContentViewer().getCanvas());
-	            final SnapshotParameters spa = new SnapshotParameters();
-	            spa.setTransform(javafx.scene.transform.Transform.scale(scale, scale));
-	            
-	            	
-	            File file = new File(filePath,diagramName);
-	            WritableImage image = infi.getContentGroup().snapshot(spa, null);
-	            try {
-	            	 ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
-	            } catch (IOException e) {
-	            	Alert alert = new Alert(AlertType.ERROR);
-					alert.setTitle("Diagram has no name");
-					alert.setHeaderText(null);
-					alert.setContentText(e.toString());
-					canExportDialogBeClossed = false;
-					alert.showAndWait();
-					canExportDialogBeClossed = true;
-	            }
-	            exportDialog.close();
-			} else {
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.setTitle("Path not found");
-				alert.setHeaderText(null);
-				if (!filePath.equals(noPathSelected)) {
-					alert.setContentText("Path not found: " + filePath);
-				} else {
-					alert.setContentText(noPathSelected);
-				}
-				canExportDialogBeClossed = false;
-				alert.showAndWait();
-				canExportDialogBeClossed = true;
+		try {
+			if (diagramName.isEmpty()) {
+				throw new Exception("Please provide a file name");
 			}
-		} else {
+
+			if (!diagramName.endsWith(".png")) {
+				diagramName += ".png";
+			}
+
+			File destinationFile = new File(filePath);
+			if (!destinationFile.isDirectory()) {
+				throw new Exception("Please select an existing directory");
+			}
+		
+			InfiniteCanvas sourceCanvas = ((InfiniteCanvas)getContentViewer().getCanvas());
+			
+			Bounds bounds = sourceCanvas.getScrollableBounds();
+			
+			int scale = resolution;
+			int minX = scale * (int)bounds.getMinX();
+			int minY = scale * (int)bounds.getMinY();
+			int maxX = scale * (int)bounds.getMaxX();
+			int maxY = scale * (int)bounds.getMaxY();
+			
+			WritableImage resultingImage = new WritableImage(maxX - minX, maxY - minY);
+
+			// the original code to dump the contents of the InfiniteCanvas into a png file crashes for larger models
+			// this seems to be a memory bug in JavaFX
+			// There is a discussion on https://stackoverflow.com/questions/49260841/how-to-work-around-unrecognized-image-loader-null-in-javafx
+			//     "I encountered the same problem when trying to make a snapshot from a large node. 
+			//      In my case scaling was not a possibility since I needed a high resolution image. 
+			//      To solve the problem I made multiple snapshots from subsections of the node and 
+			//      stitched them together afterwards."
+			
+			int tileSize = 500;
+
+			int leftOffset = minX;
+			while (leftOffset < maxX) {
+
+				int tileWidth = maxX - leftOffset > tileSize ? tileSize : maxX - leftOffset;
+
+				int topOffset = minY;
+				while (topOffset < maxY) {
+					int tileHeight =  maxY - topOffset > tileSize ? tileSize : maxY - topOffset;
+
+					SnapshotParameters params = new SnapshotParameters();
+					params.setViewport(new Rectangle2D(leftOffset, topOffset, tileWidth, tileHeight));
+					params.setTransform(javafx.scene.transform.Transform.scale(scale, scale));
+					final CompletableFuture<Image> future = new CompletableFuture<>();
+					
+					WritableImage tile = sourceCanvas.getContentGroup().snapshot(params, null);
+					resultingImage.getPixelWriter().setPixels(leftOffset - minX, topOffset - minY, tileWidth, tileHeight, tile.getPixelReader(), 0, 0);
+
+					topOffset += tileHeight;
+				}
+
+				leftOffset += tileWidth; 
+			}
+
+			File file = new File(filePath,diagramName);
+			ImageIO.write(SwingFXUtils.fromFXImage(resultingImage, null), "png", file);
+
+		}
+		catch(Exception ex) {
 			Alert alert = new Alert(AlertType.ERROR);
-			alert.setTitle("Diagram has no name");
+			alert.setTitle("Sorry, there is an error!");
 			alert.setHeaderText(null);
-			alert.setContentText("Diagram has no name: Please give it a name");
+			alert.setContentText(ex.getMessage());
 			canExportDialogBeClossed = false;
 			alert.showAndWait();
 			canExportDialogBeClossed = true;
 		}
-	}
 
+		exportDialog.close();
+	}
+	
 	/**
 	 * This sets the diagram and refreshes the content of the viewer.
 	 * @param selectedDiagram
