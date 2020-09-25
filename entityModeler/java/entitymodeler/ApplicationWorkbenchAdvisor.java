@@ -1,6 +1,5 @@
 package entitymodeler;
 
-import javax.inject.Inject;
 
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
@@ -22,10 +21,13 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.internal.util.PrefUtil;
 import org.objectstyle.wolips.eomodeler.EOModelerPerspectiveFactory;
 import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.ServiceTracker;
 
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	private OpenDocumentEventProcessor _openDocProcessor;
-	@Inject private EnvironmentInfo environmentInfo;
 	
 	public ApplicationWorkbenchAdvisor(OpenDocumentEventProcessor openDocProcessor) {
 		_openDocProcessor = openDocProcessor;
@@ -63,7 +65,12 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	public void postStartup() {
 		super.postStartup();
 		try {
+		  
+		  BundleContext bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+		  ServiceReference<EnvironmentInfo> serviceRef = bundleContext.getServiceReference(EnvironmentInfo.class);
+  	  EnvironmentInfo environmentInfo = bundleContext.getService(serviceRef);
 			String[] args = environmentInfo.getNonFrameworkArgs();
+			bundleContext.ungetService(serviceRef);
 
 			String modelPath = null;
 			boolean optionValue = false;

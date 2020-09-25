@@ -11,7 +11,6 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.content.IContentTypeMatcher;
 
@@ -56,10 +55,6 @@ public class FilesystemProject extends FilesystemFolder implements IProject {
 	}
 
 	public IProjectNature getNature(String natureId) throws CoreException {
-		throw new UnsupportedOperationException();
-	}
-
-	public IPath getPluginWorkingLocation(IPluginDescriptor plugin) {
 		throw new UnsupportedOperationException();
 	}
 
