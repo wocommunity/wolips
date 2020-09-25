@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="java"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.objectstyle.wolips.eomodeler.doc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.objectstyle.wolips.eomodeler"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.objectstyle.wolips.eomodeler.core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.objectstyle.wolips.eomodeler.factories"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/>
+	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.equinox.common_3.13.0.v20200828-1034.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -130,14 +130,14 @@ public class StringUtilities {
 	 * @param csvString
 	 * @return ArrayList
 	 */
-	public static synchronized ArrayList arrayListFromCSV(String csvString) {
+	public static synchronized ArrayList<String> arrayListFromCSV(String csvString) {
 		if (csvString == null || csvString.length() == 0) {
-			return new ArrayList();
+			return new ArrayList<String>();
 		}
 		StringTokenizer valueTokenizer = new StringTokenizer(csvString, ",");
-		ArrayList resultList = new ArrayList(valueTokenizer.countTokens());
-		while (valueTokenizer.hasMoreElements()) {
-			resultList.add(valueTokenizer.nextElement());
+		ArrayList<String> resultList = new ArrayList<String>(valueTokenizer.countTokens());
+		while (valueTokenizer.hasMoreTokens()) {
+			resultList.add(valueTokenizer.nextToken());
 		}
 		return resultList;
 	}

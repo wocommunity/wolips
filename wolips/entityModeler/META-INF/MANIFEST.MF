@@ -17,3 +17,4 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: objectstyle.org
 Export-Package: entitymodeler
+Automatic-Module-Name: EntityModeler

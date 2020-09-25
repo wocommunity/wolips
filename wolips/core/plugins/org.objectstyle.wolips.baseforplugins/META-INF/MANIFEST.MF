@@ -11,4 +11,5 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.baseforplugins,
  org.objectstyle.wolips.baseforplugins.logging,
  org.objectstyle.wolips.baseforplugins.util
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: org.objectstyle.wolips.baseforplugins
