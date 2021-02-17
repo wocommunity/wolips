@@ -41,7 +41,6 @@ public class ImportProjectsTask extends CompositeTask {
     _reconcileProjects = reconcileProjects;
   }
 
-  @Override
   public String getId() {
     return "ImportProjectsTask-" + _id;
   }
