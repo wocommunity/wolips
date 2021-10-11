@@ -76,6 +76,7 @@
 				<exclude name="**/.settings/**" />
 				<exclude name="**/woproject.jar" />
 				<exclude name="**/cayenne.jar" />
+				<exclude name="bin/**" />
 			</fileset>
 		</copy>
 
@@ -199,6 +200,7 @@
 				<exclude name="default.properties" />
 				<exclude name="build.xml" />
 				<exclude name="META-INF/**" />
+				<exclude name="bin/**" />
 			</fileset>
 			<fileset dir="${param.plugin.dir}/java">
 				<exclude name="**/*.java" />
