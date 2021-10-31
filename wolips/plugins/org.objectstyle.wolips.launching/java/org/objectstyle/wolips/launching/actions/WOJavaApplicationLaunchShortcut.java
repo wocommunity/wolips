@@ -133,10 +133,14 @@ public class WOJavaApplicationLaunchShortcut extends JavaApplicationLaunchShortc
 		IRuntimeClasspathEntry[] runtimeClasspathEntries = JavaRuntime.computeUnresolvedRuntimeClasspath(wc);
 		runtimeClasspathEntries = JavaRuntime.resolveRuntimeClasspath(runtimeClasspathEntries, wc);
 		List<String> userEntries = new ArrayList<String>(runtimeClasspathEntries.length);
+		boolean isModular = JavaRuntime.isModularConfiguration(wc);
 		Set<String> set = new HashSet<String>(runtimeClasspathEntries.length);
 		for (int i = 0; i < runtimeClasspathEntries.length; i++) {
-			if (runtimeClasspathEntries[i].getClasspathProperty() == IRuntimeClasspathEntry.USER_CLASSES) {
-				String location = runtimeClasspathEntries[i].getLocation();
+			IRuntimeClasspathEntry entry = runtimeClasspathEntries[i];
+			int classpathProperty = entry.getClasspathProperty();
+			if (classpathProperty == IRuntimeClasspathEntry.USER_CLASSES
+					|| (isModular && classpathProperty == IRuntimeClasspathEntry.CLASS_PATH)) {
+				String location = entry.getLocation();
 				if (location != null) {
 					if (!set.contains(location)) {
 						userEntries.add(location);
