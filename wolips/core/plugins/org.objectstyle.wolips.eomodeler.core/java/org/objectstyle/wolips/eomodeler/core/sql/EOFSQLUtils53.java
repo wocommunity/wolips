@@ -1,5 +1,6 @@
 package org.objectstyle.wolips.eomodeler.core.sql;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,19 +10,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSDictionary;
-import com.webobjects.foundation.NSMutableArray;
-import com.webobjects.foundation.NSMutableDictionary;
-import com.webobjects.foundation.NSMutableSet;
-import com.webobjects.foundation.NSSet;
-
 public class EOFSQLUtils53 {
 
 	public static Object toWOCollections(Object obj) {
+		try {
+			return toWOCollectionsReflect(obj);
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		} catch (InstantiationException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		} catch (InvocationTargetException e) {
+			throw new RuntimeException(e);
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static Object toWOCollectionsReflect(Object obj) throws ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		Class<?> nsmutarray = Class.forName("com.webobjects.foundation.NSMutableArray");
+		Class<?> nsmutdictionary = Class.forName("com.webobjects.foundation.NSMutableDictionary");
+		Class<?> nsmutset = Class.forName("com.webobjects.foundation.NSMutableSet");
 		Object result;
 		if (obj instanceof Map) {
-			NSMutableDictionary nsDict = new NSMutableDictionary();
+			Object nsDict = nsmutdictionary.getConstructor().newInstance();
 			Map map = (Map) obj;
 			Iterator entriesIter = map.entrySet().iterator();
 			while (entriesIter.hasNext()) {
@@ -31,31 +44,31 @@ public class EOFSQLUtils53 {
 				if (key != null && value != null) {
 					key = toWOCollections(key);
 					value = toWOCollections(value);
-					nsDict.setObjectForKey(value, key);
+					nsmutdictionary.getMethod("setObjectForKey", Object.class, Object.class).invoke(nsDict, value, key);
 				}
 			}
 			result = nsDict;
 		} else if (obj instanceof List) {
-			NSMutableArray nsArray = new NSMutableArray();
+			Object nsArray = nsmutarray.getConstructor().newInstance();
 			List list = (List) obj;
 			Iterator valuesEnum = list.iterator();
 			while (valuesEnum.hasNext()) {
 				Object value = valuesEnum.next();
 				if (value != null) {
 					value = toWOCollections(value);
-					nsArray.addObject(value);
+					nsmutarray.getMethod("addObject", Object.class).invoke(nsArray, value);
 				}
 			}
 			result = nsArray;
 		} else if (obj instanceof Set) {
 			Set set = (Set) obj;
-			NSMutableSet nsSet = new NSMutableSet();
+			Object nsSet = nsmutset.getConstructor().newInstance();
 			Iterator valuesEnum = set.iterator();
 			while (valuesEnum.hasNext()) {
 				Object value = valuesEnum.next();
 				if (value != null) {
 					value = toWOCollections(value);
-					nsSet.addObject(value);
+					nsmutset.getMethod("addObject", Object.class).invoke(nsSet, value);
 				}
 			}
 			result = nsSet;
@@ -66,33 +79,48 @@ public class EOFSQLUtils53 {
 	}
 
 	public static Object toJavaCollections(Object obj) {
+		try {
+			return toJavaCollectionsReflect(obj);
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		} catch (InvocationTargetException e) {
+			throw new RuntimeException(e);
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static Object toJavaCollectionsReflect(Object obj) throws ClassNotFoundException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		Class<?> nsarray = Class.forName("com.webobjects.foundation.NSArray");
+		Class<?> nsdictionary = Class.forName("com.webobjects.foundation.NSDictionary");
+		Class<?> nsset = Class.forName("com.webobjects.foundation.NSSet");
 		Object result;
-		if (obj instanceof NSDictionary) {
+		if (nsdictionary.isInstance(obj)) {
 			Map map = new HashMap();
-			NSDictionary nsDict = (NSDictionary) obj;
-			Enumeration keysEnum = nsDict.allKeys().objectEnumerator();
+			Object arr = nsdictionary.getMethod("allKeys").invoke(obj);
+			Enumeration keysEnum = (Enumeration) nsarray.getMethod("objectEnumerator").invoke(arr);
 			while (keysEnum.hasMoreElements()) {
 				Object key = keysEnum.nextElement();
-				Object value = nsDict.objectForKey(key);
+				Object value = nsdictionary.getMethod("objectForKey", Object.class).invoke(obj, key);
 				key = toJavaCollections(key);
 				value = toJavaCollections(value);
 				map.put(key, value);
 			}
 			result = map;
-		} else if (obj instanceof NSArray) {
+		} else if (nsarray.isInstance(obj)) {
 			List list = new LinkedList();
-			NSArray nsArray = (NSArray) obj;
-			Enumeration valuesEnum = nsArray.objectEnumerator();
+			Enumeration valuesEnum = (Enumeration) nsarray.getMethod("objectEnumerator").invoke(obj);
 			while (valuesEnum.hasMoreElements()) {
 				Object value = valuesEnum.nextElement();
 				value = toJavaCollections(value);
 				list.add(value);
 			}
 			result = list;
-		} else if (obj instanceof NSSet) {
+		} else if (nsset.isInstance(obj)) {
 			Set set = new HashSet();
-			NSSet nsSet = (NSSet) obj;
-			Enumeration valuesEnum = nsSet.objectEnumerator();
+			Enumeration valuesEnum = (Enumeration) nsset.getMethod("objectEnumerator").invoke(obj);
 			while (valuesEnum.hasMoreElements()) {
 				Object value = valuesEnum.nextElement();
 				value = toJavaCollections(value);
