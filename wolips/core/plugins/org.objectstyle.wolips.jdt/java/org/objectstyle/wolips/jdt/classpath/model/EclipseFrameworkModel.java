@@ -162,6 +162,7 @@ public class EclipseFrameworkModel extends FrameworkModel<IEclipseFramework> {
 		if (networkRoot != null && networkSystemPath != null) {
 			roots.add(getCachedFolderRoot(Root.NETWORK_ROOT, "Network Frameworks", networkRoot.toFile(), networkSystemPath.toFile()));
 		}
+		roots.add(new ProjectClasspathRoot(Root.CLASSPATH_ROOT, "Project Classpath", this.project));
 		return roots;
 	}
 	
