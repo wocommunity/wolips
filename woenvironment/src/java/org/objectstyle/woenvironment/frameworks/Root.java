@@ -65,6 +65,7 @@ public abstract class Root<T extends IFramework> {
 	public static final String NETWORK_ROOT = "Network";
 	public static final String LOCAL_ROOT = "Local";
 	public static final String SYSTEM_ROOT = "System";
+	public static final String CLASSPATH_ROOT = "Classpath";
 
 	private String shortName;
 	private String name;

@@ -143,7 +143,12 @@ public class WOLipsNatureUtils {
 	 */
 	public static boolean isMavenNature(IProject project) {
 		try {
+			// The old nature string?
 			IProjectNature nature = project.getNature("org.maven.ide.eclipse.maven2Nature");
+			if(nature == null) {
+				// The nature id used today
+				nature = project.getNature("org.eclipse.m2e.core.maven2Nature");
+			}
 			if (nature != null) {
 				return true;
 			}
