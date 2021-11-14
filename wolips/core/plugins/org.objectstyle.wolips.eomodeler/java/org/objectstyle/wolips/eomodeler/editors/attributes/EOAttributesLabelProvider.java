@@ -191,7 +191,7 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
 			boolean isAttributePrototyped = attribute.isPrototyped(property);
 			boolean isClassProperty = attribute.isClassProperty() != null && attribute.isClassProperty().booleanValue();
 			if (isAttributePrototyped) {
-			  color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED);
+			  color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_CYAN);
 			}
 			else if (!isClassProperty) {
         color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_GRAY);
