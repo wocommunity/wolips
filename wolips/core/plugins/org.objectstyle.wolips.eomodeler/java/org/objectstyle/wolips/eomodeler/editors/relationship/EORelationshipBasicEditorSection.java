@@ -62,12 +62,13 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
@@ -161,22 +162,22 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 		
 		Composite settingsComposite = new Composite(topForm, SWT.NONE);
 		settingsComposite.setBackground(topForm.getBackground());
-		FillLayout settingsLayout = new FillLayout(SWT.HORIZONTAL);
-		settingsLayout.spacing = 10;
-		settingsComposite.setLayout(settingsLayout);
+		settingsComposite.setLayout(new RowLayout());
 		GridData settingsLayoutData = new GridData(GridData.FILL_HORIZONTAL);
 		settingsLayoutData.heightHint = 25;
 		settingsComposite.setLayoutData(settingsLayoutData);
 
-		_toManyButton = new Button(settingsComposite, SWT.TOGGLE | SWT.FLAT);
+		_toManyButton = new Button(settingsComposite, SWT.CHECK);
 		_toManyButton.setToolTipText(Messages.getString("EORelationship." + EORelationship.TO_MANY));
 		_toManyButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.TO_MANY_ICON));
 
-		_classPropertyButton = new Button(settingsComposite, SWT.TOGGLE | SWT.FLAT);
+		new Label(settingsComposite, SWT.SEPARATOR | SWT.VERTICAL);
+		_classPropertyButton = new Button(settingsComposite, SWT.CHECK);
 		_classPropertyButton.setToolTipText(Messages.getString("EORelationship." + EORelationship.CLASS_PROPERTY));
 		_classPropertyButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
 
-		_optionalButton = new Button(settingsComposite, SWT.TOGGLE | SWT.FLAT);
+		new Label(settingsComposite, SWT.SEPARATOR | SWT.VERTICAL);
+		_optionalButton = new Button(settingsComposite, SWT.CHECK);
 		_optionalButton.setToolTipText(Messages.getString("EORelationship." + EORelationship.OPTIONAL));
 		_optionalButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.ALLOW_NULL_ICON));
 
