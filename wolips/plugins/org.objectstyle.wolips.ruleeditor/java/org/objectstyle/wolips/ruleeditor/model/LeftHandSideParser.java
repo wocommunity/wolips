@@ -55,7 +55,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -137,7 +136,7 @@ public class LeftHandSideParser {
 
 	private static final String INTERNAL_QUALIFIER_PREFIX = "$INTERNAL_QUALIFIER_";
 
-	private static final String OPERATORS_PATTERN = "(=|!=|>|<|>=|<=|like){1}";
+	private static final String OPERATORS_PATTERN = "(=|!=|>|<|>=|<=|like|caseInsensitiveLike|[^\\s]*:){1}";
 
 	private static final Map<String, String> UNMODIFIABLE_NULL_VALUE_MAP;
 
@@ -181,14 +180,19 @@ public class LeftHandSideParser {
 		String operator = tokenizer.next();
 
 		tokenizer.hasNext();
-		String value = tokenizer.next().replaceAll("(\'|\"|\\))", "").trim();
+		String rawValue = tokenizer.next();
+		String value = rawValue.replaceAll("(\'|\"|\\))", "").trim();
+		boolean isKeyComparison = !"null".equals(value) 
+				&& Character.isAlphabetic(rawValue.trim().charAt(0));
 
 		Map<String, Object> properties = new HashMap<String, Object>();
 
-		properties.put(AbstractRuleElement.CLASS_KEY, Qualifier.KEY_VALUE.getClassName());
-		properties.put(AbstractQualifierElement.KEY_KEY, key);
-		properties.put(AbstractQualifierElement.SELECTOR_NAME_KEY, Selector.forOperator(operator).getSelectorName());
-		properties.put(AbstractQualifierElement.VALUE_KEY, valueRepresentation(value));
+		properties.put(AbstractRuleElement.CLASS_KEY, isKeyComparison ? Qualifier.KEY_COMPARISON.getClassName() : Qualifier.KEY_VALUE.getClassName());
+		properties.put(isKeyComparison ? AbstractQualifierElement.LEFT_KEY_KEY : AbstractQualifierElement.KEY_KEY, key);
+		Selector sel = Selector.forOperator(operator);
+		String selectorName = sel == null ? operator.substring(0, operator.length() - 1) : sel.getSelectorName();
+		properties.put(AbstractQualifierElement.SELECTOR_NAME_KEY, selectorName);
+		properties.put(isKeyComparison ? AbstractQualifierElement.RIGHT_KEY_KEY : AbstractQualifierElement.VALUE_KEY, valueRepresentation(value));
 
 		return properties;
 	}
@@ -208,12 +212,6 @@ public class LeftHandSideParser {
 	private int count = 0;
 
 	private final Map<String, String> qualifierSubstitutionMap = new HashMap<String, String>();
-
-	private Map<String, String> createParseMap(final String expression) {
-		Map<String, String> expressionAsMap = new TreeMap<String, String>();
-
-		return null;
-	}
 
 	private Map<String, Object> handleNotQualifier(final String conditionsToParse) {
 		if (hasNotQualifier(conditionsToParse)) {
@@ -315,7 +313,7 @@ public class LeftHandSideParser {
 		// }
 	}
 
-	private boolean isQualifier(final String expression) {
+	private boolean isGroupQualifier(final String expression) {
 		return Qualifier.AND.getDisplayName().equals(expression) || Qualifier.OR.getDisplayName().equals(expression);
 	}
 
@@ -366,15 +364,17 @@ public class LeftHandSideParser {
 
 			Map<String, Object> returnedMap;
 
-			if (isQualifier(expression)) {
-				String qualifierDisplayName = expression;
+			if (isGroupQualifier(expression)) {
+				String groupQualifierClassName = Qualifier.AND.getDisplayName().equals(expression)
+						? Qualifier.AND.getClassName()
+						: Qualifier.OR.getClassName();
 
 				tokenizer.hasNext();
 				expression = tokenizer.next();
 
 				String assignmentClassName = getClassFromMap(properties);
 
-				if (assignmentClassName != null && !assignmentClassName.equals(Qualifier.forDisplayName(qualifierDisplayName).getClassName())) {
+				if (assignmentClassName != null && !assignmentClassName.equals(groupQualifierClassName)) {
 					returnedMap = parse(expression);
 
 					QualifierElement qualifier = new QualifierElement(returnedMap);
@@ -385,12 +385,12 @@ public class LeftHandSideParser {
 
 					putQualifiersIntoMap(properties, new ArrayList<QualifierElement>());
 
-					properties.put(AbstractRuleElement.CLASS_KEY, Qualifier.forDisplayName(qualifierDisplayName).getClassName());
+					properties.put(AbstractRuleElement.CLASS_KEY, groupQualifierClassName);
 
 					getQualifiersFromMap(properties).add(wrapperQualifier);
 					getQualifiersFromMap(properties).add(qualifier);
 				} else {
-					properties.put(AbstractRuleElement.CLASS_KEY, Qualifier.forDisplayName(qualifierDisplayName).getClassName());
+					properties.put(AbstractRuleElement.CLASS_KEY, groupQualifierClassName);
 
 					returnedMap = parse(expression);
 

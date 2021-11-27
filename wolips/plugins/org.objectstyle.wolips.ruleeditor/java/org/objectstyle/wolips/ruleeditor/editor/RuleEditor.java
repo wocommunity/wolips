@@ -309,10 +309,11 @@ public class RuleEditor {
 		 */
 
 		// Create the columns
-		RuleEditor.createTableColumn(tableViewer, "Lhs", "Left Hand Side", new TextSorter(0), SWT.DOWN, true).chooseColumnForSorting();
+		// FIXME Need a checkbox column for RuleIsDisabled = 'YES'
+		RuleEditor.createTableColumn(tableViewer, "Lhs", "Left Hand Side", new TextSorter(0), SWT.DOWN, true);
 		RuleEditor.createTableColumn(tableViewer, "Rhs Key", "Right Hand Side Key", new TextSorter(1), SWT.UP, false);
 		RuleEditor.createTableColumn(tableViewer, "Rhs Value", "Right Hand Side Value", new TextSorter(2), SWT.UP, false);
-		RuleEditor.createTableColumn(tableViewer, "Priority", "Priority", new TextSorter(3), SWT.UP, false);
+		RuleEditor.createTableColumn(tableViewer, "Priority", "Priority", new TextSorter(3), SWT.UP, false).chooseColumnForSorting();
 
 		// TableColumn c1 = new TableColumn(table, SWT.LEFT, 0);
 		// c1.setText("Lhs");
@@ -472,7 +473,7 @@ public class RuleEditor {
 	}
 
 	void setClassName(final String classname) {
-		rule.setAssignmentClassName(classname);
+		rule.getRightHandSide().setAssignmentClassName(classname);
 
 		updateRules();
 	}

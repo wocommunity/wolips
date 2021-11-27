@@ -74,6 +74,10 @@ public abstract class AbstractQualifierElement extends AbstractRuleElement {
 	protected static final String VALUE_KEY = "value";
 
 	protected static final String QUALIFIER_KEY = "qualifier";
+	
+	protected static final String LEFT_KEY_KEY = "leftKey";
+	
+	protected static final String RIGHT_KEY_KEY = "rightKey";
 
 	private String key;
 
@@ -84,12 +88,18 @@ public abstract class AbstractQualifierElement extends AbstractRuleElement {
 	private String selectorName;
 
 	private LhsValue value;
+	
+	private String leftKey;
+	
+	private String rightKey;
 
 	public AbstractQualifierElement(final Map<String, Object> properties) {
 		super(properties);
 
 		key = (String) properties.get(KEY_KEY);
 		selectorName = (String) properties.get(SELECTOR_NAME_KEY);
+		leftKey = (String) properties.get(LEFT_KEY_KEY);
+		rightKey = (String) properties.get(RIGHT_KEY_KEY);
 
 		Object value = properties.get(VALUE_KEY);
 
@@ -177,6 +187,14 @@ public abstract class AbstractQualifierElement extends AbstractRuleElement {
 		return value;
 	}
 
+	public String getLeftKey() {
+		return leftKey;
+	}
+
+	public String getRightKey() {
+		return rightKey;
+	}
+
 	protected void setKey(final String key) {
 		this.key = key;
 	}
@@ -201,6 +219,14 @@ public abstract class AbstractQualifierElement extends AbstractRuleElement {
 		}
 
 		this.value = new LhsValue(value);
+	}
+
+	public void setLeftKey(String leftKey) {
+		this.leftKey = leftKey;
+	}
+
+	public void setRightKey(String rightKey) {
+		this.rightKey = rightKey;
 	}
 
 	@Override
@@ -233,6 +259,14 @@ public abstract class AbstractQualifierElement extends AbstractRuleElement {
 			}
 
 			qualifierMap.put(QUALIFIERS_KEY, qualifiersArray);
+		}
+		
+		if (leftKey != null) {
+			qualifierMap.put(LEFT_KEY_KEY, leftKey);
+		}
+		
+		if (rightKey != null) {
+			qualifierMap.put(RIGHT_KEY_KEY, rightKey);
 		}
 
 		return qualifierMap;

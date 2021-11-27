@@ -13,27 +13,29 @@ public class TextSorter extends AbstractInvertableTableSorter {
 
 	@Override
 	public int compare(final Viewer viewer, final Object e1, final Object e2) {
-
+		Rule rule1 = (Rule) e1;
+		Rule rule2 = (Rule) e2;
+		
 		if (columnIdx == 0) {
-			if (((Rule) e1).getLeftHandSide() == null || ((Rule) e2).getLeftHandSide() == null) {
+			if (rule1.getLeftHandSide() == null || rule2.getLeftHandSide() == null) {
 				return 0;
 			}
-			return ((Rule) e1).getLeftHandSide().toString().compareTo(((Rule) e2).getLeftHandSide().toString());
+			return rule1.getLeftHandSide().toString().compareTo(rule2.getLeftHandSide().toString());
 		} else if (columnIdx == 1) {
-			if (((Rule) e1).getRightHandSide().getKeyPath() == null || ((Rule) e2).getRightHandSide().getKeyPath() == null) {
+			if (rule1.getRightHandSide().getKeyPath() == null || rule2.getRightHandSide().getKeyPath() == null) {
 				return 0;
 			}
-			return ((Rule) e1).getRightHandSide().getKeyPath().compareTo(((Rule) e2).getRightHandSide().getKeyPath());
+			return rule1.getRightHandSide().getKeyPath().compareTo(rule2.getRightHandSide().getKeyPath());
 		} else if (columnIdx == 2) {
-			if (((Rule) e1).getRightHandSide().getValue() == null || ((Rule) e2).getRightHandSide().getValue() == null) {
+			if (rule1.getRightHandSide().getValue() == null || rule2.getRightHandSide().getValue() == null) {
 				return 0;
 			}
-			return ((Rule) e1).getRightHandSide().getValue().compareTo(((Rule) e2).getRightHandSide().getValue());
+			return rule1.getRightHandSide().getValue().compareTo(rule2.getRightHandSide().getValue());
 		} else {
-			if (((Rule) e1).getAuthor() == null || ((Rule) e2).getAuthor() == null) {
+			if (rule1.getAuthor() == null || rule2.getAuthor() == null) {
 				return 0;
 			}
-			return ((Rule) e1).getAuthor().compareTo(((Rule) e2).getAuthor());
+			return Integer.valueOf(rule1.getAuthor()).compareTo(Integer.valueOf(rule2.getAuthor()));
 		}
 
 	}

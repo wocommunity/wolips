@@ -55,7 +55,9 @@ import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.objectstyle.woenvironment.plist.WOLPropertyListSerialization;
@@ -222,8 +224,11 @@ public class D2WModel implements PropertyChangeListener {
 		Map<String, Collection<Map>> modelMap = new HashMap<String, Collection<Map>>(NUMBER_OF_RULES_KEY);
 
 		Collection<Map> rulesArray = new ArrayList<Map>();
+		List<Rule> rulesList = new ArrayList<Rule>(rules);
 
-		for (Rule rule : rules) {
+		Collections.sort(rulesList, new RuleComparator());
+
+		for (Rule rule : rulesList) {
 
 			Map<String, Object> ruleMap = rule.toMap();
 
@@ -242,7 +247,10 @@ public class D2WModel implements PropertyChangeListener {
 		Map<String, Collection<Map>> modelMap = rulesToModelMap();
 
 		try {
-			WOLPropertyListSerialization.propertyListToFile("", modelFile, modelMap);
+			RuleFileWriter.propertyListToRuleFile(modelFile, modelMap);
+			List<Rule> rulesList = new ArrayList<Rule>(rules);
+			Collections.sort(rulesList, new RuleComparator());
+			RuleFileWriter.writeRuleFileTxt(rulesList, modelFile);
 
 			setHasUnsavedChanges(false);
 

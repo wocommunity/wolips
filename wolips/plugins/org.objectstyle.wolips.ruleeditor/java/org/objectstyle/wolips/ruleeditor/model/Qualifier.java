@@ -8,30 +8,24 @@ import java.util.Map;
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  */
 public enum Qualifier {
-	AND("and", "com.webobjects.eocontrol.EOAndQualifier"), KEY_VALUE("", "com.webobjects.eocontrol.EOKeyValueQualifier"), NOT("not", "com.webobjects.eocontrol.EONotQualifier"), OR("or", "com.webobjects.eocontrol.EOOrQualifier");
+	AND("and", "com.webobjects.eocontrol.EOAndQualifier"), 
+	KEY_VALUE("", "com.webobjects.eocontrol.EOKeyValueQualifier"), 
+	KEY_COMPARISON("", "com.webobjects.eocontrol.EOKeyComparisonQualifier"), 
+	NOT("not", "com.webobjects.eocontrol.EONotQualifier"), 
+	OR("or", "com.webobjects.eocontrol.EOOrQualifier");
 
 	private static final Map<String, Qualifier> QUALIFIERS_BY_CLASS_NAME;
-
-	private static final Map<String, Qualifier> QUALIFIERS_BY_DISPLAY_NAME;
 
 	static {
 		Map<String, Qualifier> tempMap = new HashMap<String, Qualifier>(4);
 
 		tempMap.put(AND.getClassName(), AND);
 		tempMap.put(KEY_VALUE.getClassName(), KEY_VALUE);
+		tempMap.put(KEY_COMPARISON.getClassName(), KEY_COMPARISON);
 		tempMap.put(NOT.getClassName(), NOT);
 		tempMap.put(OR.getClassName(), OR);
 
 		QUALIFIERS_BY_CLASS_NAME = Collections.unmodifiableMap(tempMap);
-
-		tempMap = new HashMap<String, Qualifier>(4);
-
-		tempMap.put(AND.getDisplayName(), AND);
-		tempMap.put(KEY_VALUE.getDisplayName(), KEY_VALUE);
-		tempMap.put(NOT.getDisplayName(), NOT);
-		tempMap.put(OR.getDisplayName(), OR);
-
-		QUALIFIERS_BY_DISPLAY_NAME = Collections.unmodifiableMap(tempMap);
 
 		tempMap = null;
 	}
@@ -48,21 +42,6 @@ public enum Qualifier {
 		}
 
 		return qualifier;
-	}
-
-	public static Qualifier forDisplayName(String displayName) {
-		if (displayName == null) {
-			return KEY_VALUE;
-		}
-
-		Qualifier qualifier = QUALIFIERS_BY_DISPLAY_NAME.get(displayName);
-
-		if (qualifier == null) {
-			throw new IllegalArgumentException("The display name " + displayName + " is an invalid display name for a Qualifier");
-		}
-
-		return qualifier;
-
 	}
 
 	private final String className;
