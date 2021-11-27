@@ -68,14 +68,14 @@ public class QualifierElement extends AbstractQualifierElement {
 	@Override
 	public void appendToDisplayStringBuffer(final StringBuffer buffer) {
 		if (getQualifiers() == null && !Qualifier.NOT.getClassName().equals(getAssignmentClassName())) {
-			buffer.append(getKey());
+			buffer.append(getLeftKey() == null ? getKey() : getLeftKey());
 			buffer.append(" ");
 
 			Selector selector = Selector.forName(getSelectorName());
 
-			buffer.append(selector.getOperator());
+			buffer.append(selector == null ? getSelectorName() + ":" : selector.getOperator());
 			buffer.append(" ");
-			buffer.append(getValue());
+			buffer.append(getRightKey() == null ? getValue() : getRightKey());
 		}
 
 		super.appendToDisplayStringBuffer(buffer);

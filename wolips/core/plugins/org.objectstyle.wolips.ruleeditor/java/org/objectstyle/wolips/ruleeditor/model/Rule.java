@@ -183,4 +183,20 @@ public class Rule extends AbstractRuleElement {
 
 		return ruleMap;
 	}
+	
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(getAuthor())
+			.append(" : ")
+			.append(getLeftHandSide().toString())
+			.append(" => ")
+			.append(getRightHandSide().getKeyPath())
+			.append(" = ")
+			.append(getRightHandSide().getValue() == null ? "(null)" : getRightHandSide().getValue())
+			.append(" [")
+			.append(getRightHandSide().getAssignmentClassName())
+			.append("]");
+		return builder.toString();
+	}
 }

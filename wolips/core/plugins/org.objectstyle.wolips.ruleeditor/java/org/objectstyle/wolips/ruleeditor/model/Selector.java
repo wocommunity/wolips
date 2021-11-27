@@ -8,7 +8,14 @@ import java.util.Map;
  * @author <a href="mailto:hprange@moleque.com.br">Henrique Prange</a>
  */
 public enum Selector {
-	EQUAL("isEqualTo", "="), GREATER_THAN("isGreaterThan", ">"), GREATER_THAN_OR_EQUAL("isGreaterThanOrEqualTo", ">="), LESS_THAN("isLessThan", "<"), LESS_THAN_OR_EQUAL("isLessThanOrEqualTo", "<="), LIKE("isLike", "like"), NOT_EQUAL("isNotEqualTo", "!=");
+	EQUAL("isEqualTo", "="), 
+	GREATER_THAN("isGreaterThan", ">"), 
+	GREATER_THAN_OR_EQUAL("isGreaterThanOrEqualTo", ">="), 
+	LESS_THAN("isLessThan", "<"), 
+	LESS_THAN_OR_EQUAL("isLessThanOrEqualTo", "<="), 
+	LIKE("isLike", "like"), 
+	CASE_INSENSITIVE_LIKE("isCaseInsensitiveLike", "caseInsensitiveLike"), 
+	NOT_EQUAL("isNotEqualTo", "!=");
 
 	private static final Map<String, Selector> SELECTORS_BY_NAME;
 
@@ -24,6 +31,7 @@ public enum Selector {
 		tempMap.put(GREATER_THAN.getSelectorName(), GREATER_THAN);
 		tempMap.put(GREATER_THAN_OR_EQUAL.getSelectorName(), GREATER_THAN_OR_EQUAL);
 		tempMap.put(LIKE.getSelectorName(), LIKE);
+		tempMap.put(CASE_INSENSITIVE_LIKE.getSelectorName(), CASE_INSENSITIVE_LIKE);
 
 		// Support to isEqual
 		tempMap.put("isEqual", EQUAL);
@@ -39,6 +47,7 @@ public enum Selector {
 		tempMap.put(GREATER_THAN.getOperator(), GREATER_THAN);
 		tempMap.put(GREATER_THAN_OR_EQUAL.getOperator(), GREATER_THAN_OR_EQUAL);
 		tempMap.put(LIKE.getOperator(), LIKE);
+		tempMap.put(CASE_INSENSITIVE_LIKE.getOperator(), CASE_INSENSITIVE_LIKE);
 
 		SELECTORS_BY_OPERATOR = Collections.unmodifiableMap(tempMap);
 
@@ -52,10 +61,6 @@ public enum Selector {
 
 		Selector selector = SELECTORS_BY_NAME.get(name);
 
-		if (selector == null) {
-			throw new IllegalArgumentException("The name " + name + " is an invalid name for a Selector");
-		}
-
 		return selector;
 	}
 
@@ -66,7 +71,7 @@ public enum Selector {
 
 		Selector selector = SELECTORS_BY_OPERATOR.get(operator);
 
-		if (selector == null) {
+		if (selector == null && !operator.endsWith(":")) {
 			throw new IllegalArgumentException("The operator " + operator + " is an invalid operator for a Selector");
 		}
 

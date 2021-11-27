@@ -96,6 +96,8 @@ public class LeftHandSide extends AbstractQualifierElement {
 		setAssignmentClassName((String) properties.get(CLASS_KEY));
 		setKey((String) properties.get(KEY_KEY));
 		setValue(properties.get(VALUE_KEY));
+		setLeftKey((String) properties.get(LEFT_KEY_KEY));
+		setRightKey((String) properties.get(RIGHT_KEY_KEY));
 		setSelectorName((String) properties.get(SELECTOR_NAME_KEY));
 		setQualifiers((Collection<QualifierElement>) properties.get(QUALIFIERS_KEY));
 
@@ -140,14 +142,14 @@ public class LeftHandSide extends AbstractQualifierElement {
 		if (getQualifiers() != null || getQualifier() != null) {
 			appendToDisplayStringBuffer(buffer);
 		} else {
-			buffer.append(getKey());
+			buffer.append(getLeftKey() == null ? getKey() : getLeftKey());
 			buffer.append(" ");
 
 			Selector selector = Selector.forName(getSelectorName());
 
-			buffer.append(selector.getOperator());
+			buffer.append(selector == null ? getSelectorName() + ":" : selector.getOperator());
 			buffer.append(" ");
-			buffer.append(getValue());
+			buffer.append(getRightKey() == null ? getValue() : getRightKey());
 		}
 
 		return buffer.toString();

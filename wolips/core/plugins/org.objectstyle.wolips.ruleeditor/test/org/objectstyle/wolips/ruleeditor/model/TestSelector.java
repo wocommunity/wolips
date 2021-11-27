@@ -1,14 +1,14 @@
 package org.objectstyle.wolips.ruleeditor.model;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
 public class TestSelector {
-	@Test(expected = IllegalArgumentException.class)
 	public void selectorForInvalidName() throws Exception {
-		Selector.forName("invalidName");
+		assertNull(Selector.forName("invalidName"));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
