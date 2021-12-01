@@ -59,6 +59,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbenchPart;
 import org.objectstyle.wolips.baseforplugins.util.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.Activator;
@@ -84,15 +85,17 @@ public class EOAttributeBasicEditorSection extends AbstractEOArgumentBasicEditor
 
 	@Override
 	protected void _addSettings(Composite settings) {
-		_primaryKeyButton = new Button(settings, SWT.TOGGLE | SWT.FLAT);
+		_primaryKeyButton = new Button(settings, SWT.CHECK);
 		_primaryKeyButton.setToolTipText(Messages.getString("EOAttribute." + EOAttribute.PRIMARY_KEY));
 		_primaryKeyButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.PRIMARY_KEY_ICON));
 
-		_classPropertyButton = new Button(settings, SWT.TOGGLE | SWT.FLAT);
+		new Label(settings, SWT.SEPARATOR | SWT.VERTICAL);
+		_classPropertyButton = new Button(settings, SWT.CHECK);
 		_classPropertyButton.setToolTipText(Messages.getString("EOAttribute." + EOAttribute.CLASS_PROPERTY));
 		_classPropertyButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
 
-		_lockingButton = new Button(settings, SWT.TOGGLE | SWT.FLAT);
+		new Label(settings, SWT.SEPARATOR | SWT.VERTICAL);
+		_lockingButton = new Button(settings, SWT.CHECK);
 		_lockingButton.setToolTipText(Messages.getString("EOAttribute." + EOAttribute.USED_FOR_LOCKING));
 		_lockingButton.setImage(Activator.getDefault().getImageRegistry().get(Activator.LOCKING_ICON));
 	}
