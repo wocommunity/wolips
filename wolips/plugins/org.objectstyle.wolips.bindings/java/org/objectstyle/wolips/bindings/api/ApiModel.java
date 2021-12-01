@@ -80,6 +80,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 public class ApiModel {
@@ -240,11 +242,24 @@ public class ApiModel {
           throw new ApiModelException("There was no file, URL, or reader specified as the location for this API file.");
         }
         _document.normalize();
+        removeTextNodes(_document);
       }
       catch (Throwable e) {
         throw new ApiModelException("Failed to parse API file '" + getLocation() + "'.", e);
       }
     }
+  }
+
+  private void removeTextNodes(Node node) {
+    NodeList children = node.getChildNodes();
+    for (int i = children.getLength() - 1; i >= 0; i--) {
+      Node child = children.item(i);
+      if (child.getNodeType() == Node.ELEMENT_NODE) {
+        removeTextNodes(child);
+      } else if (child.getNodeType() == Node.TEXT_NODE) {
+        node.removeChild(child);
+      }
+	}
   }
 
   public Wodefinitions getWODefinitions() throws ApiModelException {
