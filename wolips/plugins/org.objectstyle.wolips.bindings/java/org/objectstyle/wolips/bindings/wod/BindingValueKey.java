@@ -144,7 +144,8 @@ public class BindingValueKey implements Comparable<BindingValueKey> {
       String[] declaringTypeParameters = declaringType.getTypeParameterSignatures();
       String[] declaringTypeArgs = binding._parent._bindingDeclaringType.getTypeParameterSignatures();
       String[] memberTypeArgs = Signature.getTypeArguments(getMemberTypeName(binding._parent._bindingMember));
-      String[] superTypeArgs = Signature.getTypeArguments(binding._parent._bindingDeclaringType.getSuperclassTypeSignature());
+      String superclassTypeSignature = binding._parent._bindingDeclaringType.getSuperclassTypeSignature();
+      String[] superTypeArgs = superclassTypeSignature != null ? Signature.getTypeArguments(binding._parent._bindingDeclaringType.getSuperclassTypeSignature()) : new String[0];
 
       /* Resolve next type using generic type arguments
        * 
