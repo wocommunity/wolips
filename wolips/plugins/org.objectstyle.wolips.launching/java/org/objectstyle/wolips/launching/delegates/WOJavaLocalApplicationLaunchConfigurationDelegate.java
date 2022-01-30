@@ -175,6 +175,9 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends JavaLaunc
 
 		// IPath wd = getWorkingDirectoryPath(configuration);
 		ProjectAdapter projectAdaptor = (ProjectAdapter) theProject.getAdapter(ProjectAdapter.class);
+		if(projectAdaptor == null) {
+			throw new IllegalStateException("No projectAdapter found. This may be due to missing wolips natures in your .project file. See https://github.com/wocommunity/wolips/issues/165 for more information.");
+		}
 
 		IContainer workingDirectoryFolder = projectAdaptor.getWorkingDirFolder();
 		File workingDirectoryFile;
