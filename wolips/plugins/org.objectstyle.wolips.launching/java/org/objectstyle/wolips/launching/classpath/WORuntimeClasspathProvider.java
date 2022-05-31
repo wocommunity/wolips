@@ -53,6 +53,7 @@ import java.util.Set;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.StandardClasspathProvider;
@@ -88,10 +89,14 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	public IRuntimeClasspathEntry[] superResolveClasspath(IRuntimeClasspathEntry[] entries, ILaunchConfiguration configuration) throws CoreException {
 		// use an ordered set to avoid duplicates
 		Set<IRuntimeClasspathEntry> all = new LinkedHashSet<IRuntimeClasspathEntry>(entries.length);
+		boolean excludeTestCode = configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_EXCLUDE_TEST_CODE, false);
+		
 		for (int i = 0; i < entries.length; i++) {
 			IRuntimeClasspathEntry[] resolved = JavaRuntime.resolveRuntimeClasspathEntry(entries[i], configuration);
 			for (int j = 0; j < resolved.length; j++) {
-				all.add(resolved[j]);
+				if (!(excludeTestCode && resolved[j].getClasspathEntry().isTest())) {
+					all.add(resolved[j]);
+				}
 			}
 		}
 		return all.toArray(new IRuntimeClasspathEntry[all.size()]);
