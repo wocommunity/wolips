@@ -13,6 +13,9 @@
 	<!-- ========================================== -->
 	<target name="java">
 		<path id="classpath">
+			<fileset dir="lib">
+				<include name="**/*.jar" />
+			</fileset>
 			<fileset dir="../../lib">
 				<include name="**/*.jar" />
 			</fileset>
