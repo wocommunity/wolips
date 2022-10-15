@@ -17,6 +17,7 @@ public class WOModelerStartup implements IStartup {
 	    _server.addRequestHandler("/womodeler", new WOModelerRequestHandler());
 	    _server.addRequestHandler("/refresh", new RefreshRequestHandler());
 	    _server.addRequestHandler("/openComponent", new OpenComponentRequestHandler());
+	    _server.addRequestHandler("/openJavaFile", new OpenJavaFileRequestHandler());
 		
 		if (PreferencesPlugin.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.WOMODELER_SERVER_ENABLED)) {
 			_server.start(true);
