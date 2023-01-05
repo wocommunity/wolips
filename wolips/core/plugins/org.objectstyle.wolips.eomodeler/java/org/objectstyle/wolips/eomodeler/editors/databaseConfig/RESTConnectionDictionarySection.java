@@ -50,8 +50,8 @@
 package org.objectstyle.wolips.eomodeler.editors.databaseConfig;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -107,9 +107,24 @@ public class RESTConnectionDictionarySection extends Composite implements IConne
 
 		if (_databaseConfig != null) {
 			_bindingContext = new DataBindingContext();
-			_bindingContext.bindValue(SWTObservables.observeText(_usernameText, SWT.Modify), BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.USERNAME), null, null);
-			_bindingContext.bindValue(SWTObservables.observeText(_passwordText, SWT.Modify), BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.PASSWORD), null, null);
-			_bindingContext.bindValue(SWTObservables.observeText(_urlText, SWT.Modify), BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.URL), null, null);
+			_bindingContext.bindValue(
+					//SWTObservables.observeText(_usernameText, SWT.Modify),
+					WidgetProperties.text(SWT.Modify).observe(_usernameText), 
+					//BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.USERNAME),
+					BeanProperties.value(EODatabaseConfig.USERNAME).observe(_databaseConfig), 
+					null, null);
+			_bindingContext.bindValue(
+					//SWTObservables.observeText(_passwordText, SWT.Modify),
+					WidgetProperties.text(SWT.Modify).observe(_passwordText), 
+					//BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.PASSWORD),
+					BeanProperties.value(EODatabaseConfig.PASSWORD).observe(_databaseConfig), 
+					null, null);
+			_bindingContext.bindValue(
+					//SWTObservables.observeText(_urlText, SWT.Modify),
+					WidgetProperties.text(SWT.Modify).observe(_urlText), 
+					//BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.URL),
+					BeanProperties.value(EODatabaseConfig.URL).observe(_databaseConfig), 
+					null, null);
 		}
 	}
 

@@ -53,8 +53,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -288,13 +288,38 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 				}
 
 				_bindingContext = new DataBindingContext();
-				_bindingContext.bindValue(SWTObservables.observeText(_nameText, SWT.Modify), BeansObservables.observeValue(_relationship, EORelationship.NAME), null, null);
-				_bindingContext.bindValue(SWTObservables.observeText(_definitionText, SWT.Modify), BeansObservables.observeValue(_relationship, EORelationship.DEFINITION), null, null);
+				_bindingContext.bindValue(
+						//SWTObservables.observeText(_nameText, SWT.Modify),
+						WidgetProperties.text(SWT.Modify).observe(_nameText), 
+						//BeansObservables.observeValue(_relationship, EORelationship.NAME),
+						BeanProperties.value(EORelationship.NAME).observe(_relationship), 
+						null, null);
+				_bindingContext.bindValue(
+						//SWTObservables.observeText(_definitionText, SWT.Modify),
+						WidgetProperties.text(SWT.Modify).observe(_definitionText), 
+						//BeansObservables.observeValue(_relationship, EORelationship.DEFINITION),
+						BeanProperties.value(EORelationship.DEFINITION).observe(_relationship), 
+						null, null);
 				//_bindingContext.bindValue(SWTObservables.observeSelection(_toOneButton), BeansObservables.observeValue(_relationship, EORelationship.TO_ONE), null, new BooleanUpdateValueStrategy());
-				_bindingContext.bindValue(SWTObservables.observeSelection(_toManyButton), BeansObservables.observeValue(_relationship, EORelationship.TO_MANY), null, new BooleanUpdateValueStrategy());
-				_bindingContext.bindValue(SWTObservables.observeSelection(_optionalButton), BeansObservables.observeValue(_relationship, EORelationship.OPTIONAL), null, new BooleanUpdateValueStrategy());
+				_bindingContext.bindValue(
+						//SWTObservables.observeSelection(_toManyButton),
+						WidgetProperties.buttonSelection().observe(_toManyButton), 
+						//BeansObservables.observeValue(_relationship, EORelationship.TO_MANY),
+						BeanProperties.value(EORelationship.TO_MANY).observe(_relationship), 
+						null, new BooleanUpdateValueStrategy());
+				_bindingContext.bindValue(
+						//SWTObservables.observeSelection(_optionalButton),
+						WidgetProperties.buttonSelection().observe(_optionalButton), 
+						//BeansObservables.observeValue(_relationship, EORelationship.OPTIONAL),
+						BeanProperties.value(EORelationship.OPTIONAL).observe(_relationship), 
+						null, new BooleanUpdateValueStrategy());
 				//_bindingContext.bindValue(SWTObservables.observeSelection(_mandatoryButton), BeansObservables.observeValue(_relationship, EORelationship.MANDATORY), null, new BooleanUpdateValueStrategy());
-				_bindingContext.bindValue(SWTObservables.observeSelection(_classPropertyButton), BeansObservables.observeValue(_relationship, EORelationship.CLASS_PROPERTY), null, new BooleanUpdateValueStrategy());
+				_bindingContext.bindValue(
+						//SWTObservables.observeSelection(_classPropertyButton),
+						WidgetProperties.buttonSelection().observe(_classPropertyButton), 
+						//BeansObservables.observeValue(_relationship, EORelationship.CLASS_PROPERTY),
+						BeanProperties.value(EORelationship.CLASS_PROPERTY).observe(_relationship), 
+						null, new BooleanUpdateValueStrategy());
 
 				_deleteRuleBinding = new ComboViewerBinding(_deleteRuleComboViewer, _relationship, EORelationship.DELETE_RULE, null, null, null);
 				_joinSemanticBinding = new ComboViewerBinding(_joinSemanticComboViewer, _relationship, EORelationship.JOIN_SEMANTIC, _relationship.getEntity().getModel().getModelGroup(), EOModelGroup.MODELS, null);

@@ -50,8 +50,8 @@
 package org.objectstyle.wolips.eomodeler.editors.entity;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -177,17 +177,62 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 		_entity = (EOEntity) selectedObject;
 		if (_entity != null) {
 			_bindingContext = new DataBindingContext();
-			_bindingContext.bindValue(SWTObservables.observeText(_maxNumberOfInstancesToBatchFetchText, SWT.Modify), BeansObservables.observeValue(_entity, EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), null, null);
+			_bindingContext.bindValue(
+					//SWTObservables.observeText(_maxNumberOfInstancesToBatchFetchText, SWT.Modify),
+					WidgetProperties.text(SWT.Modify).observe(_maxNumberOfInstancesToBatchFetchText), 
+					//BeansObservables.observeValue(_entity, EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH),
+					BeanProperties.value(EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH).observe(_entity), 
+					null, null);
 			// new BindSpec(null, null, new RegexStringValidator("^[0-9]*$",
 			// "^[0-9]+$", "Please enter a number"), null));
-			_bindingContext.bindValue(SWTObservables.observeSelection(_cacheInMemoryButton), BeansObservables.observeValue(_entity, EOEntity.CACHES_OBJECTS), null, new BooleanUpdateValueStrategy());
-			_bindingContext.bindValue(SWTObservables.observeSelection(_readOnlyButton), BeansObservables.observeValue(_entity, EOEntity.READ_ONLY), null, new BooleanUpdateValueStrategy());
-			_bindingContext.bindValue(SWTObservables.observeSelection(_immutableButton), BeansObservables.observeValue(_entity, EOEntity.IMMUTABLE), null, new BooleanUpdateValueStrategy());
-			_bindingContext.bindValue(SWTObservables.observeSelection(_generateSourceButton), BeansObservables.observeValue(_entity, EOEntity.GENERATE_SOURCE), null, new BooleanUpdateValueStrategy());
-			_bindingContext.bindValue(SWTObservables.observeSelection(_rawRowsOnlyButton), BeansObservables.observeValue(_entity, EOEntity.RAW_ROWS_ONLY), null, new BooleanUpdateValueStrategy());
-			_bindingContext.bindValue(SWTObservables.observeText(_externalQueryText, SWT.Modify), BeansObservables.observeValue(_entity, EOEntity.EXTERNAL_QUERY), null, null);
-			_bindingContext.bindValue(SWTObservables.observeText(_clientClassNameText, SWT.Modify), BeansObservables.observeValue(_entity, EOEntity.CLIENT_CLASS_NAME), null, null);
-			_bindingContext.bindValue(SWTObservables.observeText(_parentClassNameText, SWT.Modify), BeansObservables.observeValue(_entity, EOEntity.PARENT_CLASS_NAME), null, null);
+			_bindingContext.bindValue(
+					//SWTObservables.observeSelection(_cacheInMemoryButton),
+					WidgetProperties.buttonSelection().observe(_cacheInMemoryButton), 
+					//BeansObservables.observeValue(_entity, EOEntity.CACHES_OBJECTS),
+					BeanProperties.value(EOEntity.CACHES_OBJECTS).observe(_entity), 
+					null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					//SWTObservables.observeSelection(_readOnlyButton),
+					WidgetProperties.buttonSelection().observe(_readOnlyButton), 
+					//BeansObservables.observeValue(_entity, EOEntity.READ_ONLY),
+					BeanProperties.value(EOEntity.READ_ONLY).observe(_entity), 
+					null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					//SWTObservables.observeSelection(_immutableButton),
+					WidgetProperties.buttonSelection().observe(_immutableButton), 
+					//BeansObservables.observeValue(_entity, EOEntity.IMMUTABLE),
+					BeanProperties.value(EOEntity.IMMUTABLE).observe(_entity), 
+					null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					//SWTObservables.observeSelection(_generateSourceButton),
+					WidgetProperties.buttonSelection().observe(_generateSourceButton), 
+					//BeansObservables.observeValue(_entity, EOEntity.GENERATE_SOURCE),
+					BeanProperties.value(EOEntity.GENERATE_SOURCE).observe(_entity), 
+					null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					//SWTObservables.observeSelection(_rawRowsOnlyButton),
+					WidgetProperties.buttonSelection().observe(_rawRowsOnlyButton), 
+					//BeansObservables.observeValue(_entity, EOEntity.RAW_ROWS_ONLY),
+					BeanProperties.value(EOEntity.RAW_ROWS_ONLY).observe(_entity), 
+					null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					//SWTObservables.observeText(_externalQueryText, SWT.Modify),
+					WidgetProperties.text(SWT.Modify).observe(_externalQueryText), 
+					//BeansObservables.observeValue(_entity, EOEntity.EXTERNAL_QUERY),
+					BeanProperties.value(EOEntity.EXTERNAL_QUERY).observe(_entity), 
+					null, null);
+			_bindingContext.bindValue(
+					//SWTObservables.observeText(_clientClassNameText, SWT.Modify),
+					WidgetProperties.text(SWT.Modify).observe(_clientClassNameText), 
+					//BeansObservables.observeValue(_entity, EOEntity.CLIENT_CLASS_NAME),
+					BeanProperties.value(EOEntity.CLIENT_CLASS_NAME).observe(_entity), 
+					null, null);
+			_bindingContext.bindValue(
+					//SWTObservables.observeText(_parentClassNameText, SWT.Modify),
+					WidgetProperties.text(SWT.Modify).observe(_parentClassNameText), 
+					//BeansObservables.observeValue(_entity, EOEntity.PARENT_CLASS_NAME),
+					BeanProperties.value(EOEntity.PARENT_CLASS_NAME).observe(_entity), 
+					null, null);
 
 			_partialEntityComboViewer.setInput(_entity);
 			_partialEntityBinding = new ComboViewerBinding(_partialEntityComboViewer, _entity, EOEntity.PARTIAL_ENTITY, _entity.getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
