@@ -25,7 +25,7 @@ Installing prebuilt versions of WOLips in existing Eclipse installations can be 
 ### Building WOLips
 
 #### Prerequisites
-* Eclipse ( this document is current as of 4.10 2018-12)
+* Eclipse ( this document is current as of 4.26 2022-12)
 * Git
 * JRebel and JProfiler are required if you want to build those parts of WOLips
 
