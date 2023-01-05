@@ -4,8 +4,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -218,9 +218,24 @@ public class DatabaseConfigSection extends AbstractPropertySection {
 	}
 
 	protected void addBindings() {
-		_bindingContext.bindValue(SWTObservables.observeText(_nameText, SWT.Modify), BeansObservables.observeValue(getDatabaseConfig(), EODatabaseConfig.NAME), null, null);
-		_bindingContext.bindValue(SWTObservables.observeText(_priorityText, SWT.Modify), BeansObservables.observeValue(getDatabaseConfig(), EODatabaseConfig.PRIORITY), null, null);
-		_bindingContext.bindValue(SWTObservables.observeText(_deploymentProfileText, SWT.Modify), BeansObservables.observeValue(getDatabaseConfig(), EODatabaseConfig.DEPLOYMENT_PROFILE), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeText(_nameText, SWT.Modify),
+				WidgetProperties.text(SWT.Modify).observe(_nameText),
+				//BeansObservables.observeValue(getDatabaseConfig(), EODatabaseConfig.NAME),
+				BeanProperties.value(EODatabaseConfig.NAME).observe(getDatabaseConfig()),
+				null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeText(_priorityText, SWT.Modify),
+				WidgetProperties.text(SWT.Modify).observe(_priorityText),
+				//BeansObservables.observeValue(getDatabaseConfig(), EODatabaseConfig.PRIORITY),
+				BeanProperties.value(EODatabaseConfig.PRIORITY).observe(getDatabaseConfig()),
+				null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeText(_deploymentProfileText, SWT.Modify),
+				WidgetProperties.text(SWT.Modify).observe(_deploymentProfileText),
+				//BeansObservables.observeValue(getDatabaseConfig(), EODatabaseConfig.DEPLOYMENT_PROFILE),
+				BeanProperties.value(EODatabaseConfig.DEPLOYMENT_PROFILE).observe(getDatabaseConfig()),
+				null, null);
 		_prototypeComboViewer.setInput(getDatabaseConfig());
 		_prototypeBinding = new ComboViewerBinding(_prototypeComboViewer, getDatabaseConfig(), EODatabaseConfig.PROTOTYPE, null, null, EOPrototypeEntityListContentProvider.BLANK_ENTITY);
 		_adaptorNameComboViewer.setInput(getDatabaseConfig());

@@ -56,13 +56,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -199,7 +199,12 @@ public class EOGeneratorFormPage extends FormPage {
 			loadModelGroupButtonGridData.horizontalSpan = 2;
 			loadModelGroupButtonGridData.verticalIndent = 5;
 			loadModelGroupButton.setLayoutData(loadModelGroupButtonGridData);
-			_bindingContext.bindValue(SWTObservables.observeSelection(loadModelGroupButton), BeansObservables.observeValue(_model, EOGeneratorModel.LOAD_MODEL_GROUP), null, null);
+			_bindingContext.bindValue(
+					//SWTObservables.observeSelection(loadModelGroupButton), 
+					WidgetProperties.buttonSelection().observe(loadModelGroupButton),
+					//BeansObservables.observeValue(_model, EOGeneratorModel.LOAD_MODEL_GROUP),
+					BeanProperties.value(EOGeneratorModel.LOAD_MODEL_GROUP).observe(_model),
+					null, null);
 		}
 
 		Table modelsTable = toolkit.createTable(modelsSection, SWT.FULL_SELECTION | SWT.MULTI | SWT.V_SCROLL | SWT.BORDER);
@@ -248,19 +253,34 @@ public class EOGeneratorFormPage extends FormPage {
 		filenameTemplateLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		Text filenameTemplate = toolkit.createText(namingSection, null);
 		filenameTemplate.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		_bindingContext.bindValue(SWTObservables.observeText(filenameTemplate, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.FILENAME_TEMPLATE), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeText(filenameTemplate, SWT.Modify),
+				WidgetProperties.text(SWT.Modify).observe(filenameTemplate),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.FILENAME_TEMPLATE),
+				BeanProperties.value(EOGeneratorModel.FILENAME_TEMPLATE).observe(_model),
+				null, null);
 
 		Label prefixLabel = toolkit.createLabel(namingSection, "Prefix:");
 		prefixLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		Text prefixEntry = toolkit.createText(namingSection, null);
 		prefixEntry.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		_bindingContext.bindValue(SWTObservables.observeText(prefixEntry, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.PREFIX), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeText(prefixEntry, SWT.Modify),
+				WidgetProperties.text(SWT.Modify).observe(prefixEntry),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.PREFIX),
+				BeanProperties.value(EOGeneratorModel.PREFIX).observe(_model),
+				null, null);
 
 		Label extensionLabel = toolkit.createLabel(namingSection, "Extension:");
 		extensionLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		Text extensionEntry = toolkit.createText(namingSection, null);
 		extensionEntry.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		_bindingContext.bindValue(SWTObservables.observeText(extensionEntry, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.EXTENSION), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeText(extensionEntry, SWT.Modify),
+				WidgetProperties.text(SWT.Modify).observe(extensionEntry),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.EXTENSION),
+				BeanProperties.value(EOGeneratorModel.EXTENSION).observe(_model),
+				null, null);
 	}
 
 	protected void createPathsSection(FormToolkit toolkit, Composite parent) {
@@ -276,14 +296,24 @@ public class EOGeneratorFormPage extends FormPage {
 		superclassPackageLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		final Text superclassPackage = toolkit.createText(pathsSection, null);
 		superclassPackage.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		_bindingContext.bindValue(SWTObservables.observeText(superclassPackage, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.SUPERCLASS_PACKAGE), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeText(superclassPackage, SWT.Modify),
+				WidgetProperties.text(SWT.Modify).observe(superclassPackage),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.SUPERCLASS_PACKAGE),
+				BeanProperties.value(EOGeneratorModel.SUPERCLASS_PACKAGE).observe(_model),
+				null, null);
 		toolkit.createLabel(pathsSection, "");
 
 		Label destinationLabel = toolkit.createLabel(pathsSection, "Destination:");
 		destinationLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		final Text destination = toolkit.createText(pathsSection, null);
 		destination.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		_bindingContext.bindValue(SWTObservables.observeText(destination, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.DESTINATION), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeText(destination, SWT.Modify), 
+				WidgetProperties.text(SWT.Modify).observe(destination),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.DESTINATION),
+				BeanProperties.value(EOGeneratorModel.DESTINATION).observe(_model),
+				null, null);
 
 		Button destinationBrowse = toolkit.createButton(pathsSection, "Browse...", SWT.PUSH);
 		destinationBrowse.addSelectionListener(new SelectionListener() {
@@ -309,7 +339,12 @@ public class EOGeneratorFormPage extends FormPage {
 		subclassDestinationLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		final Text subclassDestination = toolkit.createText(pathsSection, null);
 		subclassDestination.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		_bindingContext.bindValue(SWTObservables.observeText(subclassDestination, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.SUBCLASS_DESTINATION), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeText(subclassDestination, SWT.Modify),
+				WidgetProperties.text(SWT.Modify).observe(subclassDestination),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.SUBCLASS_DESTINATION),
+				BeanProperties.value(EOGeneratorModel.SUBCLASS_DESTINATION).observe(_model),
+				null, null);
 
 		Button subclassDestinationBrowse = toolkit.createButton(pathsSection, "Browse...", SWT.PUSH);
 		subclassDestinationBrowse.addSelectionListener(new SelectionListener() {
@@ -339,7 +374,12 @@ public class EOGeneratorFormPage extends FormPage {
 		templatesFolderLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		final Text templatesFolder = toolkit.createText(templatesSection, null);
 		templatesFolder.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		_bindingContext.bindValue(SWTObservables.observeText(templatesFolder, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.TEMPLATE_DIR), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeText(templatesFolder, SWT.Modify),
+				WidgetProperties.text(SWT.Modify).observe(templatesFolder),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.TEMPLATE_DIR),
+				BeanProperties.value(EOGeneratorModel.TEMPLATE_DIR).observe(_model),
+				null, null);
 
 		Button templatesFolderBrowse = toolkit.createButton(templatesSection, "Browse...", SWT.PUSH);
 		templatesFolderBrowse.addSelectionListener(new SelectionListener() {
@@ -363,7 +403,12 @@ public class EOGeneratorFormPage extends FormPage {
 		templateLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		final Text template = toolkit.createText(templatesSection, null);
 		template.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		_bindingContext.bindValue(SWTObservables.observeText(template, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.JAVA_TEMPLATE), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeText(template, SWT.Modify),
+				WidgetProperties.text(SWT.Modify).observe(template),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.JAVA_TEMPLATE),
+				BeanProperties.value(EOGeneratorModel.JAVA_TEMPLATE).observe(_model),
+				null, null);
 
 		Button templateBrowse = toolkit.createButton(templatesSection, "Browse...", SWT.PUSH);
 		templateBrowse.addSelectionListener(new SelectionListener() {
@@ -384,7 +429,12 @@ public class EOGeneratorFormPage extends FormPage {
 		subclassTemplateLabel.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		final Text subclassTemplate = toolkit.createText(templatesSection, null);
 		subclassTemplate.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		_bindingContext.bindValue(SWTObservables.observeText(subclassTemplate, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.SUBCLASS_JAVA_TEMPLATE), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeText(subclassTemplate, SWT.Modify), 
+				WidgetProperties.text(SWT.Modify).observe(subclassTemplate),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.SUBCLASS_JAVA_TEMPLATE), 
+				BeanProperties.value(EOGeneratorModel.SUBCLASS_JAVA_TEMPLATE).observe(_model),
+				null, null);
 
 		Button subclassTemplateBrowse = toolkit.createButton(templatesSection, "Browse...", SWT.PUSH);
 		subclassTemplateBrowse.addSelectionListener(new SelectionListener() {
@@ -413,7 +463,12 @@ public class EOGeneratorFormPage extends FormPage {
 		destination2Label.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		final Text destination2 = toolkit.createText(furtherTemplatesSection, null);
 		destination2.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		_bindingContext.bindValue(SWTObservables.observeText(destination2, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.DESTINATION2), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeText(destination2, SWT.Modify),
+				WidgetProperties.text(SWT.Modify).observe(destination2),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.DESTINATION2),
+				BeanProperties.value(EOGeneratorModel.DESTINATION2).observe(_model),
+				null, null);
 
 		
 		Button destination2Browse = toolkit.createButton(furtherTemplatesSection, "Browse...", SWT.PUSH);
@@ -440,7 +495,12 @@ public class EOGeneratorFormPage extends FormPage {
 		template2Label.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		final Text template2 = toolkit.createText(furtherTemplatesSection, null);
 		template2.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		_bindingContext.bindValue(SWTObservables.observeText(template2, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.JAVA_TEMPLATE2), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeText(template2, SWT.Modify),
+				WidgetProperties.text(SWT.Modify).observe(template2),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.JAVA_TEMPLATE2),
+				BeanProperties.value(EOGeneratorModel.JAVA_TEMPLATE2).observe(_model),
+				null, null);
 
 		Button templateBrowse2 = toolkit.createButton(furtherTemplatesSection, "Browse...", SWT.PUSH);
 		templateBrowse2.addSelectionListener(new SelectionListener() {
@@ -461,7 +521,12 @@ public class EOGeneratorFormPage extends FormPage {
 		destination3Label.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		final Text destination3 = toolkit.createText(furtherTemplatesSection, null);
 		destination3.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		_bindingContext.bindValue(SWTObservables.observeText(destination3, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.DESTINATION3), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeText(destination3, SWT.Modify),
+				WidgetProperties.text(SWT.Modify).observe(destination3),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.DESTINATION3),
+				BeanProperties.value(EOGeneratorModel.DESTINATION3).observe(_model),
+				null, null);
 
 		
 		Button destination3Browse = toolkit.createButton(furtherTemplatesSection, "Browse...", SWT.PUSH);
@@ -488,7 +553,12 @@ public class EOGeneratorFormPage extends FormPage {
 		template3Label.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		final Text template3 = toolkit.createText(furtherTemplatesSection, null);
 		template3.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		_bindingContext.bindValue(SWTObservables.observeText(template3, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.JAVA_TEMPLATE3), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeText(template3, SWT.Modify),
+				WidgetProperties.text(SWT.Modify).observe(template3),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.JAVA_TEMPLATE3), 
+				BeanProperties.value(EOGeneratorModel.JAVA_TEMPLATE3).observe(_model),
+				null, null);
 
 		Button templateBrowse3 = toolkit.createButton(furtherTemplatesSection, "Browse...", SWT.PUSH);
 		templateBrowse3.addSelectionListener(new SelectionListener() {
@@ -509,7 +579,12 @@ public class EOGeneratorFormPage extends FormPage {
 		destination4Label.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		final Text destination4 = toolkit.createText(furtherTemplatesSection, null);
 		destination4.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		_bindingContext.bindValue(SWTObservables.observeText(destination4, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.DESTINATION4), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeText(destination4, SWT.Modify),
+				WidgetProperties.text(SWT.Modify).observe(destination4),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.DESTINATION4), 
+				BeanProperties.value(EOGeneratorModel.DESTINATION4).observe(_model),
+				null, null);
 
 		
 		Button destination4Browse = toolkit.createButton(furtherTemplatesSection, "Browse...", SWT.PUSH);
@@ -536,7 +611,12 @@ public class EOGeneratorFormPage extends FormPage {
 		template4Label.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
 		final Text template4 = toolkit.createText(furtherTemplatesSection, null);
 		template4.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		_bindingContext.bindValue(SWTObservables.observeText(template4, SWT.Modify), BeansObservables.observeValue(_model, EOGeneratorModel.JAVA_TEMPLATE4), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeText(template4, SWT.Modify),
+				WidgetProperties.text(SWT.Modify).observe(template4),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.JAVA_TEMPLATE4),
+				BeanProperties.value(EOGeneratorModel.JAVA_TEMPLATE4).observe(_model),
+				null, null);
 
 		Button templateBrowse4 = toolkit.createButton(furtherTemplatesSection, "Browse...", SWT.PUSH);
 		templateBrowse4.addSelectionListener(new SelectionListener() {
@@ -566,28 +646,48 @@ public class EOGeneratorFormPage extends FormPage {
 		GridData packageDirsButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
 		packageDirsButtonGridData.horizontalSpan = 3;
 		packageDirsButton.setLayoutData(packageDirsButtonGridData);
-		_bindingContext.bindValue(SWTObservables.observeSelection(packageDirsButton), BeansObservables.observeValue(_model, EOGeneratorModel.PACKAGE_DIRS), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeSelection(packageDirsButton), 
+				WidgetProperties.buttonSelection().observe(packageDirsButton),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.PACKAGE_DIRS), 
+				BeanProperties.value(EOGeneratorModel.PACKAGE_DIRS).observe(_model),
+				null, null);
 
 		Button javaButton = toolkit.createButton(outputOptionsSection, "", SWT.CHECK);
 		GridData javaButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
 		javaButtonGridData.horizontalSpan = 3;
 		javaButton.setLayoutData(javaButtonGridData);
 		javaButton.setText("Java");
-		_bindingContext.bindValue(SWTObservables.observeSelection(javaButton), BeansObservables.observeValue(_model, EOGeneratorModel.JAVA), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeSelection(javaButton),
+				WidgetProperties.buttonSelection().observe(javaButton),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.JAVA), 
+				BeanProperties.value(EOGeneratorModel.JAVA).observe(_model),
+				null, null);
 
 		Button javaClientButton = toolkit.createButton(outputOptionsSection, "", SWT.CHECK);
 		javaClientButton.setText("Java Client");
 		GridData javaClientButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
 		javaClientButtonGridData.horizontalSpan = 3;
 		javaClientButton.setLayoutData(javaClientButtonGridData);
-		_bindingContext.bindValue(SWTObservables.observeSelection(javaClientButton), BeansObservables.observeValue(_model, EOGeneratorModel.JAVA_CLIENT), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeSelection(javaClientButton),
+				WidgetProperties.buttonSelection().observe(javaClientButton),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.JAVA_CLIENT),
+				BeanProperties.value(EOGeneratorModel.JAVA_CLIENT).observe(_model),
+				null, null);
 
 		Button javaClientCommonButton = toolkit.createButton(outputOptionsSection, "", SWT.CHECK);
 		javaClientCommonButton.setText("Java Client Common");
 		GridData javaClientCommonButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
 		javaClientCommonButtonGridData.horizontalSpan = 3;
 		javaClientCommonButton.setLayoutData(javaClientCommonButtonGridData);
-		_bindingContext.bindValue(SWTObservables.observeSelection(javaClientCommonButton), BeansObservables.observeValue(_model, EOGeneratorModel.JAVA_CLIENT_COMMON), null, null);
+		_bindingContext.bindValue(
+				//SWTObservables.observeSelection(javaClientCommonButton),
+				WidgetProperties.buttonSelection().observe(javaClientCommonButton),
+				//BeansObservables.observeValue(_model, EOGeneratorModel.JAVA_CLIENT_COMMON),
+				BeanProperties.value(EOGeneratorModel.JAVA_CLIENT_COMMON).observe(_model),
+				null, null);
 	}
 
 	protected String selectTemplate(String text) {
