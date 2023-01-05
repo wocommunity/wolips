@@ -28,6 +28,7 @@ import org.eclipse.jdt.launching.VMRunnerConfiguration;
  */
 public class JavaScriptLaunchConfigurationDelegate extends AbstractJavaLaunchConfigurationDelegate {
 	
+	@Override
 	public void launch(ILaunchConfiguration configuration, String mode,
 			ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		

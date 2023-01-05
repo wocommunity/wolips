@@ -68,7 +68,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.objectstyle.wolips.bindings.wod.TypeCache;
 import org.objectstyle.wolips.eomodeler.core.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.core.model.EODataSource;
 import org.objectstyle.wolips.eomodeler.core.model.EODataSourceFactory;
@@ -193,10 +192,12 @@ public class DisplayGroup implements IPropertyChangeSource {
     _selectsFirstObject = false;
   }
 
+  @Override
   public void addPropertyChangeListener(final PropertyChangeListener listener) {
     _changeSupport.addPropertyChangeListener(listener);
   }
 
+  @Override
   public void addPropertyChangeListener(final String name, final PropertyChangeListener listener) {
     _changeSupport.addPropertyChangeListener(name, listener);
 
@@ -446,11 +447,13 @@ public class DisplayGroup implements IPropertyChangeSource {
     }
   }
 
-  public void removePropertyChangeListener(final PropertyChangeListener listener) {
+  @Override
+public void removePropertyChangeListener(final PropertyChangeListener listener) {
     _changeSupport.removePropertyChangeListener(listener);
   }
 
-  public void removePropertyChangeListener(final String name, final PropertyChangeListener listener) {
+  @Override
+public void removePropertyChangeListener(final String name, final PropertyChangeListener listener) {
     _changeSupport.removePropertyChangeListener(name, listener);
   }
   
