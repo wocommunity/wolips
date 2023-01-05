@@ -42,6 +42,7 @@ public class NonExistingFileEditorInput implements IEditorInput, ILocationProvid
 	/*
 	 * @see org.eclipse.ui.IEditorInput#exists()
 	 */
+	@Override
 	public boolean exists() {
 		return false;
 	}
@@ -49,6 +50,7 @@ public class NonExistingFileEditorInput implements IEditorInput, ILocationProvid
 	/*
 	 * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
 	 */
+	@Override
 	public ImageDescriptor getImageDescriptor() {
 		return null;
 	}
@@ -56,6 +58,7 @@ public class NonExistingFileEditorInput implements IEditorInput, ILocationProvid
 	/*
 	 * @see org.eclipse.ui.IEditorInput#getName()
 	 */
+	@Override
 	public String getName() {
 		return fName;
 	}
@@ -63,6 +66,7 @@ public class NonExistingFileEditorInput implements IEditorInput, ILocationProvid
 	/*
 	 * @see org.eclipse.ui.IEditorInput#getPersistable()
 	 */
+	@Override
 	public IPersistableElement getPersistable() {
 		return null;
 	}
@@ -70,6 +74,7 @@ public class NonExistingFileEditorInput implements IEditorInput, ILocationProvid
 	/*
 	 * @see org.eclipse.ui.IEditorInput#getToolTipText()
 	 */
+	@Override
 	public String getToolTipText() {
 		return fName;
 	}
@@ -77,6 +82,7 @@ public class NonExistingFileEditorInput implements IEditorInput, ILocationProvid
 	/*
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
+	@Override
 	public Object getAdapter(Class adapter) {
 		if (ILocationProvider.class.equals(adapter))
 			return this;
@@ -86,6 +92,7 @@ public class NonExistingFileEditorInput implements IEditorInput, ILocationProvid
 	/*
 	 * @see org.eclipse.ui.editors.text.ILocationProvider#getPath(java.lang.Object)
 	 */
+	@Override
 	public IPath getPath(Object element) {
 		if (element instanceof NonExistingFileEditorInput) {
 			NonExistingFileEditorInput input= (NonExistingFileEditorInput)element;

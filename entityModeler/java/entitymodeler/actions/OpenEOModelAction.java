@@ -18,6 +18,7 @@ public class OpenEOModelAction extends Action implements ActionFactory.IWorkbenc
     setAccelerator(SWT.COMMAND | 'O');//SWTKeySupport.convertKeyStrokeToAccelerator(KeyStroke.getInstance("s"));
   }
 
+  @Override
   public void dispose() {
     // DO NOTHING
   }

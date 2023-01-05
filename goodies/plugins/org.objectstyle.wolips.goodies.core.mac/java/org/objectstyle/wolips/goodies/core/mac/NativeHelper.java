@@ -92,15 +92,16 @@ public class NativeHelper {
 
 	private static String getParentOfResource(IResource resource) {
         File file = resource.getLocation().toFile();
-        File path = null;
         if (file != null) {
+        	File path = null;
             if (!file.isDirectory() && file.getParentFile() != null) {
                 path = file.getParentFile();
             } else {
                 path = file;
             }
+            return path.getPath();
         }
-        return path.getPath();
+        return null;
 	}
 	
 	private static void _executeAppleScript(String script) {
