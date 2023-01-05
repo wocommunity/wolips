@@ -11,7 +11,9 @@ Require-Bundle: org.eclipse.ui.views.properties.tabbed,
  org.eclipse.core.databinding.beans,
  org.eclipse.jface.databinding,
  org.eclipse.core.filesystem,
- org.objectstyle.wolips.woproject;bundle-version="1.0.6"
+ org.objectstyle.wolips.woproject;bundle-version="1.0.6",
+ org.eclipse.core.databinding.property,
+ org.objectstyle.wolips.eogenerator.core
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: objectstyle.org
 Export-Package: org.objectstyle.wolips.eomodeler,
@@ -35,4 +37,4 @@ Export-Package: org.objectstyle.wolips.eomodeler,
  org.objectstyle.wolips.eomodeler.outline,
  org.objectstyle.wolips.eomodeler.preferences,
  org.objectstyle.wolips.eomodeler.utils
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-11
