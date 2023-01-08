@@ -5,7 +5,6 @@ import org.eclipse.jface.text.*;
 public class PlistDoubleClickStrategy implements ITextDoubleClickStrategy {
 	protected ITextViewer fText;
 
-	@Override
 	public void doubleClicked(ITextViewer part) {
 		int pos = part.getSelectedRange().x;
 

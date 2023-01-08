@@ -9,7 +9,6 @@ import org.eclipse.swt.widgets.Listener;
 public class OpenDocumentEventProcessor implements Listener {
 	private ArrayList<String> _filesToOpen = new ArrayList<String>(1);
 
-	@Override
 	public void handleEvent(Event event) {
 		System.out.println("OpenDocumentEventProcessor.handleEvent: " + event.text);
 		if (event.text != null) {

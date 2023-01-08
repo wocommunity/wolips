@@ -236,7 +236,7 @@ public class Veogen {
 		  }
 		}
 		for (String modelPath : modelPaths) {
-			modelGroup.loadModelFromURL(new File(modelPath).toURI().toURL());
+			modelGroup.loadModelFromURL(new File(modelPath).toURL());
 		}
 
 		modelGroup.resolve(failures);

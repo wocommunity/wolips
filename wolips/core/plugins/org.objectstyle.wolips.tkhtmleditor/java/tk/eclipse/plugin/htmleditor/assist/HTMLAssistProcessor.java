@@ -280,19 +280,20 @@ public class HTMLAssistProcessor extends HTMLTemplateAssistProcessor { /*impleme
         if (attrInfo == null) {
           attrInfo = new AttributeInfo(attr, true);
         }
-        AssistInfo[] keywords = getAttributeValues(last, dim[0].substring(1), tagInfo, attrInfo);
-        for (int i = 0; i < keywords.length; i++) {
-        	if (keywords[i].getOffset() > 0 || keywords[i].getReplaceString().toLowerCase().startsWith(value.toLowerCase())) {
-        		//							list.add(new CompletionProposal(
-        		//									keywords[i].getReplaceString(),
-        		//									documentOffset - value.length(), value.length(),
-        		//									keywords[i].getReplaceString().length(),
-        		//									keywords[i].getImage()==null ? valueImage : keywords[i].getImage(),
-        		//									keywords[i].getDisplayString(), null, null));
-        		list.add(keywords[i].toCompletionProposal(documentOffset, value, _valueImage));
-        	}
+        if (attrInfo != null) {
+          AssistInfo[] keywords = getAttributeValues(last, dim[0].substring(1), tagInfo, attrInfo);
+          for (int i = 0; i < keywords.length; i++) {
+            if (keywords[i].getOffset() > 0 || keywords[i].getReplaceString().toLowerCase().startsWith(value.toLowerCase())) {
+              //							list.add(new CompletionProposal(
+              //									keywords[i].getReplaceString(),
+              //									documentOffset - value.length(), value.length(),
+              //									keywords[i].getReplaceString().length(),
+              //									keywords[i].getImage()==null ? valueImage : keywords[i].getImage(),
+              //									keywords[i].getDisplayString(), null, null));
+              list.add(keywords[i].toCompletionProposal(documentOffset, value, _valueImage));
+            }
+          }
         }
-        
       }
       // tag
     }

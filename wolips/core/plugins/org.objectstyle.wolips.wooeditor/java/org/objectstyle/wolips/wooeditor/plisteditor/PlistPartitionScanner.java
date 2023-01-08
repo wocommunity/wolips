@@ -21,13 +21,11 @@ public class PlistPartitionScanner extends RuleBasedPartitionScanner {
 		rules.add(new SingleLineRule(";", null, new Token("test")));
 		rules.add(new WordPatternRule(new IWordDetector() {
 
-			@Override
 			public boolean isWordPart(char c) {
 				// TODO Auto-generated method stub
 				return false;
 			}
 
-			@Override
 			public boolean isWordStart(char c) {
 				// TODO Auto-generated method stub
 				return c == '=';

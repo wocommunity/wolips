@@ -193,7 +193,6 @@ public class WooEditor extends FormEditor {
 		super.init(site, input);
 		
 		this.getSite().getSelectionProvider().setSelection(new ISelection() {
-			@Override
 			public boolean isEmpty() {
 				return true;
 			}
@@ -201,7 +200,6 @@ public class WooEditor extends FormEditor {
 		
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		resourceChangeListener = new IResourceChangeListener() {
-			@Override
 			public void resourceChanged(IResourceChangeEvent event) {
 				if (event.getDelta() == null || model == null) return;
 				IResourceDelta woComponentDelta = event.getDelta().findMember(

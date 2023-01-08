@@ -64,14 +64,14 @@ import org.objectstyle.wolips.eomodeler.core.model.EOModel;
 public class EOPrototypeListContentProvider implements IStructuredContentProvider {
 	public static final Object BLANK_ENTITY = "";
 
-	private KVCComparator<Object> myComparator;
+	private KVCComparator myComparator;
 
 	public EOPrototypeListContentProvider() {
 		myComparator = new KVCComparator(EOAttribute.class, EOEntity.NAME);
 	}
 
 	public Object[] getElements(Object _inputElement) {
-		Set<?> prototypeAttributesList;
+		Set prototypeAttributesList;
 		if (_inputElement instanceof EOAttribute) {
 			prototypeAttributesList = ((EOAttribute) _inputElement).getEntity().getModel().getPrototypeAttributes();
 		} else if (_inputElement instanceof EOModel) {
@@ -80,7 +80,7 @@ public class EOPrototypeListContentProvider implements IStructuredContentProvide
 			throw new IllegalArgumentException("Unknown input element: " + _inputElement);
 		}
 
-		List<Object> prototypeAttributesListCopy = new LinkedList<>();
+		List prototypeAttributesListCopy = new LinkedList();
 		prototypeAttributesListCopy.addAll(prototypeAttributesList);
 		Collections.sort(prototypeAttributesListCopy, myComparator);
 		prototypeAttributesListCopy.add(0, EOPrototypeListContentProvider.BLANK_ENTITY);

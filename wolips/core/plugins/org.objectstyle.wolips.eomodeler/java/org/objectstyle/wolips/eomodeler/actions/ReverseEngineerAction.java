@@ -86,12 +86,7 @@ public class ReverseEngineerAction extends EMAction {
 				IEOSQLReverseEngineer reverseEngineer = IEOSQLReverseEngineerFactory.Utility.reverseEngineerFactory().reverseEngineer(activeDatabaseConfig, eomodelClassLoader);
 				List<String> tableNames = reverseEngineer.reverseEngineerTableNames();
 
-				//ListSelectionDialog dlg = new ListSelectionDialog(getWindow().getShell(), tableNames, new StringContentProvider(), new StringLabelProvider(), "Select the tables to reverse engineer:");
-				ListSelectionDialog dlg = ListSelectionDialog.of(tableNames)
-															 .contentProvider(new StringContentProvider())
-															 .labelProvider(new StringLabelProvider())
-															 .message("Select the tables to reverse engineer:")
-															 .create(getWindow().getShell());
+				ListSelectionDialog dlg = new ListSelectionDialog(getWindow().getShell(), tableNames, new StringContentProvider(), new StringLabelProvider(), "Select the tables to reverse engineer:");
 				dlg.setInitialSelections(tableNames.toArray());
 				dlg.setTitle("Reverse Engineer");
 				if (dlg.open() == Window.OK) {
@@ -101,7 +96,7 @@ public class ReverseEngineerAction extends EMAction {
 					List<String> selectedTableNamesList = Arrays.asList(selectedTableNames);
 					File reverseEngineeredEOModelFolder = reverseEngineer.reverseEngineerWithTableNamesIntoModel(selectedTableNamesList);
 					Set<EOModelVerificationFailure> failures = new HashSet<EOModelVerificationFailure>();
-					model.importEntitiesFromModel(reverseEngineeredEOModelFolder.toURI().toURL(), failures);
+					model.importEntitiesFromModel(reverseEngineeredEOModelFolder.toURL(), failures);
 					if (failures.size() > 0) {
 						EOModelErrorDialog dialog = new EOModelErrorDialog(getWindow().getShell(), failures);
 						dialog.open();
