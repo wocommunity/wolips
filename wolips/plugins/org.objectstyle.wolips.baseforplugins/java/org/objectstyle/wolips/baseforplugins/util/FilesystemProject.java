@@ -138,7 +138,6 @@ public class FilesystemProject extends FilesystemFolder implements IProject {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
 	public String getDefaultLineSeparator() throws CoreException {
 		throw new UnsupportedOperationException();
 	}
