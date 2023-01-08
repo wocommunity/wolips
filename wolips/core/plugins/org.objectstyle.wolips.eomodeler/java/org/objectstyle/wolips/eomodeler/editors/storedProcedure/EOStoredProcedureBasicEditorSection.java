@@ -50,8 +50,8 @@
 package org.objectstyle.wolips.eomodeler.editors.storedProcedure;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -116,8 +116,14 @@ public class EOStoredProcedureBasicEditorSection extends AbstractPropertySection
 		_storedProcedure = (EOStoredProcedure) selectedObject;
 		if (_storedProcedure != null) {
 			_bindingContext = new DataBindingContext();
-			_bindingContext.bindValue(SWTObservables.observeText(_nameText, SWT.Modify), BeansObservables.observeValue(_storedProcedure, EOStoredProcedure.NAME), null, null);
-			_bindingContext.bindValue(SWTObservables.observeText(_externalNameText, SWT.Modify), BeansObservables.observeValue(_storedProcedure, EOStoredProcedure.EXTERNAL_NAME), null, null);
+			_bindingContext.bindValue(
+					WidgetProperties.text(SWT.Modify).observe(_nameText),
+					BeanProperties.value(EOStoredProcedure.class, EOStoredProcedure.NAME, String.class).observe(_storedProcedure),
+					null, null);
+			_bindingContext.bindValue(
+					WidgetProperties.text(SWT.Modify).observe(_externalNameText),
+					BeanProperties.value(EOStoredProcedure.class, EOStoredProcedure.EXTERNAL_NAME, String.class).observe(_storedProcedure),
+					null, null);
 		}
 	}
 

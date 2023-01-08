@@ -49,8 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.attribute;
 
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -116,9 +116,18 @@ public class EOAttributeBasicEditorSection extends AbstractEOArgumentBasicEditor
 			_prototypeComboViewer.setInput(attribute);
 			_prototypeBinding = new ComboViewerBinding(_prototypeComboViewer, attribute, EOAttribute.PROTOTYPE, attribute.getEntity().getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
 
-			getBindingContext().bindValue(SWTObservables.observeSelection(_primaryKeyButton), BeansObservables.observeValue(attribute, EOAttribute.PRIMARY_KEY), null, new BooleanUpdateValueStrategy());
-			getBindingContext().bindValue(SWTObservables.observeSelection(_classPropertyButton), BeansObservables.observeValue(attribute, EOAttribute.CLASS_PROPERTY), null, new BooleanUpdateValueStrategy());
-			getBindingContext().bindValue(SWTObservables.observeSelection(_lockingButton), BeansObservables.observeValue(attribute, EOAttribute.USED_FOR_LOCKING), null, new BooleanUpdateValueStrategy());
+			getBindingContext().bindValue(
+					WidgetProperties.buttonSelection().observe(_primaryKeyButton),
+					BeanProperties.value(EOAttribute.class, EOAttribute.PRIMARY_KEY, Boolean.class).observe(attribute),
+					null, new BooleanUpdateValueStrategy());
+			getBindingContext().bindValue(
+					WidgetProperties.buttonSelection().observe(_classPropertyButton),
+					BeanProperties.value(EOAttribute.class, EOAttribute.CLASS_PROPERTY, Boolean.class).observe(attribute),
+					null, new BooleanUpdateValueStrategy());
+			getBindingContext().bindValue(
+					WidgetProperties.buttonSelection().observe(_lockingButton),
+					BeanProperties.value(EOAttribute.class, EOAttribute.USED_FOR_LOCKING, Boolean.class).observe(attribute),
+					null, new BooleanUpdateValueStrategy());
 		}
 	}
 

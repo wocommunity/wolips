@@ -50,8 +50,8 @@
 package org.objectstyle.wolips.eomodeler.editors.dataType;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -87,7 +87,10 @@ public class IntegerDataTypePanel extends Composite implements IDataTypePanel {
 		}
 		if (_argument != null) {
 			myBindingContext = new DataBindingContext();
-			myBindingContext.bindValue(SWTObservables.observeText(myPrecisionText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.PRECISION), null, null);
+			myBindingContext.bindValue(
+					WidgetProperties.text(SWT.Modify).observe(myPrecisionText),
+					BeanProperties.value(AbstractEOArgument.class, AbstractEOArgument.PRECISION, Integer.class).observe(_argument),
+					null, null);
 		}
 	}
 

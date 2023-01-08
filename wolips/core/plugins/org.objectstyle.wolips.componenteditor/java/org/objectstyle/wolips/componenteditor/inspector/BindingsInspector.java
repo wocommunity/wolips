@@ -6,12 +6,14 @@ import java.util.List;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
-import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.validation.IValidator;
 import org.eclipse.core.databinding.validation.ValidationStatus;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.databinding.swt.ISWTObservableValue;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
@@ -374,10 +376,9 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 	}
 
 	protected void bindElementType() {
-		UpdateValueStrategy elementTypeUpdateStrategy = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
-		elementTypeUpdateStrategy.setBeforeSetValidator(new IValidator() {
-			public IStatus validate(Object value) {
-				String newName = (String) value;
+		UpdateValueStrategy<Object, String> elementTypeUpdateStrategy = new UpdateValueStrategy<Object,String>(UpdateValueStrategy.POLICY_UPDATE);
+		elementTypeUpdateStrategy.setBeforeSetValidator(new IValidator<String>() {
+			public IStatus validate(String newName) {
 				System.out.println(".validate: " + newName);
 				IStatus status = Status.OK_STATUS;
 				try {
@@ -423,10 +424,9 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 	}
 
 	protected void bindElementName(final WodParserCache refactoringParserCache) {
-		UpdateValueStrategy elementNameUpdateStrategy = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
-		elementNameUpdateStrategy.setBeforeSetValidator(new IValidator() {
-			public IStatus validate(Object value) {
-				String newName = (String) value;
+		UpdateValueStrategy<String,String> elementNameUpdateStrategy = new UpdateValueStrategy<String,String>(UpdateValueStrategy.POLICY_UPDATE);
+		elementNameUpdateStrategy.setBeforeSetValidator(new IValidator<String>() {
+			public IStatus validate(String newName) {
 				IStatus status = Status.OK_STATUS;
 				try {
 					if (newName == null || newName.length() == 0) {
@@ -447,7 +447,9 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 				return status;
 			}
 		});
-		_dataBindingContext.bindValue(SWTObservables.observeText(_elementNameField, SWT.FocusOut), BeansObservables.observeValue(_refactoringElement, RefactoringWodElement.ELEMENT_NAME), elementNameUpdateStrategy, null);
+		ISWTObservableValue<String> obs = WidgetProperties.text(SWT.FocusOut).observe(_elementNameField);
+		IObservableValue<String> beanObs = BeanProperties.value(RefactoringWodElement.class, RefactoringWodElement.ELEMENT_NAME, String.class).observe(_refactoringElement);
+		_dataBindingContext.bindValue(obs, beanObs, elementNameUpdateStrategy, null);
 	}
 
 	public TableViewer getBindingsTableViewer() {

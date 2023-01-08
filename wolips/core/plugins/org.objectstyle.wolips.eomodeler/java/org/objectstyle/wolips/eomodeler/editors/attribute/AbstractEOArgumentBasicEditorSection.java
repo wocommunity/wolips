@@ -55,8 +55,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -275,12 +275,30 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 			if (_argument != null) {
 				// myArgumentTypeComboViewer.setInput(myAttribute);
 				_bindingContext = new DataBindingContext();
-				_bindingContext.bindValue(SWTObservables.observeText(_nameText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.NAME), null, null);
-				_bindingContext.bindValue(SWTObservables.observeText(_columnNameText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.COLUMN_NAME), null, null);
-				_bindingContext.bindValue(SWTObservables.observeText(_definitionText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.DEFINITION), null, null);
-				_bindingContext.bindValue(SWTObservables.observeText(_externalTypeText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.EXTERNAL_TYPE), null, null);
-				_bindingContext.bindValue(SWTObservables.observeText(_classNameText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.CLASS_NAME), null, null);
-				_bindingContext.bindValue(SWTObservables.observeSelection(_allowNullsButton), BeansObservables.observeValue(_argument, AbstractEOArgument.ALLOWS_NULL), null, new BooleanUpdateValueStrategy());
+				_bindingContext.bindValue(
+						WidgetProperties.text(SWT.Modify).observe(_nameText),
+						BeanProperties.value(AbstractEOArgument.class, AbstractEOArgument.NAME, String.class).observe(_argument),
+						null, null);
+				_bindingContext.bindValue(
+						WidgetProperties.text(SWT.Modify).observe(_columnNameText),
+						BeanProperties.value(AbstractEOArgument.class, AbstractEOArgument.COLUMN_NAME, String.class).observe(_argument),
+						null, null);
+				_bindingContext.bindValue(
+						WidgetProperties.text(SWT.Modify).observe(_definitionText),
+						BeanProperties.value(AbstractEOArgument.class, AbstractEOArgument.DEFINITION, String.class).observe(_argument),
+						null, null);
+				_bindingContext.bindValue(
+						WidgetProperties.text(SWT.Modify).observe(_externalTypeText),
+						BeanProperties.value(AbstractEOArgument.class, AbstractEOArgument.EXTERNAL_TYPE, String.class).observe(_argument),
+						null, null);
+				_bindingContext.bindValue(
+						WidgetProperties.text(SWT.Modify).observe(_classNameText),
+						BeanProperties.value(AbstractEOArgument.class, AbstractEOArgument.CLASS_NAME, String.class).observe(_argument),
+						null, null);
+				_bindingContext.bindValue(
+						WidgetProperties.buttonSelection().observe(_allowNullsButton),
+						BeanProperties.value(AbstractEOArgument.class, AbstractEOArgument.ALLOWS_NULL, Boolean.class).observe(_argument),
+						null, new BooleanUpdateValueStrategy());
 
 				_argumentChanged(argument);
 

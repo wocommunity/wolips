@@ -50,8 +50,8 @@
 package org.objectstyle.wolips.eomodeler.editors.attribute;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -146,12 +146,30 @@ public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
 
 		if (_attribute != null) {
 			_bindingContext = new DataBindingContext();
-			_bindingContext.bindValue(SWTObservables.observeSelection(_readOnlyButton), BeansObservables.observeValue(_attribute, EOAttribute.READ_ONLY), null, new BooleanUpdateValueStrategy());
-			_bindingContext.bindValue(SWTObservables.observeSelection(_clientClassPropertyButton), BeansObservables.observeValue(_attribute, EOAttribute.CLIENT_CLASS_PROPERTY), null, new BooleanUpdateValueStrategy());
-			_bindingContext.bindValue(SWTObservables.observeSelection(_commonClassPropertyButton), BeansObservables.observeValue(_attribute, EOAttribute.COMMON_CLASS_PROPERTY), null, new BooleanUpdateValueStrategy());
-			_bindingContext.bindValue(SWTObservables.observeSelection(_generateSourceButton), BeansObservables.observeValue(_attribute, EOAttribute.GENERATE_SOURCE), null, new BooleanUpdateValueStrategy());
-			_bindingContext.bindValue(SWTObservables.observeText(_readFormatText, SWT.Modify), BeansObservables.observeValue(_attribute, EOAttribute.READ_FORMAT), null, null);
-			_bindingContext.bindValue(SWTObservables.observeText(_writeFormatText, SWT.Modify), BeansObservables.observeValue(_attribute, EOAttribute.WRITE_FORMAT), null, null);
+			_bindingContext.bindValue(
+					WidgetProperties.buttonSelection().observe(_readOnlyButton),
+					BeanProperties.value(EOAttribute.class, EOAttribute.READ_ONLY, Boolean.class).observe(_attribute),
+					null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					WidgetProperties.buttonSelection().observe(_clientClassPropertyButton),
+					BeanProperties.value(EOAttribute.class, EOAttribute.CLIENT_CLASS_PROPERTY, Boolean.class).observe(_attribute),
+					null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					WidgetProperties.buttonSelection().observe(_commonClassPropertyButton),
+					BeanProperties.value(EOAttribute.class, EOAttribute.COMMON_CLASS_PROPERTY, Boolean.class).observe(_attribute),
+					null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					WidgetProperties.buttonSelection().observe(_generateSourceButton),
+					BeanProperties.value(EOAttribute.class, EOAttribute.GENERATE_SOURCE, Boolean.class).observe(_attribute),
+					null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					WidgetProperties.text(SWT.Modify).observe(_readFormatText),
+					BeanProperties.value(EOAttribute.class, EOAttribute.READ_FORMAT, String.class).observe(_attribute),
+					null, null);
+			_bindingContext.bindValue(
+					WidgetProperties.text(SWT.Modify).observe(_writeFormatText),
+					BeanProperties.value(EOAttribute.class, EOAttribute.WRITE_FORMAT, String.class).observe(_attribute),
+					null, null);
 		}
 	}
 

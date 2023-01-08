@@ -53,8 +53,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -143,13 +143,28 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
 		if (_relationship != null) {
 			_relationship.addPropertyChangeListener(EORelationship.TO_MANY, _relationshipPropertyChangeListener);
 			_bindingContext = new DataBindingContext();
-			_bindingContext.bindValue(SWTObservables.observeText(_numberOfToManyFaultsToBatchFetchText, SWT.Modify), BeansObservables.observeValue(_relationship, EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), null, null);
+			_bindingContext.bindValue(
+					WidgetProperties.text(SWT.Modify).observe(_numberOfToManyFaultsToBatchFetchText),
+					BeanProperties.value(EORelationship.class, EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH, Integer.class).observe(_relationship),
+					null, null);
 			// new BindSpec(null, null, new RegexStringValidator("^[0-9]*$",
 			// "^[0-9]+$", "Please enter a number"), null)
-			_bindingContext.bindValue(SWTObservables.observeSelection(_ownsDestinationButton), BeansObservables.observeValue(_relationship, EORelationship.OWNS_DESTINATION), null, new BooleanUpdateValueStrategy());
-			_bindingContext.bindValue(SWTObservables.observeSelection(_propagatesPrimaryKeyButton), BeansObservables.observeValue(_relationship, EORelationship.PROPAGATES_PRIMARY_KEY), null, new BooleanUpdateValueStrategy());
-			_bindingContext.bindValue(SWTObservables.observeSelection(_clientClassPropertyButton), BeansObservables.observeValue(_relationship, EORelationship.CLIENT_CLASS_PROPERTY), null, new BooleanUpdateValueStrategy());
-			_bindingContext.bindValue(SWTObservables.observeSelection(_commonClassPropertyButton), BeansObservables.observeValue(_relationship, EORelationship.COMMON_CLASS_PROPERTY), null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					WidgetProperties.buttonSelection().observe(_ownsDestinationButton),
+					BeanProperties.value(EORelationship.class, EORelationship.OWNS_DESTINATION, Boolean.class).observe(_relationship),
+					null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					WidgetProperties.buttonSelection().observe(_propagatesPrimaryKeyButton),
+					BeanProperties.value(EORelationship.class, EORelationship.PROPAGATES_PRIMARY_KEY, Boolean.class).observe(_relationship),
+					null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					WidgetProperties.buttonSelection().observe(_clientClassPropertyButton),
+					BeanProperties.value(EORelationship.class, EORelationship.CLIENT_CLASS_PROPERTY, Boolean.class).observe(_relationship),
+					null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					WidgetProperties.buttonSelection().observe(_commonClassPropertyButton),
+					BeanProperties.value(EORelationship.class, EORelationship.COMMON_CLASS_PROPERTY, Boolean.class).observe(_relationship),
+					null, new BooleanUpdateValueStrategy());
 			updateCardinalityEnabled();
 		}
 	}

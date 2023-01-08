@@ -50,8 +50,8 @@
 package org.objectstyle.wolips.eomodeler.editors.userInfo;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -128,8 +128,14 @@ public class DocumentationPropertySection extends AbstractPropertySection {
 			_userInfoable = (UserInfoableEOModelObject) ((IStructuredSelection) selection).getFirstElement();
 
 			_bindingContext = new DataBindingContext();
-			_bindingContext.bindValue(SWTObservables.observeText(_documentationText, SWT.Modify), BeansObservables.observeValue(_userInfoable, UserInfoableEOModelObject.DOCUMENTATION_KEY), null, null);
-			_bindingContext.bindValue(new BrowserTextObservableValue(_browser, "body { margin: 0px; margin-right: 10px; font-size: 0.8em; }"), BeansObservables.observeValue(_userInfoable, UserInfoableEOModelObject.DOCUMENTATION_KEY), null, null);
+			_bindingContext.bindValue(
+					WidgetProperties.text(SWT.Modify).observe(_documentationText),
+					BeanProperties.value(UserInfoableEOModelObject.class, UserInfoableEOModelObject.DOCUMENTATION_KEY, String.class).observe(_userInfoable),
+					null, null);
+			_bindingContext.bindValue(
+					new BrowserTextObservableValue(_browser, "body { margin: 0px; margin-right: 10px; font-size: 0.8em; }"), 
+					BeanProperties.value(UserInfoableEOModelObject.class, UserInfoableEOModelObject.DOCUMENTATION_KEY, String.class).observe(_userInfoable),
+					null, null);
 		} else {
 			_userInfoable = null;
 		}

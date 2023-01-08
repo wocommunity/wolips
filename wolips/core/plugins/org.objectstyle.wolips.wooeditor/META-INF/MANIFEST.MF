@@ -18,7 +18,8 @@ Require-Bundle: org.eclipse.core.filesystem,
  org.objectstyle.wolips.eomodeler.core,
  org.objectstyle.wolips.wodclipse.core,
  org.objectstyle.wolips.thirdparty.commonscollections;bundle-version="1.0.6",
- org.objectstyle.wolips.woproject;bundle-version="1.0.6"
+ org.objectstyle.wolips.woproject;bundle-version="1.0.6",
+ org.eclipse.core.databinding.property
 Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.wooeditor,
  org.objectstyle.wolips.wooeditor.databinding.observable,

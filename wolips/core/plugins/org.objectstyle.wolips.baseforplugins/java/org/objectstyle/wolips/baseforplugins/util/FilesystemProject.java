@@ -137,4 +137,8 @@ public class FilesystemProject extends FilesystemFolder implements IProject {
 	public void clearCachedDynamicReferences() {
 		throw new UnsupportedOperationException();
 	}
+
+	public String getDefaultLineSeparator() throws CoreException {
+		throw new UnsupportedOperationException();
+	}
 }

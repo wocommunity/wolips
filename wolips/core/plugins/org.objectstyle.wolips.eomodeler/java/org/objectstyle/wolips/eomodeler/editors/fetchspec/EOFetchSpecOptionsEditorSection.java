@@ -50,8 +50,8 @@
 package org.objectstyle.wolips.eomodeler.editors.fetchspec;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -145,15 +145,36 @@ public class EOFetchSpecOptionsEditorSection extends AbstractPropertySection {
 		_fetchSpecification = (EOFetchSpecification) selectedObject;
 		if (_fetchSpecification != null) {
 			_bindingContext = new DataBindingContext();
-			_bindingContext.bindValue(SWTObservables.observeText(_fetchLimitText, SWT.Modify), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.FETCH_LIMIT), null, null);
+			_bindingContext.bindValue(
+					WidgetProperties.text(SWT.Modify).observe(_fetchLimitText),
+					BeanProperties.value(EOFetchSpecification.class, EOFetchSpecification.FETCH_LIMIT, Integer.class).observe(_fetchSpecification),
+					null, null);
 			// new BindSpec(null, null, new RegexStringValidator("^[0-9]*$",
 			// "^[0-9]+$", "Please enter a number"), null));
-			_bindingContext.bindValue(SWTObservables.observeSelection(_promptsAfterFetchLimitButton), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.PROMPTS_AFTER_FETCH_LIMIT), null, new BooleanUpdateValueStrategy());
-			_bindingContext.bindValue(SWTObservables.observeSelection(_deepButton), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.DEEP), null, new BooleanUpdateValueStrategy());
-			_bindingContext.bindValue(SWTObservables.observeSelection(_usesDistinctButton), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.USES_DISTINCT), null, new BooleanUpdateValueStrategy());
-			_bindingContext.bindValue(SWTObservables.observeSelection(_lockObjectsButton), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.LOCKS_OBJECTS), null, new BooleanUpdateValueStrategy());
-			_bindingContext.bindValue(SWTObservables.observeSelection(_refreshesRefetchedObjectsButton), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.REFRESHES_REFETCHED_OBJECTS), null, new BooleanUpdateValueStrategy());
-			_bindingContext.bindValue(SWTObservables.observeSelection(_requiresAllQualifierBindingVariablesButton), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES), null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					WidgetProperties.buttonSelection().observe(_promptsAfterFetchLimitButton),
+					BeanProperties.value(EOFetchSpecification.class, EOFetchSpecification.PROMPTS_AFTER_FETCH_LIMIT, Boolean.class).observe(_fetchSpecification),
+					null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					WidgetProperties.buttonSelection().observe(_deepButton),
+					BeanProperties.value(EOFetchSpecification.class, EOFetchSpecification.DEEP, Boolean.class).observe(_fetchSpecification),
+					null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					WidgetProperties.buttonSelection().observe(_usesDistinctButton),
+					BeanProperties.value(EOFetchSpecification.class, EOFetchSpecification.USES_DISTINCT, Boolean.class).observe(_fetchSpecification),
+					null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					WidgetProperties.buttonSelection().observe(_lockObjectsButton),
+					BeanProperties.value(EOFetchSpecification.class, EOFetchSpecification.LOCKS_OBJECTS, Boolean.class).observe(_fetchSpecification),
+					null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					WidgetProperties.buttonSelection().observe(_refreshesRefetchedObjectsButton),
+					BeanProperties.value(EOFetchSpecification.class, EOFetchSpecification.REFRESHES_REFETCHED_OBJECTS, Boolean.class).observe(_fetchSpecification),
+					null, new BooleanUpdateValueStrategy());
+			_bindingContext.bindValue(
+					WidgetProperties.buttonSelection().observe(_requiresAllQualifierBindingVariablesButton),
+					BeanProperties.value(EOFetchSpecification.class, EOFetchSpecification.REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES, Boolean.class).observe(_fetchSpecification),
+					null, new BooleanUpdateValueStrategy());
 		}
 	}
 

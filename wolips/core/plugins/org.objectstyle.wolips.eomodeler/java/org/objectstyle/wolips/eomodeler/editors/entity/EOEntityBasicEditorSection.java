@@ -50,8 +50,8 @@
 package org.objectstyle.wolips.eomodeler.editors.entity;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -152,11 +152,26 @@ public class EOEntityBasicEditorSection extends AbstractPropertySection {
 			myEntity = entity;
 			if (myEntity != null) {
 				myBindingContext = new DataBindingContext();
-				myBindingContext.bindValue(SWTObservables.observeText(myNameText, SWT.Modify), BeansObservables.observeValue(myEntity, EOEntity.NAME), null, null);
-				myBindingContext.bindValue(SWTObservables.observeText(myExternalNameText, SWT.Modify), BeansObservables.observeValue(myEntity, EOEntity.EXTERNAL_NAME), null, null);
-				myBindingContext.bindValue(SWTObservables.observeText(myClassNameText, SWT.Modify), BeansObservables.observeValue(myEntity, EOEntity.CLASS_NAME), null, null);
-				myBindingContext.bindValue(SWTObservables.observeText(myRestrictingQualifierText, SWT.Modify), BeansObservables.observeValue(myEntity, EOEntity.RESTRICTING_QUALIFIER), null, null);
-				myBindingContext.bindValue(SWTObservables.observeSelection(myAbstractButton), BeansObservables.observeValue(myEntity, EOEntity.ABSTRACT_ENTITY), null, new BooleanUpdateValueStrategy());
+				myBindingContext.bindValue(
+						WidgetProperties.text(SWT.Modify).observe(myNameText),
+						BeanProperties.value(EOEntity.class, EOEntity.NAME, String.class).observe(myEntity),
+						null, null);
+				myBindingContext.bindValue(
+						WidgetProperties.text(SWT.Modify).observe(myExternalNameText),
+						BeanProperties.value(EOEntity.class, EOEntity.EXTERNAL_NAME, String.class).observe(myEntity),
+						null, null);
+				myBindingContext.bindValue(
+						WidgetProperties.text(SWT.Modify).observe(myClassNameText),
+						BeanProperties.value(EOEntity.class, EOEntity.CLASS_NAME, String.class).observe(myEntity),
+						null, null);
+				myBindingContext.bindValue(
+						WidgetProperties.text(SWT.Modify).observe(myRestrictingQualifierText),
+						BeanProperties.value(EOEntity.class, EOEntity.RESTRICTING_QUALIFIER, String.class).observe(myEntity),
+						null, null);
+				myBindingContext.bindValue(
+						WidgetProperties.buttonSelection().observe(myAbstractButton),
+						BeanProperties.value(EOEntity.class, EOEntity.ABSTRACT_ENTITY, Boolean.class).observe(myEntity),
+						null, new BooleanUpdateValueStrategy());
 
 				myParentEntityComboViewer.setInput(myEntity);
 				myParentEntityBinding = new ComboViewerBinding(myParentEntityComboViewer, myEntity, EOEntity.PARENT, myEntity.getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);

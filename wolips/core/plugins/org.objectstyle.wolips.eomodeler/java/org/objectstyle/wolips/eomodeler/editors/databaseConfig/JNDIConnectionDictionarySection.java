@@ -50,8 +50,8 @@
 package org.objectstyle.wolips.eomodeler.editors.databaseConfig;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -153,14 +153,32 @@ public class JNDIConnectionDictionarySection extends Composite implements IConne
 			_bindingContext = new DataBindingContext();
 			_authenticationMethodComboViewer.setInput(_databaseConfig);
 			_authenticationMethodBinding = new ComboViewerBinding(_authenticationMethodComboViewer, _databaseConfig, EODatabaseConfig.AUTHENTICATION_METHOD, null, null, null);
-			_bindingContext.bindValue(SWTObservables.observeText(_usernameText, SWT.Modify), BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.USERNAME), null, null);
-			_bindingContext.bindValue(SWTObservables.observeText(_passwordText, SWT.Modify), BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.PASSWORD), null, null);
-			_bindingContext.bindValue(SWTObservables.observeText(_serverUrlText, SWT.Modify), BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.URL), null, null);
-			_bindingContext.bindValue(SWTObservables.observeText(_timeoutText, SWT.Modify), BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.TIMEOUT), null, null);
+			_bindingContext.bindValue(
+					WidgetProperties.text(SWT.Modify).observe(_usernameText),
+					BeanProperties.value(EODatabaseConfig.class, EODatabaseConfig.USERNAME, String.class).observe(_databaseConfig),
+					null, null);
+			_bindingContext.bindValue(
+					WidgetProperties.text(SWT.Modify).observe(_passwordText),
+					BeanProperties.value(EODatabaseConfig.class, EODatabaseConfig.PASSWORD, String.class).observe(_databaseConfig),
+					null, null);
+			_bindingContext.bindValue(
+					WidgetProperties.text(SWT.Modify).observe(_serverUrlText),
+					BeanProperties.value(EODatabaseConfig.class, EODatabaseConfig.URL, String.class).observe(_databaseConfig),
+					null, null);
+			_bindingContext.bindValue(
+					WidgetProperties.text(SWT.Modify).observe(_timeoutText),
+					BeanProperties.value(EODatabaseConfig.class, EODatabaseConfig.TIMEOUT, Integer.class).observe(_databaseConfig),
+					null, null);
 			_scopeComboViewer.setInput(_databaseConfig);
 			_scopeBinding = new ComboViewerBinding(_scopeComboViewer, _databaseConfig, EODatabaseConfig.SCOPE, null, null, null);
-			_bindingContext.bindValue(SWTObservables.observeText(_plugInClassNameText, SWT.Modify), BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.PLUGIN), null, null);
-			_bindingContext.bindValue(SWTObservables.observeText(_initialContextFactoryText, SWT.Modify), BeansObservables.observeValue(_databaseConfig, EODatabaseConfig.INITIAL_CONTEXT_FACTORY), null, null);
+			_bindingContext.bindValue(
+					WidgetProperties.text(SWT.Modify).observe(_plugInClassNameText),
+					BeanProperties.value(EODatabaseConfig.class, EODatabaseConfig.PLUGIN, String.class).observe(_databaseConfig),
+					null, null);
+			_bindingContext.bindValue(
+					WidgetProperties.text(SWT.Modify).observe(_initialContextFactoryText),
+					BeanProperties.value(EODatabaseConfig.class, EODatabaseConfig.INITIAL_CONTEXT_FACTORY, String.class).observe(_databaseConfig),
+					null, null);
 		}
 	}
 
