@@ -93,10 +93,12 @@ import org.objectstyle.wolips.wodclipse.core.woo.WooModel;
 
 public class DisplayGroupPageBlock extends MasterDetailsBlock {
 	private class AddButtonListener implements SelectionListener {
+		@Override
 		public void widgetDefaultSelected(final SelectionEvent e) {
 			// Do nothing
 		}
 
+		@Override
 		public void widgetSelected(final SelectionEvent e) {
 			try {
 				WooEditor wooEditor = (WooEditor) page.getEditor();
@@ -124,10 +126,12 @@ public class DisplayGroupPageBlock extends MasterDetailsBlock {
 	}
 
 	protected class MasterContentProvider implements IStructuredContentProvider {
+		@Override
 		public void dispose() {
 			// nothing to do
 		}
 
+		@Override
 		public Object[] getElements(final Object inputElement) {
 			try {
 				if (inputElement instanceof IEditorInput) {
@@ -141,6 +145,7 @@ public class DisplayGroupPageBlock extends MasterDetailsBlock {
 			
 		}
 
+		@Override
 		public void inputChanged(final Viewer inViewer, final Object oldInput,
 				final Object newInput) {
 			// nothing to do
@@ -149,6 +154,7 @@ public class DisplayGroupPageBlock extends MasterDetailsBlock {
 
 	protected static class MasterLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
+		@Override
 		public Image getColumnImage(final Object obj, final int index) {
 			if (obj instanceof DisplayGroup) {
 				return PlatformUI.getWorkbench().getSharedImages().getImage(
@@ -157,6 +163,7 @@ public class DisplayGroupPageBlock extends MasterDetailsBlock {
 			return null;
 		}
 
+		@Override
 		public String getColumnText(final Object obj, final int index) {
 			if (obj instanceof DisplayGroup) {
 				DisplayGroup displayGroup = (DisplayGroup) obj;
@@ -167,10 +174,12 @@ public class DisplayGroupPageBlock extends MasterDetailsBlock {
 	}
 
 	private class RemoveButtonListener implements SelectionListener {
+		@Override
 		public void widgetDefaultSelected(final SelectionEvent e) {
 			// Do nothing
 		}
 
+		@Override
 		public void widgetSelected(final SelectionEvent e) {
 			try {
 				WooEditor wooEditor = (WooEditor) page.getEditor();
@@ -213,6 +222,7 @@ public class DisplayGroupPageBlock extends MasterDetailsBlock {
 
 		final PropertyChangeListener displayGroupListener =
 			new PropertyChangeListener() {
+			@Override
 			public void propertyChange(
 					final PropertyChangeEvent event) {
 				if (WooModel.DISPLAY_GROUP_NAME.equals(event
@@ -282,6 +292,7 @@ public class DisplayGroupPageBlock extends MasterDetailsBlock {
 
 		viewer = new TableViewer(t);
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+			@Override
 			public void selectionChanged(final SelectionChangedEvent event) {
 				managedForm.fireSelectionChanged(spart, event.getSelection());
 			}

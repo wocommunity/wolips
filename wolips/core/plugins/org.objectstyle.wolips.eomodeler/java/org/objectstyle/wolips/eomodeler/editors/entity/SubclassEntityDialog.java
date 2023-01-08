@@ -55,7 +55,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -175,7 +175,8 @@ public class SubclassEntityDialog extends Dialog {
 		_parentEntityViewer = new ComboViewer(subclassDialogArea);
 		_parentEntityViewer.setContentProvider(new EOEntityListContentProvider(false, false, false));
 		_parentEntityViewer.setLabelProvider(new EOEntityLabelProvider());
-		_parentEntityViewer.setSorter(new ViewerSorter());
+		//_parentEntityViewer.setSorter(new ViewerSorter());
+		_parentEntityViewer.setComparator(new ViewerComparator());
 		_parentEntityViewer.setInput(_sourceModel);
 		_parentEntityViewer.getCombo().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		_parentEntityViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -192,7 +193,8 @@ public class SubclassEntityDialog extends Dialog {
 		_inheritanceTypeViewer = new ComboViewer(subclassDialogArea);
 		_inheritanceTypeViewer.setLabelProvider(new InheritanceTypeLabelProvider());
 		_inheritanceTypeViewer.setContentProvider(new InheritanceTypeContentProvider());
-		_inheritanceTypeViewer.setSorter(new ViewerSorter());
+		//_inheritanceTypeViewer.setSorter(new ViewerSorter());
+		_inheritanceTypeViewer.setComparator(new ViewerComparator());
 		_inheritanceTypeViewer.setInput(InheritanceType.INHERITANCE_TYPES);
 		_inheritanceTypeViewer.getCombo().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		_inheritanceTypeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -207,7 +209,8 @@ public class SubclassEntityDialog extends Dialog {
 		_destinationModelViewer = new ComboViewer(subclassDialogArea);
 		_destinationModelViewer.setContentProvider(new EOModelListContentProvider());
 		_destinationModelViewer.setLabelProvider(new EOModelLabelProvider());
-		_destinationModelViewer.setSorter(new ViewerSorter());
+		//_destinationModelViewer.setSorter(new ViewerSorter());
+		_destinationModelViewer.setComparator(new ViewerComparator());
 		_destinationModelViewer.setInput(_destinationModel);
 		_destinationModelViewer.getCombo().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		_destinationModelViewer.addSelectionChangedListener(new ISelectionChangedListener() {

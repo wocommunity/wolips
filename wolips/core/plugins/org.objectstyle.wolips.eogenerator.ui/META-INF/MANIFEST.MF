@@ -10,7 +10,8 @@ Require-Bundle: org.eclipse.ui.forms,
  org.objectstyle.wolips.eogenerator.core,
  org.eclipse.core.databinding,
  org.eclipse.jface.databinding,
- org.eclipse.core.databinding.beans
+ org.eclipse.core.databinding.beans,
+ org.eclipse.core.databinding.property
 Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.eogenerator.ui,
  org.objectstyle.wolips.eogenerator.ui.actions,

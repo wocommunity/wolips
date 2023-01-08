@@ -3,3 +3,4 @@ build.properties
 temp/
 .DS_Store
 /woenvironment/target/
+woproject-ant-tasks/target

@@ -129,12 +129,14 @@ public class WooeditorPlugin extends AbstractBaseUIActivator implements IResourc
     return getImageRegistry().get(key);
   }
 
+  @Override
   public void resourceChanged(final IResourceChangeEvent event) {
     if (event.getType() == IResourceChangeEvent.POST_CHANGE) {
       final IResourceDelta delta = event.getDelta();
       final ArrayList<IResource> changed = new ArrayList<IResource>();
       IResourceDeltaVisitor visitor = new IResourceDeltaVisitor() {
-        public boolean visit(final IResourceDelta visitingDelta) {
+        @Override
+		public boolean visit(final IResourceDelta visitingDelta) {
           // only interested in changed encoding
           if (visitingDelta.getKind() != IResourceDelta.CHANGED || (visitingDelta.getFlags() & IResourceDelta.ENCODING) == 0) {
             return true;
@@ -162,7 +164,8 @@ public class WooeditorPlugin extends AbstractBaseUIActivator implements IResourc
       }
 
       Display.getDefault().asyncExec(new Runnable() {
-        public void run() {
+        @Override
+		public void run() {
           for (IResource resource : changed) {
             IFolder folder = (IFolder) resource;
             try {

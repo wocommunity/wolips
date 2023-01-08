@@ -6,25 +6,27 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.objectstyle.wolips.wooeditor.widgets.RadioGroup;
 
-public class RadioGroupObservableValue extends AbstractObservableValue {
+public class RadioGroupObservableValue extends AbstractObservableValue<Object> {
 	private RadioGroup myGroup;
 	private Object mySelection;
 
 	private SelectionListener selectionListener = new SelectionListener() {
+		@Override
 		public void widgetDefaultSelected(final SelectionEvent e) {
 			widgetSelected(e);
 		}
 
+		@Override
 		public void widgetSelected(final SelectionEvent e) {
 			final Object newSelection = myGroup.getSelection();
-			fireValueChange(new ValueDiff() {
+			fireValueChange(new ValueDiff<Object>() {
 				@Override
-        public Object getNewValue() {
+				public Object getNewValue() {
 					return newSelection;
 				}
 
 				@Override
-        public Object getOldValue() {
+				public Object getOldValue() {
 					return mySelection;
 				}
 			});
@@ -39,21 +41,22 @@ public class RadioGroupObservableValue extends AbstractObservableValue {
 	}
 
 	@Override
-  public synchronized void dispose() {
+	public synchronized void dispose() {
 		myGroup.removeSelectionListener(selectionListener);
 	}
 
 	@Override
-  protected void doSetValue(final Object value) {
+	protected void doSetValue(final Object value) {
 		myGroup.setSelection(value);
 		mySelection = value;
 	}
 
 	@Override
-  protected Object doGetValue() {
+	protected Object doGetValue() {
 		return myGroup.getSelection();
 	}
 
+	@Override
 	public Object getValueType() {
 		return Object.class;
 	}

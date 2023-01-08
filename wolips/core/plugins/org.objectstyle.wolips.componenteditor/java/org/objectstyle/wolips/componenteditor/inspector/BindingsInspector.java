@@ -6,12 +6,12 @@ import java.util.List;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
-import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
 import org.eclipse.core.databinding.validation.IValidator;
 import org.eclipse.core.databinding.validation.ValidationStatus;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
@@ -423,8 +423,8 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 	}
 
 	protected void bindElementName(final WodParserCache refactoringParserCache) {
-		UpdateValueStrategy elementNameUpdateStrategy = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
-		elementNameUpdateStrategy.setBeforeSetValidator(new IValidator() {
+		UpdateValueStrategy<String, Object> elementNameUpdateStrategy = new UpdateValueStrategy<>(UpdateValueStrategy.POLICY_UPDATE);
+		elementNameUpdateStrategy.setBeforeSetValidator(new IValidator<Object>() {
 			public IStatus validate(Object value) {
 				String newName = (String) value;
 				IStatus status = Status.OK_STATUS;
@@ -447,7 +447,12 @@ public class BindingsInspector extends Composite implements ISelectionProvider, 
 				return status;
 			}
 		});
-		_dataBindingContext.bindValue(SWTObservables.observeText(_elementNameField, SWT.FocusOut), BeansObservables.observeValue(_refactoringElement, RefactoringWodElement.ELEMENT_NAME), elementNameUpdateStrategy, null);
+		_dataBindingContext.bindValue(
+				//SWTObservables.observeText(_elementNameField, SWT.FocusOut),
+				WidgetProperties.text(SWT.FocusOut).observe(_elementNameField),
+				// BeansObservables.observeValue(_refactoringElement, RefactoringWodElement.ELEMENT_NAME), 
+				BeanProperties.value(RefactoringWodElement.ELEMENT_NAME).observe(_refactoringElement),
+				elementNameUpdateStrategy, null);
 	}
 
 	public TableViewer getBindingsTableViewer() {

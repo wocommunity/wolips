@@ -97,6 +97,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -365,7 +366,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
 	private EOModelContentOutlinePage myContentOutlinePage;
 
-	private final ListenerList mySelectionChangedListeners;
+	private final ListenerList<ISelectionChangedListener> mySelectionChangedListeners;
 
 	private IStructuredSelection mySelection;
 
@@ -406,7 +407,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	private int _failuresHashCode;
 
 	public EOModelEditor() {
-		mySelectionChangedListeners = new ListenerList();
+		mySelectionChangedListeners = new ListenerList<>();
 		myDirtyModelListener = new DirtyModelListener();
 		myEntitiesChangeListener = new EntitiesChangeRefresher();
 		myFetchSpecsChangeListener = new FetchSpecsChangeRefresher();
@@ -443,7 +444,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				else {
 					jarPath = jarResource.getLocation();
 				}
-				indexURL = new URI("jar:" + jarPath.toFile().toURL() + "!" + jarEntryPath.toPortableString());
+				indexURL = new URI("jar:" + jarPath.toFile().toURI().toURL() + "!" + jarEntryPath.toPortableString());
 			}
 			if (myModel != null) {
 				if (myModel.getModelGroup() != null) {
@@ -1066,7 +1067,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		super.setFocus();
 		// MS: I'm not sure the right way to do this, but without
 		// this call, selecting a relationship in the EOModelEditor
-		// before ever activing the outline would not cause the
+		// before ever activating the outline would not cause the
 		// property view to update.
 		getSite().setSelectionProvider(this);
 
@@ -1081,16 +1082,14 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		// behavior, but it seemed really aggressive.
 		if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY)) {
 			boolean shouldSwitchToEntityModeler = false;
-			IWorkbench workbench = Activator.getDefault().getWorkbench();
+			IWorkbench workbench = PlatformUI.getWorkbench();
 			IWorkbenchWindow activeWindow = workbench.getActiveWorkbenchWindow();
 			if (activeWindow != null) {
-				if (activeWindow != null) {
-					IWorkbenchPage workbenchPage = activeWindow.getActivePage();
-					if (workbenchPage != null) {
-						IEditorReference[] editorReferences = workbenchPage.getEditorReferences();
-						if (editorReferences.length > 1) {
-							shouldSwitchToEntityModeler = true;
-						}
+				IWorkbenchPage workbenchPage = activeWindow.getActivePage();
+				if (workbenchPage != null) {
+					IEditorReference[] editorReferences = workbenchPage.getEditorReferences();
+					if (editorReferences.length > 1) {
+						shouldSwitchToEntityModeler = true;
 					}
 				}
 			}
@@ -1259,7 +1258,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		// so we don't leave you sitting in a blank window.
 		boolean closedWindow = false;
 		if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.OPEN_IN_WINDOW_KEY)) {
-			IWorkbench workbench = Activator.getDefault().getWorkbench();
+			IWorkbench workbench = PlatformUI.getWorkbench();
 			if (workbench.getWorkbenchWindows().length > 1) {
 				IWorkbenchPage workbenchPage = workbench.getActiveWorkbenchWindow().getActivePage();
 				if (workbenchPage != null && EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(workbenchPage.getPerspective().getId())) {
@@ -1276,7 +1275,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		// window from Entity Modeler over to the WOLips perspective.
 		if (!closedWindow && Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY)) {
 			try {
-				IWorkbench workbench = Activator.getDefault().getWorkbench();
+				IWorkbench workbench = PlatformUI.getWorkbench();
 				IWorkbenchWindow activeWorkbenchWindow = workbench.getActiveWorkbenchWindow();
 				if (activeWorkbenchWindow != null) {
 					IWorkbenchPage workbenchPage = activeWorkbenchWindow.getActivePage();
@@ -1310,7 +1309,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	public void switchToEntityModelerPerspective() {
 		try {
 			if (Activator.getDefault().getPreferenceStore().getBoolean(PreferenceConstants.CHANGE_PERSPECTIVES_KEY)) {
-				IWorkbench workbench = Activator.getDefault().getWorkbench();
+				IWorkbench workbench = PlatformUI.getWorkbench();
 				IWorkbenchWindow activeWorkbenchWindow = workbench.getActiveWorkbenchWindow();
 				if (activeWorkbenchWindow != null) {
 					workbench.showPerspective(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, activeWorkbenchWindow);

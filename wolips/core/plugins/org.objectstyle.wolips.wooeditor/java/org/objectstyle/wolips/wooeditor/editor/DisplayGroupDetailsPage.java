@@ -62,12 +62,12 @@ import java.util.List;
 
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
-import org.eclipse.core.databinding.beans.BeansObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
 import org.eclipse.core.databinding.conversion.IConverter;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -134,12 +134,14 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 	private DataBindingContext myBindingContext;
 
 	private PropertyChangeListener myDirtyStateListener = new PropertyChangeListener() {
+		@Override
 		public void propertyChange(final PropertyChangeEvent evt) {
 			myManagedForm.dirtyStateChanged();
 		}
 	};
 
 	private final ModifyListener myEntityModifyListener = new ModifyListener() {
+		@Override
 		public void modifyText(final ModifyEvent e) {
 			Object selection = mySortRadioGroup.getSelection();
 			if (!DisplayGroup.NOT_SORTED.equals(selection)) {
@@ -152,16 +154,19 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 	};
 
 	private final ModifyListener myMasterEntityListener = new ModifyListener() {
+		@Override
 		public void modifyText(final ModifyEvent e) {
 			myDetailKeyCombo.setText("");
 		}
 	};
 
 	private final SelectionListener mySortEntityListener = new SelectionListener() {
+		@Override
 		public void widgetDefaultSelected(final SelectionEvent e) {
 			widgetSelected(e);
 		}
 
+		@Override
 		public void widgetSelected(final SelectionEvent e) {
 			Object selection = mySortRadioGroup.getSelection();
 			if (DisplayGroup.NOT_SORTED.equals(selection)) {
@@ -181,77 +186,161 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 		}
 		myBindingContext = new DataBindingContext();
 
-		myBindingContext
-		    .bindValue(SWTObservables.observeText(myNameText, SWT.Modify), BeansObservables.observeValue(myDisplayGroup, DisplayGroup.NAME), null, null);
+		myBindingContext.bindValue(
+				//SWTObservables.observeText(myNameText, SWT.Modify),
+				WidgetProperties.text(SWT.Modify).observe(myNameText),
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.NAME),
+				BeanProperties.value(DisplayGroup.NAME).observe(myDisplayGroup),
+				null, null);
 
-		myBindingContext.bindList(SWTObservables.observeItems(myClassNameCombo), BeansObservables.observeList(Realm.getDefault(), myDisplayGroup,
-		    DisplayGroup.CLASS_NAME_LIST), null, null);
-		myBindingContext.bindValue(SWTObservables.observeSingleSelectionIndex(myClassNameCombo), BeansObservables.observeValue(myDisplayGroup,
-		    DisplayGroup.CLASS_NAME_INDEX), null, null);
+		myBindingContext.bindList(
+				//SWTObservables.observeItems(myClassNameCombo),
+				WidgetProperties.items().observe(myClassNameCombo),
+				//BeansObservables.observeList(Realm.getDefault(), myDisplayGroup, DisplayGroup.CLASS_NAME_LIST),
+				BeanProperties.list(DisplayGroup.CLASS_NAME_LIST).observe(Realm.getDefault(), myDisplayGroup),
+				null, null);
+		myBindingContext.bindValue(
+				//SWTObservables.observeSingleSelectionIndex(myClassNameCombo),
+				WidgetProperties.singleSelectionIndex().observe(myClassNameCombo),
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.CLASS_NAME_INDEX),
+				BeanProperties.value(DisplayGroup.CLASS_NAME_INDEX).observe(myDisplayGroup),
+				null, null);
 
-		myBindingContext.bindList(SWTObservables.observeItems(myEntityCombo), BeansObservables.observeList(Realm.getDefault(), myDisplayGroup,
-		    DisplayGroup.ENTITY_LIST), null, null);
-		myBindingContext.bindValue(SWTObservables.observeEnabled(myMasterDetailGroup), BeansObservables
-		    .observeValue(myDisplayGroup, DisplayGroup.HAS_MASTER_DETAIL), new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), null);
+		myBindingContext.bindList(
+				//SWTObservables.observeItems(myEntityCombo),
+				WidgetProperties.items().observe(myEntityCombo),
+				//BeansObservables.observeList(Realm.getDefault(), myDisplayGroup, DisplayGroup.ENTITY_LIST),
+				BeanProperties.list(DisplayGroup.ENTITY_LIST).observe(Realm.getDefault(), myDisplayGroup),
+				null, null);
+		myBindingContext.bindValue(
+				//SWTObservables.observeEnabled(myMasterDetailGroup),
+				WidgetProperties.enabled().observe(myMasterDetailGroup),
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.HAS_MASTER_DETAIL),
+				BeanProperties.value(DisplayGroup.HAS_MASTER_DETAIL).observe(myDisplayGroup),
+				new UpdateValueStrategy<Object, Boolean>(UpdateValueStrategy.POLICY_NEVER), null);
 
-		UpdateValueStrategy booleanInverse = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE) {
+		UpdateValueStrategy<Object, Boolean> booleanInverse = new UpdateValueStrategy<Object, Boolean>(UpdateValueStrategy.POLICY_UPDATE) {
 			@Override
-			protected IStatus doSet(final IObservableValue observableValue, final Object value) {
+			protected IStatus doSet(final IObservableValue<? super Boolean> observableValue, final Boolean value) {
 				Boolean newValue = !(Boolean) value;
 				return super.doSet(observableValue, newValue);
 			}
 		};
 
-		myBindingContext.bindValue(SWTObservables.observeEnabled(myEntityCombo), BeansObservables.observeValue(myDisplayGroup, DisplayGroup.HAS_MASTER_DETAIL),
-		    new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), booleanInverse);
-		myBindingContext.bindValue(CustomSWTObservables.observeText(myEntityCombo), BeansObservables.observeValue(myDisplayGroup, DisplayGroup.ENTITY_NAME), null,
-		    null);
+		myBindingContext.bindValue(
+				//SWTObservables.observeEnabled(myEntityCombo),
+				WidgetProperties.enabled().observe(myEntityCombo), 
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.HAS_MASTER_DETAIL),
+				BeanProperties.value(DisplayGroup.HAS_MASTER_DETAIL).observe(myDisplayGroup),
+				new UpdateValueStrategy<Object, Boolean>(UpdateValueStrategy.POLICY_NEVER), booleanInverse);
+		myBindingContext.bindValue(
+				CustomSWTObservables.observeText(myEntityCombo), 
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.ENTITY_NAME),
+				BeanProperties.value(DisplayGroup.ENTITY_NAME).observe(myDisplayGroup), 
+				null, null);
 
-		myBindingContext.bindValue(SWTObservables.observeEnabled(myEditingContextText), BeansObservables.observeValue(myDisplayGroup,
-		    DisplayGroup.HAS_MASTER_DETAIL), new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), booleanInverse);
-		myBindingContext.bindValue(SWTObservables.observeText(myEditingContextText, SWT.Modify), BeansObservables.observeValue(myDisplayGroup,
-		    DisplayGroup.EDITING_CONTEXT), null, null);
+		myBindingContext.bindValue(
+				//SWTObservables.observeEnabled((myEditingContextText)),
+				WidgetProperties.enabled().observe(myEditingContextText), 
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.HAS_MASTER_DETAIL),
+				BeanProperties.value(DisplayGroup.HAS_MASTER_DETAIL).observe(myDisplayGroup), 
+				new UpdateValueStrategy<Object, Boolean>(UpdateValueStrategy.POLICY_NEVER), booleanInverse);
+		myBindingContext.bindValue(
+				//SWTObservables.observeText(myEditingContextText, SWT.Modify),
+				WidgetProperties.text(SWT.Modify).observe(myEditingContextText), 
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.EDITING_CONTEXT),
+				BeanProperties.value(DisplayGroup.EDITING_CONTEXT).observe(myDisplayGroup), 
+				null, null);
 
-		myBindingContext.bindValue(SWTObservables.observeSelection(myHasDetailButton), BeansObservables
-		    .observeValue(myDisplayGroup, DisplayGroup.HAS_MASTER_DETAIL), null, null);
+		myBindingContext.bindValue(
+				//SWTObservables.observeSelection(myHasDetailButton),
+				WidgetProperties.buttonSelection().observe(myHasDetailButton),
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.HAS_MASTER_DETAIL),
+				BeanProperties.value(DisplayGroup.HAS_MASTER_DETAIL).observe(myDisplayGroup), 
+				null, null);
 
-		myBindingContext.bindList(SWTObservables.observeItems(myMasterEntityCombo), BeansObservables.observeList(Realm.getDefault(), myDisplayGroup,
-		    DisplayGroup.ENTITY_LIST), null, null);
-		myBindingContext.bindValue(CustomSWTObservables.observeText(myMasterEntityCombo), BeansObservables.observeValue(myDisplayGroup,
-		    DisplayGroup.MASTER_ENTITY_NAME), null, null);
+		myBindingContext.bindList(
+				//SWTObservables.observeItems(myMasterEntityCombo),
+				WidgetProperties.items().observe(myMasterEntityCombo),
+				//BeansObservables.observeList(Realm.getDefault(), myDisplayGroup, DisplayGroup.ENTITY_LIST),
+				BeanProperties.list(DisplayGroup.ENTITY_LIST).observe(Realm.getDefault(), myDisplayGroup),
+				null, null);
+		myBindingContext.bindValue(
+				CustomSWTObservables.observeText(myMasterEntityCombo), 
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.MASTER_ENTITY_NAME),
+				BeanProperties.value(DisplayGroup.MASTER_ENTITY_NAME).observe(myDisplayGroup), 
+				null, null);
 
-		myBindingContext.bindList(SWTObservables.observeItems(myDetailKeyCombo), BeansObservables.observeList(Realm.getDefault(), myDisplayGroup,
-		    DisplayGroup.DETAIL_KEY_LIST), null, null);
+		myBindingContext.bindList(
+				//SWTObservables.observeItems(myDetailKeyCombo),
+				WidgetProperties.items().observe(myDetailKeyCombo), 
+				//BeansObservables.observeList(Realm.getDefault(), myDisplayGroup, DisplayGroup.DETAIL_KEY_LIST),
+				BeanProperties.list(DisplayGroup.DETAIL_KEY_LIST).observe(Realm.getDefault(), myDisplayGroup), 
+				null, null);
 
-		myBindingContext.bindValue(CustomSWTObservables.observeText(myDetailKeyCombo), BeansObservables.observeValue(myDisplayGroup, DisplayGroup.DETAIL_KEY_NAME),
-		    null, null);
+		myBindingContext.bindValue(
+				CustomSWTObservables.observeText(myDetailKeyCombo), 
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.DETAIL_KEY_NAME),
+				BeanProperties.value(DisplayGroup.DETAIL_KEY_NAME).observe(myDisplayGroup),
+				null, null);
 
-		myBindingContext.bindValue(SWTObservables.observeSelection(myEntriesPerBatchSpinner), BeansObservables.observeValue(myDisplayGroup,
-		    DisplayGroup.ENTRIES_PER_BATCH), null, null);
+		myBindingContext.bindValue(
+				//SWTObservables.observeSelection(myEntriesPerBatchSpinner),
+				WidgetProperties.spinnerSelection().observe(myEntriesPerBatchSpinner), 
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.ENTRIES_PER_BATCH),
+				BeanProperties.value(DisplayGroup.ENTRIES_PER_BATCH).observe(myDisplayGroup), 
+				null, null);
 
-		myBindingContext.bindValue(SWTObservables.observeSelection(mySelectsFirstObjectButton), BeansObservables.observeValue(myDisplayGroup,
-		    DisplayGroup.SELECTS_FIRST_OBJECT), null, null);
+		myBindingContext.bindValue(
+				//SWTObservables.observeSelection(mySelectsFirstObjectButton),
+				WidgetProperties.buttonSelection().observe(mySelectsFirstObjectButton), 
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.SELECTS_FIRST_OBJECT),
+				BeanProperties.value(DisplayGroup.SELECTS_FIRST_OBJECT).observe(myDisplayGroup), 
+				null, null);
 
-		myBindingContext.bindList(SWTObservables.observeItems(myQualificationCombo), BeansObservables.observeList(Realm.getDefault(), myDisplayGroup,
-		    DisplayGroup.QUALIFICATION_LIST), null, null);
-		myBindingContext.bindValue(SWTObservables.observeSingleSelectionIndex(myQualificationCombo), BeansObservables.observeValue(myDisplayGroup,
-		    DisplayGroup.QUALIFICATION_INDEX), null, null);
+		myBindingContext.bindList(
+				//SWTObservables.observeItems(myQualificationCombo),
+				WidgetProperties.items().observe(myQualificationCombo), 
+				//BeansObservables.observeList(Realm.getDefault(), myDisplayGroup, DisplayGroup.QUALIFICATION_LIST),
+				BeanProperties.list(DisplayGroup.QUALIFICATION_LIST).observe(Realm.getDefault(), myDisplayGroup), 
+				null, null);
+		myBindingContext.bindValue(
+				//SWTObservables.observeSingleSelectionIndex(myQualificationCombo),
+				WidgetProperties.singleSelectionIndex().observe(myQualificationCombo),
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.QUALIFICATION_INDEX),
+				BeanProperties.value(DisplayGroup.QUALIFICATION_INDEX).observe(myDisplayGroup), 
+				null, null);
 
-		myBindingContext.bindValue(SWTObservables.observeSelection(myFetchOnLoadButton), BeansObservables
-		    .observeValue(myDisplayGroup, DisplayGroup.FETCHES_ON_LOAD), null, null);
+		myBindingContext.bindValue(
+				//SWTObservables.observeSelection(myFetchOnLoadButton),
+				WidgetProperties.buttonSelection().observe(myFetchOnLoadButton), 
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.FETCHES_ON_LOAD),
+				BeanProperties.value(DisplayGroup.FETCHES_ON_LOAD).observe(myDisplayGroup), 
+				null, null);
 
-		myBindingContext.bindList(SWTObservables.observeItems(mySortAttributeCombo), BeansObservables.observeList(Realm.getDefault(), myDisplayGroup,
-		    DisplayGroup.SORT_LIST), null, null);
+		myBindingContext.bindList(
+				//SWTObservables.observeItems(mySortAttributeCombo),
+				WidgetProperties.items().observe(mySortAttributeCombo), 
+				//BeansObservables.observeList(Realm.getDefault(), myDisplayGroup, DisplayGroup.SORT_LIST),
+				BeanProperties.list(DisplayGroup.SORT_LIST).observe(Realm.getDefault(), myDisplayGroup), 
+				null, null);
 
-		myBindingContext.bindValue(CustomSWTObservables.observeSelection(mySortAttributeCombo), BeansObservables.observeValue(myDisplayGroup,
-		    DisplayGroup.SORT_ORDER_KEY), null, null);
+		myBindingContext.bindValue(
+				CustomSWTObservables.observeSelection(mySortAttributeCombo), 
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.SORT_ORDER_KEY),
+				BeanProperties.value(DisplayGroup.SORT_ORDER_KEY).observe(myDisplayGroup), 
+				null, null);
 
-		myBindingContext.bindValue(CustomSWTObservables.observeSelection(mySortRadioGroup), BeansObservables.observeValue(myDisplayGroup, DisplayGroup.SORT_ORDER),
-		    null, null);
+		myBindingContext.bindValue(
+				CustomSWTObservables.observeSelection(mySortRadioGroup), 
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.SORT_ORDER),
+				BeanProperties.value(DisplayGroup.SORT_ORDER).observe(myDisplayGroup),
+				null, null);
 
-		UpdateValueStrategy fetchSpecEmpty = new UpdateValueStrategy();
-		fetchSpecEmpty.setConverter(new IConverter() {
-			public Object convert(final Object fromObject) {
+		final UpdateValueStrategy<Object, Boolean> fetchSpecEmpty = new UpdateValueStrategy<>();
+		fetchSpecEmpty.setConverter(new IConverter<Object, Boolean>() {
+			@Override
+			public Boolean convert(final Object fromObject) {
 				boolean result = fromObject != null && ((List<?>) fromObject).size() > 0;
 				if (!myHasDetailButton.getSelection()) {
 					return result;
@@ -259,18 +348,20 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 				return false;
 			}
 
+			@Override
 			public Object getFromType() {
 				return new ArrayList<String>();
 			}
 
+			@Override
 			public Object getToType() {
 				return true;
 			}
 		});
 
-		UpdateValueStrategy fetchSpecEnabled = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE) {
+		final UpdateValueStrategy<Object, Boolean> fetchSpecEnabled = new UpdateValueStrategy<>(UpdateValueStrategy.POLICY_UPDATE) {
 			@Override
-			protected IStatus doSet(final IObservableValue observableValue, final Object value) {
+			protected IStatus doSet(final IObservableValue<? super Boolean> observableValue, final Boolean value) {
 				Boolean newValue = false;
 				if (myFetchSpecCombo.getItemCount() > 0) {
 					newValue = !(Boolean) value;
@@ -278,26 +369,41 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 				return super.doSet(observableValue, newValue);
 			}
 		};
-		myBindingContext.bindValue(SWTObservables.observeEnabled(myFetchSpecCombo), BeansObservables.observeValue(myDisplayGroup, DisplayGroup.HAS_MASTER_DETAIL),
-		    new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), fetchSpecEnabled);
+		myBindingContext.bindValue(
+				//SWTObservables.observeEnabled((myFetchSpecCombo)),
+				WidgetProperties.enabled().observe(myFetchSpecCombo), 
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.HAS_MASTER_DETAIL),
+				BeanProperties.value(DisplayGroup.HAS_MASTER_DETAIL).observe(myDisplayGroup),
+				new UpdateValueStrategy<Boolean, Object>(UpdateValueStrategy.POLICY_NEVER), fetchSpecEnabled);
 
-		myBindingContext.bindValue(SWTObservables.observeEnabled(myFetchSpecCombo), BeansObservables.observeValue(myDisplayGroup, DisplayGroup.FETCH_SPEC_LIST),
-		    new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), fetchSpecEmpty);
+		myBindingContext.bindValue(
+				//SWTObservables.observeEnabled((myFetchSpecCombo)),
+				WidgetProperties.enabled().observe(myFetchSpecCombo), 
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.FETCH_SPEC_LIST),
+				BeanProperties.value(DisplayGroup.class, DisplayGroup.FETCH_SPEC_LIST).observe(myDisplayGroup),
+				new UpdateValueStrategy<Boolean, List<String>>(UpdateValueStrategy.POLICY_NEVER), fetchSpecEmpty);
 
-		myBindingContext.bindList(SWTObservables.observeItems(myFetchSpecCombo), BeansObservables.observeList(Realm.getDefault(), myDisplayGroup,
-		    DisplayGroup.FETCH_SPEC_LIST), null, null);
+		myBindingContext.bindList(
+				//SWTObservables.observeItems(myFetchSpecCombo),
+				WidgetProperties.items().observe(myFetchSpecCombo), 
+				//BeansObservables.observeList(Realm.getDefault(), myDisplayGroup, DisplayGroup.FETCH_SPEC_LIST),
+				BeanProperties.list(DisplayGroup.FETCH_SPEC_LIST).observe(Realm.getDefault(), myDisplayGroup), 
+				null, null);
 
-		UpdateValueStrategy fetchSpecSelection = new UpdateValueStrategy() {
+		UpdateValueStrategy<Object, String> fetchSpecSelection = new UpdateValueStrategy<>() {
 			@Override
-			protected IStatus doSet(IObservableValue observableValue, Object value) {
+			protected IStatus doSet(IObservableValue<? super String> observableValue, String value) {
 				if (value == null || value.equals("")) {
 					value = DisplayGroup.FETCH_SPEC_NONE;
 				}
 				return super.doSet(observableValue, value);
 			}
 		};
-		myBindingContext.bindValue(CustomSWTObservables.observeSelection(myFetchSpecCombo), BeansObservables.observeValue(myDisplayGroup,
-		    DisplayGroup.FETCH_SPEC_NAME), null, fetchSpecSelection);
+		myBindingContext.bindValue(
+				CustomSWTObservables.observeSelection(myFetchSpecCombo), 
+				//BeansObservables.observeValue(myDisplayGroup, DisplayGroup.FETCH_SPEC_NAME),
+				BeanProperties.value(DisplayGroup.FETCH_SPEC_NAME).observe(myDisplayGroup), 
+				null, fetchSpecSelection);
 
 		myEntityCombo.addModifyListener(myEntityModifyListener);
 		myMasterEntityCombo.addModifyListener(myMasterEntityListener);
@@ -305,10 +411,12 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 
 	}
 
+	@Override
 	public void commit(final boolean onSave) {
 		// nothing to do
 	}
 
+	@Override
 	public void createContents(final Composite parent) {
 		// XXX: Q - This method is too long
 
@@ -472,6 +580,7 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 		spacer.setLayoutData(gd);
 	}
 
+	@Override
 	public void dispose() {
 		disposeBindings();
 	}
@@ -491,10 +600,12 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 		}
 	}
 
+	@Override
 	public void initialize(final IManagedForm form) {
 		this.myManagedForm = form;
 	}
 
+	@Override
 	public boolean isDirty() {
 		if (myDisplayGroup == null) {
 			return false;
@@ -502,13 +613,16 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 		return myDisplayGroup.getWooModel().isDirty();
 	}
 
+	@Override
 	public boolean isStale() {
 		return false;
 	}
 
+	@Override
 	public void refresh() {
 	}
 
+	@Override
 	public void selectionChanged(final IFormPart part, final ISelection selection) {
 		disposeBindings();
 		IStructuredSelection ssel = (IStructuredSelection) selection;
@@ -531,10 +645,12 @@ public class DisplayGroupDetailsPage implements IDetailsPage {
 
 	}
 
+	@Override
 	public void setFocus() {
 		myNameText.setFocus();
 	}
 
+	@Override
 	public boolean setFormInput(final Object input) {
 		return false;
 	}

@@ -5,8 +5,6 @@ import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.osgi.service.environment.EnvironmentInfo;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorReference;
@@ -24,7 +22,6 @@ import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
 
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	private OpenDocumentEventProcessor _openDocProcessor;
@@ -33,6 +30,7 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 		_openDocProcessor = openDocProcessor;
 	}
 
+	@Override
 	public void eventLoopIdle(Display display) {
 		_openDocProcessor.openFiles();
 		super.eventLoopIdle(display);
@@ -50,13 +48,13 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
 	@Override
 	public void preStartup() {
-		Location loc = Platform.getInstanceLocation();
-		try {
-			// loc.setURL(new File("/tmp/.entityModeler").toURL(), false);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+//		Location loc = Platform.getInstanceLocation();
+//		try {
+//			// loc.setURL(new File("/tmp/.entityModeler").toURL(), false);
+//		}
+//		catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		PrefUtil.getAPIPreferenceStore().setValue(IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS, false);
 		super.preStartup();
 	}

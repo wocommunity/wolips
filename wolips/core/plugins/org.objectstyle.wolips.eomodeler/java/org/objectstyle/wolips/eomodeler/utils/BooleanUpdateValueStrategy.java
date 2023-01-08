@@ -5,7 +5,7 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
-public class BooleanUpdateValueStrategy extends UpdateValueStrategy {
+public class BooleanUpdateValueStrategy extends UpdateValueStrategy<Object, Boolean> {
 	public BooleanUpdateValueStrategy() {
 		super();
 	}
@@ -19,7 +19,7 @@ public class BooleanUpdateValueStrategy extends UpdateValueStrategy {
 	}
 	
 	@Override
-	public Object convert(Object value) {
+	public Boolean convert(Object value) {
 		Object finalValue = value;
 		if (value == null) {
 			finalValue = Boolean.FALSE;
@@ -28,8 +28,8 @@ public class BooleanUpdateValueStrategy extends UpdateValueStrategy {
 	}
 
 	@Override
-	protected IStatus doSet(IObservableValue observableValue, Object value) {
-		Object finalValue = value;
+	protected IStatus doSet(IObservableValue<? super Boolean> observableValue, Boolean value) {
+		Boolean finalValue = value;
 		if (value == null) {
 			finalValue = Boolean.FALSE;
 		}

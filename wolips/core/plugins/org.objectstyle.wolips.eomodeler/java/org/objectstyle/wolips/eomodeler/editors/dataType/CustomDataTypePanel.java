@@ -50,8 +50,8 @@
 package org.objectstyle.wolips.eomodeler.editors.dataType;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -159,13 +159,48 @@ public class CustomDataTypePanel extends Composite implements IDataTypePanel {
 		}
 		if (_argument != null) {
 			myBindingContext = new DataBindingContext();
-			myBindingContext.bindValue(SWTObservables.observeText(myExternalWidthText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.WIDTH), null, null);
-			myBindingContext.bindValue(SWTObservables.observeText(myValueClassNameText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.VALUE_CLASS_NAME), null, null);
-			myBindingContext.bindValue(SWTObservables.observeText(myValueTypeText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.VALUE_TYPE), null, null);
-			myBindingContext.bindValue(SWTObservables.observeText(myFactoryClassText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.VALUE_FACTORY_CLASS_NAME), null, null);
-			myBindingContext.bindValue(SWTObservables.observeText(myFactoryMethodText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.VALUE_FACTORY_METHOD_NAME), null, null);
-			myBindingContext.bindValue(SWTObservables.observeText(myConversionClassText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_CLASS_NAME), null, null);
-			myBindingContext.bindValue(SWTObservables.observeText(myConversionMethodText, SWT.Modify), BeansObservables.observeValue(_argument, AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME), null, null);
+			myBindingContext.bindValue(
+					//SWTObservables.observeText(myExternalWidthText, SWT.Modify),
+					WidgetProperties.text(SWT.Modify).observe(myExternalWidthText),
+					//BeansObservables.observeValue(_argument, AbstractEOArgument.WIDTH),
+					BeanProperties.value(AbstractEOArgument.WIDTH).observe(_argument),
+					null, null);
+			myBindingContext.bindValue(
+					//SWTObservables.observeText(myValueClassNameText, SWT.Modify),
+					WidgetProperties.text(SWT.Modify).observe(myValueClassNameText),
+					//BeansObservables.observeValue(_argument, AbstractEOArgument.VALUE_CLASS_NAME),
+					BeanProperties.value(AbstractEOArgument.VALUE_CLASS_NAME).observe(_argument),
+					null, null);
+			myBindingContext.bindValue(
+					//SWTObservables.observeText(myValueTypeText, SWT.Modify),
+					WidgetProperties.text(SWT.Modify).observe(myValueTypeText),
+					//BeansObservables.observeValue(_argument, AbstractEOArgument.VALUE_TYPE),
+					BeanProperties.value(AbstractEOArgument.VALUE_TYPE).observe(_argument),
+					null, null);
+			myBindingContext.bindValue(
+					//SWTObservables.observeText(myFactoryClassText, SWT.Modify),
+					WidgetProperties.text(SWT.Modify).observe(myFactoryClassText),
+					//BeansObservables.observeValue(_argument, AbstractEOArgument.VALUE_FACTORY_CLASS_NAME),
+					BeanProperties.value(AbstractEOArgument.VALUE_FACTORY_CLASS_NAME).observe(_argument),
+					null, null);
+			myBindingContext.bindValue(
+					//SWTObservables.observeText(myFactoryMethodText, SWT.Modify),
+					WidgetProperties.text(SWT.Modify).observe(myFactoryMethodText),
+					//BeansObservables.observeValue(_argument, AbstractEOArgument.VALUE_FACTORY_METHOD_NAME),
+					BeanProperties.value(AbstractEOArgument.VALUE_FACTORY_METHOD_NAME).observe(_argument),
+					null, null);
+			myBindingContext.bindValue(
+					//SWTObservables.observeText(myConversionClassText, SWT.Modify),
+					WidgetProperties.text(SWT.Modify).observe(myConversionClassText),
+					//BeansObservables.observeValue(_argument, AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_CLASS_NAME),
+					BeanProperties.value(AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_CLASS_NAME).observe(_argument),
+					null, null);
+			myBindingContext.bindValue(
+					//SWTObservables.observeText(myConversionMethodText, SWT.Modify),
+					WidgetProperties.text(SWT.Modify).observe(myConversionMethodText),
+					//BeansObservables.observeValue(_argument, AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME),
+					BeanProperties.value(AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME).observe(_argument),
+					null, null);
 			myArgumentTypeBinding = new ComboViewerBinding(myArgumentTypeComboViewer, _argument, AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE, null, null, EOFactoryMethodArgumentTypeContentProvider.BLANK_ARGUMENT_TYPE);
 		}
 	}

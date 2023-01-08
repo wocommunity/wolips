@@ -68,7 +68,7 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 		Point selection = componentNameCombo.getSelection();
 		if (_lastSelection != null && selection.x == 0) {
 			selection.x = _lastSelection.y;
-			synchronized (_ignoreModify) {				
+			synchronized (this) {				
 				_ignoreModify = true;
 				componentNameCombo.setSelection(selection);
 				_ignoreModify = false;
@@ -96,7 +96,7 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 				&& _lastSelection.y >= componentNameCombo.getText().length()) {
 			_deleted = true;
 			String text = componentNameCombo.getText();
-			synchronized (_ignoreModify) {
+			synchronized (this) {
 				_ignoreModify = true;
 				componentNameCombo.setText(text.substring(0, selection.x-1));
 				selection.x = text.length()-1;
@@ -169,7 +169,7 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 												if (!(componentNameCombo.getItemCount() <= 1)) {
 													String text = componentNameCombo.getItem(0);
 													_selection.y = text.length();
-													synchronized (_ignoreModify) {
+													synchronized (this) {
 														String partialText = componentNameCombo.getText();
 														if (!text.toLowerCase().startsWith(partialText.toLowerCase())) {
 															return;
@@ -187,7 +187,7 @@ public class ComponentLiveSearch implements ModifyListener, SelectionListener {
 														String text = componentNameCombo.getItem(0);
 														if (_selection.x == _selection.y && !wasDeleted) {
 															_selection.y = text.length();
-															synchronized (_ignoreModify) {
+															synchronized (this) {
 																_ignoreModify = true;
 																componentNameCombo.setText(text);
 																componentNameCombo.setSelection(_selection);

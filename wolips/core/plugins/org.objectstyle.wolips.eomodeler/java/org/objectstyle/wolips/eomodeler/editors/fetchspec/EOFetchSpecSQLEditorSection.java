@@ -54,8 +54,8 @@ import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -163,7 +163,12 @@ public class EOFetchSpecSQLEditorSection extends AbstractPropertySection impleme
 	protected void addBindings() {
 		if (_fetchSpecification != null) {
 			_bindingContext = new DataBindingContext();
-			_bindingContext.bindValue(SWTObservables.observeText(_rawSQLText, SWT.Modify), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.CUSTOM_QUERY_EXPRESSION), null, null);
+			_bindingContext.bindValue(
+					//SWTObservables.observeText(_rawSQLText, SWT.Modify),
+					WidgetProperties.text(SWT.Modify).observe(_rawSQLText), 
+					//BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.CUSTOM_QUERY_EXPRESSION),
+					BeanProperties.value(EOFetchSpecification.CUSTOM_QUERY_EXPRESSION).observe(_fetchSpecification), 
+					null, null);
 			_fetchSpecification.getEntity().getModel().addPropertyChangeListener(EOModel.STORED_PROCEDURES, _storedProcedureChangedRefresher);
 			_fetchSpecification.getEntity().getModel().addPropertyChangeListener(EOModel.STORED_PROCEDURE, _storedProcedureChangedRefresher);
 			_fetchSpecification.addPropertyChangeListener(EOFetchSpecification.STORED_PROCEDURE, _storedProcedureChangedHandler);
