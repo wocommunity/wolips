@@ -50,9 +50,7 @@ public class EOQualifierEditor extends Composite implements IQualifierTypeEditor
 		setLayout(layout);
 
 		_typeCombo = new ComboViewer(this, SWT.READ_ONLY);
-		for (IQualifierType type: _qualifierTypes) {
-			_typeCombo.add(type);
-		}
+		_typeCombo.add(_qualifierTypes);
 		_typeCombo.addSelectionChangedListener(new TypeSelectionHandler());
 		_typeCombo.getCombo().setLayoutData(new GridData());
 

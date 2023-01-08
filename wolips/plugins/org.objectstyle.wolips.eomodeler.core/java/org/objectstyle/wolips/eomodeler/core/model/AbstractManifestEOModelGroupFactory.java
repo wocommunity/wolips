@@ -42,11 +42,11 @@ public abstract class AbstractManifestEOModelGroupFactory implements IEOModelGro
 						printedHeader = true;
 					}
 					System.out.println("  " + searchFolder);
-					modelGroup.loadModelsFromURL(searchFolder.getFolder().toURI().toURL(), searchFolder.getDepth(), failures, skipOnDuplicates, progressMonitor);
+					modelGroup.loadModelsFromURL(searchFolder.getFolder().toURL(), searchFolder.getDepth(), failures, skipOnDuplicates, progressMonitor);
 				}
 			}
 			if (modelGroupFile != null && modelGroupFile.getName().endsWith(".eomodeld")) {
-				modelGroup.loadModelsFromURL(modelGroupFile.toURI().toURL(), 1, failures, skipOnDuplicates, progressMonitor);
+				modelGroup.loadModelsFromURL(modelGroupFile.toURL(), 1, failures, skipOnDuplicates, progressMonitor);
 			}
 		} catch (IOException e) {
 			throw new EOModelException("Failed to load model groups.", e);

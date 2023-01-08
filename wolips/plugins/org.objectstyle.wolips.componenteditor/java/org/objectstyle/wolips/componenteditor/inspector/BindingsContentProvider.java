@@ -30,15 +30,19 @@ public class BindingsContentProvider implements IStructuredContentProvider {
 		_api = null;
 		if (inputElement instanceof IWodElement) {
 			IWodElement wodElement = (IWodElement) inputElement;
-			if (_cache != null && _api == null) {
-				try {
-					_api = wodElement.getApi(_javaProject, _cache);
-				} catch (Exception e) {
-					_api = null;
-					ComponenteditorPlugin.getDefault().log("Failed to load API for WO.", e);
+			if (wodElement == null) {
+				wodBindings = new IWodBinding[0];
+			} else {
+				if (_cache != null && _api == null) {
+					try {
+						_api = wodElement.getApi(_javaProject, _cache);
+					} catch (Exception e) {
+						_api = null;
+						ComponenteditorPlugin.getDefault().log("Failed to load API for WO.", e);
+					}
 				}
+				wodBindings = wodElement.getApiBindings(_api);
 			}
-			wodBindings = wodElement.getApiBindings(_api);
 		} else {
 			wodBindings = new IWodBinding[0];
 		}

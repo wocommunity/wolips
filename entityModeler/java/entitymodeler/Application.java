@@ -11,12 +11,10 @@ import org.objectstyle.wolips.eomodeler.EOModelerPerspectiveFactory;
  * This class controls all aspects of the application's execution
  */
 public class Application implements IApplication {
-	@Override
 	public void stop() {
 		// DO NOTHING
 	}
 
-	@Override
 	public Object start(IApplicationContext context) throws Exception {
 		EOModelerPerspectiveFactory.setLocked(true);
 

@@ -56,7 +56,7 @@ public class OpenEntityHandler extends Action implements IHandler, IWorkbenchWin
 	 * A collection of objects listening to changes to this manager. This
 	 * collection is <code>null</code> if there are no listeners.
 	 */
-	private transient ListenerList<IHandlerListener> listenerList = null;
+	private transient ListenerList listenerList = null;
 
 	/**
 	 * Creates a new instance of the class.
@@ -68,7 +68,7 @@ public class OpenEntityHandler extends Action implements IHandler, IWorkbenchWin
 
 	public void addHandlerListener(final IHandlerListener listener) {
 		if (listenerList == null) {
-			listenerList = new ListenerList<>(ListenerList.IDENTITY);
+			listenerList = new ListenerList(ListenerList.IDENTITY);
 		}
 
 		listenerList.add(listener);
@@ -121,7 +121,7 @@ public class OpenEntityHandler extends Action implements IHandler, IWorkbenchWin
 
 			for (Iterator it = files.iterator(); it.hasNext();) {
 				IResource resource = (IResource)it.next();
-				IFile file;
+				IFile file = null;
 				if (!"eomodeld".equals(resource.getFileExtension()) && resource instanceof IFile) {
 					if (modelEditor != null) {
 						EOEntity entity = modelEditor.getModel().getModelGroup().getEntityNamed(ResourceUtilities.getFileNameWithoutExtension(resource));

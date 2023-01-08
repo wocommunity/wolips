@@ -31,8 +31,7 @@ public class NewEOModelAction extends Action implements ActionFactory.IWorkbench
     setAccelerator(SWT.COMMAND | 'N');
   }
 
-  @Override
-public void dispose() {
+  public void dispose() {
     // DO NOTHING
   }
 
@@ -95,8 +94,7 @@ public void dispose() {
   }
 
   protected static class ModelNameInputValidator implements IInputValidator {
-    @Override
-	public String isValid(String newText) {
+    public String isValid(String newText) {
       return null;
     }
   }
