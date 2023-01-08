@@ -26,7 +26,7 @@ public class CustomSWTObservables {
 				"Widget [" + control.getClass().getName() + "] is not supported."); //$NON-NLS-1$//$NON-NLS-2$
 	}
 
-	public static IObservableValue observeSelection(RadioGroup group) {
+	public static IObservableValue<Object> observeSelection(RadioGroup group) {
 		return new RadioGroupObservableValue(group);
 	}
 }

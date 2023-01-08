@@ -4,7 +4,7 @@ import org.eclipse.core.databinding.observable.Diffs;
 import org.eclipse.core.databinding.observable.value.AbstractObservableValue;
 import org.eclipse.swt.browser.Browser;
 
-public class BrowserTextObservableValue extends AbstractObservableValue {
+public class BrowserTextObservableValue extends AbstractObservableValue<String> {
 	private final Browser _browser;
 
 	private String _text;
@@ -15,7 +15,7 @@ public class BrowserTextObservableValue extends AbstractObservableValue {
 		_defaultStyle = defaultStyle;
 	}
 
-	public void doSetValue(final Object value) {
+	public void doSetValue(final String value) {
 		String oldValue = _text;
 		String newValue = value == null ? "" : value.toString();
 		if (_defaultStyle != null) {
@@ -26,12 +26,11 @@ public class BrowserTextObservableValue extends AbstractObservableValue {
 		fireValueChange(Diffs.createValueDiff(oldValue, newValue));
 	}
 
-	public Object doGetValue() {
+	public String doGetValue() {
 		return _text;
 	}
 
 	public Object getValueType() {
 		return String.class;
 	}
-
 }

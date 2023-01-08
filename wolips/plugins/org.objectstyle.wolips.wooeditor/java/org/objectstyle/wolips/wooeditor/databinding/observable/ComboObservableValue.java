@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Combo;
  * @since 3.2
  * 
  */
-public class ComboObservableValue extends AbstractObservableValue {
+public class ComboObservableValue extends AbstractObservableValue<String> {
 
 	private final Combo combo;
 	private final String attribute;
@@ -44,6 +44,7 @@ public class ComboObservableValue extends AbstractObservableValue {
 		if (attribute.equals(SWTProperties.SELECTION) || attribute.equals(SWTProperties.TEXT)) {
 			this.currentValue = combo.getText();
 			modifyListener = new ModifyListener() {
+				@Override
 				public void modifyText(ModifyEvent e) {
 					if (!updating) {
 						String oldValue = currentValue;
@@ -56,6 +57,7 @@ public class ComboObservableValue extends AbstractObservableValue {
 			};
 			
 			selectionListener = new SelectionListener() {
+				@Override
 				public void widgetDefaultSelected(SelectionEvent e) {
 					if (!updating) {
 						String oldValue = currentValue;
@@ -66,6 +68,7 @@ public class ComboObservableValue extends AbstractObservableValue {
 					}
 				}
 
+				@Override
 				public void widgetSelected(SelectionEvent e) {
 					if (!updating) {
 						String oldValue = currentValue;
@@ -83,7 +86,7 @@ public class ComboObservableValue extends AbstractObservableValue {
 	}
 
 	@Override
-	public void doSetValue(final Object value) {
+	public void doSetValue(final String value) {
 		String oldValue = combo.getText();
 		try {
 			updating = true;
@@ -101,7 +104,7 @@ public class ComboObservableValue extends AbstractObservableValue {
 						}
 					}
 					if (index == -1) {
-						combo.setText((String) value);
+						combo.setText(value);
 					} else {
 						combo.select(index); // -1 will not "unselect"
 					}
@@ -114,7 +117,7 @@ public class ComboObservableValue extends AbstractObservableValue {
 	}
 
 	@Override
-	public Object doGetValue() {
+	public String doGetValue() {
 		if (attribute.equals(SWTProperties.TEXT))
 			return combo.getText();
 
@@ -123,6 +126,7 @@ public class ComboObservableValue extends AbstractObservableValue {
 		return combo.getText();
 	}
 
+	@Override
 	public Object getValueType() {
 		return String.class;
 	}

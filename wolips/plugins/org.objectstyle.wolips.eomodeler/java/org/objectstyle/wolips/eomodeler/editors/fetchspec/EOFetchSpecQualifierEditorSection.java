@@ -51,8 +51,8 @@ package org.objectstyle.wolips.eomodeler.editors.fetchspec;
 
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -152,9 +152,23 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
 		_fetchSpecification = (EOFetchSpecification) selectedObject;
 		if (_fetchSpecification != null) {
 			_bindingContext = new DataBindingContext();
-			_bindingContext.bindValue(SWTObservables.observeText(_nameText, SWT.Modify), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.NAME), null, null);
-			Binding qualifierBinding = _bindingContext.bindValue(SWTObservables.observeText(_qualifierText, SWT.Modify), BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.QUALIFIER_STRING), null, null);
-			_bindingContext.bindValue(SWTObservables.observeText(_errorLabel), qualifierBinding.getValidationStatus(), null, null);
+			_bindingContext.bindValue(
+					//SWTObservables.observeText(_nameText, SWT.Modify),
+					WidgetProperties.text(SWT.Modify).observe(_nameText), 
+					//BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.NAME),
+					BeanProperties.value(EOFetchSpecification.NAME).observe(_fetchSpecification), 
+					null, null);
+			Binding qualifierBinding = _bindingContext.bindValue(
+					//SWTObservables.observeText(_qualifierText, SWT.Modify),
+					WidgetProperties.text(SWT.Modify).observe(_qualifierText), 
+					//BeansObservables.observeValue(_fetchSpecification, EOFetchSpecification.QUALIFIER_STRING),
+					BeanProperties.value(EOFetchSpecification.QUALIFIER_STRING).observe(_fetchSpecification), 
+					null, null);
+			_bindingContext.bindValue(
+					//SWTObservables.observeText(_errorLabel),
+					WidgetProperties.text().observe(_errorLabel),
+					qualifierBinding.getValidationStatus(), 
+					null, null);
 			_entityTreeViewUpdater.setEntity(_fetchSpecification.getEntity());
 		}
 	}

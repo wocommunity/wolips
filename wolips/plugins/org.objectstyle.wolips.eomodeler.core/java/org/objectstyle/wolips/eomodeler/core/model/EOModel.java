@@ -1148,7 +1148,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 					throw new IOException("Failed to create folder '" + modelFolder + "'.");
 				}
 			}
-			myModelURL = modelFolder.toURL();
+			myModelURL = modelFolder.toURI().toURL();
 			File indexFile = new File(modelFolder, "index.eomodeld");
 			EOModelMap modelMap = toMap();
 			WOLPropertyListSerialization.propertyListToFile("Entity Modeler v" + EOModel.CURRENT_VERSION, indexFile, modelMap);

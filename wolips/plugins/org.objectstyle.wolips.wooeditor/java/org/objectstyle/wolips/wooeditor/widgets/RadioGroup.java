@@ -14,16 +14,18 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
 
 public class RadioGroup {
-	private ListenerList selectionEventListeners = new ListenerList();
+	private ListenerList<SelectionListener> selectionEventListeners = new ListenerList<>();
 	private List<Button> group = new ArrayList<Button>();
 	private Button selected;
 
 	private SelectionListener changeListener = new SelectionListener() {
 
+		@Override
 		public void widgetDefaultSelected(final SelectionEvent e) {
 			setSelection(((Button) e.getSource()).getText());
 		}
 
+		@Override
 		public void widgetSelected(final SelectionEvent e) {
 			Button b = (Button) e.getSource();
 			if (b.getSelection()) {

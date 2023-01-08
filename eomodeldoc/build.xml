@@ -19,7 +19,7 @@
             <fileset dir="../core/plugins/org.objectstyle.wolips.eomodeler.doc/bin"/>
             <fileset dir="../core/plugins/org.objectstyle.wolips.eomodeler/bin"/>
             <fileset dir="../core/plugins/org.objectstyle.wolips.eomodeler.factories/bin"/>
-            <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.equinox.common_3.6.0.v20110523.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="lib/org.eclipse.equinox.common-3.17.0.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.core.jobs_3.5.100.v20110404.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="${ECLIPSE_HOME}/plugins/org.eclipse.core.resources_3.7.100.v20110510-0712.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="../core/plugins/org.objectstyle.wolips.woproject/lib/woproject.jar"/>

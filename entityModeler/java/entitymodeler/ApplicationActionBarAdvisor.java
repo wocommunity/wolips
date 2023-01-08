@@ -156,9 +156,11 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     // good way to remove.  So I'm going to do it
     // the hard way ...
     fileMenu.addMenuListener(new IMenuListener2() {
+      @Override
       public void menuAboutToHide(IMenuManager manager) {
       }
 
+      @Override
       public void menuAboutToShow(IMenuManager manager) {
         IContributionItem[] items = manager.getItems();
         for (IContributionItem item : items) {

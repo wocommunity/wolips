@@ -50,8 +50,8 @@
 package org.objectstyle.wolips.eomodeler.editors.entityIndex;
 
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.jface.databinding.swt.SWTObservables;
+import org.eclipse.core.databinding.beans.typed.BeanProperties;
+import org.eclipse.jface.databinding.swt.typed.WidgetProperties;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -166,7 +166,12 @@ public class EOEntityIndexBasicEditorSection extends AbstractPropertySection imp
 			_attributesEditor.setEntityIndex(_entityIndex);
 
 			_bindingContext = new DataBindingContext();
-			_bindingContext.bindValue(SWTObservables.observeText(_nameText, SWT.Modify), BeansObservables.observeValue(_entityIndex, EOEntityIndex.NAME), null, null);
+			_bindingContext.bindValue(
+					//SWTObservables.observeText(_nameText, SWT.Modify),
+					WidgetProperties.text(SWT.Modify).observe(_nameText), 
+					//BeansObservables.observeValue(_entityIndex, EOEntityIndex.NAME),
+					BeanProperties.value(EOEntityIndex.NAME).observe(_entityIndex), 
+					null, null);
 			// _bindingContext.bindValue(ViewersObservables.observeSingleSelection(_constraintCombo),
 			// BeansObservables.observeValue(_entityIndex,
 			// EOEntityIndex.CONSTRAINT), null, null);
