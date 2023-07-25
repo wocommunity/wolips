@@ -85,7 +85,7 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		IFolderLayout leftFolder = layout.createFolder("left", IPageLayout.LEFT, (float) 0.25, editorArea); //$NON-NLS-1$
 		leftFolder.addView(PerspectiveFactory.ID_WO_PACKAGES);
 		leftFolder.addView(JavaUI.ID_TYPE_HIERARCHY);
-		leftFolder.addPlaceholder(IPageLayout.ID_RES_NAV);
+//		leftFolder.addPlaceholder(IPageLayout.ID_RES_NAV);
 		
 		IFolderLayout leftBottomFolder = layout.createFolder("left_bottom", IPageLayout.BOTTOM, (float) 0.65, "left");
 		leftBottomFolder.addView(PerspectiveFactory.ID_RELATED);
@@ -124,7 +124,7 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		// views - standard workbench
 		layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
 		layout.addShowViewShortcut(IPageLayout.ID_PROBLEM_VIEW);
-		layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
+//		layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
 		// views - wolips
 		layout.addShowViewShortcut(PerspectiveFactory.ID_RELATED);
 
