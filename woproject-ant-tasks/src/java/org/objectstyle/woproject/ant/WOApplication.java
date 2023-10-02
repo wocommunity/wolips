@@ -55,7 +55,12 @@
  */
 package org.objectstyle.woproject.ant;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -184,6 +189,8 @@ public class WOApplication extends WOTask {
     if (appFormat.processTemplates()) {
       // chmod UNIX scripts
       chmodScripts();
+      // force unix line endings when on windows
+      forceLineEndings();
     }
     appFormat.release();
     frameworkSets = new ArrayList<FrameworkSet>();
@@ -228,6 +235,37 @@ public class WOApplication extends WOTask {
       super.log("'" + System.getProperty("os.name") + "' is some kind of windows, skipping chmod.");
     }
   }
+  
+  /**
+   * When building on windows, forces the UNIX startup script to be written with UNIX line endings.
+   */
+  protected void forceLineEndings() throws BuildException {
+    if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0) {
+      File dir = null;
+      File startupScript = null;
+      BufferedWriter writer = null;
+      try {
+        dir = taskDir();
+        startupScript = new File(dir, startupScriptName);
+        String content = new String(Files.readAllBytes(startupScript.toPath()), Charset.forName("UTF-8"));
+        content = content.replaceAll("\\r\\n", "\n");
+        writer = new BufferedWriter(new FileWriter(startupScript));
+        writer.write(content);
+        writer.close();
+        super.log("Building on windows: Forced unix line endings for UNIX startup script.");
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      finally {
+        dir = null;
+        startupScript = null;
+      }
+    }
+    else {
+        // TODO force windows line endings?
+    }
+  }
+
 
   /**
    * Method copyEmbeddedFrameworks.
