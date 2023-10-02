@@ -69,7 +69,7 @@ import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.objectstyle.wolips.bindings.wod.IWodElement;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
@@ -191,7 +191,7 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 		if (dndService != null) {
 			final StyledText st = viewer.getTextWidget();
 			ComponentDropTargetAdaptor dropTarget = new ComponentDropTargetAdaptor(this);
-			dndService.addMergedDropTarget(st, DND.DROP_MOVE | DND.DROP_COPY, new Transfer[] { LocalSelectionTransfer.getInstance() }, dropTarget);
+			dndService.addMergedDropTarget(st, DND.DROP_MOVE | DND.DROP_COPY, new Transfer[] { LocalSelectionTransfer.getTransfer() }, dropTarget);
 		}
 	}
 

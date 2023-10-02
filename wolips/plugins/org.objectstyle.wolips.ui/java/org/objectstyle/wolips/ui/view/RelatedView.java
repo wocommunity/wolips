@@ -97,7 +97,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.OpenWithMenu;
 import org.eclipse.ui.part.IContributedContentsView;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.views.navigator.ShowInNavigatorAction;
+//import org.eclipse.ui.views.navigator.ShowInNavigatorAction;
 import org.objectstyle.wolips.baseforuiplugins.utils.WorkbenchUtilities;
 import org.objectstyle.wolips.core.resources.IWOLipsResource;
 
@@ -141,7 +141,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 		TableColumn nameColumn = new TableColumn(_viewer.getTable(), SWT.LEFT);
 		relatedTableLayout.setColumnData(nameColumn, new ColumnWeightData(90, true));
 
-		_showInNavigatorAction = new ShowInNavigatorAction(getViewSite().getPage(), _viewer);
+//		_showInNavigatorAction = new ShowInNavigatorAction(getViewSite().getPage(), _viewer);
 		_openInEditorAction = new Action() {
 
 			public void run() {
