@@ -10,7 +10,7 @@
 		${migrationTableName}.newLargeStringColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNullAsConstant}#if ($attribute.userInfo.default), "${attribute.userInfo.default}"#end);
 #elseif ($attribute.prototype.name == "ipAddress")
 		${migrationTableName}.newIpAddressColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNullAsConstant}#if ($attribute.userInfo.default), "${attribute.userInfo.default}"#end);
-#elseif ($attribute.prototype.name == "date" || ($attribute.valueClassName == "NSCalendarDate" && $attribute.valueType == "D"))
+#elseif ($attribute.prototype.name == "date" || ($attribute.valueClassName == "NSCalendarDate" && $attribute.valueType == "D") || $attribute.javaClassName == "java.time.LocalDate")
 		${migrationTableName}.newDateColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNullAsConstant}#if ($attribute.userInfo.default), er.extensions.foundation.ERXTimestampUtilities.timestampForString("${attribute.userInfo.default}")#end);
 #elseif ($attribute.prototype.name == "jodaLocalDate")
 		${migrationTableName}.newDateColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNullAsConstant}#if ($attribute.userInfo.default), org.joda.time.LocalDate("${attribute.userInfo.default}")#end);
@@ -38,8 +38,10 @@
 		${migrationTableName}.newFlagBooleanColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNullAsConstant}#if ($attribute.userInfo.default), er.extensions.foundation.ERXValueUtilities.booleanValue("${attribute.userInfo.default}")#end);
 #elseif ($attribute.javaClassName == "Boolean")
 		${migrationTableName}.newIntBooleanColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNullAsConstant}#if ($attribute.userInfo.default), er.extensions.foundation.ERXValueUtilities.booleanValue("${attribute.userInfo.default}")#end);
-#elseif ($attribute.javaClassName == "NSTimestamp")
+#elseif ($attribute.javaClassName == "NSTimestamp" || $attribute.javaClassName == "java.time.LocalDateTime" || $attribute.javaClassName == "java.time.OffsetDateTime")
 		${migrationTableName}.newTimestampColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNullAsConstant}#if ($attribute.userInfo.default), er.extensions.foundation.ERXTimestampUtilities.timestampForString("${attribute.userInfo.default}")#end);
+#elseif ($attribute.javaClassName == "java.time.LocalTime")
+		${migrationTableName}.newTimeColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNullAsConstant});
 #elseif ($attribute.javaClassName == "NSData")
 		${migrationTableName}.newBlobColumn("${attribute.columnName}", ${attribute.sqlGenerationAllowsNullAsConstant});
 #elseif ($attribute.javaClassName == "ERXMutableDictionary" || $attribute.javaClassName == "er.extensions.foundation.ERXMutableDictionary")
