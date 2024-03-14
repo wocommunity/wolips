@@ -224,7 +224,7 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 	protected void createInfoPlist(IContainer targetContainer) throws Exception {
 		ProjectTemplate infoPListTemplate;
 		IProject project = getProject();
-		ProjectAdapter projectAdapter = (ProjectAdapter) project.getAdapter(ProjectAdapter.class);
+		ProjectAdapter projectAdapter = project.getAdapter(ProjectAdapter.class);
 		if (projectAdapter.isFramework()) {
 			infoPListTemplate = ProjectTemplate.loadProjectTemplateNamed("MiscTemplates", "FrameworkInfoPList");
 		}
