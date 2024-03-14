@@ -69,7 +69,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.baseforplugins.AbstractBaseActivator;
@@ -125,21 +125,16 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 			return;
 		}
 
-		IProgressMonitor subProgressMonitor = null;
-		if (null == progressMonitor) {
-			subProgressMonitor = new NullProgressMonitor();
-		} else {
-			subProgressMonitor = new SubProgressMonitor(progressMonitor, 100 * 1000);
-		}
 		IResourceDelta delta = resourceDelta;
 		if (kind != IncrementalProjectBuilder.FULL_BUILD && kind != IncrementalProjectBuilder.CLEAN_BUILD && !projectNeedsAnUpdate(delta)) {
-			subProgressMonitor.done();
 			return;
 		}
 		getLogger().debug("<incremental build>");
-		subProgressMonitor.beginTask("building WebObjects layout ...", 100);
+		
+		final SubMonitor subProgressMonitor = SubMonitor.convert(progressMonitor, "building WebObjects layout ...", 100);
+		
 		try {
-			ProjectAdapter project = (ProjectAdapter) this.getProject().getAdapter(ProjectAdapter.class);
+			ProjectAdapter project = this.getProject().getAdapter(ProjectAdapter.class);
 			boolean fullBuild = (kind == IncrementalProjectBuilder.FULL_BUILD || kind == IncrementalProjectBuilder.CLEAN_BUILD || patternsetDeltaVisitor().isFullBuildRequired());
 			String oldPrincipalClass = getArg(args, BuilderPlugin.NS_PRINCIPAL_CLASS, "");
 			if (oldPrincipalClass.length() == 0) {
