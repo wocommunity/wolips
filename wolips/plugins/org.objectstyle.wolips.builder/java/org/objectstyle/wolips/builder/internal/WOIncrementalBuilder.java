@@ -275,7 +275,10 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 
 	private IJavaProject getJavaProject() {
 		try {
-			return ((IJavaProject) (getProject().getNature(JavaCore.NATURE_ID)));
+			final IProject project = getProject();
+			if (project.hasNature(JavaCore.NATURE_ID)) {
+				return JavaCore.create(getProject());
+			}
 		} catch (CoreException up) {
 			this.getLogger().log(up);
 		}
