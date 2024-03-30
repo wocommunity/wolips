@@ -247,6 +247,13 @@ public class BindingReflectionUtils {
       }
     }
 
+    if( type.isRecord() ) {
+    	for (IField rc : type.getRecordComponents() ) {
+    		final BindingValueKey key = new BindingValueKey(rc.getElementName(), rc.getDeclaringType(), rc, javaProject, cache);
+    		bindingKeys.add(key);
+    	}
+    }
+
     return bindingKeys;
   }
 
