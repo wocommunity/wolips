@@ -245,6 +245,24 @@ public class BindingReflectionUtils {
           BindingReflectionUtils.fillInBindingKeys(type, types.get(typeNum), lowercaseNameStartingWith, requireExactNameMatch, accessorsOrMutators, allowInheritanceDuplicates, javaProject, bindingKeys, cache);
         }
       }
+
+      // CHECKME: the fillInBindingKeys() method might possibly be a better location for this logic 
+      if( type.isRecord() ) {
+    	  for (IField rc : type.getRecordComponents() ) {
+    		  final String rcName = rc.getElementName();
+    		  
+    		  if( requireExactNameMatch ) {
+    			  if (rcName.equals(nameStartingWith)) {
+    				  final BindingValueKey key = new BindingValueKey(rcName, rc.getDeclaringType(), rc, javaProject, cache);
+    				  bindingKeys.add(key);
+    			  }	    			
+    		  }
+    		  else if (rcName.startsWith(nameStartingWith)) {
+    			  final BindingValueKey key = new BindingValueKey(rcName, rc.getDeclaringType(), rc, javaProject, cache);
+    			  bindingKeys.add(key);
+    		  }
+    	  }
+      }
     }
 
     return bindingKeys;
