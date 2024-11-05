@@ -17,13 +17,6 @@
             <fileset dir="../lib">
                 <include name="*.jar"/>
 	        </fileset>
-            <fileset dir="${wo.dir.library.frameworks}">
-            	<include name="JavaEOAccess.framework/Resources/Java/*.jar"/>
-            	<include name="JavaEOControl.framework/Resources/Java/*.jar"/>
-            	<include name="JavaFoundation.framework/Resources/Java/*.jar"/>
-            	<include name="JavaWebObjects.framework/Resources/Java/*.jar"/>
-            	<include name="JavaJDBCAdaptor.framework/Resources/Java/*.jar"/>
-            </fileset>
     	</path>
 
 	<ant dir="." antfile="../${project.buildscripts.dir}/ant-style-project.xml" target="java">
