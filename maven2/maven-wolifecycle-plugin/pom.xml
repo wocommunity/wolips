@@ -75,6 +75,7 @@
 	<build>
 		<plugins>
 			<plugin>
+				<?m2e ignore?>
 				<artifactId>maven-plugin-plugin</artifactId>
 				<dependencies>
 					<dependency>
