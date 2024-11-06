@@ -8,7 +8,7 @@
 	<packaging>pom</packaging>
 	<name>WOProject All</name>
 	<description>Parent POM for all WOProject modules</description>
-	<url>http://objectstyle.org/woproject/</url>
+	<url>https://github.com/wocommunity/wolips/</url>
 
 	<profiles>
 		<profile>
@@ -22,8 +22,8 @@
 	</profiles>
 
 	<issueManagement>
-		<system>jira</system>
-		<url>http://objectstyle.org/jira/browse/WOL</url>
+		<system>gihhub</system>
+		<url>https://github.com/wocommunity/wolips/issues</url>
 	</issueManagement>
 
 	<inceptionYear>2001</inceptionYear>
@@ -43,8 +43,8 @@
 	</mailingLists>
 
 	<organization>
-		<name>ObjectStyle Group</name>
-		<url>http://objectstyle.org/</url>
+		<name>WOCommunity</name>
+		<url>http://wocommunity.org/</url>
 	</organization>
 
 	<repositories>
@@ -111,11 +111,9 @@
 	</distributionManagement>
 
 	<scm>
-		<connection>
-			scm:svn:http://svn.objectstyle.org/repos/woproject/trunk/woproject</connection>
-		<developerConnection>
-			scm:svn:https://svn.objectstyle.org/repos/woproject/trunk/woproject</developerConnection>
-		<url>http://svn.objectstyle.org/repos/woproject/trunk/woproject</url>
+		<connection>scm:git:https://github.com/wocommunity/wolips.git</connection>
+		<developerConnection>scm:git:git@github.com:wocommunity/wolips.git</developerConnection>
+		<url>https://github.com/wocommunity/wolips/</url>
 	</scm>
 
 	<build>
