@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>woproject-all-parent</artifactId>
 		<groupId>org.objectstyle.woproject</groupId>
-		<version>2.1-SNAPSHOT</version>
+		<version>4.20.0-SNAPSHOT</version>
 	</parent>
 	<groupId>org.objectstyle.woproject.maven2</groupId>
 	<artifactId>maven2</artifactId>
