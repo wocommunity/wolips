@@ -1,0 +1,171 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.objectstyle.woproject</groupId>
+		<artifactId>woproject-all-parent</artifactId>
+		<version>2.1-SNAPSHOT</version>
+	</parent>
+	<artifactId>wolips-project</artifactId>
+	<packaging>pom</packaging>
+	
+	<modules>
+		<module>wolips.targetplatform</module>
+	</modules>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-compiler-plugin</artifactId>
+				<configuration>
+					<source>21</source>
+					<target>21</target>
+					<optimize>true</optimize>
+					<showWarnings>true</showWarnings>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-repository-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>plugin-source</id>
+						<goals>
+							<goal>plugin-source</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>feature-source</id>
+						<phase>package</phase>
+						<goals>
+							<goal>feature-source</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<plugin id="com.google.guava" />
+								<plugin id="com.google.inject" />
+								<plugin id="org.apache.batik.pdf" />
+								<plugin id="org.apache.log4j" />
+								<plugin id="org.apache.batik.bridge" />
+								<plugin id="org.apache.batik.css" />
+								<plugin id="org.apache.batik.dom" />
+								<plugin id="org.apache.batik.dom.svg" />
+								<plugin id="org.apache.batik.ext.awt" />
+								<plugin id="org.apache.batik.parser" />
+								<plugin id="org.apache.batik.svggen" />
+								<plugin id="org.apache.batik.transcoder" />
+								<plugin id="org.apache.batik.util" />
+								<plugin id="org.apache.batik.util.gui" />
+								<plugin id="org.apache.batik.xml" />
+								<plugin id="org.apache.commons.lang" />
+								<plugin id="org.eclipse.m2m.qvt.oml.project" />
+								<plugin id="org.eclipse.m2m.qvt.oml.runtime" />
+								<plugin id="org.eclipse.xtend.shared.ui" />
+								<plugin id="org.eclipse.xwt.ui.workbench" />
+								<plugin
+									id="org.eclipse.wst.common.project.facet.core" />
+							</excludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-p2-metadata</id>
+						<phase>package</phase>
+						<goals>
+							<goal>p2-metadata</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-versions-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-surefire-plugin</artifactId>
+				<configuration>
+					<failIfNoTests>false</failIfNoTests>
+					<useUIHarness>true</useUIHarness>
+					<useUIThread>true</useUIThread>
+					<!--<showEclipseLog>true</showEclipseLog> -->
+					<!--<testFailureIgnore>true</testFailureIgnore> -->
+					<argLine>${ui.test.vmargs}</argLine>
+					<jvmArgs>
+						<args>${ui.test.vmargs}</args>
+					</jvmArgs>
+					<bundleStartLevel>
+						<bundle>
+							<id>org.eclipse.equinox.launcher</id>
+							<level>4</level>
+							<autoStart>true</autoStart>
+						</bundle>
+					</bundleStartLevel>
+					<dependencies>
+						<!--						<dependency>-->
+						<!--							<type>p2-installable-unit</type>-->
+						<!--							<artifactId>org.eclipse.equinox.ds</artifactId>-->
+						<!--						</dependency>-->
+						<dependency>
+							<type>p2-installable-unit</type>
+							<artifactId>org.eclipse.equinox.event</artifactId>
+						</dependency>
+					</dependencies>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<configuration>
+					<environments>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+					<target>
+						<artifact>
+							<groupId>demo</groupId>
+							<artifactId>tychodemo.targetplatform</artifactId>
+							<version>1.0.0-SNAPSHOT</version>
+						</artifact>
+					</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
