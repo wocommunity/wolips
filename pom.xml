@@ -18,17 +18,12 @@
 		<env.ui.test>-Xms512m -Xmx2048m</env.ui.test>
 	</properties>
 
-	<profiles>
-		<profile>
-			<id>build-all</id>
-			<modules>
-				<module>woenvironment</module>
-				<module>woproject-ant-tasks</module>
-				<module>maven2</module>
-				<module>wolips</module>
-			</modules>
-		</profile>
-	</profiles>
+	<modules>
+		<module>woenvironment</module>
+		<module>woproject-ant-tasks</module>
+		<module>maven2</module>
+		<module>wolips</module>
+	</modules>
 
 	<issueManagement>
 		<system>gihhub</system>
