@@ -14,6 +14,7 @@
 		<!--tycho stuff-->
 		<module>wolips.p2</module>
 		<module>wolips.targetplatform</module>
+		<module>wolips.product</module>
 		<!--core-->
 		<module>core/plugins/org.objectstyle.wolips</module>
 		<module>core/plugins/org.objectstyle.wolips.ant</module>
@@ -202,6 +203,11 @@
 							<arch>x86_64</arch>
 						</environment>
 						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>aarch64</arch>
+						</environment>
+						<environment>
 							<os>win32</os>
 							<ws>win32</ws>
 							<arch>x86_64</arch>
@@ -210,6 +216,11 @@
 							<os>macosx</os>
 							<ws>cocoa</ws>
 							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>aarch64</arch>
 						</environment>
 					</environments>
 					<target>
