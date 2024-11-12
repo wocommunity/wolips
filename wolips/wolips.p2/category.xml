@@ -11,5 +11,5 @@
          The core wolips project for WebObjects development.
       </description>
    </category-def>
-   <category-def name="jrebel" label="JRebel integration"/>
+   <category-def name="jrebel" label="WOLips JRebel integration"/>
 </site>
