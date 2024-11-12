@@ -58,10 +58,6 @@ individuals on behalf of the ObjectStyle Group. For more information
 on the ObjectStyle Group, please see http://objectstyle.org/
    </license>
 
-   <url>
-      <discovery label="%feature.updateSiteName"/>
-   </url>
-
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
