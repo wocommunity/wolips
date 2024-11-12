@@ -1,5 +1,4 @@
 bin/
-build.properties
 temp/
 .DS_Store
 /woenvironment/target/
