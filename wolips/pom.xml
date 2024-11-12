@@ -67,7 +67,6 @@
 		<!--jrebel-->
 		<module>jrebel/plugins/org.objectstyle.wolips.jrebel</module>
 		<module>jrebel/features/org.objectstyle.wolips.jrebel.feature</module>
-		<!--jprofiler-->
 	</modules>
 
 	<build>
