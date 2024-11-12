@@ -14,7 +14,9 @@
 		<!--tycho stuff-->
 		<module>wolips.p2</module>
 		<module>wolips.targetplatform</module>
+		<!-- 
 		<module>wolips.product</module>
+		-->
 		<!--core-->
 		<module>core/plugins/org.objectstyle.wolips</module>
 		<module>core/plugins/org.objectstyle.wolips.ant</module>
