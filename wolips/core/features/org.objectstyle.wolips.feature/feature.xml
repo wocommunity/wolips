@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.objectstyle.wolips.feature"
-      label="%feature.featureName"
-      version="1.0.6"
-      provider-name="%feature.providerName"
-      image="%feature.image">
+      label="WOLips"
+      version="4.20.0.qualifier"
+      provider-name="wocommunity.org">
 
-   <description url="http://objectstyle.org/confluence/display/WOL/Home">
-      %feature.description
+   <description url="https://wiki.wocommunity.org/xwiki/bin/view/WOL/">
+      The WOLips project is a set of tools for WebObjects development
+on the eclipse platform.
    </description>
-
-   <copyright>
-      %feature.copyright
-   </copyright>
 
    <license>
       The ObjectStyle Group Software License, Version 1.0
@@ -62,11 +58,6 @@ This software consists of voluntary contributions made by many
 individuals on behalf of the ObjectStyle Group. For more information 
 on the ObjectStyle Group, please see http://objectstyle.org/
    </license>
-
-   <url>
-      <update label="%feature.updateSiteName" url="%feature.updateSite"/>
-      <discovery label="%feature.updateSiteName" url="%feature.updateSite"/>
-   </url>
 
    <requires>
       <import plugin="org.apache.ant"/>
@@ -130,308 +121,178 @@ on the ObjectStyle Group, please see http://objectstyle.org/
 
    <plugin
          id="org.objectstyle.wolips.thirdparty.velocity"
-         download-size="464"
-         install-size="464"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.thirdparty.log4j"
-         download-size="316"
-         install-size="316"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.thirdparty.commonscollections"
-         download-size="480"
-         install-size="480"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.baseforplugins"
-         download-size="32"
-         install-size="32"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.baseforuiplugins"
-         download-size="32"
-         install-size="32"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips"
-         download-size="120"
-         install-size="120"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.ant"
-         download-size="16"
-         install-size="16"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.documentation"
-         download-size="1700"
-         install-size="1700"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.eogenerator.core"
-         download-size="68"
-         install-size="68"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.eogenerator.ui"
-         download-size="68"
-         install-size="68"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.eogenerator.jdt"
-         download-size="68"
-         install-size="68"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.jdt"
-         download-size="68"
-         install-size="68"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.launching"
-         download-size="32"
-         install-size="44"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.preferences"
-         download-size="64"
-         install-size="64"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.bindings"
-         download-size="64"
-         install-size="64"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.targetbuilder"
-         download-size="4"
-         install-size="8"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.team"
-         download-size="4"
-         install-size="12"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.templateengine"
-         download-size="8"
-         install-size="8"
-         version="1.0.6"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.tkhtmleditor"
-         download-size="100"
-         install-size="100"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.ui"
-         download-size="68"
-         install-size="68"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.variables"
-         download-size="12"
-         install-size="12"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.wizards"
-         download-size="100"
-         install-size="100"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.wodclipse.core"
-         download-size="100"
-         install-size="100"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.wodclipse"
-         download-size="100"
-         install-size="100"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.womodeler"
-         download-size="100"
-         install-size="100"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.woproject"
-         download-size="108"
-         install-size="336"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.woproject.ant"
-         download-size="108"
-         install-size="336"
-         version="1.0.6"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.workbenchutilities"
-         download-size="16"
-         install-size="16"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.refactoring"
-         download-size="20"
-         install-size="20"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.pbserver"
-         download-size="20"
-         install-size="20"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.builder"
-         download-size="32"
-         install-size="32"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.components"
-         download-size="32"
-         install-size="32"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.locate"
-         download-size="32"
-         install-size="32"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.editors"
-         download-size="32"
-         install-size="32"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.htmlpreview"
-         download-size="32"
-         install-size="32"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.apieditor"
-         download-size="32"
-         install-size="32"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.componenteditor"
-         download-size="32"
-         install-size="32"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.ruleeditor"
-         download-size="32"
-         install-size="32"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.deployment.ui"
-         download-size="32"
-         install-size="32"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.eomodeler.core"
-         download-size="144"
-         install-size="144"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.eomodeler"
-         download-size="144"
-         install-size="144"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.eomodeler.eclipse"
-         download-size="144"
-         install-size="144"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.debug"
-         download-size="32"
-         install-size="32"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
    <plugin
          id="org.objectstyle.wolips.wooeditor"
-         download-size="32"
-         install-size="32"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
 </feature>
