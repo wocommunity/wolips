@@ -61,6 +61,7 @@
 		<module>core/plugins/org.objectstyle.wolips.woproject</module>
 		<module>core/plugins/org.objectstyle.wolips.woproject.ant</module>
 		<module>core/plugins/org.objectstyle.wolips.workbenchutilities</module>
+		<module>core/features/org.objectstyle.wolips.feature</module>
 		<!--entitymodeler-->
 		<!--jrebel-->
 		<module>jrebel/plugins/org.objectstyle.wolips.jrebel</module>
