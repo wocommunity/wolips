@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Third Party Velocity Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.thirdparty.velocity;singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.thirdparty.velocity.Activator
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.core.runtime,
  org.objectstyle.wolips.thirdparty.log4j;bundle-version="1.0.6",
  org.objectstyle.wolips.thirdparty.commonscollections;bundle-version="1.0.6"
@@ -61,4 +61,4 @@ Export-Package: org.apache.commons.lang,
  org.apache.velocity.util.introspection,
  org.objectstyle.wolips.thirdparty.velocity,
  org.objectstyle.wolips.thirdparty.velocity.resourceloader
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-21

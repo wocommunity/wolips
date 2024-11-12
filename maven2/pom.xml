@@ -17,7 +17,6 @@
 		<module>archetypes</module>
 		<module>maven-wobootstrap-plugin</module>
 		<module>maven-japplication-plugin</module>
-		<module>maven-wolifecycle-plugin</module>
 	</modules>
 
 	<dependencyManagement>
@@ -25,12 +24,12 @@
 			<dependency>
 				<groupId>org.objectstyle.woproject.ant</groupId>
 				<artifactId>woenvironment</artifactId>
-				<version>2.0.15.1</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.objectstyle.woproject.ant</groupId>
 				<artifactId>woproject-ant-tasks</artifactId>
-				<version>2.0.15</version>
+				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.maven</groupId>

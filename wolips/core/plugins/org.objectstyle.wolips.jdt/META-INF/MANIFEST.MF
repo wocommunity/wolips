@@ -1,11 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
+Automatic-Module-Name: org.objectstyle.wolips.jdt
 Bundle-Name: WOLips JDT Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.jdt; singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.jdt.JdtPlugin
 Bundle-Localization: plugin
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources,
  org.eclipse.jdt.core,
@@ -33,4 +34,4 @@ Export-Package: org.objectstyle.wolips.jdt,
  org.objectstyle.wolips.jdt.ui.refactoring.actions,
  org.objectstyle.wolips.jdt.ui.tags,
  org.objectstyle.wolips.jdt.ui.tags.actions
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-21

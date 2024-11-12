@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <category-def name="wolips" label="WOLips">
+      <description>
+         The core wolips project for WebObjects development.
+      </description>
+   </category-def>
+   <category-def name="wolips_extras" label="WOLips Extras">
+      <description>
+         Extra features not required for WebObjects development.
+      </description>
+   </category-def>
+</site>

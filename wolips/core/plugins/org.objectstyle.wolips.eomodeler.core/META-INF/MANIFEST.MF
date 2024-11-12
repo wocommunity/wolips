@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Entity Modeler Core
 Bundle-SymbolicName: org.objectstyle.wolips.eomodeler.core; singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.eomodeler.core.Activator
 Require-Bundle: org.eclipse.ui.views.properties.tabbed,
  org.objectstyle.wolips.baseforuiplugins,
@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.ui.views.properties.tabbed,
  org.objectstyle.wolips.thirdparty.velocity,
  org.objectstyle.wolips.woproject
 Bundle-ActivationPolicy: lazy
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Export-Package: org.objectstyle.wolips.eomodeler.core,
  org.objectstyle.wolips.eomodeler.core.kvc,
  org.objectstyle.wolips.eomodeler.core.model,
@@ -20,5 +20,5 @@ Export-Package: org.objectstyle.wolips.eomodeler.core,
  org.objectstyle.wolips.eomodeler.core.utils
 Bundle-ClassPath: .,
  lib/EOFSQLUtils.jar
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 Automatic-Module-Name: org.objectstyle.wolips.eomodeler.core

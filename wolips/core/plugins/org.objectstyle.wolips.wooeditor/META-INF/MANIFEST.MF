@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Woo Editor Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.wooeditor;singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.wooeditor.WooeditorPlugin
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.core.filesystem,
  org.eclipse.jface.databinding,
  org.eclipse.core.databinding,
@@ -26,4 +26,4 @@ Export-Package: org.objectstyle.wolips.wooeditor,
  org.objectstyle.wolips.wooeditor.editor,
  org.objectstyle.wolips.wooeditor.plisteditor,
  org.objectstyle.wolips.wooeditor.widgets
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21

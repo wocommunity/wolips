@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Debug Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.debug; singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.debug.Activator
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.debug.core,
  org.eclipse.jdt.debug,
  org.objectstyle.wolips.baseforplugins
@@ -17,4 +17,4 @@ Export-Package: org.objectstyle.wolips.debug,
  org.objectstyle.wolips.debug.logicalstructure.type.eoaccess,
  org.objectstyle.wolips.debug.logicalstructure.type.eocontrol,
  org.objectstyle.wolips.debug.logicalstructure.type.foundation
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-21

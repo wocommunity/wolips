@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Components Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.components; singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.components.ComponentsPlugin
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Require-Bundle: org.objectstyle.wolips.locate,
  org.objectstyle.wolips.editors,
  org.objectstyle.wolips.baseforuiplugins
@@ -12,4 +12,4 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.components,
  org.objectstyle.wolips.components.editor,
  org.objectstyle.wolips.components.input
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-21

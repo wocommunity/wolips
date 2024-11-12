@@ -1,33 +1,22 @@
 package tk.eclipse.plugin.htmleditor.assist;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.eclipse.core.resources.IFile;
+import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
+
+import com.helger.css.ECSSVersion;
+import com.helger.css.decl.CSSSelectorSimpleMember;
+import com.helger.css.decl.CascadingStyleSheet;
+import com.helger.css.reader.CSSReader;
 
 import jp.aonir.fuzzyxml.FuzzyXMLAttribute;
 import jp.aonir.fuzzyxml.FuzzyXMLDocument;
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
 import jp.aonir.fuzzyxml.FuzzyXMLNode;
 import jp.aonir.fuzzyxml.FuzzyXMLParser;
-
-import org.eclipse.core.resources.IFile;
-import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
-import org.w3c.css.sac.AttributeCondition;
-import org.w3c.css.sac.Condition;
-import org.w3c.css.sac.ConditionalSelector;
-import org.w3c.css.sac.ElementSelector;
-import org.w3c.css.sac.InputSource;
-import org.w3c.css.sac.Selector;
-import org.w3c.css.sac.SelectorList;
-import org.w3c.css.sac.SimpleSelector;
-import org.w3c.dom.css.CSSRule;
-import org.w3c.dom.css.CSSRuleList;
-import org.w3c.dom.css.CSSStyleRule;
-import org.w3c.dom.css.CSSStyleSheet;
-
 import tk.eclipse.plugin.htmleditor.HTMLUtil;
-
-import com.steadystate.css.parser.CSSOMParser;
 
 /**
  * This provides code completion for class attribute of HTML tags.
@@ -145,55 +134,26 @@ public class CSSAssistProcessor {
    * @param css CSS
    */
   private void processStylesheet(String css) {
-    try {
-      CSSOMParser parser = new CSSOMParser();
-      InputSource is = new InputSource(new StringReader(css));
-      CSSStyleSheet stylesheet = parser.parseStyleSheet(is);
-      CSSRuleList list = stylesheet.getCssRules();
-      //			ArrayList assists = new ArrayList();
-      for (int i = 0; i < list.getLength(); i++) {
-        CSSRule rule = list.item(i);
-        if (rule instanceof CSSStyleRule) {
-          CSSStyleRule styleRule = (CSSStyleRule) rule;
-          String selector = styleRule.getSelectorText();
-          SelectorList selectors = parser.parseSelectors(new InputSource(new StringReader(selector)));
-          for (int j = 0; j < selectors.getLength(); j++) {
-            Selector sel = selectors.item(j);
-            if (sel instanceof ConditionalSelector) {
-              Condition cond = ((ConditionalSelector) sel).getCondition();
-              SimpleSelector simple = ((ConditionalSelector) sel).getSimpleSelector();
-
-              if (simple instanceof ElementSelector) {
-                String tagName = ((ElementSelector) simple).getLocalName();
-                if (tagName == null) {
-                  tagName = "*";
-                }
-                else {
-                  tagName = tagName.toLowerCase();
-                }
-                if (cond instanceof AttributeCondition) {
-                  AttributeCondition attrCond = (AttributeCondition) cond;
-                  if (_rules.get(tagName) == null) {
-                    ArrayList<String> classes = new ArrayList<String>();
-                    //										classes.add(new AssistInfo(attrCond.getValue()));
-                    classes.add(attrCond.getValue());
-                    _rules.put(tagName, classes);
-                  }
-                  else {
-                    ArrayList<String> classes = _rules.get(tagName);
-                    //										classes.add(new AssistInfo(attrCond.getValue()));
-                    classes.add(attrCond.getValue());
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    catch (Throwable ex) {
-      // java.lang.Error: Missing return statement in function
-    }
+	  /*
+	   * This function appears to be building a list of class names for elements, 
+	   * with a catchall * element for classses declared without an element. So 
+	   * something like,
+	   * * (class1, class2)
+	   * div (class3, class4)
+	   * Then it can provide these class names in code assist when editing.
+	   */
+	  CascadingStyleSheet styles = CSSReader.readFromString(css, ECSSVersion.LATEST);
+	  styles.getAllStyleRules().stream().forEach(stylerule ->{
+		  stylerule.getAllSelectors().forEach(sel ->{
+			  //FIXME add to _rules here
+			  sel.getAllMembers().stream().forEach(mem ->{
+				  if(mem instanceof CSSSelectorSimpleMember m) {
+					  if(m.isElementName()) {
+					  }
+				  }
+			  });
+		  });
+	  });
   }
 
   /**

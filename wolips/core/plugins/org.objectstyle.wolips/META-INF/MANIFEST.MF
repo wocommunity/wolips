@@ -1,10 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
+Automatic-Module-Name: org.objectstyle.wolips
 Bundle-Name: WOLips Core Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips; singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.core.CorePlugin
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.core.resources,
  org.junit,
  org.apache.ant,
@@ -36,4 +37,4 @@ Export-Package: org.objectstyle.wolips.core,
  org.objectstyle.wolips.core.tests,
  org.objectstyle.wolips.core.tobeintregrated
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-21

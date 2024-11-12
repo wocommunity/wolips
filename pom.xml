@@ -12,6 +12,7 @@
 
 	<properties>
 		<maven.compiler.release>21</maven.compiler.release>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<tycho.version>4.0.8</tycho.version>
 		<sonar.exclusions>**/src-gen/**</sonar.exclusions>
 		<env.ui.test>-Xms512m -Xmx2048m</env.ui.test>
@@ -59,7 +60,7 @@
 		<repository>
 			<id>wocommunity.releases</id>
 			<name>WOCommunity Maven 2 Releases Repository</name>
-			<url>http://maven.wocommunity.org/content/groups/public</url>
+			<url>https://maven.wocommunity.org/content/groups/public</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -70,7 +71,7 @@
 		<repository>
 			<id>wocommunity.snapshots</id>
 			<name>WOCommunity Maven 2 Snapshots Repository</name>
-			<url>http://maven.wocommunity.org/content/groups/public-snapshots</url>
+			<url>https://maven.wocommunity.org/content/groups/public-snapshots</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -89,7 +90,7 @@
 		<pluginRepository>
 			<id>wocommunity.releases</id>
 			<name>WOCommunity Maven 2 Releases Repository</name>
-			<url>http://maven.wocommunity.org/content/groups/public</url>
+			<url>https://maven.wocommunity.org/content/groups/public</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -100,7 +101,7 @@
 		<pluginRepository>
 			<id>wocommunity.snapshots</id>
 			<name>WOCommunity Maven 2 Snapshots Repository</name>
-			<url>http://maven.wocommunity.org/content/groups/public-snapshots</url>
+			<url>https://maven.wocommunity.org/content/groups/public-snapshots</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -114,12 +115,12 @@
 		<repository>
 			<id>wocommunity.deployment</id>
 			<name>WOCommunity Maven2 Releases Repository</name>
-			<url>http://maven.wocommunity.org/content/repositories/releases</url>
+			<url>https://maven.wocommunity.org/content/repositories/releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>wocommunity.deployment</id>
 			<name>WOCommunity Maven2 Snapshots Repository</name>
-			<url>http://maven.wocommunity.org/content/repositories/snapshots/</url>
+			<url>https://maven.wocommunity.org/content/repositories/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -129,17 +130,49 @@
 		<url>https://github.com/wocommunity/wolips/</url>
 	</scm>
 
+	<!-- Not used for now, but one day, let's not use mystery meat jars in a lib
+	dir. -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.wutka</groupId>
+				<artifactId>dtdparser</artifactId>
+				<version>1.21</version>
+			</dependency>
+			<dependency>
+				<groupId>org.relaxng</groupId>
+				<artifactId>trang</artifactId>
+				<version>20220510</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jvnet.hudson</groupId>
+				<artifactId>org.suigeneris.jrcs.diff</artifactId>
+				<version>0.4.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mozilla</groupId>
+				<artifactId>rhino</artifactId>
+				<version>1.7.15</version>
+			</dependency>
+			<dependency>
+				<groupId>com.helger</groupId>
+				<artifactId>ph-css</artifactId>
+				<version>7.0.3</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<build>
 		<pluginManagement>
 			<plugins>
 				<plugin>
 					<artifactId>maven-plugin-plugin</artifactId>
-					<version>2.5</version>
+					<version>3.15.1</version>
 					<dependencies>
 						<dependency>
 							<groupId>org.apache.maven.plugin-tools</groupId>
 							<artifactId>maven-plugin-tools-ant</artifactId>
-							<version>2.5</version>
+							<version>3.15.1</version>
 						</dependency>
 					</dependencies>
 				</plugin>
@@ -147,6 +180,11 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.13.0</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.4.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>

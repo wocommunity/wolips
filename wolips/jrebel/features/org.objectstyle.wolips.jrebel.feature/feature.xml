@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.objectstyle.wolips.jrebel.feature"
-      label="%feature.featureName"
-      version="1.0.6"
-      provider-name="%feature.providerName"
-      image="%feature.image">
+      label="WOLips JRebel"
+      version="4.20.0.qualifier"
+      provider-name="wocommunity.org">
 
    <description url="http://objectstyle.org/confluence/display/WOL/Home">
-      %feature.description
+      WOLips JRebel
    </description>
-
-   <copyright>
-      %feature.copyright
-   </copyright>
 
    <license>
       The ObjectStyle Group Software License, Version 1.0
@@ -64,8 +59,7 @@ on the ObjectStyle Group, please see http://objectstyle.org/
    </license>
 
    <url>
-      <update label="%feature.updateSiteName" url="%feature.updateSite"/>
-      <discovery label="%feature.updateSiteName" url="%feature.updateSite"/>
+      <discovery label="%feature.updateSiteName"/>
    </url>
 
    <requires>
@@ -79,8 +73,6 @@ on the ObjectStyle Group, please see http://objectstyle.org/
 
    <plugin
          id="org.objectstyle.wolips.jrebel"
-         download-size="0"
-         install-size="0"
-         version="1.0.6"/>
+         version="0.0.0"/>
 
 </feature>

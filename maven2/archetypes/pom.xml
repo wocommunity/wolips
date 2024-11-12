@@ -2,13 +2,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>woproject-all-parent</artifactId>
-		<groupId>org.objectstyle.woproject</groupId>
+		<artifactId>maven2</artifactId>
+		<groupId>org.objectstyle.woproject.maven2</groupId>
 		<version>4.20.0-SNAPSHOT</version>
 	</parent>
-	<groupId>org.objectstyle.woproject.maven2</groupId>
 	<artifactId>archetypes</artifactId>
-	<version>4.20.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Archetypes Parent POM</name>
 	<description>Parent POM for all WOProject Archetypes.</description>
@@ -57,7 +55,6 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>1.2</version>
 				<inherited>false</inherited>
 				<executions>
 					<execution>
@@ -69,7 +66,7 @@
 						<configuration>
 							<artifacts>
 								<artifact>
-									<file>${build.directory}/catalog/archetype-catalog.xml</file>
+									<file>${project.build.directory}/catalog/archetype-catalog.xml</file>
 									<type>xml</type>
 									<classifier>catalog</classifier>
 								</artifact>

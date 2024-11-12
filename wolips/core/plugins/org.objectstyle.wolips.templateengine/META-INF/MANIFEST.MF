@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Templateengine Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.templateengine; singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.templateengine.TemplateEnginePlugin
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Require-Bundle: org.junit,
  org.eclipse.core.resources,
  org.eclipse.ui,
@@ -15,4 +15,4 @@ Require-Bundle: org.junit,
  org.objectstyle.wolips;bundle-version="1.0.6"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.templateengine
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-21

@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Launching Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.launching; singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.launching.LaunchingPlugin
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.debug.ui,
  org.eclipse.jdt.core,
  org.eclipse.jdt.launching,
@@ -34,4 +34,4 @@ Export-Package: org.objectstyle.wolips.launching,
  org.objectstyle.wolips.launching.exceptionhandler.internal,
  org.objectstyle.wolips.launching.ui,
  org.objectstyle.wolips.launching.variables
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-21

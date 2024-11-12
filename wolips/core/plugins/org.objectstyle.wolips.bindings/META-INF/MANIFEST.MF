@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips WODclips Core Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.bindings; singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.bindings.Activator
 Require-Bundle: org.objectstyle.wolips,
  org.eclipse.jdt.core,
@@ -21,5 +21,5 @@ Export-Package: org.objectstyle.wolips.bindings,
  org.objectstyle.wolips.bindings.preferences,
  org.objectstyle.wolips.bindings.utils,
  org.objectstyle.wolips.bindings.wod
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-21
 
