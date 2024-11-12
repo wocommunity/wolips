@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Componenteditor Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.componenteditor; singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.componenteditor.ComponenteditorPlugin
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Require-Bundle: org.objectstyle.wolips.workbenchutilities,
  org.eclipse.ui.views,
  org.objectstyle.wolips.editors,
@@ -39,4 +39,4 @@ Export-Package: org.objectstyle.wolips.componenteditor,
  org.objectstyle.wolips.componenteditor.launcher,
  org.objectstyle.wolips.componenteditor.outline,
  org.objectstyle.wolips.componenteditor.part
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21

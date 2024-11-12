@@ -1,6 +1,5 @@
 package tk.eclipse.plugin.csseditor.editors;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,16 +13,13 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
-import org.w3c.css.sac.InputSource;
-import org.w3c.dom.css.CSSRule;
-import org.w3c.dom.css.CSSRuleList;
-import org.w3c.dom.css.CSSStyleRule;
-import org.w3c.dom.css.CSSStyleSheet;
+
+import com.helger.css.ECSSVersion;
+import com.helger.css.decl.CascadingStyleSheet;
+import com.helger.css.reader.CSSReader;
 
 import tk.eclipse.plugin.htmleditor.HTMLPlugin;
 import tk.eclipse.plugin.htmleditor.HTMLUtil;
-
-import com.steadystate.css.parser.CSSOMParser;
 
 /**
  * @author Naoki Takezoe
@@ -51,19 +47,14 @@ public class CSSOutlinePage extends ContentOutlinePage {
 
   public void update() {
     try {
-      CSSOMParser parser = new CSSOMParser();
-      InputSource is = new InputSource(new StringReader(editor.getDocumentProvider().getDocument(editor.getEditorInput()).get()));
-      CSSStyleSheet stylesheet = parser.parseStyleSheet(is);
-      this.selectors.clear();
-      CSSRuleList list = stylesheet.getCssRules();
-      for (int i = 0; i < list.getLength(); i++) {
-        CSSRule rule = list.item(i);
-        if (rule instanceof CSSStyleRule) {
-          CSSStyleRule styleRule = (CSSStyleRule) rule;
-          String selector = styleRule.getSelectorText();
-          this.selectors.add(selector);
-        }
-      }
+        String css = editor.getDocumentProvider().getDocument(editor.getEditorInput()).get();
+        this.selectors.clear();
+  	  CascadingStyleSheet styles = CSSReader.readFromString(css, ECSSVersion.LATEST);
+	  styles.getAllStyleRules().stream().forEach(stylerule ->{
+		  stylerule.getAllSelectors().forEach(sel ->{
+			  this.selectors.add(sel.getAsCSSString());
+		});
+	  });
       getTreeViewer().refresh();
     }
     catch (Throwable t) {

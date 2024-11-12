@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Deployment UI Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.deployment.ui; singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.deployment.ui.DeploymentPlugin
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Require-Bundle: org.objectstyle.wolips,
  org.objectstyle.wolips.workbenchutilities,
  org.objectstyle.wolips.ant,
@@ -13,4 +13,4 @@ Require-Bundle: org.objectstyle.wolips,
 Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.deployment.ui,
  org.objectstyle.wolips.deployment.ui.actions
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-21

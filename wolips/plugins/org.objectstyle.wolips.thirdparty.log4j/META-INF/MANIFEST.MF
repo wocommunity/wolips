@@ -3,9 +3,9 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.thirdparty.log4j
 Bundle-Name: WOLips Third Party Log4j Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.thirdparty.log4j;singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.thirdparty.log4j.Activator
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.ui;bundle-version="3.5.0",
  org.eclipse.core.runtime,
  system.bundle
@@ -46,4 +46,4 @@ Export-Package: org.apache.log4j;uses:="org.apache.log4j.helpers,org.apache.log4
    org.apache.log4j.spi",
  org.objectstyle.wolips.thirdparty.log4j;uses:="org.osgi.framework,org.eclipse.ui.plugin"
 Bundle-ClassPath: .,lib/reload4j-1.2.24.jar
-Bundle-RequiredExecutionEnvironment: JavaSE-11
+Bundle-RequiredExecutionEnvironment: JavaSE-21

@@ -2,10 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips PB Server Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.pbserver; singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.pbserver.PBServerPlugin
 Bundle-Vendor: org.objectstyle
 Require-Bundle: org.objectstyle.wolips.preferences,
  org.objectstyle.wolips.baseforuiplugins
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-21

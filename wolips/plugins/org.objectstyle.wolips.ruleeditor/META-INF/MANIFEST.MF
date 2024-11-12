@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips RuleEditor Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.ruleeditor; singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.ruleeditor.RuleEditorPlugin
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Require-Bundle: org.objectstyle.wolips.baseforuiplugins,
  org.objectstyle.wolips.woproject;bundle-version="1.0.6"
 Bundle-ActivationPolicy: lazy
@@ -20,4 +20,4 @@ Export-Package: org.apache.commons.lang,
  org.apache.commons.lang.mutable,
  org.apache.commons.lang.text,
  org.apache.commons.lang.time
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-21

@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips WODClipse Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.wodclipse; singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.wodclipse.WodclipsePlugin
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.ui.editors,
  org.eclipse.jdt.core,
  org.eclipse.jdt.ui,
@@ -21,4 +21,4 @@ Bundle-ClassPath: .
 Export-Package: org.objectstyle.wolips.wodclipse,
  org.objectstyle.wolips.wodclipse.action,
  org.objectstyle.wolips.wodclipse.editor
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-21

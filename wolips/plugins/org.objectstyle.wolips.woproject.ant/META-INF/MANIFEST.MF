@@ -2,10 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOProject Ant
 Bundle-SymbolicName: org.objectstyle.wolips.woproject.ant;singleton:=true
-Bundle-Version: 1.0.6
-Bundle-ClassPath: lib/woproject.jar,
+Bundle-Version: 4.20.0.qualifier
+Bundle-ClassPath: lib/woenvironment.jar,
+ lib/woproject-ant-tasks.jar,
  .
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
  system.bundle;visibility:=reexport,

@@ -8,68 +8,68 @@
    <extension
          point="org.eclipse.ant.core.extraClasspathEntries">
       <extraClasspathEntry
-            library="lib/woproject.jar"
+            library="lib/woproject-ant-tasks.jar"
             eclipseRuntime="false">
       </extraClasspathEntry>
    </extension>
    <extension
          point="org.eclipse.ant.core.antTasks">
       <antTask
-            library="lib/woproject.jar"
+            library="lib/woproject-ant-tasks.jar"
             name="woapplication"
             class="org.objectstyle.woproject.ant.WOApplication"
             eclipseRuntime="false">
       </antTask>
       <antTask
-            library="lib/woproject.jar"
+            library="lib/woproject-ant-tasks.jar"
             name="woframework"
             class="org.objectstyle.woproject.ant.WOFramework"
             eclipseRuntime="false">
       </antTask>
       <antTask
-            library="lib/woproject.jar"
+            library="lib/woproject-ant-tasks.jar"
             name="wogen"
             class="org.objectstyle.woproject.ant.WOGenerator"
             eclipseRuntime="false">
       </antTask>
       <antTask
-            library="lib/woproject.jar"
+            library="lib/woproject-ant-tasks.jar"
             name="wocompile"
             class="org.objectstyle.woproject.ant.WOCompile"
             eclipseRuntime="false">
       </antTask>
       <antTask
-            library="lib/woproject.jar"
+            library="lib/woproject-ant-tasks.jar"
             name="pbindex"
             class="org.objectstyle.woproject.ant.PBIndex"
             eclipseRuntime="false">
       </antTask>
       <antTask
-            library="lib/woproject.jar"
+            library="lib/woproject-ant-tasks.jar"
             name="pbxindex"
             class="org.objectstyle.woproject.ant.PBXIndex"
             eclipseRuntime="false">
       </antTask>
       <antTask
-            library="lib/woproject.jar"
+            library="lib/woproject-ant-tasks.jar"
             name="pbxindex2"
             class="org.objectstyle.woproject.ant.WOPBXBuild"
             eclipseRuntime="false">
       </antTask>
       <antTask
-            library="lib/woproject.jar"
+            library="lib/woproject-ant-tasks.jar"
             name="eomodel"
             class="org.objectstyle.woproject.ant.EOModel"
             eclipseRuntime="false">
       </antTask>
       <antTask
-            library="lib/woproject.jar"
+            library="lib/woproject-ant-tasks.jar"
             name="wounit"
             class="org.objectstyle.woproject.ant.WOUnit"
             eclipseRuntime="false">
       </antTask>
       <antTask
-            library="lib/woproject.jar"
+            library="lib/woproject-ant-tasks.jar"
             name="xcodeindex"
             class="org.objectstyle.woproject.ant.XcodeIndex"
             eclipseRuntime="false">
@@ -77,7 +77,7 @@
       <antTask
             class="org.objectstyle.woproject.ant.WOLipsPropertiesTask"
             eclipseRuntime="false"
-            library="lib/woproject.jar"
+            library="lib/woproject-ant-tasks.jar"
             name="wolipsproperties">
       </antTask>
    </extension>

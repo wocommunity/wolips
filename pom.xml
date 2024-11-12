@@ -9,11 +9,65 @@
 	</parent>
 	<artifactId>wolips-project</artifactId>
 	<packaging>pom</packaging>
-	
+
 	<modules>
+		<!--tycho stuff-->
+		<module>wolips.p2</module>
 		<module>wolips.targetplatform</module>
+		<!--core-->
+		<module>core/plugins/org.objectstyle.wolips</module>
+		<module>core/plugins/org.objectstyle.wolips.ant</module>
+		<module>core/plugins/org.objectstyle.wolips.apieditor</module>
+		<module>core/plugins/org.objectstyle.wolips.baseforplugins</module>
+		<module>core/plugins/org.objectstyle.wolips.baseforuiplugins</module>
+		<module>core/plugins/org.objectstyle.wolips.bindings</module>
+		<module>core/plugins/org.objectstyle.wolips.builder</module>
+		<module>core/plugins/org.objectstyle.wolips.componenteditor</module>
+		<module>core/plugins/org.objectstyle.wolips.components</module>
+		<module>core/plugins/org.objectstyle.wolips.debug</module>
+		<module>core/plugins/org.objectstyle.wolips.deployment.ui</module>
+		<module>core/plugins/org.objectstyle.wolips.documentation</module>
+		<module>core/plugins/org.objectstyle.wolips.editors</module>
+		<module>core/plugins/org.objectstyle.wolips.eogenerator.core</module>
+		<module>core/plugins/org.objectstyle.wolips.eogenerator.jdt</module>
+		<module>core/plugins/org.objectstyle.wolips.eogenerator.ui</module>
+		<module>core/plugins/org.objectstyle.wolips.eomodeler</module>
+		<module>core/plugins/org.objectstyle.wolips.eomodeler.core</module>
+		<module>core/plugins/org.objectstyle.wolips.eomodeler.doc</module>
+		<module>core/plugins/org.objectstyle.wolips.eomodeler.eclipse</module>
+		<module>core/plugins/org.objectstyle.wolips.eomodeler.factories</module>
+		<module>core/plugins/org.objectstyle.wolips.htmlpreview</module>
+		<module>core/plugins/org.objectstyle.wolips.jdt</module>
+		<module>core/plugins/org.objectstyle.wolips.launching</module>
+		<module>core/plugins/org.objectstyle.wolips.locate</module>
+		<module>core/plugins/org.objectstyle.wolips.pbserver</module>
+		<module>core/plugins/org.objectstyle.wolips.preferences</module>
+		<module>core/plugins/org.objectstyle.wolips.refactoring</module>
+		<module>core/plugins/org.objectstyle.wolips.ruleeditor</module>
+		<module>core/plugins/org.objectstyle.wolips.targetbuilder</module>
+		<module>core/plugins/org.objectstyle.wolips.team</module>
+		<module>core/plugins/org.objectstyle.wolips.templateengine</module>
+		<module>core/plugins/org.objectstyle.wolips.thirdparty.commonscollections</module>
+		<module>core/plugins/org.objectstyle.wolips.thirdparty.log4j</module>
+		<module>core/plugins/org.objectstyle.wolips.thirdparty.velocity</module>
+		<module>core/plugins/org.objectstyle.wolips.tkhtmleditor</module>
+		<module>core/plugins/org.objectstyle.wolips.ui</module>
+		<module>core/plugins/org.objectstyle.wolips.variables</module>
+		<module>core/plugins/org.objectstyle.wolips.wizards</module>
+		<module>core/plugins/org.objectstyle.wolips.wodclipse</module>
+		<module>core/plugins/org.objectstyle.wolips.wodclipse.core</module>
+		<module>core/plugins/org.objectstyle.wolips.womodeler</module>
+		<module>core/plugins/org.objectstyle.wolips.wooeditor</module>
+		<module>core/plugins/org.objectstyle.wolips.woproject</module>
+		<module>core/plugins/org.objectstyle.wolips.woproject.ant</module>
+		<module>core/plugins/org.objectstyle.wolips.workbenchutilities</module>
+		<!--entitymodeler-->
+		<!--jrebel-->
+		<module>jrebel/plugins/org.objectstyle.wolips.jrebel</module>
+		<module>jrebel/features/org.objectstyle.wolips.jrebel.feature</module>
+		<!--jprofiler-->
 	</modules>
-	
+
 	<build>
 		<plugins>
 			<plugin>

@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: EOGenerator UI
 Bundle-SymbolicName: org.objectstyle.wolips.eogenerator.ui; singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.eogenerator.ui.Activator
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.ui.forms,
  org.objectstyle.wolips.baseforuiplugins,
  org.objectstyle.wolips.eogenerator.core,
@@ -17,4 +17,4 @@ Export-Package: org.objectstyle.wolips.eogenerator.ui,
  org.objectstyle.wolips.eogenerator.ui.actions,
  org.objectstyle.wolips.eogenerator.ui.dialogs,
  org.objectstyle.wolips.eogenerator.ui.editors
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-21

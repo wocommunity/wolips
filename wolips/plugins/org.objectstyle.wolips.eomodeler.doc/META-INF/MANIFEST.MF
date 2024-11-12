@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: EOModelDoc
 Bundle-SymbolicName: org.objectstyle.wolips.eomodeler.doc;singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.eomodeler.doc.Activator
 Require-Bundle: org.objectstyle.wolips.eomodeler.core,
  org.objectstyle.wolips.thirdparty.velocity,
  org.objectstyle.wolips.baseforplugins
 Bundle-ActivationPolicy: lazy
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-21

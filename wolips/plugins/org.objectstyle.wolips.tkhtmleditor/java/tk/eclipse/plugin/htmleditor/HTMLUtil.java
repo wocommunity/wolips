@@ -13,11 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-
 import jp.aonir.fuzzyxml.FuzzyXMLElement;
 import jp.aonir.fuzzyxml.FuzzyXMLNode;
 import jp.aonir.fuzzyxml.XPath;
@@ -51,9 +46,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SelectionDialog;
-import org.w3c.dom.Document;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.SAXException;
 
 /**
  * This provides utility methods.
@@ -339,31 +331,7 @@ public class HTMLUtil {
 		}
 		return value;
 	}
-	
-	/**
-	 * Creates a Document object from InputStream.
-	 * 
-	 * @param in InputStream of a XML document
-	 * @param resolver EntityResolver or null
-	 * @return Document object
-	 * @throws ParserConfigurationException
-	 * @throws FactoryConfigurationError
-	 * @throws SAXException
-	 * @throws IOException
-	 */
-	public static Document createDocument(InputStream in,EntityResolver resolver) 
-		throws ParserConfigurationException, FactoryConfigurationError, SAXException, IOException{
 		
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setNamespaceAware(true);
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		if(resolver!=null){
-			builder.setEntityResolver(resolver);
-		}
-		Document doc = builder.parse(in);
-		return doc;
-	}
-	
 	/**
 	 * Sorts informations of code completion in alphabetical order.
 	 * 

@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips UI Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.ui; singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.ui.UIPlugin
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.search,
  org.eclipse.ui.console,
  org.eclipse.debug.ui,
@@ -26,4 +26,4 @@ Export-Package: org.objectstyle.wolips.ui,
  org.objectstyle.wolips.ui.preferences,
  org.objectstyle.wolips.ui.propertypages,
  org.objectstyle.wolips.ui.view
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-21
