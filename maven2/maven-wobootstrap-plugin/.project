@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>maven-wobootstrap-plugin</name>
-	<comment>Contains WOProject Maven2 plugins collection.</comment>
+	<comment></comment>
 	<projects>
 	</projects>
 	<buildSpec>
@@ -17,7 +17,7 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.eclipse.m2e.core.maven2Nature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.eclipse.m2e.core.maven2Nature</nature>
 	</natures>
 </projectDescription>
