@@ -6,10 +6,14 @@
    <feature url="features/org.objectstyle.wolips.jrebel.feature_4.20.0.qualifier.jar" id="org.objectstyle.wolips.jrebel.feature" version="4.20.0.qualifier">
       <category name="jrebel"/>
    </feature>
+   <feature url="features/org.objectstyle.wolips.groovy.feature_4.20.0.qualifier.jar" id="org.objectstyle.wolips.groovy.feature" version="4.20.0.qualifier">
+      <category name="wolips_groovy"/>
+   </feature>
    <category-def name="wolips" label="WOLips">
       <description>
          The core wolips project for WebObjects development.
       </description>
    </category-def>
    <category-def name="jrebel" label="WOLips JRebel integration"/>
+   <category-def name="wolips_groovy" label="WOLips Groovy support"/>
 </site>

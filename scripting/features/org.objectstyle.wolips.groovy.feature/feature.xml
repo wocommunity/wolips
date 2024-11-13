@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.objectstyle.wolips.groovy.feature"
-      label="%feature.featureName"
-      version="1.0.6"
-      provider-name="%feature.providerName"
-      image="%feature.image">
+      label="WOLips Groovy Support"
+      version="4.20.0.qualifier"
+      provider-name="wocommunity.org">
 
    <description url="http://objectstyle.org/confluence/display/WOL/Home">
-      %feature.description
+      WOLips Groovy additions
    </description>
-
-   <copyright>
-      %feature.copyright
-   </copyright>
 
    <license>
       The ObjectStyle Group Software License, Version 1.0
@@ -63,16 +58,8 @@ individuals on behalf of the ObjectStyle Group. For more information
 on the ObjectStyle Group, please see http://objectstyle.org/
    </license>
 
-   <url>
-      <update label="%feature.updateSiteName" url="%feature.updateSite"/>
-      <discovery label="%feature.updateSiteName" url="%feature.updateSite"/>
-   </url>
-
    <plugin
          id="org.objectstyle.wolips.groovy.ui"
-         download-size="32"
-         install-size="32"
-         version="1.0.6"
-         unpack="false"/>
+         version="4.20.0.qualifier"/>
 
 </feature>
