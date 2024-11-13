@@ -4,3 +4,5 @@ temp/
 target/
 .settings/
 .classpath
+woenvironment.jar
+woproject-ant-tasks.jar
