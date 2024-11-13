@@ -139,5 +139,17 @@
            <adapter type="org.objectstyle.wolips.core.resources.IWOLipsResource"/>
        </factory>
    </extension>
+   <extension
+         id="wolips_product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.ui.ide.workbench"
+            name="WOLips Development Environment">
+         <property
+               name="appName"
+               value="WOLips Development Environment">
+         </property>
+      </product>
+   </extension>
 
 </plugin>
