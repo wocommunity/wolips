@@ -1,11 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
+Automatic-Module-Name: org.objectstyle.wolips.groovy.ui
 Bundle-Name: WOLips Groovy UI Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.groovy.ui;singleton:=true
-Bundle-Version: 1.0.6
+Bundle-Version: 4.20.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.groovy.ui.Activator
-Bundle-Vendor: objectstyle.org
+Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Import-Package: org.objectstyle.wolips.componenteditor.editormenu
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-21
