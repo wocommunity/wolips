@@ -12,7 +12,6 @@
 	<artifactId>org.objectstyle.wolips.wodclipse.core</artifactId>
 	<build>
 		<sourceDirectory>java</sourceDirectory>
-		<testSourceDirectory>test</testSourceDirectory>
 		<resources>
 			<resource>
 				<directory>java</directory>
