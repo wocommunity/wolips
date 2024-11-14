@@ -6,3 +6,4 @@ target/
 .classpath
 woenvironment.jar
 woproject-ant-tasks.jar
+.tycho-consumer-pom.xml
