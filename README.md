@@ -1,4 +1,4 @@
-<img src="http://wiki.wocommunity.org/download/attachments/2624275/icon_256x256.png?version=1&modificationDate=1287449464000&api=v2" alt="WOLips Icon" width="30%" style="float: right;"/>
+<img src="https://wiki.wocommunity.org/xwiki/bin/download/WOL/Home/WebHome/icon_256x256.png" alt="WOLips Icon" width="30%" style="float: right;"/>
 
 # WOLips
 
@@ -8,7 +8,7 @@ Almost all of the functionality provided by the Apple toolset (XCode, EOModeler,
 
 ## WOLips Project Home
 
-The home page for the WOLips project is <a href="http://wiki.wocommunity.org/display/WOL/Home">http://wiki.wocommunity.org/display/WOL/Home</a>
+The home page for the WOLips project is <a href="https://wiki.wocommunity.org/xwiki/bin/view/WOL/">https://wiki.wocommunity.org/xwiki/bin/view/WOL/</a>
 
 
 ## Installing WOLips
@@ -17,7 +17,7 @@ Installing prebuilt versions of WOLips in existing Eclipse installations can be 
 
 
 1. Add the WOLips update URL to the Available Software Sites list (either through **Eclipse > Preferences > Install/Update > Available Software Sites** or **Help > Install New Software... > Add**)
-2. Use the WOLips update URL to install the plugin http://jenkins.wocommunity.org/job/WOLips410/lastSuccessfulBuild/artifact/temp/dist/
+2. Use the WOLips update URL to install the plugin <s>http://jenkins.wocommunity.org/job/WOLips410/lastSuccessfulBuild/artifact/temp/dist/</s> (a new install site on github coming soon)
 
 
 
@@ -25,93 +25,56 @@ Installing prebuilt versions of WOLips in existing Eclipse installations can be 
 ### Building WOLips
 
 #### Prerequisites
-* Eclipse ( this document is current as of 4.26 2022-12)
 * Git
-* JRebel and JProfiler are required if you want to build those parts of WOLips
+* Latest Java LTS or newer
+* A recent version of maven
 
 #### From the command line...
 
-1. Checkout source from Github: git clone https://github.com/wocommunity/wolips.git wolips
-2. Identify path to eclipse for the value of eclipse.home (path to the folder enclosing the eclipse program and configuration directories) Edit ~/Library/wobuild.properties to include the line: eclipse.home=/path/to/your/eclipse (or pass the path in the build command using -Declipse.home=/path/to/your/eclipse)
-3. build with ant. Example: 
+1. Checkout source from Github:
+
+	```bash
+	user$ git clone https://github.com/wocommunity/wolips.git
+	```
+
+2. Build with maven:
 	
 	```bash
-	user$ ant -Dbuild.version=4.10.0 -Declipse.home=/path/to/eclipse -Dskip.jprofiler=true -Dskip.jrebel=true
+	user$ cd wolips && mvn clean package
 	```
-	
-4. verify the build succeeded and the product is in the dist directory
-5. Use the eclipse plugin installation process to install from the dist directory.
 
+3. There is no step 3!
 
-wolips
-======
+## Installing the build
 
-Fork of wonder/wolips with changes to develop and debug in Eclipse 4.10 PDE
+A p2 repository is created at wolips/wolips.p2/target/repository/. You can install it as with the install site above, but using the local directory instead of a URL to the remote repository. The version number is timestamped, so you can immediately update your local wolips install after a fresh build if you desire.
 
-## Installation of WOLips to develop under Eclipse 4.10
+## Develop WOLips under Eclipse
 
 ### Prepare eclipse:
 
-1) Use an extra Eclipse installation to develop and debug WOLips
+1) Install the latest "Eclipse IDE for Eclipse Committers" found at <a href="https://www.eclipse.org/downloads/packages/">https://www.eclipse.org/downloads/packages/</a> for your platform. You need the PDE plugins for WOLips development. 
 
-2) Be sure to use Java 1.7 or higher
+2) In the eGit perspective, add the WOLips github repository
 
-3) If not already contained in the Eclipse package:
-   m2e : Plugin for Maven - http://download.eclipse.org/technology/m2e/releases/ 
-   Click the checkbox to the left of "Maven Integration for Eclipse"
+3) Right click on your repository's "Working Tree" and "Import Projects..." to import the WOLips project
    
-4) Google Mechanic - http://workspacemechanic.eclipselabs.org.codespot.com/git.update/mechanic/
-
-5) Usefull: JRebel - http://www.zeroturnaround.com/update-site
-
-6) Usefull: Install JProfile in the new eclipse installation
+4) Switch to your plugin development view. You can now build the project with maven for the first time, which generates the necessary woenvironment.jar and woproject-ant-tasks.jar files and the entire project should compile in Eclipse without errors.
 
 
-### Prepare WOLips source folder
+### Run WOLips in Eclipse
 
-1) clone https://github.com/wocommunity/wolips/ to your desktop
-   or fork it in your own repository an clone that
+To run WOLips with your Eclipse installation and all your existing plugins,
+
+1) Open the wolips plugin at wolips/wolips_wolips/core/plugins/org.objectstyle.wolips/plugin.xml
    
-2) If you don't have JRebel installed:
-   Open ../wolips/build.xml and comment all occurrences of “jrebel”
-   
-3) If you don't have JProfile installed:
-   Open ../wolips/build.xml and comment all occurrences of “jprofile”
-   
-4) Open terminal in WOLips root folder and run
-   ant -Dbuild.version=4.10.0
+2) Click on "Launch an Eclipse application" under the Testing heading. You can also choose to debug here if you want to set breakpoints and debug. Once you do this once, a launcher will be added to your Run/Debug configurations and you can launch from there next time.
 
-### Prepare workspace:
+### Run the WOLips product in Eclipse:
 
-1) Open eclipse and create a new workspace, e.g. WOLips
+To run WOLips with a barebones Eclipse application and just the WOLips feature installed
 
-2) Create WO_HOME classpath variable under eclipse → Preference → Java → Build Path → Classpath Variabels:
-   eg.: WO_HOME /Library/WebObjects/lib
-   
-3) Import woenviroment project
-   - Import → General → Existing Projects into Workspace
-   - Select ./woenviroment
+1) Open the wolips product at wolips/wolips_wolips/wolips.product/wolips.product
 
-4) Import wolips projects
-   - Import → General → Existing Projects into Workspace
-   - Select ./wolips
-   - Deselect following entries:
-	 EntityModeler
-	 eomodeldoc
-	 veogen
-   In the case you have not installed JRebel deselect as well ...jrebel and ...jrebel.feature
-   In the case you have not installed JProfile deselect as well ...jprofile.launching and ...jprofil.feature
-
-5) Depending on the Google Mechanic version you had to close org.objetstyle.wolips.mechanic
-
-### Debug WOLips
-
-1) Open Debug Configurations Dialog
-
-2) Select Eclipse Application and press new
-
-3) Change Execution environment to Java 1.7
-   Press Debug
-   
-4) In the new instance select your preferred project(s) and start testing and enhancing WOLips
+2) Click on "Launch an Eclipse application" under the Testing heading. You can also choose to debug here if you want to set breakpoints and debug. Once you do this once, a launcher will be added to your Run/Debug configurations and you can launch from there next time.
 
