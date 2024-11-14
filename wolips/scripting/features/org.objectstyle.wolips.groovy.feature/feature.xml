@@ -2,7 +2,7 @@
 <feature
       id="org.objectstyle.wolips.groovy.feature"
       label="WOLips Groovy Support"
-      version="4.20.0.qualifier"
+      version="5.0.0.qualifier"
       provider-name="wocommunity.org">
 
    <description url="http://objectstyle.org/confluence/display/WOL/Home">
@@ -60,6 +60,6 @@ on the ObjectStyle Group, please see http://objectstyle.org/
 
    <plugin
          id="org.objectstyle.wolips.groovy.ui"
-         version="4.20.0.qualifier"/>
+         version="5.0.0.qualifier"/>
 
 </feature>

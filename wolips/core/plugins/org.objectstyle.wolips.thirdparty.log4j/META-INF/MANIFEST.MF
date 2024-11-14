@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.thirdparty.log4j
 Bundle-Name: WOLips Third Party Log4j Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.thirdparty.log4j;singleton:=true
-Bundle-Version: 4.20.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.thirdparty.log4j.Activator
 Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.ui;bundle-version="3.5.0",

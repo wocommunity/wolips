@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.groovy.ui
 Bundle-Name: WOLips Groovy UI Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.groovy.ui;singleton:=true
-Bundle-Version: 4.20.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.groovy.ui.Activator
 Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.ui,

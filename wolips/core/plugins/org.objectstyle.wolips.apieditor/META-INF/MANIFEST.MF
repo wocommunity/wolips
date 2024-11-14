@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Api Editor Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.apieditor; singleton:=true
-Bundle-Version: 4.20.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.apieditor.ApieditorPlugin
 Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.ui.forms,

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips WODclips Core Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.bindings; singleton:=true
-Bundle-Version: 4.20.0.qualifier
+Bundle-Version: 5.0.0.qualifier
 Bundle-Activator: org.objectstyle.wolips.bindings.Activator
 Require-Bundle: org.objectstyle.wolips,
  org.eclipse.jdt.core,
