@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
+Automatic-Module-Name: org.objectstyle.wolips.editors
 Bundle-Name: WOLips Editors Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.editors; singleton:=true
 Bundle-Version: 5.0.0.qualifier

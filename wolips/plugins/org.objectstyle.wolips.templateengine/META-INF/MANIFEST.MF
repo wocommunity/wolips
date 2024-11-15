@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
+Automatic-Module-Name: org.objectstyle.wolips.templateengine
 Bundle-Name: WOLips Templateengine Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.templateengine; singleton:=true
 Bundle-Version: 5.0.0.qualifier
