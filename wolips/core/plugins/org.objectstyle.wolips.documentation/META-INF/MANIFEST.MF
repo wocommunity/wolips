@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
+Automatic-Module-Name: org.objectstyle.wolips.documentation
 Bundle-Name: WOLips Documentation Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.documentation; singleton:=true
 Bundle-Version: 5.0.0.qualifier
