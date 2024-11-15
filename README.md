@@ -34,13 +34,13 @@ Installing prebuilt versions of WOLips in existing Eclipse installations can be 
 1. Checkout source from Github:
 
 	```bash
-	user$ git clone https://github.com/wocommunity/wolips.git
+	user$ git clone https://github.com/wocommunity/wolips.git wolips5
 	```
 
 2. Build with maven:
 	
 	```bash
-	user$ cd wolips && mvn clean package
+	user$ cd wolips5 && mvn clean package
 	```
 
 3. There is no step 3!
