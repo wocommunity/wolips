@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="Sources"/>
+	<classpathentry kind="con" path="WOFramework/JavaDirectToWeb"/>
+	<classpathentry kind="con" path="WOFramework/JavaDTWGeneration"/>
+	<classpathentry kind="con" path="WOFramework/JavaEOAccess"/>
+	<classpathentry kind="con" path="WOFramework/JavaEOApplication"/>
+	<classpathentry kind="con" path="WOFramework/JavaEOControl"/>
+	<classpathentry kind="con" path="WOFramework/JavaEODistribution"/>
+	<classpathentry kind="con" path="WOFramework/JavaEOGeneration"/>
+	<classpathentry kind="con" path="WOFramework/JavaEOInterface"/>
+	<classpathentry kind="con" path="WOFramework/JavaEOInterfaceSwing"/>
+	<classpathentry kind="con" path="WOFramework/JavaEOProject"/>
+	<classpathentry kind="con" path="WOFramework/JavaEORuleSystem"/>
+	<classpathentry kind="con" path="WOFramework/JavaFoundation"/>
+	<classpathentry kind="con" path="WOFramework/JavaJDBCAdaptor"/>
+	<classpathentry kind="con" path="WOFramework/JavaWebObjects"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+	<classpathentry kind="lib" path="Libraries/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="/Library/WebServer/Documents/WebObjects/Java/wojavaclient.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
