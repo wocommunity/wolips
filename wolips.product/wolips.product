@@ -3,7 +3,6 @@
 
 <product name="WOLips Development Environment" uid="wolips.product" id="org.objectstyle.wolips.wolips_product" application="org.eclipse.ui.ide.workbench" version="5.0.0.qualifier" type="features" includeLaunchers="true" autoIncludeRequirements="true">
 
-
    <configIni use="default">
    </configIni>
 
@@ -17,11 +16,9 @@
    <windowImages/>
 
 
-
    <vm>
       <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-21</windows>
    </vm>
-
 
    <plugins>
    </plugins>
@@ -46,6 +43,10 @@
       <property name="osgi.instance.area.default" value="@user.home/workspace-wolips.product" />
       <property name="osgi.requiredJavaVersion" value="21" />
    </configurations>
+
+   <repositories>
+      <repository location="https://wocommunity.github.io/wolips/repository/" name="WOLips" enabled="true" />
+   </repositories>
 
    <preferencesInfo>
       <targetfile overwrite="true"/>
