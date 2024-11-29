@@ -45,6 +45,10 @@ public class EOModelParserDataStructureFactory implements ParserDataStructureFac
 			createSortedSet = true;
 		} else if (_keyPath.endsWith(".rawRowKeyPaths")) {
 			createSortedSet = true;
+		} else if ("root.ERDiagrams".equals(_keyPath)) { // SAVAS Beim .plist lesen werden Diagramme als List gespeichert und nicht Set.
+			createSortedSet = false;
+		} else if ("root.ClassDiagrams".equals(_keyPath)) {
+			createSortedSet = false;
 		}
 		Collection<Object> collection;
 		if (createSortedSet) {

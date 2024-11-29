@@ -71,6 +71,12 @@ import org.objectstyle.wolips.eomodeler.core.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.core.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.core.model.EOStoredProcedure;
 
+import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.EOClassDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.EOClassDiagramCollection;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramCollection;
+
 public class EOModelOutlineContentProvider implements ITreeContentProvider {
 	private Object _modelContainer;
 
@@ -144,6 +150,12 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 			if (_showDatabaseConfigs) {
 				modelChildren.addAll(model.getDatabaseConfigs());
 			}
+			if (model.getERDiagramCollection() != null) {
+				modelChildren.add(model.getERDiagramCollection()); // SAVAS DiagramCollection wird im Outline dem TreeView als children hinzugefuegt (TreeView befindet sich im OutlineView)
+			}
+			if (model.getClassDiagramCollection() != null) {
+				modelChildren.add(model.getClassDiagramCollection());
+			}
 			children = modelChildren.toArray();
 		} else if (_parentElement instanceof EOEntity) {
 			EOEntity entity = (EOEntity) _parentElement;
@@ -187,6 +199,16 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 			Set<EOArgument> arguments = new TreeSet<EOArgument>(new EOSortableEOModelObjectComparator());
 			arguments.addAll(storedProcedure.getArguments());
 			children = arguments.toArray();
+		} else if (_parentElement instanceof EOERDiagramCollection) { // SAVAS Erdiagramme werden unterhalb vom ERDCollection angezeigt.
+			EOERDiagramCollection erdiagramCollection = (EOERDiagramCollection) _parentElement;
+			Set<EOERDiagram> erdiagrams = new TreeSet<EOERDiagram>(new EOSortableEOModelObjectComparator());
+			erdiagrams.addAll(erdiagramCollection.getDiagrams());
+			children = erdiagrams.toArray();
+		} else if (_parentElement instanceof EOClassDiagramCollection) { // SAVAS Klassendiagramme werden unterhalb vom ClassDiagramCollection angezeigt.
+			EOClassDiagramCollection classdiagramCollection = (EOClassDiagramCollection) _parentElement;
+			Set<EOClassDiagram> classdiagrams = new TreeSet<EOClassDiagram>(new EOSortableEOModelObjectComparator());
+			classdiagrams.addAll(classdiagramCollection.getDiagrams());
+			children = classdiagrams.toArray();
 		} else {
 			children = new Object[0];
 		}
@@ -255,6 +277,8 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 		} else if (_element instanceof EODatabaseConfig) {
 			hasChildren = false;
 		} else if (_element instanceof EOEntityIndex) {
+			hasChildren = false;
+		} else if (_element instanceof AbstractDiagram) { // SAVAS hier wird festgelegt das Diagramme keine Kinder haben können
 			hasChildren = false;
 		}
 		return hasChildren;

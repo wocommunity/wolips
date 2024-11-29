@@ -73,6 +73,9 @@
          <propertyCategory
                category="eoentityIndex">
          </propertyCategory>
+         <propertyCategory
+               category="diagram">
+         </propertyCategory>
       </propertyContributor>
    </extension>
    <extension
@@ -247,6 +250,11 @@
                category="eoentityIndex"
                id="org.objectstyle.wolips.eomodeler.tabs.eoentityIndexDocs"
                label="Docs">
+         </propertyTab>
+         <propertyTab
+               category="diagram"
+               id="org.objectstyle.wolips.eomodeler.tabs.diagramBasic"
+               label="Basic">
          </propertyTab>
       </propertyTabs>
    </extension>
@@ -495,6 +503,21 @@
                tab="org.objectstyle.wolips.eomodeler.tabs.eoentityIndexDocs">
             <input type="org.objectstyle.wolips.eomodeler.core.model.EOEntityIndex"/>
          </propertySection>
+         <propertySection
+               class="ch.rucotec.wolips.eomodeler.editors.diagram.EOERDiagramBasicEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.diagramBasic"
+               tab="org.objectstyle.wolips.eomodeler.tabs.diagramBasic">
+            <input type="ch.rucotec.wolips.eomodeler.core.model.EOERDiagram"/>
+         </propertySection>
+         <propertySection
+               class="ch.rucotec.wolips.eomodeler.editors.diagram.EOClassDiagramBasicEditorSection"
+               id="org.objectstyle.wolips.eomodeler.tabs.diagramBasic"
+               tab="org.objectstyle.wolips.eomodeler.tabs.diagramBasic">
+            <input
+                  type="ch.rucotec.wolips.eomodeler.core.model.EOClassDiagram">
+            </input>
+         </propertySection>
       </propertySections>
    </extension>
    <extension
@@ -689,6 +712,30 @@
                id="org.objectstyle.wolips.eomodeler.outline.popup.delete"
                label="Delete"
                menubarPath="group4"/>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.objectstyle.wolips.eomodeler.outline.eoerdiagramcollection"
+            objectClass="ch.rucotec.wolips.eomodeler.core.model.EOERDiagramCollection">
+         <action
+               class="ch.rucotec.wolips.eomodeler.actions.NewERDiagram"
+               enablesFor="1"
+               icon="icons/reverseEngineer.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.NewERDiagram"
+               label="New ERDiagram">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.objectstyle.wolips.eomodeler.outline.eoclassdiagramcollection"
+            objectClass="ch.rucotec.wolips.eomodeler.core.model.EOClassDiagramCollection">
+         <action
+               class="ch.rucotec.wolips.eomodeler.actions.NewClassDiagram"
+               enablesFor="1"
+               icon="icons/reverseEngineer.png"
+               id="org.objectstyle.wolips.eomodeler.outline.popup.NewClassDiagram"
+               label="New ClassDiagram">
+         </action>
       </objectContribution>
    </extension>
    <extension

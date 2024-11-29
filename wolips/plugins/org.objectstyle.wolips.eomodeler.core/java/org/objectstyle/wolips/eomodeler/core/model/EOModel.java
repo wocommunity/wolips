@@ -56,6 +56,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -67,6 +68,11 @@ import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityAddedEvent;
 import org.objectstyle.wolips.eomodeler.core.model.history.EOEntityDeletedEvent;
 import org.objectstyle.wolips.eomodeler.core.model.history.ModelEvents;
 import org.objectstyle.wolips.eomodeler.core.utils.NamingConvention;
+
+import ch.rucotec.wolips.eomodeler.core.gef.model.E_DiagramType;
+import ch.rucotec.wolips.eomodeler.core.model.EOClassDiagramCollection;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramCollection;
+import ch.rucotec.wolips.eomodeler.core.model.EOEntityDiagram;
 
 public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements ISortableEOModelObject {
 	public static final String CURRENT_VERSION = "1.0.1";
@@ -152,6 +158,11 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		_modelEvents = new ModelEvents();
 		_entityNamingConvention = NamingConvention.DEFAULT;
 		_attributeNamingConvention = NamingConvention.DEFAULT;
+		// SAVAS DiagramCollections erstellen.
+		if(!myName.equals("erprototypes")) {
+			myERDiagramCollection = addBlankERDiagramCollection(EOERDiagramCollection.DISPLAYNAME);
+			myClassDiagramCollection = addBlankClassDiagramCollection(EOClassDiagramCollection.DISPLAYNAME);
+		}
 	}
 
 	public EOModel(URL modelURL) throws EOModelException, IOException {
@@ -167,6 +178,59 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 		this(EOModelGroup.getModelNameForURL(modelURL));
 		loadFromURL(modelURL, failures);
 	}
+	
+	// SAVAS DiagramCollection verwaltung.
+	public static final String ERDIAGRAMCOLLECTION = "erdiagramCollection";
+	public static final String CLASSDIAGRAMCOLLECTION = "classdiagramCollection";
+	private EOERDiagramCollection myERDiagramCollection;
+	private EOClassDiagramCollection myClassDiagramCollection;
+	private Map<EOEntity, EOEntityDiagram> entityDiagramMap = new HashMap<EOEntity, EOEntityDiagram>();
+	
+	public Map<EOEntity, EOEntityDiagram> getEntityDiagramMap() {
+		return entityDiagramMap;
+	}
+	
+	public EOEntityDiagram createAndAddEntityDiagram(EOEntity entity) {
+		EOEntityDiagram entityDiagram = new EOEntityDiagram(entity);
+		entityDiagram.putCollection(E_DiagramType.ERDIAGRAM, myERDiagramCollection);
+		entityDiagram.putCollection(E_DiagramType.CLASSDIAGRAM, myClassDiagramCollection);
+		entityDiagramMap.put(entity, entityDiagram);
+		return entityDiagram;
+	}
+	
+	public EOERDiagramCollection getERDiagramCollection() {
+		return myERDiagramCollection;
+	}
+	
+	public EOClassDiagramCollection getClassDiagramCollection() {
+		return myClassDiagramCollection;
+	}
+	
+	public void _ERDiagramChanged(EOERDiagramCollection _erdiagrams, String _propertyName, Object _oldValue, Object _newValue) {
+		firePropertyChange(EOModel.ERDIAGRAMCOLLECTION + "." + _propertyName, _oldValue, _newValue);
+		firePropertyChange(EOModel.ERDIAGRAMCOLLECTION, null, _erdiagrams);
+		
+	}
+	
+	public EOERDiagramCollection addBlankERDiagramCollection(String name) {
+		EOERDiagramCollection erdiagrams = new EOERDiagramCollection(name);
+		erdiagrams._setModel(this);
+		return erdiagrams;
+	}
+	
+	public void _ClassDiagramChanged(EOClassDiagramCollection _classdiagrams, String _propertyName, Object _oldValue, Object _newValue) {
+		firePropertyChange(EOModel.CLASSDIAGRAMCOLLECTION + "." + _propertyName, _oldValue, _newValue);
+		firePropertyChange(EOModel.CLASSDIAGRAMCOLLECTION, null, _classdiagrams);
+		
+	}
+	
+	public EOClassDiagramCollection addBlankClassDiagramCollection(String name) {
+		EOClassDiagramCollection classdiagrams = new EOClassDiagramCollection(name);
+		classdiagrams._setModel(this);
+		return classdiagrams;
+	}
+	
+	// ********************************************************************************
 
 	protected void _storedProcedureChanged(EOStoredProcedure _storedProcedure, String _propertyName, Object _oldValue, Object _newValue) {
 		firePropertyChange(EOModel.STORED_PROCEDURE + "." + _propertyName, _oldValue, _newValue);
@@ -273,7 +337,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 
 		return entity;
 	}
-
+	
 	public boolean isEditing() {
 		EOModelGroup modelGroup = getModelGroup();
 		boolean editing = (modelGroup == null || getName().equals(modelGroup.getEditingModelName()));
@@ -325,7 +389,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			clearCachedPrototypes(null, false);
 		}
 	}
-
+	
 	public EODatabaseConfig getDatabaseConfigNamed(String _name) {
 		EODatabaseConfig matchingDatabaseConfig = null;
 		Iterator<EODatabaseConfig> databaseConfigsIter = myDatabaseConfigs.iterator();
@@ -859,7 +923,7 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 			throw new IllegalArgumentException("Unknown version format:" + version);
 		}
 		loadUserInfo(modelMap);
-
+		
 		Set<Map> entities = modelMap.getSet("entities");
 		if (entities != null) {
 			for (Map entitiesMap : entities) {
@@ -876,6 +940,27 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 					if (entity.getName() == null) {
 						_failures.add(new EOModelVerificationFailure(this, this, "The entity file " + entityURL + " defines an entity with no name.", false));
 					}
+					
+					// SAVAS hier werden alle diagramme anhand vom entity erstellt.
+					if (entity._getEntityMap() != null) {
+						List erds = null;
+						List classdiagrams = null;
+						if (entity._getEntityMap().get("ERDiagrams") instanceof List) {
+							erds = entity._getEntityMap().getList("ERDiagrams");
+						}
+						if (entity._getEntityMap().get("ClassDiagrams") instanceof List) {
+							classdiagrams = entity._getEntityMap().getList("ClassDiagrams");
+						}
+						
+						if (erds != null && myERDiagramCollection != null) {
+							myERDiagramCollection.loadDiagramFromEntity(entity, erds);
+						}
+						
+						if (classdiagrams != null && myClassDiagramCollection != null) {
+							myClassDiagramCollection.loadDiagramFromEntity(entity, classdiagrams);
+						}
+					}
+					
 					addEntity(entity, true, false, _failures);
 				} else {
 					_failures.add(new EOModelVerificationFailure(this, this, "The entity file " + entityURL + " was missing.", false));
@@ -1193,6 +1278,19 @@ public class EOModel extends UserInfoableEOModelObject<EOModelGroup> implements 
 					String storedProcedureName = storedProcedure.getName();
 					File storedProcedureFile = new File(modelFolder, storedProcedureName + ".storedProcedure");
 					storedProcedure.saveToFile(storedProcedureFile);
+				}
+			}
+			
+			// SAVAS hier werden DiagramColelections gesaved
+			if (myERDiagramCollection != null) {
+				if (myERDiagramCollection.isDiagramCollectionDirty()) {
+					myERDiagramCollection.saveToFile(modelFolder);
+				}
+			}
+			
+			if (myClassDiagramCollection != null) {
+				if (myClassDiagramCollection.isDiagramCollectionDirty()) {
+					myClassDiagramCollection.saveToFile(modelFolder);
 				}
 			}
 	

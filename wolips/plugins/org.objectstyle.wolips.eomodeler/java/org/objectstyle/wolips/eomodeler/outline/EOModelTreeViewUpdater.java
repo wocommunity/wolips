@@ -234,7 +234,7 @@ public class EOModelTreeViewUpdater {
 					Boolean saving = (Boolean)event.getNewValue();
 					_shouldRefresh = !saving.booleanValue();
 					refresh();
-				}
+				} 
 				else if (EOModel.ENTITIES.equals(changedPropertyName) || EOModel.STORED_PROCEDURES.equals(changedPropertyName) || EOModel.DATABASE_CONFIGS.equals(changedPropertyName) || EOModel.DATABASE_CONFIG.equals(changedPropertyName)) {
 					// getTreeViewer().refresh(true);
 					refresh();
@@ -243,6 +243,11 @@ public class EOModelTreeViewUpdater {
 					refresh();
 				} else if (EOModel.DIRTY.equals(changedPropertyName)) {
 					refresh();
+				} 
+				// SAVAS hier wird der Outline refreshed.
+				else if (EOModel.ERDIAGRAMCOLLECTION.equals(changedPropertyName) || EOModel.CLASSDIAGRAMCOLLECTION.equals(changedPropertyName)) { 
+					refresh();
+					refreshPropertyChangeListeners();
 				}
 			}
 		}

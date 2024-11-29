@@ -9,6 +9,9 @@
 			<unit id="org.eclipse.jdt.feature.group" version="0.0.0"/>
 			<unit id="org.eclipse.equinox.p2.discovery.feature.feature.group" version="0.0.0"/>
 			<unit id="org.eclipse.equinox.executable.feature.group" version="0.0.0"/>
+			<unit id="org.eclipse.gef.common.sdk.feature.group" version="0.0.0"/>
+			<unit id="org.eclipse.gef.fx.sdk.feature.group" version="0.0.0"/>
+			<unit id="org.eclipse.gef.mvc.sdk.feature.group" version="0.0.0"/>
 		</location>
 		<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 			<repository location="https://update.zeroturnaround.com/update-site/"/>

@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Visuals
+Bundle-SymbolicName: ch.rucotec.gef.visuals
+Bundle-Version: 5.0.0.qualifier
+Automatic-Module-Name: ch.rucotec.gef.visuals
+Bundle-RequiredExecutionEnvironment: JavaSE-21
+Import-Package: com.google.common.collect
+Require-Bundle: org.eclipse.gef.geometry,
+ org.eclipse.gef.fx,
+ org.eclipse.gef.common,
+ org.eclipse.gef.geometry.convert.fx,
+ org.objectstyle.wolips.eomodeler.core
+Export-Package: ch.rucotec.gef.diagram.visuals.connection,
+ ch.rucotec.gef.diagram.visuals.node

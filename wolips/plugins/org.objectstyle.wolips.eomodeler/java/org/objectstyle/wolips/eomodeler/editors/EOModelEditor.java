@@ -135,6 +135,14 @@ import org.objectstyle.wolips.eomodeler.preferences.PreferenceConstants;
 import org.objectstyle.wolips.eomodeler.utils.AbstractAddRemoveChangeRefresher;
 import org.objectstyle.wolips.eomodeler.utils.EclipseFileUtils;
 
+import ch.rucotec.wolips.eomodeler.GEFTabFactory;
+import ch.rucotec.wolips.eomodeler.IGEFDiagramTab;
+import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.AbstractDiagramCollection;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagram;
+import ch.rucotec.wolips.eomodeler.core.model.EOERDiagramCollection;
+import ch.rucotec.wolips.eomodeler.editors.diagrams.EODiagramsTableEditor;
+
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener, ITabbedPropertySheetPageContributor, ISelectionProvider, IEOModelEditor {
 	protected class ArgumentDeletedRefresher extends AbstractAddRemoveChangeRefresher<EOArgument> {
 		public ArgumentDeletedRefresher() {
@@ -348,12 +356,43 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
 		}
 	}
+	
+	// SAVAS sobald ein neues Diagram erstellt oder geloescht wird, wird die selektion im Outline Tab angepasst.
+	protected class DiagramDeletedRefresher extends AbstractAddRemoveChangeRefresher<EOERDiagram> {
+		public DiagramDeletedRefresher() {
+			super("DiagramDeleted");
+		}
+
+		public void changeSelection(final ISelection selection) {
+			EOModelEditor.this.setSelection(selection);
+		}
+
+		@Override
+		protected void objectsAdded(final List<EOERDiagram> _addedObjects) {
+			// DO NOTHING
+		}
+
+		@Override
+		protected void objectsRemoved(final List<EOERDiagram> _removedObjects) {
+			EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getMySelectedDiagramCollection()));
+			EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EODIAGRAMCOLLECTION_PAGE));
+		}
+	}
+	
+	protected class EODiagramSelectionChangedListener implements ISelectionChangedListener {
+		public void selectionChanged(final SelectionChangedEvent _event) {
+			IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
+			setSelection(selection);
+		}
+	}
 
 	public static final String EOMODEL_EDITOR_ID = "org.objectstyle.wolips.eomodeler.editors.EOModelEditor";
 
 	public static final String EOMODEL_PAGE = "eomodel";
 
 	public static final String EOENTITY_PAGE = "eoentity";
+	
+	public static final String EOERD_PAGE = "eoerd";
 
 	public static final String EOSTOREDPROCEDURE_PAGE = "eostoredprocedure";
 
@@ -404,7 +443,20 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 	private final Object myCreatePagesLock = new Object();
 
 	private int _failuresHashCode;
-
+	
+	// SAVAS variablen
+	public static final String EODIAGRAMCOLLECTION_PAGE = "eodiagramcollection";
+	public static final String EODIAGRAM_PAGE = "eodiagram";
+	
+	private IGEFDiagramTab diagramTab;
+	private EODiagramsTableEditor myDiagramCollectionEditor;
+	private AbstractDiagramCollection mySelectedDiagramCollection;
+	private final DiagramDeletedRefresher myDiagramListener;
+	private AbstractDiagram mySelectedDiagram;
+	private boolean myDiagramCollectionPageVisible;
+	private boolean myDiagramPageVisible;
+	
+	
 	public EOModelEditor() {
 		mySelectionChangedListeners = new ListenerList();
 		myDirtyModelListener = new DirtyModelListener();
@@ -415,6 +467,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		myDatabaseConfigsChangeListener = new DatabaseConfigsChangeRefresher();
 		myAttributeAndRelationshipListener = new AttributeAndRelationshipDeletedRefresher();
 		myArgumentListener = new ArgumentDeletedRefresher();
+		// SAVAS DiagramListener
+		myDiagramListener = new DiagramDeletedRefresher();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
 	}
 
@@ -460,6 +514,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				myModel.removePropertyChangeListener(EOModel.ENTITY + "." + EOEntity.FETCH_SPECIFICATIONS, myFetchSpecsChangeListener);
 				myEntityIndexesChangeListener.stop();
 				myModel.removePropertyChangeListener(EOModel.ENTITY + "." + EOEntity.ENTITY_INDEXES, myEntityIndexesChangeListener);
+				myDiagramListener.stop();
+				myModel.removePropertyChangeListener(AbstractDiagramCollection.DIAGRAMS, myDiagramListener);
 			}
 
 			String openingEntityName = null;
@@ -513,6 +569,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				model.addPropertyChangeListener(EOModel.ENTITY + "." + EOEntity.FETCH_SPECIFICATIONS, myFetchSpecsChangeListener);
 				myEntityIndexesChangeListener.start();
 				model.addPropertyChangeListener(EOModel.ENTITY + "." + EOEntity.ENTITY_INDEXES, myEntityIndexesChangeListener);
+				myDiagramListener.start();
+				model.addPropertyChangeListener(AbstractDiagramCollection.DIAGRAMS, myDiagramListener);
 				// setInput(new EOModelEditorInput(fileEditorInput));
 				// init(getEditorSite(), new
 				// EOModelEditorInput(fileEditorInput));
@@ -523,7 +581,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 						EOModelEditor.this.editorDirtyStateChanged();
 					}
 				});
-
 				synchronized (myCreatePagesLock) {
 					myModel = model;
 					if (myEntitiesTableEditor != null) {
@@ -595,6 +652,17 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 				myStoredProcedureEditor = new EOArgumentsTableEditor();
 				EOArgumentSelectionChangedListener argumentSelectionChangedListener = new EOArgumentSelectionChangedListener();
 				myStoredProcedureEditor.addSelectionChangedListener(argumentSelectionChangedListener);
+				
+				// SAVAS: Hier wird das DiagramTab configuriert.
+				diagramTab = GEFTabFactory.getDiagramTab();
+				
+				// das ist nicht notwendig aber wenn ich es mache werden diagramme schneller generiert.
+				addPage((IEditorPart) diagramTab, getEditorInput());
+				removePage(getPageNum(EOModelEditor.EODIAGRAM_PAGE));
+
+				myDiagramCollectionEditor = new EODiagramsTableEditor();
+				EODiagramSelectionChangedListener diagramSelectionChangedListener = new EODiagramSelectionChangedListener();
+				myDiagramCollectionEditor.addSelectionChangedListener(diagramSelectionChangedListener);
 
 			} catch (PartInitException e) {
 				ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
@@ -611,6 +679,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 		myDatabaseConfigsChangeListener.stop();
 		myFetchSpecsChangeListener.stop();
 		myEntityIndexesChangeListener.stop();
+		myDiagramListener.stop();
 
 		super.dispose();
 
@@ -809,7 +878,13 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			pageNum = getPageNum(myEntitiesTableEditor);
 		} else if (_pageType == EOModelEditor.EOSTOREDPROCEDURE_PAGE) {
 			pageNum = getPageNum(myStoredProcedureEditor);
-		} else {
+		} 
+		// SAVAS PageNumber
+		else if(_pageType == EOModelEditor.EODIAGRAMCOLLECTION_PAGE) {
+			pageNum = getPageNum(myDiagramCollectionEditor);
+		} else if (_pageType == EOModelEditor.EODIAGRAM_PAGE) {
+			pageNum = getPageNum((IEditorPart) diagramTab);
+		}else {
 			pageNum = -1;
 		}
 		return pageNum;
@@ -1180,7 +1255,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 					} else if (selectedObject instanceof EOEntity) {
 						EOEntity selectedEntity = (EOEntity) selectedObject;
 						setSelectedEntity(selectedEntity);
-						// setActivePage(EOModelEditor.EOENTITY_PAGE);
+//						 setActivePage(EOModelEditor.EOENTITY_PAGE);
 					} else if (selectedObject instanceof EOAttribute) {
 						EOAttribute selectedAttribute = (EOAttribute) selectedObject;
 						setSelectedEntity(selectedAttribute.getEntity());
@@ -1216,10 +1291,32 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 						setSelectedEntity(null);
 						setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
 					}
+					// SAVAS selection handle
+					if (selectedObject instanceof AbstractDiagram) {
+						AbstractDiagram selectedDiagram = (AbstractDiagram) selectedObject;
+						setSelectedDiagram(selectedDiagram);
+						setSelectedEntity(null);
+						setSelectedStoredProcedure(null);
+						setActivePage(getPageNum(EOModelEditor.EODIAGRAM_PAGE));
+					} else {
+						setSelectedDiagram(null);
+					}
+					
+					if (selectedObject instanceof AbstractDiagramCollection) {
+						AbstractDiagramCollection selectedDiagramCollection = (AbstractDiagramCollection) selectedObject;
+						setSelectedDiagramCollection(selectedDiagramCollection);
+						setActivePage(getPageNum(EOModelEditor.EODIAGRAMCOLLECTION_PAGE));
+					} else {
+						setSelectedDiagramCollection(null);
+					}
+					
 					if (_updateOutline) {
 						getContentOutlinePage().setSelection(selection);
 					}
 					fireSelectionChanged(selection);
+					
+					updateEntitiesTab(selectedObject);
+					updatePartName();
 				}
 			}
 		} finally {
@@ -1329,5 +1426,118 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 			partName = Messages.getString("EOModelEditor.partName");
 		}
 		setPartName(partName);
+	}
+	
+	// SAVAS Hier wird das gewählte Model dem EOmodeller und meinem Tab weitergegeben.
+	private void updateEntitiesTab(Object selectedObject) {
+		
+		if (selectedObject instanceof EOModel) {
+			myModel = (EOModel) selectedObject;
+		} else if (selectedObject instanceof EOEntity) {
+			myModel = ((EOEntity) selectedObject)._getModelParent();
+		} else if (selectedObject instanceof EOAttribute) {
+			myModel = ((EOAttribute) selectedObject).getEntity()._getModelParent();
+		} else if (selectedObject instanceof EORelationship) {
+			myModel = ((EORelationship) selectedObject).getEntity()._getModelParent();
+		} else if (selectedObject instanceof EOFetchSpecification) {
+			myModel = ((EOFetchSpecification) selectedObject).getEntity()._getModelParent();
+		} else if (selectedObject instanceof AbstractEOAttributePath) {
+			myModel = ((AbstractEOAttributePath) selectedObject).getChildIEOAttribute().getEntity()._getModelParent();
+		} else if (selectedObject instanceof EODatabaseConfig) {
+			myModel = ((EODatabaseConfig) selectedObject)._getModelParent();
+		} else if (selectedObject instanceof EOERDiagramCollection) {
+			myModel = ((EOERDiagramCollection) selectedObject)._getModelParent();
+		} else if (selectedObject instanceof AbstractDiagram) {
+			myModel = ((AbstractDiagram) selectedObject).getDiagramCollection().getModel();
+			((AbstractDiagram) selectedObject).setEOModelEditor(this);
+		}
+		
+		// Erneuert die Entitäten Tabele (wird gebraucht, wenn man mehrere Models hat)
+		if (myEntitiesTableEditor != null) { 
+			myEntitiesTableEditor.setModel(myModel);
+		}
+	}
+	
+	public void setSelectedDiagram(final AbstractDiagram _selectedDiagram) {
+		if (!ComparisonUtils.equals(mySelectedDiagram, _selectedDiagram)) {
+			mySelectedDiagram = _selectedDiagram;
+			if (_selectedDiagram == null) {
+				setDiagramPageVisible(false);
+			} else {
+				setDiagramPageVisible(true);
+			}
+			updatePartName();
+		}
+		if (_selectedDiagram != null) {
+			setSelectedEntity(null);
+		}
+	}
+	
+	protected void setDiagramPageVisible(final boolean _setDiagramPageVisible) {
+		try {
+			if (_setDiagramPageVisible) {
+				if (!myDiagramPageVisible) {
+					addPage((IEditorPart) diagramTab, getEditorInput());
+				}
+				// Hier wird festgelegt welches Diagramm angezeigt werden soll.
+				diagramTab.setSelectedDiagram(mySelectedDiagram);
+				String diagramName = mySelectedDiagram.getName();
+				if (diagramName == null) {
+					diagramName = "?";
+				}
+				setPageText(getPageNum(EOModelEditor.EODIAGRAM_PAGE), diagramName);
+			} else if (myDiagramPageVisible) {
+				removePage(getPageNum(EOModelEditor.EODIAGRAM_PAGE));
+			}
+			myDiagramPageVisible = _setDiagramPageVisible;
+		} catch (PartInitException e) {
+			ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
+		}
+	}
+	
+	public void setSelectedDiagramCollection(final AbstractDiagramCollection _selectedDiagramCollection) {
+		if (!ComparisonUtils.equals(mySelectedDiagramCollection, _selectedDiagramCollection)) {
+			if (mySelectedDiagramCollection != null) {
+				mySelectedDiagramCollection.removePropertyChangeListener(AbstractDiagramCollection.DIAGRAMS, myDiagramListener);
+			}
+			mySelectedDiagramCollection = _selectedDiagramCollection;
+			if (mySelectedDiagramCollection != null) {
+				mySelectedDiagramCollection.addPropertyChangeListener(AbstractDiagramCollection.DIAGRAMS, myDiagramListener);
+			}
+			if (_selectedDiagramCollection == null) {
+				setDiagramCollectionPageVisible(false);
+			} else {
+				setDiagramCollectionPageVisible(true);
+			}
+			myDiagramCollectionEditor.setMyDiagramCollection(_selectedDiagramCollection);
+			updatePartName();
+		}
+		if (_selectedDiagramCollection != null) {
+			setSelectedEntity(null);
+		}
+	}
+	
+	protected void setDiagramCollectionPageVisible(final boolean _setDiagramCollectionPageVisible) {
+		try {
+			if (_setDiagramCollectionPageVisible) {
+				if (!myDiagramCollectionPageVisible) {
+					addPage(myDiagramCollectionEditor, getEditorInput());
+				}
+				String diagramCollectionName = mySelectedDiagramCollection.getName();
+				if (diagramCollectionName == null) {
+					diagramCollectionName = "?";
+				}
+				setPageText(getPageNum(EOModelEditor.EODIAGRAMCOLLECTION_PAGE), diagramCollectionName);
+			} else if (myDiagramCollectionPageVisible) {
+				removePage(getPageNum(EOModelEditor.EODIAGRAMCOLLECTION_PAGE));
+			}
+			myDiagramCollectionPageVisible = _setDiagramCollectionPageVisible;
+		} catch (PartInitException e) {
+			ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
+		}
+	}
+
+	public AbstractDiagramCollection getMySelectedDiagramCollection() {
+		return mySelectedDiagramCollection;
 	}
 }
