@@ -11,6 +11,10 @@
             library="lib/woproject-ant-tasks.jar"
             eclipseRuntime="false">
       </extraClasspathEntry>
+      <extraClasspathEntry
+            library="lib/woenvironment.jar"
+            eclipseRuntime="false">
+      </extraClasspathEntry>
    </extension>
    <extension
          point="org.eclipse.ant.core.antTasks">
