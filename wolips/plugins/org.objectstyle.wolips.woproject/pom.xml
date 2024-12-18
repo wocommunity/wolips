@@ -10,7 +10,55 @@
 	</parent>
 	<packaging>eclipse-plugin</packaging>
 	<artifactId>org.objectstyle.wolips.woproject</artifactId>
+	<dependencies>
+		<dependency>
+			<groupId>io.github.wocommunity</groupId>
+			<artifactId>woenvironment</artifactId>
+		</dependency>
+	</dependencies>
 	<build>
 		<sourceDirectory>java</sourceDirectory>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+						<phase>clean</phase>
+						<configuration>
+							<filesets>
+								<fileset>
+									<directory>lib</directory>
+									<includes>
+										<include>*.jar</include>
+									</includes>
+								</fileset>
+							</filesets>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>initialize</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.basedir}/lib/</outputDirectory>
+							<stripVersion>true</stripVersion>
+							<excludeTransitive>true</excludeTransitive>
+							<includeGroupIds>io.github.wocommunity</includeGroupIds>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
 </project>
