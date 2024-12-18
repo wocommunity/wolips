@@ -68,9 +68,6 @@
 		<!--groovy-->
 		<module>scripting/plugins/org.objectstyle.wolips.groovy.ui</module>
 		<module>scripting/features/org.objectstyle.wolips.groovy.feature</module>
-		<!--jrebel-->
-		<module>jrebel/plugins/org.objectstyle.wolips.jrebel</module>
-		<module>jrebel/features/org.objectstyle.wolips.jrebel.feature</module>
 	</modules>
 
 	<build>
