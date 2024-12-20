@@ -65,9 +65,6 @@
 		<module>core/plugins/org.objectstyle.wolips.woproject.ant</module>
 		<module>core/plugins/org.objectstyle.wolips.workbenchutilities</module>
 		<module>core/features/org.objectstyle.wolips.feature</module>
-		<!--groovy-->
-		<module>scripting/plugins/org.objectstyle.wolips.groovy.ui</module>
-		<module>scripting/features/org.objectstyle.wolips.groovy.feature</module>
 	</modules>
 
 	<build>
