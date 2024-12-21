@@ -2,7 +2,7 @@ name: Deploy p2 to pages
 
 on:
   push:
-    branches: [ "wolips5" ]
+    branches: [ "master" ]
   workflow_dispatch:
 
 jobs:
