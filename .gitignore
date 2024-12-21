@@ -1,0 +1,9 @@
+bin/
+temp/
+.DS_Store
+target/
+.settings/
+.classpath
+woenvironment.jar
+woproject-ant-tasks.jar
+.tycho-consumer-pom.xml
