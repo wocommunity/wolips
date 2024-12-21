@@ -2,13 +2,7 @@
 
 # WOLips
 
-With the deprecation of the Apple-supplied WebObjects development tools in the WO5.4 timeframe, WOProject/WOLips has become the recommended toolset for WebObjects development and is the toolset that Apple itself uses internally.
-
-Almost all of the functionality provided by the Apple toolset (XCode, EOModeler, WOBuilder, etc) has been duplicated, greatly expanded upon or re-thought from the ground up in Eclipse and WOLips. WOProject/WOLips is the net effect of thousands of hours of freely-given and paid-for labor by many talented developers, and it is constantly improving.
-
-## WOLips Project Home
-
-The home page for the WOLips project is <a href="https://wiki.wocommunity.org/xwiki/bin/view/WOL/">https://wiki.wocommunity.org/xwiki/bin/view/WOL/</a>
+WOLips is the Eclipse feature for developing WebObjects applications.
 
 
 ## Installing WOLips
@@ -34,13 +28,13 @@ Installing prebuilt versions of WOLips in existing Eclipse installations can be 
 1. Checkout source from Github:
 
 	```bash
-	user$ git clone https://github.com/wocommunity/wolips.git wolips5
+	git clone https://github.com/wocommunity/wolips.git
 	```
 
 2. Build with maven:
 	
 	```bash
-	user$ cd wolips5 && mvn clean package
+	cd wolips && mvn clean package
 	```
 
 3. There is no step 3!
