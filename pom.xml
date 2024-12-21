@@ -49,7 +49,7 @@
 		<module>wolips.product</module>
 		<!-- 
 		-->
-		<!--core-->
+		<!--plugins-->
 		<module>wolips/plugins/org.objectstyle.wolips</module>
 		<module>wolips/plugins/org.objectstyle.wolips.ant</module>
 		<module>wolips/plugins/org.objectstyle.wolips.apieditor</module>
@@ -96,6 +96,7 @@
 		<module>wolips/plugins/org.objectstyle.wolips.woproject</module>
 		<module>wolips/plugins/org.objectstyle.wolips.woproject.ant</module>
 		<module>wolips/plugins/org.objectstyle.wolips.workbenchutilities</module>
+		<!--features-->
 		<module>wolips/features/org.objectstyle.wolips.feature</module>
 	</modules>
 
