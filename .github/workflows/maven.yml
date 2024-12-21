@@ -24,7 +24,7 @@ jobs:
       id: deployment
       uses: actions/upload-pages-artifact@v3
       with:
-        path: wolips/wolips.p2/target/
+        path: wolips.p2/target/
 
   # Deployment job
   deploy:
