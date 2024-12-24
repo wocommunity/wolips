@@ -55,6 +55,25 @@
 					<skip>true</skip>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-shasums</id>
+						<phase>package</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<workingDirectory>${project.build.directory}/products/</workingDirectory>
+							<outputFile>${project.build.directory}/products/sha512sums.txt</outputFile>
+							<executable>sh</executable>
+							<commandlineArgs>-c 'sha512sum -b wolips.product-*'</commandlineArgs>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>
