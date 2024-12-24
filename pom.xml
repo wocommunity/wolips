@@ -42,13 +42,19 @@
 		<url>https://github.com/wocommunity/wolips/</url>
 	</scm>
 
+	<profiles>
+		<profile>
+			<id>release</id>
+			<modules>
+				<module>wolips.product</module>
+			</modules>
+		</profile>
+	</profiles>
+
 	<modules>
 		<!--tycho stuff-->
 		<module>wolips.p2</module>
 		<module>wolips.targetplatform</module>
-		<module>wolips.product</module>
-		<!-- 
-		-->
 		<!--plugins-->
 		<module>wolips/plugins/org.objectstyle.wolips</module>
 		<module>wolips/plugins/org.objectstyle.wolips.ant</module>
