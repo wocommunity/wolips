@@ -10,6 +10,8 @@
 
 	<properties>
 		<maven.compiler.release>21</maven.compiler.release>
+		<maven.install.skip>true</maven.install.skip>
+		<maven.deploy.skip>true</maven.deploy.skip>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<tycho.version>4.0.10</tycho.version>
 		<sonar.exclusions>**/src-gen/**</sonar.exclusions>
@@ -35,6 +37,14 @@
 			<layout>p2</layout>
 		</repository>
 	</repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub Packages</name>
+			<url>https://maven.pkg.github.com/wocommunity/wolips</url>
+		</repository>
+	</distributionManagement>
 
 	<scm>
 		<connection>scm:git:https://github.com/wocommunity/wolips.git</connection>
@@ -88,7 +98,8 @@
 		<module>wolips/plugins/org.objectstyle.wolips.targetbuilder</module>
 		<module>wolips/plugins/org.objectstyle.wolips.team</module>
 		<module>wolips/plugins/org.objectstyle.wolips.templateengine</module>
-		<module>wolips/plugins/org.objectstyle.wolips.thirdparty.commonscollections</module>
+		<module>
+			wolips/plugins/org.objectstyle.wolips.thirdparty.commonscollections</module>
 		<module>wolips/plugins/org.objectstyle.wolips.thirdparty.log4j</module>
 		<module>wolips/plugins/org.objectstyle.wolips.thirdparty.velocity</module>
 		<module>wolips/plugins/org.objectstyle.wolips.tkhtmleditor</module>

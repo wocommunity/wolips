@@ -51,9 +51,28 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
+				<executions>
+					<execution>
+						<id>deploy-products</id>
+						<goals>
+							<goal>deploy-file</goal>
+						</goals>
+						<phase>deploy</phase>
+						<configuration>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>${project.artifactId}</artifactId>
+							<version>${project.version}</version>
+							<generatePom>true</generatePom>
+							<packaging>sha512sums</packaging>
+							<url>https://maven.pkg.github.com/wocommunity/wolips</url>
+							<repositoryId>github</repositoryId>
+							<file>${project.build.directory}/products/sha512sums.txt</file>
+							<files>${project.build.directory}/products/${project.artifactId}-linux.gtk.x86_64.tar.gz,${project.build.directory}/products/${project.artifactId}-linux.gtk.aarch64.tar.gz,${project.build.directory}/products/${project.artifactId}-linux.gtk.riscv64.tar.gz,${project.build.directory}/products/${project.artifactId}-macosx.cocoa.x86_64.tar.gz,${project.build.directory}/products/${project.artifactId}-macosx.cocoa.aarch64.tar.gz,${project.build.directory}/products/${project.artifactId}-win32.win32.x86_64.zip,${project.build.directory}/products/${project.artifactId}-win32.win32.aarch64.zip</files>
+							<types>tgz,tgz,tgz,tgz,tgz,zip,zip</types>
+							<classifiers>linux.gtk.x86_64,linux.gtk.aarch64,linux.gtk.riscv64,macosx.cocoa.x86_64,macosx.cocoa.aarch64,win32.win32.x86_64,win32.win32.aarch64</classifiers>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -69,7 +88,7 @@
 							<workingDirectory>${project.build.directory}/products/</workingDirectory>
 							<outputFile>${project.build.directory}/products/sha512sums.txt</outputFile>
 							<executable>sh</executable>
-							<commandlineArgs>-c 'sha512sum -b wolips.product-*'</commandlineArgs>
+							<commandlineArgs>-c 'sha512sum -b ${project.artifactId}-*'</commandlineArgs>
 						</configuration>
 					</execution>
 				</executions>
