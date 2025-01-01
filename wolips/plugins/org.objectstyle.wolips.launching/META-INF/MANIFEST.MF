@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.launching
 Bundle-Name: WOLips Launching Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.launching; singleton:=true
-Bundle-Version: 5.0.0
+Bundle-Version: 5.0.1.qualifier
 Bundle-Activator: org.objectstyle.wolips.launching.LaunchingPlugin
 Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.debug.ui,

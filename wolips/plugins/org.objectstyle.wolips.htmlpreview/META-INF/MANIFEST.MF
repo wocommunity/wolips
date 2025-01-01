@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.htmlpreview
 Bundle-Name: WOLips Html Preview Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.htmlpreview;singleton:=true
-Bundle-Version: 5.0.0
+Bundle-Version: 5.0.1.qualifier
 Bundle-Activator: org.objectstyle.wolips.htmlpreview.HtmlPreviewPlugin
 Bundle-Vendor: wocommunity.org
 Require-Bundle: org.objectstyle.wolips.components,
