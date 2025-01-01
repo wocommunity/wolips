@@ -48,7 +48,7 @@
 
 	<scm>
 		<connection>scm:git:https://github.com/${github.repository}.git</connection>
-		<developerConnection>scm:git:git@github.com:${github.repository}.git</developerConnection>
+		<developerConnection>scm:git:https://github.com/${github.repository}.git</developerConnection>
 		<url>https://github.com/${github.repository}</url>
 	</scm>
 
