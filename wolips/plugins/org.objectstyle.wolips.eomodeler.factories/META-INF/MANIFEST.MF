@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.eomodeler.factories
 Bundle-Name: Eomodeler Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.eomodeler.factories;singleton:=true
-Bundle-Version: 5.0.0.qualifier
+Bundle-Version: 5.0.0
 Bundle-Activator: org.objectstyle.wolips.eomodeler.factories.Activator
 Require-Bundle: org.objectstyle.wolips.eomodeler.core,
  org.objectstyle.wolips.baseforuiplugins,

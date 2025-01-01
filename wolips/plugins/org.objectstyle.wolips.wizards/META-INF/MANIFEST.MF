@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.wizards
 Bundle-Name: WOLips Wizards Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.wizards; singleton:=true
-Bundle-Version: 5.0.0.qualifier
+Bundle-Version: 5.0.0
 Bundle-Activator: org.objectstyle.wolips.wizards.WizardsPlugin
 Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.jdt.ui,

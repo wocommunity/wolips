@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.woproject
 Bundle-Name: WOLips WOProject Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.woproject; singleton:=true
-Bundle-Version: 5.0.0.qualifier
+Bundle-Version: 5.0.0
 Bundle-ClassPath: lib/woenvironment.jar,
  .
 Bundle-Vendor: wocommunity.org

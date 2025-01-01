@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.thirdparty.commonscollections
 Bundle-Name: WOLips Third Party Commons Collections Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.thirdparty.commonscollections;singleton:=true
-Bundle-Version: 5.0.0.qualifier
+Bundle-Version: 5.0.0
 Bundle-Activator: org.objectstyle.wolips.thirdparty.commonscollections.Activator
 Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.5.0",

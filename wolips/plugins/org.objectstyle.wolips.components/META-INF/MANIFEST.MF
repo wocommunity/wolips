@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.components
 Bundle-Name: WOLips Components Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.components; singleton:=true
-Bundle-Version: 5.0.0.qualifier
+Bundle-Version: 5.0.0
 Bundle-Activator: org.objectstyle.wolips.components.ComponentsPlugin
 Bundle-Vendor: wocommunity.org
 Require-Bundle: org.objectstyle.wolips.locate,
