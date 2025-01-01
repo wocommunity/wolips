@@ -39,13 +39,11 @@ jobs:
     - name: Checkin changes
       run: ./mvnw scm:checkin -Dmessage='New release version' -Dgithub.repository=$GITHUB_REPO
       env:
-        GITHUB_TOKEN: ${{ github.token }}
         GITHUB_REPO: ${{ github.repository }}
 
     - name: Create a tag
       run: ./mvnw build-helper:parse-version scm:tag -Dgithub.repository=$GITHUB_REPO -Dtag=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}
       env:
-        GITHUB_TOKEN: ${{ github.token }}
         GITHUB_REPO: ${{ github.repository }}
 
     - name: Publish to GitHub Packages Apache Maven
@@ -60,7 +58,6 @@ jobs:
     - name: Checkin next snapshot
       run: ./mvnw scm:checkin -Dmessage='New snapshot version' -Dgithub.repository=$GITHUB_REPO
       env:
-        GITHUB_TOKEN: ${{ github.token }}
         GITHUB_REPO: ${{ github.repository }}
 
     - name: Merge Fast Forward
