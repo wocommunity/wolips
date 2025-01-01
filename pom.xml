@@ -42,14 +42,14 @@
 		<repository>
 			<id>github</id>
 			<name>GitHub Packages</name>
-			<url>https://maven.pkg.github.com/wocommunity/wolips</url>
+			<url>https://maven.pkg.github.com/${github.repository}</url>
 		</repository>
 	</distributionManagement>
 
 	<scm>
-		<connection>scm:git:https://github.com/wocommunity/wolips.git</connection>
-		<developerConnection>scm:git:git@github.com:wocommunity/wolips.git</developerConnection>
-		<url>https://github.com/wocommunity/wolips/</url>
+		<connection>scm:git:https://github.com/${github.repository}.git</connection>
+		<developerConnection>scm:git:git@github.com:${github.repository}.git</developerConnection>
+		<url>https://github.com/${github.repository}</url>
 	</scm>
 
 	<profiles>

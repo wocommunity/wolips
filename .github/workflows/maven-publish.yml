@@ -33,7 +33,39 @@ jobs:
         git config user.name "Github Actions"
         git config user.email "actions@github.com"
 
+    - name: Set release version
+      run: ./mvnw build-helper:parse-version org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}
+
+    - name: Checkin changes
+      run: ./mvnw scm:checkin -Dmessage='New release version' -Dgithub.repository=$GITHUB_REPO
+      env:
+        GITHUB_REPO: ${{ github.repository }}
+
+    - name: Create a tag
+      run: ./mvnw build-helper:parse-version scm:tag -Dgithub.repository=$GITHUB_REPO -Dtag=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.incrementalVersion}
+      env:
+        GITHUB_REPO: ${{ github.repository }}
+
     - name: Publish to GitHub Packages Apache Maven
-      run: ./mvnw -B -s $GITHUB_WORKSPACE/settings.xml -DskipTests=true -P release deploy
+      run: ./mvnw -B -s $GITHUB_WORKSPACE/settings.xml -Dgithub.repository=$GITHUB_REPO -DskipTests=true deploy
       env:
         GITHUB_TOKEN: ${{ github.token }}
+        GITHUB_REPO: ${{ github.repository }}
+
+    - name: Set next snapshot version
+      run: ./mvnw build-helper:parse-version org.eclipse.tycho:tycho-versions-plugin:set-version -DnewVersion=\${parsedVersion.majorVersion}.\${parsedVersion.minorVersion}.\${parsedVersion.nextIncrementalVersion}-SNAPSHOT
+
+    - name: Checkin next snapshot
+      run: ./mvnw scm:checkin -Dmessage='New snapshot version' -Dgithub.repository=$GITHUB_REPO
+      env:
+        GITHUB_REPO: ${{ github.repository }}
+
+    - name: Merge Fast Forward
+      uses: MaximeHeckel/github-action-merge-fast-forward@v1.1.0
+      with:
+        # Branch to merge
+          branchtomerge: release
+          # Branch that will be updated
+          branch: master
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
