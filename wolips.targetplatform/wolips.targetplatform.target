@@ -50,15 +50,5 @@
 			<repository location="https://spotbugs.github.io/eclipse/"/>
 			<unit id="com.github.spotbugs.plugin.eclipse.feature.group" version="4.8.6.r202406180231-6cf7b2c"/>
 		</location>
-		<location includeDependencyDepth="infinite" includeDependencyScopes="compile" includeSource="true" label="ph-css parser" missingManifest="generate" type="Maven">
-			<dependencies>
-				<dependency>
-					<groupId>com.helger</groupId>
-					<artifactId>ph-css</artifactId>
-					<version>7.0.3</version>
-					<type>jar</type>
-				</dependency>
-			</dependencies>
-		</location>
 	</locations>
 </target>
