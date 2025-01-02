@@ -10,12 +10,6 @@
 	</parent>
 	<packaging>eclipse-plugin</packaging>
 	<artifactId>org.objectstyle.wolips.tkhtmleditor</artifactId>
-	<dependencies>
-		<dependency>
-			<groupId>com.helger</groupId>
-			<artifactId>ph-css</artifactId>
-		</dependency>
-	</dependencies>
 	<build>
 		<sourceDirectory>java</sourceDirectory>
 		<resources>

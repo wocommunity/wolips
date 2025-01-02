@@ -9,6 +9,7 @@ import org.objectstyle.wolips.wodclipse.core.completion.WodParserCache;
 import com.helger.css.ECSSVersion;
 import com.helger.css.decl.CSSSelectorSimpleMember;
 import com.helger.css.decl.CascadingStyleSheet;
+import com.helger.css.decl.ICSSSelectorMember;
 import com.helger.css.reader.CSSReader;
 
 import jp.aonir.fuzzyxml.FuzzyXMLAttribute;
@@ -145,13 +146,19 @@ public class CSSAssistProcessor {
 	  CascadingStyleSheet styles = CSSReader.readFromString(css, ECSSVersion.LATEST);
 	  styles.getAllStyleRules().stream().forEach(stylerule ->{
 		  stylerule.getAllSelectors().forEach(sel ->{
-			  //FIXME add to _rules here
-			  sel.getAllMembers().stream().forEach(mem ->{
+			  //add to _rules here
+			  String currentTag = "*";
+			  ArrayList<String> currentClasses = _rules.computeIfAbsent(currentTag, k -> new ArrayList<>());
+			  for(ICSSSelectorMember mem: sel.getAllMembers()) {
 				  if(mem instanceof CSSSelectorSimpleMember m) {
 					  if(m.isElementName()) {
+						  currentTag = m.getValue();
+						  currentClasses = _rules.computeIfAbsent(currentTag, k -> new ArrayList<>());
+					  } else if(m.isClass()) {
+						  currentClasses.add(m.getValue().substring(1));
 					  }
 				  }
-			  });
+			  }
 		  });
 	  });
   }
