@@ -169,4 +169,8 @@ Bundle-ClassPath: lib/xercesImpl.jar,
  lib/js.jar,
  lib/JavaScriptExecutor.jar,
  lib/dtdparser121.jar,
+ lib/ph-css-7.0.3.jar,
+ lib/ph-commons-11.1.8.jar,
+ lib/slf4j-api-2.0.15.jar,
+ lib/jsr305-3.0.2.jar,
  .
