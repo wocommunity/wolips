@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.targetbuilder
 Bundle-Name: WOLips Targetbuilder Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.targetbuilder; singleton:=true
-Bundle-Version: 5.0.1
+Bundle-Version: 5.0.2.qualifier
 Bundle-Activator: org.objectstyle.wolips.target.TargetBuilderPlugin
 Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.jdt.core,

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.thirdparty.velocity
 Bundle-Name: WOLips Third Party Velocity Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.thirdparty.velocity;singleton:=true
-Bundle-Version: 5.0.1
+Bundle-Version: 5.0.2.qualifier
 Bundle-Activator: org.objectstyle.wolips.thirdparty.velocity.Activator
 Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.core.runtime,

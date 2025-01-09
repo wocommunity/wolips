@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Base For Plugins Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.baseforplugins
-Bundle-Version: 5.0.1
+Bundle-Version: 5.0.2.qualifier
 Bundle-Activator: org.objectstyle.wolips.baseforplugins.Activator
 Require-Bundle: org.eclipse.core.resources;bundle-version="3.6.0";visibility:=reexport,
  org.eclipse.core.runtime;bundle-version="3.6.0";visibility:=reexport,

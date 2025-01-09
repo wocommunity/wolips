@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.womodeler
 Bundle-Name: WOModeler
 Bundle-SymbolicName: org.objectstyle.wolips.womodeler;singleton:=true
-Bundle-Version: 5.0.1
+Bundle-Version: 5.0.2.qualifier
 Bundle-Activator: org.objectstyle.wolips.womodeler.Activator
 Require-Bundle: org.eclipse.ui.views.properties.tabbed,
  org.objectstyle.wolips.baseforuiplugins,

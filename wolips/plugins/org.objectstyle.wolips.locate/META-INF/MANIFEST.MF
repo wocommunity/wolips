@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.locate
 Bundle-Name: WOLips Locate Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.locate; singleton:=true
-Bundle-Version: 5.0.1
+Bundle-Version: 5.0.2.qualifier
 Bundle-Activator: org.objectstyle.wolips.locate.LocatePlugin
 Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.core.resources,
