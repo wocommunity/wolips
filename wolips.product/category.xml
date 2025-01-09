@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.objectstyle.wolips.feature_5.0.1.qualifier.jar" id="org.objectstyle.wolips.feature" version="5.0.1.qualifier"/>
+   <feature url="features/org.objectstyle.wolips.feature_5.0.1.jar" id="org.objectstyle.wolips.feature" version="5.0.1"/>
 </site>

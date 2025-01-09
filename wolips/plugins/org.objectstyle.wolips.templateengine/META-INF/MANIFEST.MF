@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.templateengine
 Bundle-Name: WOLips Templateengine Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.templateengine; singleton:=true
-Bundle-Version: 5.0.1.qualifier
+Bundle-Version: 5.0.1
 Bundle-Activator: org.objectstyle.wolips.templateengine.TemplateEnginePlugin
 Bundle-Vendor: wocommunity.org
 Require-Bundle: org.junit,

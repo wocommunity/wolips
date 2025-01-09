@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.editors
 Bundle-Name: WOLips Editors Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.editors; singleton:=true
-Bundle-Version: 5.0.1.qualifier
+Bundle-Version: 5.0.1
 Bundle-Activator: org.objectstyle.wolips.editors.EditorsPlugin
 Bundle-Vendor: wocommunity.org
 Require-Bundle: org.objectstyle.wolips.baseforuiplugins,

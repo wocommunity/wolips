@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.preferences
 Bundle-Name: WOLips Preferences Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.preferences; singleton:=true
-Bundle-Version: 5.0.1.qualifier
+Bundle-Version: 5.0.1
 Bundle-Activator: org.objectstyle.wolips.preferences.PreferencesPlugin
 Bundle-Vendor: wocommunity.org
 Require-Bundle: org.objectstyle.wolips.baseforuiplugins

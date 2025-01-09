@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.team
 Bundle-Name: WOLips Team Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.team; singleton:=true
-Bundle-Version: 5.0.1.qualifier
+Bundle-Version: 5.0.1
 Bundle-Activator: org.objectstyle.wolips.team.TeamPlugin
 Bundle-Vendor: wocommunity.org
 Bundle-ActivationPolicy: lazy

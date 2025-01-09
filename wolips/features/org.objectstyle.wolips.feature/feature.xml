@@ -2,7 +2,7 @@
 <feature
       id="org.objectstyle.wolips.feature"
       label="WOLips"
-      version="5.0.1.qualifier"
+      version="5.0.1"
       provider-name="wocommunity.org">
 
    <description url="https://wiki.wocommunity.org/xwiki/bin/view/WOL/">
@@ -121,178 +121,178 @@ on the ObjectStyle Group, please see http://objectstyle.org/
 
    <plugin
          id="org.objectstyle.wolips.thirdparty.velocity"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.thirdparty.log4j"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.thirdparty.commonscollections"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.baseforplugins"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.baseforuiplugins"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.ant"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.documentation"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.eogenerator.core"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.eogenerator.ui"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.eogenerator.jdt"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.jdt"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.launching"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.preferences"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.bindings"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.targetbuilder"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.team"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.templateengine"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.tkhtmleditor"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.ui"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.variables"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.wizards"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.wodclipse.core"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.wodclipse"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.womodeler"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.woproject"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.woproject.ant"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.workbenchutilities"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.refactoring"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.pbserver"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.builder"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.components"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.locate"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.editors"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.htmlpreview"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.apieditor"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.componenteditor"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.ruleeditor"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.deployment.ui"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.eomodeler.core"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.eomodeler"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.eomodeler.eclipse"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.debug"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
    <plugin
          id="org.objectstyle.wolips.wooeditor"
-         version="5.0.1.qualifier"/>
+         version="5.0.1"/>
 
 </feature>
