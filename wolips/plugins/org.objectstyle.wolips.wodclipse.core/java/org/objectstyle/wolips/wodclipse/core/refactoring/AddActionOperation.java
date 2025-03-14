@@ -6,7 +6,9 @@ package org.objectstyle.wolips.wodclipse.core.refactoring;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.Signature;
 import org.eclipse.jdt.core.formatter.CodeFormatter;
@@ -39,7 +41,7 @@ public class AddActionOperation extends JavaModelOperation {
     }
 
     String actionMethodName = _info.getName();
-    boolean useGenerics = JavaModelUtil.is50OrHigher(componentType.getJavaProject());
+    boolean useGenerics = is50OrHigher(componentType.getJavaProject());
     String simpleTypeName = Signature.getSimpleName(keyType);
     
     boolean loadPage = !"WOComponent".equals(simpleTypeName) && !"WOActionResults".equals(simpleTypeName);
@@ -64,6 +66,12 @@ public class AddActionOperation extends JavaModelOperation {
     String lineDelim = "\n";// TextUtilities.getDefaultLineDelimiter(document);
     source = CodeFormatterUtil.format(CodeFormatter.K_CLASS_BODY_DECLARATIONS, source, 1, null, componentType.getJavaProject());
     new CreateMethodOperation(componentType, source, false).runOperation(progressMonitor);
+  }
+
+  // this was removed from JavaModelUtil in Eclipse 2025-03 (4.35.0)
+  // see https://github.com/eclipse-jdt/eclipse.jdt.ui/commit/b9233aa235f0385a580e2fa2f0d2778ae8b9556c
+  protected static boolean is50OrHigher(IJavaProject project) {
+    return !JavaModelUtil.isVersionLessThan(JavaModelUtil.getSourceCompliance(project), JavaCore.VERSION_1_5);
   }
 
   public static void addAction(AddActionInfo info) throws CoreException {
