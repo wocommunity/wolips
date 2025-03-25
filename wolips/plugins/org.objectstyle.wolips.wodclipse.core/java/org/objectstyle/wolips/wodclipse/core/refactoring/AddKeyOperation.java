@@ -199,7 +199,7 @@ public class AddKeyOperation extends JavaModelOperation {
   }
 
   private String simpleTypeName(String keyType, String keyParameterType) {
-    boolean useGenerics = JavaModelUtil.is50OrHigher(getJavaProject());
+    boolean useGenerics = AddActionOperation.is50OrHigher(getJavaProject());
     String simpleTypeName;
     if (keyParameterType != null && useGenerics) {
       simpleTypeName = Signature.getSimpleName(keyType) + "<" + Signature.getSimpleName(keyParameterType) + ">";
