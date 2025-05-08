@@ -220,7 +220,7 @@ public class HtmlWodTab extends ComponentEditorTab {
 			for (int sashWeightNum = 0; sashWeightNum < sashWeightStrs.length; sashWeightNum++) {
 				sashWeights[sashWeightNum] = Integer.parseInt(sashWeightStrs[sashWeightNum]);
 			}
-			if (sashWeights.length == getParentSashForm().getWeights().length) {
+			if (sashWeights.length > 1 && sashWeights.length == getParentSashForm().getWeights().length) {
 				if (sashWeights[1] / (float)sashWeights[0] < 0.15) {
 					sashWeights[0] = 85;
 					sashWeights[1] = 15;
