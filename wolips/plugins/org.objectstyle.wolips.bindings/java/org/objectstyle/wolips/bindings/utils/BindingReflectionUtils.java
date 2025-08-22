@@ -389,7 +389,12 @@ public class BindingReflectionUtils {
 
         int prefixLength = prefix.length();
         if ((requireExactNameMatch && lowercaseMemberName.equals(nameStartingWith)) || (!requireExactNameMatch && lowercaseMemberName.startsWith(nameStartingWith))) {
-          String bindingName = BindingReflectionUtils.toLowercaseFirstLetter(memberName.substring(prefixLength));
+        	final String bindingName;
+        	if(member instanceof IField) {
+        		bindingName = memberName.substring(prefixLength);
+        	} else {
+                bindingName = BindingReflectionUtils.toLowercaseFirstLetter(memberName.substring(prefixLength));
+        	}
           //System.out.println("BindingReflectionUtils.getBindingKeyIfMatches:   bindingName = " + bindingName);
           if (nameStartingWith.length() > 0 || !bindingName.startsWith("_")) {
           	if (visible == Visibility.MaybeVisible) {
