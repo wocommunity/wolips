@@ -13,7 +13,7 @@
 		<maven.install.skip>true</maven.install.skip>
 		<maven.deploy.skip>true</maven.deploy.skip>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<tycho.version>4.0.10</tycho.version>
+		<tycho.version>5.0.0</tycho.version>
 		<sonar.exclusions>**/src-gen/**</sonar.exclusions>
 		<env.ui.test>-Xms512m -Xmx2048m</env.ui.test>
 	</properties>
