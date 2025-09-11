@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.eogenerator.core
 Bundle-Name: EOGenerator Core
 Bundle-SymbolicName: org.objectstyle.wolips.eogenerator.core;singleton:=true
-Bundle-Version: 5.0.2.qualifier
+Bundle-Version: 5.0.2
 Bundle-Activator: org.objectstyle.wolips.eogenerator.core.Activator
 Bundle-Vendor: wocommunity.org
 Require-Bundle: org.objectstyle.wolips.preferences,

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.componenteditor
 Bundle-Name: WOLips Componenteditor Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.componenteditor; singleton:=true
-Bundle-Version: 5.0.2.qualifier
+Bundle-Version: 5.0.2
 Bundle-Activator: org.objectstyle.wolips.componenteditor.ComponenteditorPlugin
 Bundle-Vendor: wocommunity.org
 Require-Bundle: org.objectstyle.wolips.workbenchutilities,

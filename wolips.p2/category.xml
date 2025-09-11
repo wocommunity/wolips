@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.objectstyle.wolips.feature_5.0.2.qualifier.jar" id="org.objectstyle.wolips.feature" version="5.0.2.qualifier">
+   <feature url="features/org.objectstyle.wolips.feature_5.0.2.jar" id="org.objectstyle.wolips.feature" version="5.0.2">
       <category name="wolips"/>
    </feature>
    <category-def name="wolips" label="WOLips">

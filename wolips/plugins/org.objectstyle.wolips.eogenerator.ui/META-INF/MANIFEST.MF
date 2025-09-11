@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.eogenerator.ui
 Bundle-Name: EOGenerator UI
 Bundle-SymbolicName: org.objectstyle.wolips.eogenerator.ui; singleton:=true
-Bundle-Version: 5.0.2.qualifier
+Bundle-Version: 5.0.2
 Bundle-Activator: org.objectstyle.wolips.eogenerator.ui.Activator
 Bundle-Vendor: wocommunity.org
 Require-Bundle: org.eclipse.ui.forms,
