@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.objectstyle.woproject</groupId>
 		<artifactId>wolips-project</artifactId>
-		<version>5.0.2</version>
+		<version>5.0.3-SNAPSHOT</version>
 	</parent>
 	<artifactId>wolips.product</artifactId>
 	<packaging>eclipse-repository</packaging>

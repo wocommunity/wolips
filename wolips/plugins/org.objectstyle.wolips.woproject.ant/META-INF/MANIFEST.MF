@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.woproject.ant
 Bundle-Name: WOProject Ant
 Bundle-SymbolicName: org.objectstyle.wolips.woproject.ant;singleton:=true
-Bundle-Version: 5.0.2
+Bundle-Version: 5.0.3.qualifier
 Bundle-ClassPath: lib/woenvironment.jar,
  lib/woproject-ant-tasks.jar,
  .

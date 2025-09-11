@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.wodclipse.core
 Bundle-Name: WOLips WODclips Core Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.wodclipse.core; singleton:=true
-Bundle-Version: 5.0.2
+Bundle-Version: 5.0.3.qualifier
 Bundle-Activator: org.objectstyle.wolips.wodclipse.core.Activator
 Require-Bundle: org.objectstyle.wolips,
  org.eclipse.jdt.core,

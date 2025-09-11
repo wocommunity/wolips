@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.objectstyle.woproject</groupId>
 	<artifactId>wolips-project</artifactId>
-	<version>5.0.2</version>
+	<version>5.0.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<url>https://github.com/wocommunity/wolips/</url>
 
@@ -477,7 +477,7 @@
 						<artifact>
 							<groupId>org.objectstyle.woproject</groupId>
 							<artifactId>wolips.targetplatform</artifactId>
-							<version>5.0.2</version>
+							<version>5.0.3-SNAPSHOT</version>
 						</artifact>
 					</target>
 				</configuration>

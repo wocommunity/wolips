@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.pbserver
 Bundle-Name: WOLips PB Server Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.pbserver; singleton:=true
-Bundle-Version: 5.0.2
+Bundle-Version: 5.0.3.qualifier
 Bundle-Activator: org.objectstyle.wolips.pbserver.PBServerPlugin
 Bundle-Vendor: org.objectstyle
 Require-Bundle: org.objectstyle.wolips.preferences,

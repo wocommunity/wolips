@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Automatic-Module-Name: org.objectstyle.wolips.eogenerator.jdt
 Bundle-Name: EOGenerator JDT
 Bundle-SymbolicName: org.objectstyle.wolips.eogenerator.jdt; singleton:=true
-Bundle-Version: 5.0.2
+Bundle-Version: 5.0.3.qualifier
 Bundle-Activator: org.objectstyle.wolips.eogenerator.jdt.Activator
 Bundle-Vendor: wocommunity.org
 Require-Bundle: org.objectstyle.wolips.baseforplugins,
