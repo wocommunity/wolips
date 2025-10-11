@@ -35,20 +35,10 @@ public class WOBuildPropertiesInitializer implements IBuildPropertiesInitializer
 					}
 				}
 				
-				boolean wellFormedTemplateRequiredDefault;
-				if (projectFrameworkAdaptor.isLinkedToFrameworkNamed("WOOgnl")) {
-					buildProperties.setInlineBindingPrefixDefault("$");
-					buildProperties.setInlineBindingSuffixDefault("");
-					wellFormedTemplateRequiredDefault = false;
-				} else if (buildProperties.getWOVersion().isAtLeastVersion(5, 4)) {
-					buildProperties.setInlineBindingPrefixDefault("[");
-					buildProperties.setInlineBindingSuffixDefault("]");
-					wellFormedTemplateRequiredDefault = true;
-				} else {
-					buildProperties.setInlineBindingPrefixDefault("[");
-					buildProperties.setInlineBindingSuffixDefault("]");
-					wellFormedTemplateRequiredDefault = false;
-				}
+				boolean wellFormedTemplateRequiredDefault = false;
+				buildProperties.setInlineBindingPrefixDefault("$");
+				buildProperties.setInlineBindingSuffixDefault("");
+
 				String globalWellFormedTemplateRequiredDefault = Platform.getPreferencesService().getString("org.objectstyle.wolips.bindings", "WellFormedTemplate", null, null);
 				if ("yes".equals(globalWellFormedTemplateRequiredDefault)) {
 					wellFormedTemplateRequiredDefault = true;
