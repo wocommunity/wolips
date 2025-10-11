@@ -401,8 +401,8 @@ public class BuildProperties {
 		if (!_defaultsInitialized) {
 			_defaultsInitialized = true;
 			_woVersionDefault = new Version(VariablesPlugin.getDefault().getGlobalVariables().getString("wo.version", "5.3.3"));
-			_inlineBindingPrefixDefault = VariablesPlugin.getDefault().getGlobalVariables().getString("component.inlineBindingPrefix", "[");
-			_inlineBindingSuffixDefault = VariablesPlugin.getDefault().getGlobalVariables().getString("component.inlineBindingSuffix", "]");
+			_inlineBindingPrefixDefault = VariablesPlugin.getDefault().getGlobalVariables().getString("component.inlineBindingPrefix", "$");
+			_inlineBindingSuffixDefault = VariablesPlugin.getDefault().getGlobalVariables().getString("component.inlineBindingSuffix", "");
 			// MS: This is pretty hacky -- Technically this plugin doesn't depend on the Bindings preference plugin, and I don't want to add it because it brings in a bunch
 			// of JDT dependencies that we don't want here, but I can't move the preferences out of the plugin easily without changing their key name. 
 			_wellFormedTemplateRequiredDefault = VariablesPlugin.getDefault().getGlobalVariables().getBoolean("component.wellFormedTemplateRequired", "yes".equals(Platform.getPreferencesService().getString("org.objectstyle.wolips.bindings", "WellFormedTemplate", null, null)));
