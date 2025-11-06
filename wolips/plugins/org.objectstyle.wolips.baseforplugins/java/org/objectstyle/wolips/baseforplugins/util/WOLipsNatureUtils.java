@@ -143,18 +143,20 @@ public class WOLipsNatureUtils {
 	 */
 	public static boolean isMavenNature(IProject project) {
 		try {
-			// The old nature string?
-			IProjectNature nature = project.getNature("org.maven.ide.eclipse.maven2Nature");
-			if(nature == null) {
+			// The old nature string
+			boolean hasMavenNature = project.hasNature("org.maven.ide.eclipse.maven2Nature");
+
+			if(!hasMavenNature ) {
 				// The nature id used today
-				nature = project.getNature("org.eclipse.m2e.core.maven2Nature");
+				hasMavenNature = project.hasNature("org.eclipse.m2e.core.maven2Nature");
 			}
-			if (nature != null) {
-				return true;
-			}
+
+			return hasMavenNature;
+			
 		} catch (CoreException e) {
 			Activator.getDefault().debug("Error while resolving nature for project: " + project.getName(), e);
+			return false;
 		}
-		return false;
+
 	}
 }
