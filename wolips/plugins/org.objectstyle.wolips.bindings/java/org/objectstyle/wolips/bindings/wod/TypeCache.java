@@ -18,7 +18,6 @@ import org.eclipse.jdt.internal.corext.util.JavaModelUtil;
 import org.objectstyle.wolips.bindings.api.ApiCache;
 import org.objectstyle.wolips.bindings.utils.BindingReflectionUtils;
 import org.objectstyle.wolips.core.resources.types.LimitedLRUCache;
-import org.objectstyle.wolips.core.resources.types.SubTypeHierarchyCache;
 import org.objectstyle.wolips.core.resources.types.SuperTypeHierarchyCache;
 
 public class TypeCache {
@@ -390,7 +389,7 @@ public class TypeCache {
 
     public List<IType> getSubtypesInProject(IJavaProject project) throws JavaModelException {
       //System.out.println("TypeCache.getSubtypesOf: " + type.getFullyQualifiedName() + " (hits=" + SubTypeHierarchyCache.getCacheHits() + ",misses=" + SubTypeHierarchyCache.getCacheMisses() + ")");
-      ITypeHierarchy typeHierarchy = SubTypeHierarchyCache.getTypeHierarchyInProject(_type, project);
+      ITypeHierarchy typeHierarchy = _type.newTypeHierarchy(project, null);
       List<IType> types = new LinkedList<IType>();
       IType[] subtypes = typeHierarchy.getAllSubtypes(_type);
       for (int subtypeNum = subtypes.length - 1; subtypeNum >= 0; subtypeNum--) {

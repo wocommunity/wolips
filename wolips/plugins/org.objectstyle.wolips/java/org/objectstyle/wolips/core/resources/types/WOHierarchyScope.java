@@ -363,7 +363,7 @@ public class WOHierarchyScope extends AbstractSearchScope implements SuffixConst
 		this.elementCount = 0;
 		this.needsRefresh = false;
 		if (this.hierarchy == null) {
-			this.hierarchy = SubTypeHierarchyCache.getTypeHierarchyInProject(this.focusType, this.javaProject, null);
+			this.hierarchy = this.focusType.newTypeHierarchy(this.javaProject, null);
 		} else {
 			this.hierarchy.refresh(null);
 		}
