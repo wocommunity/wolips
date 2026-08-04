@@ -213,6 +213,10 @@ public class EclipseEOModelGroupFactory implements IEOModelGroupFactory {
 							if (!searchedResources.contains(jarResourcesURL) && URLUtils.exists(jarResourcesURL)) {
 								modelGroup.loadModelsFromURL(jarResourcesURL, 1, failures, skipOnDuplicates, progressMonitor);
 							}
+							URL moduleResourcesURL = new URL("jar:" + jarPath.toFile().toURL() + "!/META-INF/webobjects/Resources");
+							if (!searchedResources.contains(moduleResourcesURL) && URLUtils.exists(moduleResourcesURL)) {
+								modelGroup.loadModelsFromURL(moduleResourcesURL, 1, failures, skipOnDuplicates, progressMonitor);
+							}
 						}
 					} else if (entryKind == IClasspathEntry.CPE_PROJECT) {
 						IPath path = entry.getPath();

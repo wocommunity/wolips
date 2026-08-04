@@ -127,12 +127,15 @@ public class URLUtils {
 				jarFile = conn.getJarFile();
 				JarEntry folderJarEntry = conn.getJarEntry();
 				String folderName = folderJarEntry.getName();
+				String parentUrlString = parentUrl.toString();
+				String base = parentUrlString.substring(0, parentUrlString.indexOf("!"));
 				Enumeration<JarEntry> jarEntriesEnum = jarFile.entries();
 				while (jarEntriesEnum.hasMoreElements()) {
 					JarEntry jarEntry = jarEntriesEnum.nextElement();
 					String name = jarEntry.getName();
+					
 					if (name.startsWith(folderName)) {
-						URL childURL = new URL(parentUrl, name);
+						URL childURL = new URL(base + "!/" + name);
 						childEntries.add(childURL);
 					}
 				}
