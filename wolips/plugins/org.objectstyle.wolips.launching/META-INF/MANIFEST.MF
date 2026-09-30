@@ -35,4 +35,3 @@ Export-Package: org.objectstyle.wolips.launching,
  org.objectstyle.wolips.launching.exceptionhandler.internal,
  org.objectstyle.wolips.launching.ui,
  org.objectstyle.wolips.launching.variables
-Bundle-RequiredExecutionEnvironment: JavaSE-21

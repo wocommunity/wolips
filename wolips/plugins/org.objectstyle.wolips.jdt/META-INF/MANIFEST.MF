@@ -34,4 +34,3 @@ Export-Package: org.objectstyle.wolips.jdt,
  org.objectstyle.wolips.jdt.ui.refactoring.actions,
  org.objectstyle.wolips.jdt.ui.tags,
  org.objectstyle.wolips.jdt.ui.tags.actions
-Bundle-RequiredExecutionEnvironment: JavaSE-21

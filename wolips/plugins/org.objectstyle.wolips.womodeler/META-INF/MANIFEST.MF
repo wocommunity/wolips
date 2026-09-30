@@ -25,4 +25,3 @@ Bundle-Vendor: wocommunity.org
 Export-Package: org.objectstyle.wolips.womodeler
 Bundle-ClassPath: lib/jdom.jar,
  .
-Bundle-RequiredExecutionEnvironment: JavaSE-21

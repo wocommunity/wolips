@@ -16,4 +16,3 @@ Require-Bundle: org.junit,
  org.objectstyle.wolips;bundle-version="1.0.6"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.templateengine
-Bundle-RequiredExecutionEnvironment: JavaSE-21

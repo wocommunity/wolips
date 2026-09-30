@@ -46,4 +46,3 @@ Export-Package: org.apache.log4j;uses:="org.apache.log4j.helpers,org.apache.log4
    org.apache.log4j.spi",
  org.objectstyle.wolips.thirdparty.log4j;uses:="org.osgi.framework,org.eclipse.ui.plugin"
 Bundle-ClassPath: .,lib/reload4j-1.2.24.jar
-Bundle-RequiredExecutionEnvironment: JavaSE-21

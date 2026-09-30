@@ -9,4 +9,3 @@ Bundle-Vendor: org.objectstyle
 Require-Bundle: org.objectstyle.wolips.preferences,
  org.objectstyle.wolips.baseforuiplugins
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-21

@@ -22,4 +22,3 @@ Require-Bundle: org.eclipse.ui,
  org.objectstyle.wolips.eomodeler.core
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.jdt.debug.ui.launchConfigurations
-Bundle-RequiredExecutionEnvironment: JavaSE-21

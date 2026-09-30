@@ -20,5 +20,4 @@ Export-Package: org.objectstyle.wolips.eomodeler.core,
  org.objectstyle.wolips.eomodeler.core.utils
 Bundle-ClassPath: .,
  lib/EOFSQLUtils.jar
-Bundle-RequiredExecutionEnvironment: JavaSE-21
 Automatic-Module-Name: org.objectstyle.wolips.eomodeler.core

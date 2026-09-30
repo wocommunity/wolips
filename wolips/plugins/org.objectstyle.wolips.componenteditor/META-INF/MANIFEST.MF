@@ -40,4 +40,3 @@ Export-Package: org.objectstyle.wolips.componenteditor,
  org.objectstyle.wolips.componenteditor.launcher,
  org.objectstyle.wolips.componenteditor.outline,
  org.objectstyle.wolips.componenteditor.part
-Bundle-RequiredExecutionEnvironment: JavaSE-21

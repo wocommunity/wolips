@@ -54,4 +54,3 @@ Export-Package: jp.aonir.fuzzyxml,
  org.objectstyle.wolips.wodclipse.core.util,
  org.objectstyle.wolips.wodclipse.core.validation,
  org.objectstyle.wolips.wodclipse.core.woo
-Bundle-RequiredExecutionEnvironment: JavaSE-21

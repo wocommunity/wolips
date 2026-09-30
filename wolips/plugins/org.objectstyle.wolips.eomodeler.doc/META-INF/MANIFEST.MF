@@ -11,4 +11,3 @@ Require-Bundle: org.objectstyle.wolips.eomodeler.core,
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: wocommunity.org
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-21

@@ -20,4 +20,3 @@ Require-Bundle: org.objectstyle.wolips,
  org.eclipse.ant.core;bundle-version="3.2.100"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.builder
-Bundle-RequiredExecutionEnvironment: JavaSE-21

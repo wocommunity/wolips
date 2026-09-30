@@ -22,4 +22,3 @@ Bundle-ClassPath: .
 Export-Package: org.objectstyle.wolips.wodclipse,
  org.objectstyle.wolips.wodclipse.action,
  org.objectstyle.wolips.wodclipse.editor
-Bundle-RequiredExecutionEnvironment: JavaSE-21

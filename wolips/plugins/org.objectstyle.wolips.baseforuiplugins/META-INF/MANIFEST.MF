@@ -19,4 +19,3 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.baseforuiplugins,
  org.objectstyle.wolips.baseforuiplugins.plist,
  org.objectstyle.wolips.baseforuiplugins.utils
-Bundle-RequiredExecutionEnvironment: JavaSE-21

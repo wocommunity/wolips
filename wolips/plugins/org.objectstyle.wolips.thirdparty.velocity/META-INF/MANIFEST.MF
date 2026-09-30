@@ -62,4 +62,3 @@ Export-Package: org.apache.commons.lang,
  org.apache.velocity.util.introspection,
  org.objectstyle.wolips.thirdparty.velocity,
  org.objectstyle.wolips.thirdparty.velocity.resourceloader
-Bundle-RequiredExecutionEnvironment: JavaSE-21

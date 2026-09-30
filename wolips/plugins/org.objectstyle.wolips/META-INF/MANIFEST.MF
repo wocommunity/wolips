@@ -37,4 +37,3 @@ Export-Package: org.objectstyle.wolips.core,
  org.objectstyle.wolips.core.tests,
  org.objectstyle.wolips.core.tobeintregrated
 Bundle-ClassPath: .
-Bundle-RequiredExecutionEnvironment: JavaSE-21

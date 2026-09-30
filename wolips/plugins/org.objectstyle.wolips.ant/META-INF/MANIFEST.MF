@@ -12,4 +12,3 @@ Require-Bundle: org.eclipse.core.resources,
 Bundle-ActivationPolicy: lazy
 Export-Package: org.objectstyle.wolips.ant,
  org.objectstyle.wolips.ant.antlaunchers
-Bundle-RequiredExecutionEnvironment: JavaSE-21

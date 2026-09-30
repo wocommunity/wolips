@@ -38,4 +38,3 @@ Export-Package: org.objectstyle.wolips.eomodeler,
  org.objectstyle.wolips.eomodeler.outline,
  org.objectstyle.wolips.eomodeler.preferences,
  org.objectstyle.wolips.eomodeler.utils
-Bundle-RequiredExecutionEnvironment: JavaSE-21

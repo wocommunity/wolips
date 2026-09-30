@@ -27,4 +27,3 @@ Export-Package: org.objectstyle.wolips.ui,
  org.objectstyle.wolips.ui.preferences,
  org.objectstyle.wolips.ui.propertypages,
  org.objectstyle.wolips.ui.view
-Bundle-RequiredExecutionEnvironment: JavaSE-21

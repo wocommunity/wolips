@@ -9,4 +9,3 @@ Bundle-Vendor: wocommunity.org
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.objectstyle.wolips.baseforplugins
 Export-Package: org.objectstyle.wolips.team
-Bundle-RequiredExecutionEnvironment: JavaSE-21
